@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CircleConnection, CircleConnectionTypes, CirclePerson } from '../../types';
-import { GameStateService } from '../../services/game-state.service';
 
 @Component({
     selector: 'app-circle',
@@ -78,7 +77,7 @@ export class CircleComponent {
     }
 
     public getPersonColor(person: CirclePerson) {
-        return person.protected ? 'orange' : '#cbd5e1'
+        return person.protected ? 'orange' : (person.victim ? 'red' : '#cbd5e1')
     }
 
     public onPersonClicked(person: CirclePerson) {

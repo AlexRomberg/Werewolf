@@ -6,6 +6,7 @@ export interface CirclePerson {
     id: number;
     name: string | undefined;
     protected: boolean;
+    victim: boolean;
     role?: Role;
 }
 

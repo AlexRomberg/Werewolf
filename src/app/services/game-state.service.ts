@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Action, CircleConnection, CircleConnectionTypes, CirclePerson } from '../types';
-import { Whitch } from '../models/roles/whitch';
+import { Witch } from '../models/roles/witch';
 import { Role } from '../models/roles/roles';
 import { DaybreakAction, NightfallAction, RulesAction } from '../models/actions/generic';
 import { Wolvechild } from '../models/roles/wolvechild';
+import { Werewolf } from '../models/roles/welewolf';
 
 @Injectable({
   providedIn: 'root'
@@ -13,20 +14,22 @@ export class GameStateService {
   public ActionHistory: Action[] = [];
 
   public People: CirclePerson[] = [
-    { id: 0, name: "A", protected: false },
-    { id: 1, name: "T", protected: false },
-    { id: 2, name: "L", protected: false },
-    { id: 3, name: "A", protected: false },
-    { id: 4, name: "R", protected: false },
-    { id: 5, name: "S", protected: false },
-    { id: 6, name: "N", protected: false },
+    { id: 0, name: "A", protected: false, victim: false },
+    { id: 1, name: "T", protected: false, victim: false },
+    { id: 2, name: "L", protected: false, victim: false },
+    { id: 3, name: "A", protected: false, victim: false },
+    { id: 4, name: "R", protected: false, victim: false },
+    { id: 5, name: "S", protected: false, victim: false },
+    { id: 6, name: "N", protected: false, victim: false },
   ];
 
   public Connections: CircleConnection[] = [
   ]
 
   public Characters: Role[] = [
-    new Whitch()
+    new Wolvechild(),
+    new Werewolf(),
+    new Witch()
   ]
 
   public Actions: Action[] = []

@@ -31,7 +31,7 @@ export class Wolvechild implements Role {
 
     private async RequstAssignment({ dialog }: { dialog: DialogService }) {
         try {
-            const people = await dialog.ShowPeopleDialog(1, "Select person");
+            const people = await dialog.ShowPeopleDialog("Select person", 1);
             people[0].role = this;
             this.assignedPerson = people[0];
         } catch {
@@ -41,7 +41,7 @@ export class Wolvechild implements Role {
 
     private async RequstRolemodel({ gameState, dialog }: { gameState: GameStateService, dialog: DialogService }) {
         try {
-            const people = await dialog.ShowPeopleDialog(1, "Select role model");
+            const people = await dialog.ShowPeopleDialog("Select role model", 1);
             gameState.Connections.push({
                 type: CircleConnectionTypes.Trust,
                 from: this.assignedPerson!,

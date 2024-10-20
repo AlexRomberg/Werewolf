@@ -2,7 +2,7 @@ import { DialogService } from "../../services/dialog.service";
 import { Action, CirclePerson } from "../../types";
 import { Role } from "./roles";
 
-export class Whitch implements Role {
+export class Witch implements Role {
     hasPositivePotion = true;
     hasNegativePotion = true;
     private assignedPerson: CirclePerson | undefined = undefined;
@@ -13,7 +13,7 @@ export class Whitch implements Role {
     constructor() {
         const whitch = this;
         this.Action = {
-            title: "The Whitch",
+            title: "The Witch",
             get points() {
                 return [whitch.hasPositivePotion && "Has a saving potion", whitch.hasNegativePotion && "Has a killing potion"].filter(Boolean) as string[]
             },
@@ -31,7 +31,7 @@ export class Whitch implements Role {
 
     private async RequstAssignment({ dialog }: { dialog: DialogService }) {
         try {
-            const people = await dialog.ShowPeopleDialog(1, "Select person");
+            const people = await dialog.ShowPeopleDialog("Select person", 1);
             people[0].role = this;
             this.assignedPerson = people[0];
         } catch {

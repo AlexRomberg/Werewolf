@@ -9,12 +9,12 @@ export class DialogService {
   private peopleDialogCallback: (people: CirclePerson[]) => void = () => { };
   private peopleDialogRejection = () => { };
   public peopleDialog: {
-    title: string, numberOfPeople: number, people: CirclePerson[]
+    title: string, numberOfPeople?: number, people: CirclePerson[]
   } | undefined;
 
   constructor(private gameState: GameStateService) { }
 
-  public async ShowPeopleDialog(numberOfPeople: number, title: string) {
+  public async ShowPeopleDialog(title: string, numberOfPeople?: number) {
     return await new Promise<CirclePerson[]>((res, rej) => {
       this.peopleDialogCallback = res;
       this.peopleDialogRejection = rej;
@@ -23,7 +23,10 @@ export class DialogService {
   }
 
   public PeopleDialogSelectionValid() {
-    return this.peopleDialog?.people.filter(p => p.protected).length === this.peopleDialog?.numberOfPeople;
+    if (!this.peopleDialog?.numberOfPeople) {
+      return true;
+    }
+    return this.peopleDialog?.people.filter(p => p.protected).length === this.peopleDialog.numberOfPeople;
   }
 
   public OnPersonSelected(person: CirclePerson) {
