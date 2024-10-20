@@ -1,23 +1,21 @@
-<div class="w-full h-svh p-20">
-    <svg width="100%" height="100%" viewBox="0 0 2300 2000" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
-        <defs>
-            <filter x="0" y="0" width="1" height="1" id="solid">
-                <feFlood flood-color="var(--bg-color)" result="bg" />
-                <feMerge>
-                    <feMergeNode in="bg" />
-                    <feMergeNode in="SourceGraphic" />
-                </feMerge>
-            </filter>
-        </defs>
+<svg width="100%" height="100%" viewBox="0 0 2300 2000" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
+    <defs>
+        <filter x="0" y="0" width="1" height="1" id="solid">
+            <feFlood flood-color="var(--bg-color)" result="bg" />
+            <feMerge>
+                <feMergeNode in="bg" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
 
-        @for (connection of state.Connections; track $index) {
-        <path [attr.d]="getConnectionPath($index)" style="fill:none;stroke-width:22.22px;" [style.stroke]="getConnectionColor(connection.type)" />
-        }
+    @for (connection of Connections; track $index) {
+    <path [attr.d]="getConnectionPath($index)" style="fill:none;stroke-width:22.22px;" [style.stroke]="getConnectionColor(connection.type)" />
+    }
 
-        <circle cx="1000" cy="1000" r="875" style="fill:none;stroke:rgb(141,141,141);stroke-width:5.28px;stroke-dasharray:26.39,26.39,0,0,0,0;" />
-        @for (person of state.People; track $index) {
-        <circle [attr.cx]="getCoordinateX($index)" [attr.cy]="getCoordinateY($index)" r="100" class="person" [style.stroke]="getPersonColor(person)" />
-        <text filter="url(#solid)" [attr.x]="getCoordinateX($index) + 150" [attr.y]="getCoordinateY($index) + 20">{{person.name}}</text>
-        }
-    </svg>
-</div>
+    <circle cx="1000" cy="1000" r="875" style="fill:none;stroke:rgb(141,141,141);stroke-width:5.28px;stroke-dasharray:26.39,26.39,0,0,0,0;" />
+    @for (person of People; track $index) {
+    <circle [attr.cx]="getCoordinateX($index)" [attr.cy]="getCoordinateY($index)" r="100" class="person cursor-pointer" [style.stroke]="getPersonColor(person)" (click)="onPersonClicked(person)" [style.fill]="person.role?.Color" />
+    <text filter="url(#solid)" [attr.x]="getCoordinateX($index) + 150" [attr.y]="getCoordinateY($index) + 20">{{person.name}}</text>
+    }
+</svg>

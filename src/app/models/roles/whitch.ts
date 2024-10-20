@@ -1,10 +1,13 @@
-import { Action } from "../../types";
+import { DialogService } from "../../services/dialog.service";
+import { Action, CirclePerson } from "../../types";
 import { Role } from "./roles";
 
 export class Whitch implements Role {
     hasPositivePotion = true;
     hasNegativePotion = true;
+    private assignedPerson: CirclePerson | undefined = undefined;
 
+    public Color = "Yellow";
     public Action: Action;
 
     constructor() {
@@ -15,11 +18,24 @@ export class Whitch implements Role {
                 return [whitch.hasPositivePotion && "Has a saving potion", whitch.hasNegativePotion && "Has a killing potion"].filter(Boolean) as string[]
             },
             get buttons() {
-                return [whitch.hasPositivePotion && { title: "Save", action: () => { } }, whitch.hasNegativePotion && { title: "Kill", action: () => { } }].filter(Boolean) as { title: string; action: () => void; }[]
+                return [
+                    !whitch.assignedPerson && { title: "Assign person", action: whitch.RequstAssignment.bind(whitch) },
+                    whitch.hasPositivePotion && { title: "Save", action: () => { } },
+                    whitch.hasNegativePotion && { title: "Kill", action: () => { } }
+                ].filter(Boolean) as { title: string; action: () => void; }[]
             }
         }
     }
 
     IsAwakeThisNight = () => this.hasPositivePotion || this.hasNegativePotion;
 
+    private async RequstAssignment({ dialog }: { dialog: DialogService }) {
+        try {
+            const people = await dialog.ShowPeopleDialog(1, "Select person");
+            people[0].role = this;
+            this.assignedPerson = people[0];
+        } catch {
+            // closed
+        }
+    }
 }

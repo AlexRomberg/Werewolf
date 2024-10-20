@@ -1,12 +1,18 @@
+import { Role } from "./models/roles/roles";
+import { DialogService } from "./services/dialog.service";
+import { GameStateService } from "./services/game-state.service";
+
 export interface CirclePerson {
+    id: number;
     name: string | undefined;
     protected: boolean;
+    role?: Role;
 }
 
 export interface CircleConnection {
     type: CircleConnectionTypes;
-    from: number;
-    to: number;
+    from: CirclePerson;
+    to: CirclePerson;
 }
 
 export enum CircleConnectionTypes {
@@ -20,7 +26,12 @@ export interface Action {
     points: string[];
     buttons: {
         title: string
-        action: () => void
+        action: ActionCallback
     }[],
-    onNext?: () => void
+    onNext?: ActionCallback
 }
+
+export type ActionCallback = (services: {
+    gameState: GameStateService,
+    dialog: DialogService,
+}) => void;

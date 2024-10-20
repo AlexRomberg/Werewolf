@@ -6,6 +6,10 @@
     @apply rounded-md py-3 px-6 text-gray-100 font-bold;
 }
 
+.btn:disabled {
+    @apply text-gray-300;
+}
+
 html {
     @apply bg-gray-800
 }

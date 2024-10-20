@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CircleConnection, CircleConnectionTypes, CirclePerson } from '../../types';
 import { GameStateService } from '../../services/game-state.service';
 
@@ -10,20 +10,25 @@ import { GameStateService } from '../../services/game-state.service';
     styleUrl: './circle.component.css'
 })
 export class CircleComponent {
+    @Input()
+    public Connections: CircleConnection[] = [];
 
-    constructor(public state: GameStateService) { }
+    @Input()
+    public People: CirclePerson[] = [];
 
+    @Output()
+    public personClick: EventEmitter<CirclePerson> = new EventEmitter<CirclePerson>();
 
     public getCoordinateX(index: number) {
-        return 1000 + Math.sin(2 * Math.PI / this.state.People.length * index) * 875;
+        return 1000 + Math.sin(2 * Math.PI / this.People.length * index) * 875;
     }
 
     public getCoordinateY(index: number) {
-        return 1000 - Math.cos(2 * Math.PI / this.state.People.length * index) * 875;
+        return 1000 - Math.cos(2 * Math.PI / this.People.length * index) * 875;
     }
 
     private getOtherConnections(connection: CircleConnection, index: number) {
-        return this.state.Connections.reduce((prev, curr, idx) => {
+        return this.Connections.reduce((prev, curr, idx) => {
             if ((curr.from == connection.from && curr.to == connection.to) || (curr.from == connection.to && curr.to == connection.from)) {
                 return {
                     before: prev.before + (idx <= index ? 1 : 0),
@@ -35,10 +40,10 @@ export class CircleComponent {
     }
 
     public getConnectionPath(index: number) {
-        let originX = this.getCoordinateX(this.state.Connections[index].from);
-        let originY = this.getCoordinateY(this.state.Connections[index].from);
-        let destinationX = this.getCoordinateX(this.state.Connections[index].to);
-        let destinationY = this.getCoordinateY(this.state.Connections[index].to);
+        let originX = this.getCoordinateX(this.Connections[index].from.id);
+        let originY = this.getCoordinateY(this.Connections[index].from.id);
+        let destinationX = this.getCoordinateX(this.Connections[index].to.id);
+        let destinationY = this.getCoordinateY(this.Connections[index].to.id);
 
         let distanceX = destinationX - originX;
         let distanceY = destinationY - originY;
@@ -48,7 +53,7 @@ export class CircleComponent {
 
         let distanceFractionX = distanceX / length;
         let distanceFractionY = distanceY / length;
-        const { before, all } = this.getOtherConnections(this.state.Connections[index], index)
+        const { before, all } = this.getOtherConnections(this.Connections[index], index)
         const shift = (before - (all + 1) / 2) * 30;
 
         originX = originX + shortenBy * distanceFractionX + shift * distanceFractionY;
@@ -74,5 +79,9 @@ export class CircleComponent {
 
     public getPersonColor(person: CirclePerson) {
         return person.protected ? 'orange' : '#cbd5e1'
+    }
+
+    public onPersonClicked(person: CirclePerson) {
+        this.personClick.emit(person);
     }
 }

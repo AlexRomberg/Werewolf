@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { Action, CircleConnection, CircleConnectionTypes, CirclePerson } from '../types';
 import { Whitch } from '../models/roles/whitch';
 import { Role } from '../models/roles/roles';
-import { RulesAction } from '../models/actions/generic';
+import { DaybreakAction, NightfallAction, RulesAction } from '../models/actions/generic';
+import { Wolvechild } from '../models/roles/wolvechild';
 
 @Injectable({
   providedIn: 'root'
@@ -12,30 +13,16 @@ export class GameStateService {
   public ActionHistory: Action[] = [];
 
   public People: CirclePerson[] = [
-    { name: "A", protected: true },
-    { name: "T", protected: false },
-    { name: "L", protected: false },
-    { name: "A", protected: false },
-    { name: "R", protected: false },
-    { name: "S", protected: false },
-    { name: "N", protected: false },
+    { id: 0, name: "A", protected: false },
+    { id: 1, name: "T", protected: false },
+    { id: 2, name: "L", protected: false },
+    { id: 3, name: "A", protected: false },
+    { id: 4, name: "R", protected: false },
+    { id: 5, name: "S", protected: false },
+    { id: 6, name: "N", protected: false },
   ];
 
   public Connections: CircleConnection[] = [
-    { type: CircleConnectionTypes.Love, from: 1, to: 4 },
-    { type: CircleConnectionTypes.Love, from: 1, to: 4 },
-    { type: CircleConnectionTypes.Love, from: 1, to: 4 },
-    { type: CircleConnectionTypes.Sleepover, from: 3, to: 5 },
-    { type: CircleConnectionTypes.Love, from: 3, to: 5 },
-    { type: CircleConnectionTypes.Trust, from: 3, to: 5 },
-    { type: CircleConnectionTypes.Trust, from: 2, to: 6 },
-
-    { type: CircleConnectionTypes.Trust, from: 0, to: 3 },
-    { type: CircleConnectionTypes.Trust, from: 0, to: 3 },
-    { type: CircleConnectionTypes.Trust, from: 0, to: 3 },
-    { type: CircleConnectionTypes.Trust, from: 0, to: 3 },
-
-    { type: CircleConnectionTypes.Trust, from: 2, to: 4 },
   ]
 
   public Characters: Role[] = [
@@ -63,5 +50,12 @@ export class GameStateService {
     if (!currentAction) { return }
 
     this.ActionHistory.push(currentAction)
+  }
+
+  public PreviousAction() {
+    const lastAction = this.ActionHistory.pop();
+    if (!lastAction) { return; }
+
+    this.Actions.unshift(lastAction);
   }
 }
