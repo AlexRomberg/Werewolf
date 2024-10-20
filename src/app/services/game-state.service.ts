@@ -9,6 +9,7 @@ import { RulesAction } from '../models/actions/generic';
 })
 export class GameStateService {
   public Night: number = 0;
+  public ActionHistory: Action[] = [];
 
   public People: CirclePerson[] = [
     { name: "A", protected: true },
@@ -50,8 +51,17 @@ export class GameStateService {
   }
 
   public LoadNightActions() {
+    this.Actions.push(NightfallAction);
     this.Actions.push(...this.Characters
       .filter(c => c.IsAwakeThisNight(this.Night))
       .map(c => c.Action))
+    this.Actions.push(DaybreakAction)
+  }
+
+  public NextAction() {
+    const currentAction = this.Actions.shift();
+    if (!currentAction) { return }
+
+    this.ActionHistory.push(currentAction)
   }
 }

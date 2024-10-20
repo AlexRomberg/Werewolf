@@ -21,5 +21,6 @@ export interface Action {
     buttons: {
         title: string
         action: () => void
-    }[]
+    }[],
+    onNext?: () => void
 }
