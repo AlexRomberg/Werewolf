@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Action, CircleConnection, CircleConnectionTypes, CirclePerson } from '../types';
+import { Action, CircleConnection, CirclePerson } from '../types';
 import { Witch } from '../models/roles/witch';
 import { Role } from '../models/roles/roles';
 import { DaybreakAction, NightfallAction, RulesAction } from '../models/actions/generic';
 import { Wolvechild } from '../models/roles/wolvechild';
 import { Werewolf } from '../models/roles/welewolf';
+import { Seer } from '../models/roles/seer';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +28,10 @@ export class GameStateService {
   ]
 
   public Characters: Role[] = [
+    // One time characters ----------
     new Wolvechild(),
+    // Repeating characters ----------
+    new Seer(),
     new Werewolf(),
     new Witch()
   ]

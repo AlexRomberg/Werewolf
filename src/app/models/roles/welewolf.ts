@@ -13,11 +13,11 @@ export class Werewolf implements Role {
         const werewolf = this;
 
         this.Action = {
-            title: "The Werewolfs",
+            title: "🐺 The Werewolfs",
             points: ["Need to find a target"],
             buttons: [
                 {
-                    title: "Assign person", action: werewolf.RequstAssignment.bind(werewolf)
+                    title: "Assign people", action: werewolf.RequstAssignment.bind(werewolf)
                 },
                 {
                     title: "Register victim", action: werewolf.RegisterVictim.bind(werewolf)
@@ -48,6 +48,6 @@ export class Werewolf implements Role {
         }
     }
 
-    IsAwakeThisNight = (night: number) => night === 0;
+    IsAwakeThisNight = () => true;
 
 }

@@ -14,7 +14,7 @@ export class Wolvechild implements Role {
         const wolfchild = this;
 
         this.Action = {
-            title: "The Wolvechild",
+            title: "👶🏼 The Wolvechild",
             points: ["Needs to be assigned", "Needs a role model"],
             get buttons() {
                 if (wolfchild.isDone) {
