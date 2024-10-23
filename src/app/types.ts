@@ -24,7 +24,7 @@ export enum CircleConnectionTypes {
 
 export interface Action {
     title: string;
-    points: string[];
+    points: (string | false)[];
     buttons: {
         title: string
         action: ActionCallback

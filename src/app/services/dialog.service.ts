@@ -12,7 +12,15 @@ export class DialogService {
     title: string, numberOfPeople?: number, people: CirclePerson[]
   } | undefined;
 
+  public personDialog: {
+    person: CirclePerson
+  } | undefined;
+
   constructor(private gameState: GameStateService) { }
+
+  public async ShowPersonDialog(person: CirclePerson) {
+    this.personDialog = { person: { ...person } };
+  }
 
   public async ShowPeopleDialog(title: string, numberOfPeople?: number) {
     return await new Promise<CirclePerson[]>((res, rej) => {
@@ -51,5 +59,9 @@ export class DialogService {
     }
     this.peopleDialog = undefined;
     this.peopleDialogRejection();
+  }
+
+  public QuitPersonDialog() {
+    this.personDialog = undefined;
   }
 }

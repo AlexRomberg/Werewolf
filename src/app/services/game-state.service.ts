@@ -6,6 +6,8 @@ import { DaybreakAction, NightfallAction, RulesAction } from '../models/actions/
 import { Wolvechild } from '../models/roles/wolvechild';
 import { Werewolf } from '../models/roles/welewolf';
 import { Seer } from '../models/roles/seer';
+import { Cupit } from '../models/roles/cupit';
+import { Thief } from '../models/roles/Thief';
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +31,8 @@ export class GameStateService {
 
   public Characters: Role[] = [
     // One time characters ----------
+    new Thief(),
+    new Cupit(),
     new Wolvechild(),
     // Repeating characters ----------
     new Seer(),

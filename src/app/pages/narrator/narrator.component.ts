@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CircleComponent } from "../../components/circle/circle.component";
 import { GameStateService } from '../../services/game-state.service';
 import { DialogService } from '../../services/dialog.service';
-import { ActionCallback } from '../../types';
+import { ActionCallback, CirclePerson } from '../../types';
 
 @Component({
   selector: 'app-narrator',
@@ -21,5 +21,13 @@ export class NarratorComponent {
       gameState: this.state,
       dialog: this.dialog
     });
+  }
+
+  async handlePersonClicked(person: CirclePerson) {
+    this.dialog.ShowPersonDialog(person);
+  }
+
+  getFilteredPoints(points: (string | false)[]) {
+    return points.filter(Boolean) as string[]
   }
 }

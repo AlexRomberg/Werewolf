@@ -1,6 +1,6 @@
 <div class="grid grid-cols-[1fr_auto] w-full h-svh">
     <div class="w-full h-svh p-20">
-        <app-circle [People]="state.People" [Connections]="state.Connections"></app-circle>
+        <app-circle [People]="state.People" [Connections]="state.Connections" (personClick)="handlePersonClicked($event)"></app-circle>
     </div>
     <div class="w-[30rem] py-4 bg-gray-700 grid grid-rows-[auto_auto_auto_1fr_auto] gap-4 h-svh overflow-hidden">
         <div class="p-4 mx-4 bg-gray-600 rounded-xl">
@@ -15,7 +15,7 @@
                 <div class="mx-4 p-4 rounded-2xl" [class.bg-gray-500]="actionIndex === 0" [class.bg-gray-600]="actionIndex !== 0">
                     <h1 class="text-xl" [class.text-gray-100]="actionIndex === 0" [class.text-gray-400]="actionIndex !== 0">{{action.title}}</h1>
                     <ul>
-                        @for (point of action.points; track $index) {
+                        @for (point of getFilteredPoints(action.points); track $index) {
                         <li class="list-disc list-inside" [class.text-gray-200]="actionIndex === 0" [class.text-gray-400]="actionIndex !== 0">{{point}}</li>
                         }
                     </ul>
@@ -39,8 +39,8 @@
     </div>
     @if (dialog.peopleDialog) {
     <div class="fixed top-0 left-0 w-dvw h-dvh bg-gray-950/60 backdrop-blur-sm flex justify-center items-center">
-        @if (dialog.peopleDialog) {
         <div class="bg-slate-800 h-[36rem] w-[36rem] p-4 rounded-2xl grid grid-rows-[auto_1fr_auto] gap-2">
+            @if (dialog.peopleDialog) {
             <h1 class="text-gray-200 text-2xl">{{dialog.peopleDialog.title}}</h1>
             <div class="h-96 self-center ml-12">
                 <app-circle [People]="dialog.peopleDialog.people" (personClick)="dialog.OnPersonSelected($event)"></app-circle>
@@ -49,8 +49,10 @@
                 <button class="text-gray-200 bg-gray-500 w-full btn" (click)="dialog.QuitPeopleDialog()">Cancel</button>
                 <button [class.bg-gray-600]="!dialog.PeopleDialogSelectionValid()" [disabled]="!dialog.PeopleDialogSelectionValid()" class="text-gray-200 bg-gray-500 w-full btn" (click)="dialog.ApplyPeopleDialog()">Ok</button>
             </span>
+            } @else if(dialog.personDialog) {
+            <h1>Information about </h1>
+            }
         </div>
-        }
     </div>
     }
 </div>

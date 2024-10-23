@@ -14,15 +14,19 @@ export class Werewolf implements Role {
 
         this.Action = {
             title: "🐺 The Werewolfs",
-            points: ["Need to find a target"],
-            buttons: [
-                {
-                    title: "Assign people", action: werewolf.RequstAssignment.bind(werewolf)
-                },
-                {
-                    title: "Register victim", action: werewolf.RegisterVictim.bind(werewolf)
+            get points() { return [werewolf.assignedPeople.length <= 0 && "Need to be assigned", "Need to find a target"] },
+            get buttons() {
+                const buttons = [];
+                if (werewolf.assignedPeople.length <= 0) {
+                    buttons.push({
+                        title: "Assign people", action: werewolf.RequstAssignment.bind(werewolf)
+                    });
                 }
-            ]
+                buttons.push({
+                    title: "Register victim", action: werewolf.RegisterVictim.bind(werewolf)
+                });
+                return buttons;
+            }
         }
     }
 

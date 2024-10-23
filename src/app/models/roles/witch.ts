@@ -12,21 +12,29 @@ export class Witch implements Role {
     public Action: Action;
 
     constructor() {
-        const whitch = this;
+        const witch = this;
         this.Action = {
             title: "🧙🏼‍♂️ The Witch",
             get points() {
-                if (!whitch.hasPositivePotion && !whitch.hasNegativePotion) {
-                    return ["Has no potions left"]
-                }
-                return [whitch.hasPositivePotion && "Has a saving potion", whitch.hasNegativePotion && "Has a killing potion"].filter(Boolean) as string[]
+                return [
+                    !witch.assignedPerson && "Needs to be assigned",
+                    (!witch.hasPositivePotion && !witch.hasNegativePotion) && "Has no potions left",
+                    witch.hasPositivePotion && "Has a saving potion",
+                    witch.hasNegativePotion && "Has a killing potion"
+                ]
             },
             get buttons() {
-                return [
-                    !whitch.assignedPerson && { title: "Assign person", action: whitch.RequstAssignment.bind(whitch) },
-                    whitch.hasPositivePotion && { title: "Save", action: whitch.RequstSave.bind(whitch) },
-                    whitch.hasNegativePotion && { title: "Kill", action: whitch.RequstKill.bind(whitch) }
-                ].filter(Boolean) as { title: string; action: ActionCallback }[]
+                const buttons = [];
+                if (!witch.assignedPerson) {
+                    buttons.push({ title: "Assign person", action: witch.RequstAssignment.bind(witch) });
+                }
+                if (witch.hasPositivePotion) {
+                    buttons.push({ title: "Save", action: witch.RequstSave.bind(witch) })
+                }
+                if (witch.hasNegativePotion) {
+                    buttons.push({ title: "Kill", action: witch.RequstKill.bind(witch) })
+                }
+                return buttons;
             }
         }
     }

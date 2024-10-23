@@ -2,24 +2,24 @@ import { DialogService } from "../../services/dialog.service";
 import { Action, CirclePerson } from "../../types";
 import { Role } from "./roles";
 
-export class Seer implements Role {
-    public Color = "cyan";
-    private assignedPerson: CirclePerson | undefined;
+export class Thief implements Role {
+    public Color = "#222222";
+    private assignedPerson: CirclePerson | undefined = undefined;
 
     public Action: Action;
 
     constructor() {
-        const seer = this;
+        const thief = this;
 
         this.Action = {
-            title: "🔮 The Seer",
-            get points() { return [!seer.assignedPerson && "Needs to be assigned", "Need to pick a card to see"] },
+            title: "🦹🏼‍♂️ The Thief",
+            get points() { return ["Needs to exchange two cards", !thief.assignedPerson && "Needs to be assigned"] },
             get buttons() {
                 const buttons = [];
-                if (!seer.assignedPerson) {
+                if (!thief.assignedPerson) {
                     buttons.push({
-                        title: "Assign person", action: seer.RequstAssignment.bind(seer)
-                    })
+                        title: "Assign person", action: thief.RequstAssignment.bind(thief)
+                    });
                 }
                 return buttons;
             }
@@ -29,6 +29,9 @@ export class Seer implements Role {
     private async RequstAssignment({ dialog }: { dialog: DialogService }) {
         try {
             const people = await dialog.ShowPeopleDialog("Select person", 1);
+            if (this.assignedPerson) {
+                this.assignedPerson.role = undefined;
+            }
             people[0].role = this;
             this.assignedPerson = people[0];
         } catch {
@@ -36,6 +39,6 @@ export class Seer implements Role {
         }
     }
 
-    IsAwakeThisNight = () => true;
+    IsAwakeThisNight = (night: number) => night === 0;
 
 }
