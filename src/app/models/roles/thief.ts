@@ -4,6 +4,7 @@ import { Role } from "./roles";
 
 export class Thief implements Role {
     public Color = "#222222";
+    public Name = "Thief"
     private assignedPerson: CirclePerson | undefined = undefined;
 
     public Action: Action;

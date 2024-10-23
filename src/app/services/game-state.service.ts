@@ -7,7 +7,7 @@ import { Wolvechild } from '../models/roles/wolvechild';
 import { Werewolf } from '../models/roles/welewolf';
 import { Seer } from '../models/roles/seer';
 import { Cupit } from '../models/roles/cupit';
-import { Thief } from '../models/roles/Thief';
+import { Thief } from '../models/roles/thief';
 
 @Injectable({
   providedIn: 'root'
@@ -61,6 +61,11 @@ export class GameStateService {
     if (!currentAction) { return }
 
     this.ActionHistory.push(currentAction)
+    if (this.Actions.length <= 1) {
+      this.Night++;
+      this.LoadNightActions();
+      this.ActionHistory = [];
+    }
   }
 
   public PreviousAction() {

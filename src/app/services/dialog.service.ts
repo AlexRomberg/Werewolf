@@ -19,7 +19,7 @@ export class DialogService {
   constructor(private gameState: GameStateService) { }
 
   public async ShowPersonDialog(person: CirclePerson) {
-    this.personDialog = { person: { ...person } };
+    this.personDialog = { person };
   }
 
   public async ShowPeopleDialog(title: string, numberOfPeople?: number) {
@@ -28,6 +28,14 @@ export class DialogService {
       this.peopleDialogRejection = rej;
       this.peopleDialog = { title, numberOfPeople, people: this.gameState.People.map(p => ({ ...p, protected: false })) };
     });
+  }
+
+  public SetPersonState(state: 'protected' | 'victim' | 'nothing') {
+    if (!this.personDialog) {
+      return;
+    }
+    this.personDialog.person.protected = state === 'protected';
+    this.personDialog.person.victim = state === 'victim';
   }
 
   public PeopleDialogSelectionValid() {

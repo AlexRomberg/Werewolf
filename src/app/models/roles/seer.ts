@@ -4,6 +4,7 @@ import { Role } from "./roles";
 
 export class Seer implements Role {
     public Color = "cyan";
+    public Name = "Seer";
     private assignedPerson: CirclePerson | undefined;
 
     public Action: Action;

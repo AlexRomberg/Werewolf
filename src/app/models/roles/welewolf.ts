@@ -5,6 +5,7 @@ import { Role } from "./roles";
 
 export class Werewolf implements Role {
     public Color = "red";
+    public Name = "Werewolf";
     private assignedPeople: CirclePerson[] = [];
 
     public Action: Action;

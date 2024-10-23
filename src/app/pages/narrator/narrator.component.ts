@@ -3,11 +3,12 @@ import { CircleComponent } from "../../components/circle/circle.component";
 import { GameStateService } from '../../services/game-state.service';
 import { DialogService } from '../../services/dialog.service';
 import { ActionCallback, CirclePerson } from '../../types';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-narrator',
   standalone: true,
-  imports: [CircleComponent],
+  imports: [CircleComponent, FormsModule],
   templateUrl: './narrator.component.html',
   styleUrl: './narrator.component.css'
 })

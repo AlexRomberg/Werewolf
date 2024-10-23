@@ -9,6 +9,7 @@ export class Witch implements Role {
     private assignedPerson: CirclePerson | undefined = undefined;
 
     public Color = "Yellow";
+    public Name = "Witch";
     public Action: Action;
 
     constructor() {
