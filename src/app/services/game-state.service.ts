@@ -26,8 +26,8 @@ export class GameStateService {
   public LoadNightActions() {
     this.Actions.push(NightfallAction);
     this.Actions.push(...this.Characters
-      .filter(c => c.IsAwakeThisNight(this.Night))
-      .map(c => c.Action))
+      .filter(c => c.IsAwakeThisNight(this.Night, this) && c.Action)
+      .map(c => c.Action!))
     this.Actions.push(DaybreakAction)
   }
 
@@ -37,7 +37,7 @@ export class GameStateService {
 
     this.ActionHistory.push(currentAction)
     if (this.Actions.length <= 1) {
-
+      this.handleNightOver()
     }
   }
 
@@ -45,6 +45,13 @@ export class GameStateService {
     this.Night++;
     this.LoadNightActions();
     this.ActionHistory = [];
+
+    for (const person of this.People) {
+      if (person.victim) {
+        person.victim = false;
+        person.dead = true;
+      }
+    }
   }
 
   public PreviousAction() {

@@ -1,13 +1,12 @@
-import { DialogService } from "../../services/dialog.service";
 import { Action, CirclePerson } from "../../types";
 import { RequestAssignment } from "../actions/buttons";
 import { BasePriority, Role } from "./roles";
 
-export class Seer implements Role {
-    public Priority = BasePriority.Initial + 4;
-    public Image = "seer";
-    public Name = "Die Seherin";
-    public AssignedPerson?: CirclePerson | undefined;
+export class Bitch implements Role {
+    public Priority = BasePriority.Initial + 11;
+    public Image = "small_child";
+    public Name = "Die Dorfmatratze";
+    public AssignedPerson: CirclePerson | undefined;
     public Action: Action;
 
     constructor() {
@@ -16,13 +15,13 @@ export class Seer implements Role {
         this.Action = {
             title: role.Name,
             image: role.Image,
-            get points() { return [!role.AssignedPerson && "Person zuweisen", "Darf sich eine Karte anschauen"] },
+            get points() { return [!role.AssignedPerson && "Person zuweisen", "Kann neues Zuhause suchen für die Nacht"] },
             get buttons() {
                 return role.AssignedPerson ? [] : [RequestAssignment(role)]
+                // TODO: Add sleep over function
             }
         }
     }
 
-    IsAwakeThisNight = () => true;
-
+    IsAwakeThisNight = (night: number) => true;
 }

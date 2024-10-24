@@ -76,6 +76,13 @@ export class CircleComponent {
         }
     }
 
+    public getCrossPath(index: number) {
+        const x = this.getCoordinateX(index);
+        const y = this.getCoordinateY(index);
+        const overshoot = 80;
+        return `M${x - overshoot},${y - overshoot}L${x + overshoot},${y + overshoot}M${x - overshoot},${y + overshoot}L${x + overshoot},${y - overshoot}`
+    }
+
     public getPersonColor(person: CirclePerson) {
         return person.protected ? 'orange' : (person.victim ? 'red' : '#cbd5e1')
     }

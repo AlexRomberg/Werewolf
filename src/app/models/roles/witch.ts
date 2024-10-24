@@ -1,72 +1,74 @@
 import { DialogService } from "../../services/dialog.service";
 import { GameStateService } from "../../services/game-state.service";
 import { Action, ActionCallback, CirclePerson } from "../../types";
-import { Role } from "./roles";
+import { RequestAssignment } from "../actions/buttons";
+import { BasePriority, Role } from "./roles";
 
 export class Witch implements Role {
-    hasPositivePotion = true;
-    hasNegativePotion = true;
-    private assignedPerson: CirclePerson | undefined = undefined;
-
+    public Priority = BasePriority.PostWolf + 1;
     public Image = "witch";
-    public Name = "The witch";
+    public Name = "Die Hexe";
+    public AssignedPerson: CirclePerson | undefined;
     public Action: Action;
 
+    private hasPositivePotion = true;
+    private hasNegativePotion = true;
+
     constructor() {
-        const witch = this;
+        const role = this;
         this.Action = {
-            title: witch.Name,
+            title: role.Name,
+            image: role.Image,
             get points() {
                 return [
-                    !witch.assignedPerson && "Needs to be assigned",
-                    (!witch.hasPositivePotion && !witch.hasNegativePotion) && "Has no potions left",
-                    witch.hasPositivePotion && "Has a saving potion",
-                    witch.hasNegativePotion && "Has a killing potion"
+                    !role.AssignedPerson && "Person zuweisen",
+                    (!role.hasPositivePotion && !role.hasNegativePotion) && "Hat keinen Zaubertrank mehr.",
+                    role.hasPositivePotion && "Kann einen Heiltrank einsetzen",
+                    role.hasNegativePotion && "Kann einen Gifttrank einsetzen"
                 ]
             },
             get buttons() {
                 const buttons = [];
-                if (!witch.assignedPerson) {
-                    buttons.push({ title: "Assign person", action: witch.RequstAssignment.bind(witch) });
+                if (!role.AssignedPerson) {
+                    buttons.push(RequestAssignment(role));
                 }
-                if (witch.hasPositivePotion) {
-                    buttons.push({ title: "Save", action: witch.RequstSave.bind(witch) })
+                if (role.hasPositivePotion) {
+                    buttons.push({ title: "Retten", action: role.RequstSave.bind(role) })
                 }
-                if (witch.hasNegativePotion) {
-                    buttons.push({ title: "Kill", action: witch.RequstKill.bind(witch) })
+                if (role.hasNegativePotion) {
+                    buttons.push({ title: "Person vergiften", action: role.RequstKill.bind(role) })
                 }
                 return buttons;
             }
         }
     }
 
-    IsAwakeThisNight = () => this.hasPositivePotion || this.hasNegativePotion;
-
-    private async RequstAssignment({ dialog }: { dialog: DialogService }) {
+    private async RequstSave({ gameState, dialog }: { gameState: GameStateService, dialog: DialogService }) {
         try {
-            const people = await dialog.ShowPeopleDialog("Select person", 1);
-            people[0].role = this;
-            this.assignedPerson = people[0];
+            const victims = gameState.People.filter(p => p.victim);
+            const people = await dialog.ShowPeopleDialog("Wähle das Opfer aus", 1);
+            if (!victims.includes(people[0])) {
+                return;
+            }
+            people[0].victim = false;
+            this.hasPositivePotion = false;
         } catch {
             // closed
         }
     }
 
-    private async RequstSave({ gameState }: { gameState: GameStateService }) {
-        const victim = gameState.People.find(p => p.victim);
-        if (victim) {
-            victim.victim = false;
-            this.hasPositivePotion = false;
-        }
-    }
-
     private async RequstKill({ dialog }: { dialog: DialogService }) {
         try {
-            const people = await dialog.ShowPeopleDialog("Select person", 1);
+            const people = await dialog.ShowPeopleDialog("Wähle das Opfer aus", 1);
+            if (people[0].victim) {
+                return;
+            }
             people[0].victim = true;
             this.hasNegativePotion = false;
         } catch {
             // closed
         }
     }
+
+    IsAwakeThisNight = () => this.hasPositivePotion || this.hasNegativePotion;
 }

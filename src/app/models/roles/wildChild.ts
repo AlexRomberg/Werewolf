@@ -4,13 +4,13 @@ import { Action, CircleConnectionTypes, CirclePerson } from "../../types";
 import { RequestAssignment } from "../actions/buttons";
 import { BasePriority, Role } from "./roles";
 
-export class Cupit implements Role {
-    public Priority = BasePriority.Initial + 3;
-    public Image = "cupit";
-    public Name = "Der Amor"
+export class WildChild implements Role {
+    public Priority = BasePriority.Initial + 8;
+    public Image = "wild_child";
+    public Name = "Das wilde Kind";
     public AssignedPerson: CirclePerson | undefined;
-    private isDone = false;
     public Action: Action;
+    private isDone = false;
 
     constructor() {
         const role = this;
@@ -18,15 +18,14 @@ export class Cupit implements Role {
         this.Action = {
             title: role.Name,
             image: role.Image,
-            get points() { return [!role.AssignedPerson && "Person zuweisen", !role.isDone && "Muss ein Paar bestimmen", "Das Paar muss erwachen"] },
+            get points() { return [!role.AssignedPerson && "Person zuweisen", "Muss ein Vorbild wählen"] },
             get buttons() {
                 const buttons = [];
                 if (!role.AssignedPerson) {
                     buttons.push(RequestAssignment(role));
-                }
-                if (!role.isDone) {
+                } else if (!role.isDone) {
                     buttons.push({
-                        title: "Paar zuweisen", action: role.RequestCouple.bind(role)
+                        title: "Vorbild zuweisen", action: role.RequstRolemodel.bind(role)
                     });
                 }
                 return buttons;
@@ -34,13 +33,13 @@ export class Cupit implements Role {
         }
     }
 
-    private async RequestCouple({ gameState, dialog }: { gameState: GameStateService, dialog: DialogService }) {
+    private async RequstRolemodel({ gameState, dialog }: { gameState: GameStateService, dialog: DialogService }) {
         try {
-            const people = await dialog.ShowPeopleDialog("Select couple", 2);
+            const people = await dialog.ShowPeopleDialog("Wähle das Vorbild aus", 1);
             gameState.Connections.push({
-                type: CircleConnectionTypes.Love,
-                from: people[0],
-                to: people[1]
+                type: CircleConnectionTypes.Trust,
+                from: this.AssignedPerson!,
+                to: people[0]
             });
             this.isDone = true;
         } catch {
@@ -49,4 +48,5 @@ export class Cupit implements Role {
     }
 
     IsAwakeThisNight = (night: number) => night === 0;
+
 }

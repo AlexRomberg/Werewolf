@@ -27,5 +27,9 @@
     </g>
     }
     <circle [attr.cx]="getCoordinateX($index)" [attr.cy]="getCoordinateY($index)" r="100" class="person cursor-pointer" [class.!fill-gray-700]="!person.role" [style.stroke]="getPersonColor(person)" (click)="onPersonClicked(person)" />
+
+    @if (person.dead) {
+    <path [attr.d]="getCrossPath($index)" style="stroke-width:22.22px;" class="fill-none stroke-red-800 pointer-events-none" />
+    }
     }
 </svg>

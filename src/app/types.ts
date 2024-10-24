@@ -7,6 +7,7 @@ export interface CirclePerson {
     name: string | undefined;
     protected: boolean;
     victim: boolean;
+    dead: boolean;
     role?: Role;
 }
 
@@ -24,6 +25,7 @@ export enum CircleConnectionTypes {
 
 export interface Action {
     title: string;
+    image: string;
     points: (string | false)[];
     buttons: {
         title: string

@@ -1,11 +1,12 @@
 import { Action } from "../../types";
 
 export const RulesAction: Action = {
-    title: "Rules and Beginning",
+    title: "Regeln & Anfang",
+    image: "rules",
     points: [
-        "Explain rules",
-        "Mention number of werewolf in the game",
-        "Start with introduction"
+        "Regeln erklären",
+        "Anzahl Werwölfe erwähnen",
+        "Einleitende Geschichte erzählen"
     ],
     buttons: [],
     onNext: () => {
@@ -14,19 +15,22 @@ export const RulesAction: Action = {
 }
 
 export const NightfallAction: Action = {
-    title: "Nightfall",
+    title: "Dämmerung",
+    image: "night",
     points: [
-        "And the village goes to sleep"
+        "Und das Dorf schläft ein"
     ],
     buttons: [],
 }
 
 export const DaybreakAction: Action = {
-    title: "Daybreak",
+    title: "Tagesanbruch",
+    image: "day",
     points: [
-        "And the village awakes",
-        "Inform about the deaths",
-        "Start discussion"
+        "Und das Dorf erwacht",
+        "Informiere über Tode",
+        "Denke an den Bärenführer",
+        "Leite Diskussion ein"
     ],
     buttons: [],
 }
