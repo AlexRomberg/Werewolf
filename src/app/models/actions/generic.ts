@@ -1,7 +1,7 @@
 import { Action } from "../../types";
 
 export const RulesAction: Action = {
-    title: "📜 Rules and Beginning",
+    title: "Rules and Beginning",
     points: [
         "Explain rules",
         "Mention number of werewolf in the game",
@@ -14,7 +14,7 @@ export const RulesAction: Action = {
 }
 
 export const NightfallAction: Action = {
-    title: "🌙 Nightfall",
+    title: "Nightfall",
     points: [
         "And the village goes to sleep"
     ],
@@ -22,7 +22,7 @@ export const NightfallAction: Action = {
 }
 
 export const DaybreakAction: Action = {
-    title: "☀️ Daybreak",
+    title: "Daybreak",
     points: [
         "And the village awakes",
         "Inform about the deaths",
