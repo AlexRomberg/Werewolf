@@ -3,7 +3,7 @@ import { Action, CircleConnection, CirclePerson } from '../types';
 import { Witch } from '../models/roles/witch';
 import { Role } from '../models/roles/roles';
 import { DaybreakAction, NightfallAction, RulesAction } from '../models/actions/generic';
-import { Wolvechild } from '../models/roles/wolvechild';
+import { WildChild } from '../models/roles/wolvechild';
 import { Werewolf } from '../models/roles/welewolf';
 import { Seer } from '../models/roles/seer';
 import { Cupit } from '../models/roles/cupit';
@@ -14,33 +14,11 @@ import { Thief } from '../models/roles/thief';
 })
 export class GameStateService {
   public Night: number = 0;
-  public ActionHistory: Action[] = [];
-
-  public People: CirclePerson[] = [
-    { id: 0, name: "A", protected: false, victim: false },
-    { id: 1, name: "T", protected: false, victim: false },
-    { id: 2, name: "L", protected: false, victim: false },
-    { id: 3, name: "A", protected: false, victim: false },
-    { id: 4, name: "R", protected: false, victim: false },
-    { id: 5, name: "S", protected: false, victim: false },
-    { id: 6, name: "N", protected: false, victim: false },
-  ];
-
-  public Connections: CircleConnection[] = [
-  ]
-
-  public Characters: Role[] = [
-    // One time characters ----------
-    new Thief(),
-    new Cupit(),
-    new Wolvechild(),
-    // Repeating characters ----------
-    new Seer(),
-    new Werewolf(),
-    new Witch()
-  ]
-
   public Actions: Action[] = []
+  public ActionHistory: Action[] = [];
+  public People: CirclePerson[] = [];
+  public Connections: CircleConnection[] = []
+  public Characters: Role[] = []
 
   public StartGame() {
     this.Night = 0;
@@ -62,10 +40,14 @@ export class GameStateService {
 
     this.ActionHistory.push(currentAction)
     if (this.Actions.length <= 1) {
-      this.Night++;
-      this.LoadNightActions();
-      this.ActionHistory = [];
+
     }
+  }
+
+  public handleNightOver() {
+    this.Night++;
+    this.LoadNightActions();
+    this.ActionHistory = [];
   }
 
   public PreviousAction() {

@@ -15,7 +15,17 @@
 
     <circle cx="1000" cy="1000" r="875" style="fill:none;stroke:rgb(141,141,141);stroke-width:5.28px;stroke-dasharray:26.39,26.39,0,0,0,0;" />
     @for (person of People; track $index) {
-    <circle [attr.cx]="getCoordinateX($index)" [attr.cy]="getCoordinateY($index)" r="100" class="person cursor-pointer" [style.stroke]="getPersonColor(person)" (click)="onPersonClicked(person)" [style.fill]="person.role?.Color" />
+    @if (person.role) {
+    <clipPath [id]="'clip_'+person.id" class="pointer-events-none" (click)="onPersonClicked(person)">
+        <circle [attr.cx]="getCoordinateX($index)" [attr.cy]="getCoordinateY($index)" r="100" class="pointer-events-none" (click)="onPersonClicked(person)" />
+    </clipPath>
+    }
     <text filter="url(#solid)" [attr.x]="getCoordinateX($index) + 150" [attr.y]="getCoordinateY($index) + 20">{{person.name}}</text>
+    @if (person.role) {
+    <g [attr.clip-path]="'url(#clip_' + person.id + ')'">
+        <image [attr.href]="'/assets/icons/' + person.role.Image + '.png'" [attr.x]="getCoordinateX($index) - 110" [attr.y]="getCoordinateY($index) - 110" width="220" height="220" />
+    </g>
+    }
+    <circle [attr.cx]="getCoordinateX($index)" [attr.cy]="getCoordinateY($index)" r="100" class="person cursor-pointer" [class.!fill-gray-700]="!person.role" [style.stroke]="getPersonColor(person)" (click)="onPersonClicked(person)" />
     }
 </svg>

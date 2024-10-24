@@ -3,28 +3,28 @@ import { GameStateService } from "../../services/game-state.service";
 import { Action, CircleConnectionTypes, CirclePerson } from "../../types";
 import { Role } from "./roles";
 
-export class Wolvechild implements Role {
-    public Color = "orange";
-    public Name = "Wolvechild";
+export class WildChild implements Role {
+    public Image = "wild_child";
+    public Name = "The wild child";
     private assignedPerson: CirclePerson | undefined = undefined;
     private isDone = false;
 
     public Action: Action;
 
     constructor() {
-        const wolfchild = this;
+        const wildChild = this;
 
         this.Action = {
-            title: "👶🏼 The Wolvechild",
+            title: wildChild.Name,
             points: ["Needs to be assigned", "Needs a role model"],
             get buttons() {
-                if (wolfchild.isDone) {
+                if (wildChild.isDone) {
                     return []
                 }
-                return [(wolfchild.assignedPerson ? {
-                    title: "Assign role model", action: wolfchild.RequstRolemodel.bind(wolfchild)
+                return [(wildChild.assignedPerson ? {
+                    title: "Assign role model", action: wildChild.RequstRolemodel.bind(wildChild)
                 } : {
-                    title: "Assign person", action: wolfchild.RequstAssignment.bind(wolfchild)
+                    title: "Assign person", action: wildChild.RequstAssignment.bind(wildChild)
                 })]
             }
         }

@@ -3,8 +3,8 @@ import { Action, CirclePerson } from "../../types";
 import { Role } from "./roles";
 
 export class Thief implements Role {
-    public Color = "#222222";
-    public Name = "Thief"
+    public Image = "thief";
+    public Name = "The thief"
     private assignedPerson: CirclePerson | undefined = undefined;
 
     public Action: Action;
@@ -13,7 +13,7 @@ export class Thief implements Role {
         const thief = this;
 
         this.Action = {
-            title: "🦹🏼‍♂️ The Thief",
+            title: thief.Name,
             get points() { return ["Needs to exchange two cards", !thief.assignedPerson && "Needs to be assigned"] },
             get buttons() {
                 const buttons = [];

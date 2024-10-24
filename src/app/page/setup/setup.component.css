@@ -1,0 +1,7 @@
+.card {
+    @apply w-40 h-40 rounded-lg bg-stone-900 relative;
+}
+
+.selected {
+      box-shadow: 0px 0px 0px 10px #deb410;
+}

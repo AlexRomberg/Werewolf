@@ -3,8 +3,8 @@ import { Action, CirclePerson } from "../../types";
 import { Role } from "./roles";
 
 export class Seer implements Role {
-    public Color = "cyan";
-    public Name = "Seer";
+    public Image = "seer";
+    public Name = "The seer";
     private assignedPerson: CirclePerson | undefined;
 
     public Action: Action;
@@ -13,7 +13,7 @@ export class Seer implements Role {
         const seer = this;
 
         this.Action = {
-            title: "🔮 The Seer",
+            title: seer.Name,
             get points() { return [!seer.assignedPerson && "Needs to be assigned", "Need to pick a card to see"] },
             get buttons() {
                 const buttons = [];

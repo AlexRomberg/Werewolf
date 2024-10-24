@@ -4,8 +4,8 @@ import { Action, CircleConnectionTypes, CirclePerson } from "../../types";
 import { Role } from "./roles";
 
 export class Cupit implements Role {
-    public Color = "pink";
-    public Name = "Cupit"
+    public Image = "cupit";
+    public Name = "The cupit"
     private assignedPerson: CirclePerson | undefined = undefined;
     private isDone = false;
 
@@ -15,7 +15,7 @@ export class Cupit implements Role {
         const cupit = this;
 
         this.Action = {
-            title: "💘 The Cupit",
+            title: cupit.Name,
             get points() { return [!cupit.assignedPerson && "Needs to be assigned", !cupit.isDone && "Needs to define a couple", "Couple needs to wake up"] },
             get buttons() {
                 const buttons = [];

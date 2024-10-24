@@ -8,14 +8,14 @@ export class Witch implements Role {
     hasNegativePotion = true;
     private assignedPerson: CirclePerson | undefined = undefined;
 
-    public Color = "Yellow";
-    public Name = "Witch";
+    public Image = "witch";
+    public Name = "The witch";
     public Action: Action;
 
     constructor() {
         const witch = this;
         this.Action = {
-            title: "🧙🏼‍♂️ The Witch",
+            title: witch.Name,
             get points() {
                 return [
                     !witch.assignedPerson && "Needs to be assigned",

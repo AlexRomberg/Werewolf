@@ -4,8 +4,8 @@ import { Action, CirclePerson } from "../../types";
 import { Role } from "./roles";
 
 export class Werewolf implements Role {
-    public Color = "red";
-    public Name = "Werewolf";
+    public Image = "werewolf";
+    public Name = "The werewolf";
     private assignedPeople: CirclePerson[] = [];
 
     public Action: Action;
@@ -14,7 +14,7 @@ export class Werewolf implements Role {
         const werewolf = this;
 
         this.Action = {
-            title: "🐺 The Werewolfs",
+            title: werewolf.Name,
             get points() { return [werewolf.assignedPeople.length <= 0 && "Need to be assigned", "Need to find a target"] },
             get buttons() {
                 const buttons = [];

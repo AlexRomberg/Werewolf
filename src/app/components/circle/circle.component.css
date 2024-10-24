@@ -3,7 +3,7 @@
 }
 
 .person {
-    @apply fill-gray-700;
+    @apply fill-white/0;
     stroke-width: 10px;
 }
 
