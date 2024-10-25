@@ -1,4 +1,4 @@
-import { Role } from "./roles";
+import { Role } from "../../types";
 
 export class Angel implements Role {
     public Image = "angel";

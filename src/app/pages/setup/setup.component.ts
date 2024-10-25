@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { GameStateService } from '../../services/game-state.service';
 import { Router } from '@angular/router';
-import { GroupedRoles } from '../../models/roles/roles';
+import { GroupedRoles } from '../../../types';
 import { CardComponent } from '../../components/setup/card/card.component';
 import { RoleGroup } from '../../types';
 

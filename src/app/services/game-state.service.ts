@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Action, CircleConnection, CirclePerson } from '../types';
-import { Role } from '../models/roles/roles';
+import { Action, CircleConnection, CirclePerson, Role } from '../types';
 import { DaybreakAction, NightfallAction, RulesAction } from '../models/actions/generic';
 
 @Injectable({
@@ -13,6 +12,8 @@ export class GameStateService {
   public People: CirclePerson[] = [];
   public Connections: CircleConnection[] = [];
   public Characters: Role[] = [];
+  public ActiveCharacters: Role[] = [];
+  public ActiveHistoryCharacters: Role[] = [];
 
   public StartGame() {
     this.Night = 0;

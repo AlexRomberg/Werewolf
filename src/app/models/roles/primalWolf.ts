@@ -1,6 +1,6 @@
-import { Action, CirclePerson } from "../../types";
+import { Action, CirclePerson, Role } from "../../types";
 import { RequestAssignment } from "../actions/buttons";
-import { BasePriority, Role } from "./roles";
+import { BasePriority } from "./roles";
 
 export class PrimalWolf implements Role {
     public Priority = BasePriority.Wolf + 3;

@@ -1,8 +1,8 @@
 import { DialogService } from "../../services/dialog.service";
 import { GameStateService } from "../../services/game-state.service";
-import { Action, CircleConnectionTypes, CirclePerson } from "../../types";
+import { Action, CircleConnectionTypes, CirclePerson, Role } from "../../types";
 import { RequestAssignment } from "../actions/buttons";
-import { BasePriority, Role } from "./roles";
+import { BasePriority } from "./roles";
 
 export class Cupit implements Role {
     public Priority = BasePriority.Initial + 3;

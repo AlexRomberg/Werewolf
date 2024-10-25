@@ -1,6 +1,6 @@
-import { Action, CirclePerson } from "../../types";
+import { Action, CirclePerson, Role } from "../../types";
 import { RequestAssignment } from "../actions/buttons";
-import { BasePriority, Role } from "./roles";
+import { BasePriority } from "./roles";
 
 export class FlutePlayer implements Role {
     public Priority = BasePriority.PostWolf + 2;

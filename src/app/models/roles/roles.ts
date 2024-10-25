@@ -1,5 +1,3 @@
-import { GameStateService } from "../../services/game-state.service";
-import { Action, CirclePerson } from "../../types"
 import { Angel } from "./angel";
 import { BearGuide } from "./bearGuide";
 import { BigWolf } from "./bigWolf";
@@ -27,16 +25,6 @@ import { Werewolf } from "./werewolf";
 import { WhiteWolf } from "./whiteWolf";
 import { WildChild } from "./wildChild";
 import { Witch } from "./witch";
-
-export interface Role {
-    Name: string;
-    Image: string;
-    Priority?: number;
-    Action?: Action;
-    IsAwakeThisNight: (nightCount: number, gameState: GameStateService) => boolean;
-    AssignedPerson?: CirclePerson
-    AssignedPeople?: CirclePerson[]
-}
 
 export enum BasePriority {
     Initial = 0,

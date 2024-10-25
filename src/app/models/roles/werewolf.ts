@@ -1,8 +1,8 @@
 import { DialogService } from "../../services/dialog.service";
 import { GameStateService } from "../../services/game-state.service";
-import { Action, CirclePerson } from "../../types";
+import { Action, CirclePerson, Role } from "../../types";
 import { RequestAssignments } from "../actions/buttons";
-import { BasePriority, Role } from "./roles";
+import { BasePriority } from "./roles";
 
 export class Werewolf implements Role {
     public Priority = BasePriority.Wolf + 1;

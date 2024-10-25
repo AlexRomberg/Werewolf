@@ -1,4 +1,3 @@
-import { Role } from "./models/roles/roles";
 import { DialogService } from "./services/dialog.service";
 import { GameStateService } from "./services/game-state.service";
 
@@ -39,6 +38,15 @@ export type ActionCallback = (services: {
     dialog: DialogService,
 }) => void;
 
+export interface Role {
+    Name: string;
+    Image: string;
+    Priority?: number;
+    Action?: Action;
+    IsAwakeThisNight: (nightCount: number, gameState: GameStateService) => boolean;
+    AssignedPerson?: CirclePerson
+    AssignedPeople?: CirclePerson[]
+}
 
 export interface RoleGroup {
     name: string;
