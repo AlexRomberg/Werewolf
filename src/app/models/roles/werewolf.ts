@@ -26,8 +26,11 @@ export class Werewolf implements Role, Action {
     private async RegisterVictim({ dialog, gameState }: { gameState: GameStateService, dialog: DialogService }) {
         try {
             const people = await dialog.ShowPeopleDialog("Wähle das Opfer aus", 1);
-            gameState.People.forEach(p => p.victim = false);
-            people[0].victim = true;
+            if (people[0].isProtected) {
+                return;
+            }
+            gameState.People.forEach(p => p.isVictim = false);
+            people[0].isVictim = true;
         } catch {
             // closed
         }

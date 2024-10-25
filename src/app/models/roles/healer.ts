@@ -32,14 +32,17 @@ export class Healer implements Role, Action {
         try {
             const people = await dialog.ShowPeopleDialog("Zu schützende Person auswählen", 1);
             if (people[0] === this.lastProtectedPerson) {
-                if (!confirm("Es kann nicht zwei mal hinter einander die gleiche Person geschützt werden.")) {
+                if (!confirm("Es kann nicht zwei mal hinter einander die gleiche Person geschützt werden. Trotzdem fortfahren?")) {
+                    return;
+                }
+            } else if (people[0].role instanceof SmallChild) {
+                if (!confirm("Das kleine Mädchen kann nicht vor den Werwölfen geschützt werden. Trotzdem fortfahren?")) {
                     return;
                 }
             }
 
-            console.log(typeof people[0], people[0] instanceof SmallChild);
             this.lastProtectedPerson = people[0];
-            people[0].protected = true;
+            people[0].isProtected = true;
             this.isDone = true;
         } catch {
             // closed

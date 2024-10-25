@@ -4,9 +4,11 @@ import { GameStateService } from "./services/game-state.service";
 export interface CirclePerson {
     id: number;
     name: string | undefined;
-    protected: boolean;
-    victim: boolean;
-    dead: boolean;
+    isProtected: boolean;
+    isVictim: boolean;
+    isEnchanted: boolean;
+    isWerewolf: boolean;
+    isDead: boolean;
     role?: Role;
 }
 

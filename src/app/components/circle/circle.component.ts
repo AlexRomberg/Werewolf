@@ -71,8 +71,9 @@ export class CircleComponent {
         return `M${x - overshoot},${y - overshoot}L${x + overshoot},${y + overshoot}M${x - overshoot},${y + overshoot}L${x + overshoot},${y - overshoot}`;
     }
 
-    public getPersonColor(person: CirclePerson) {
-        return person.protected ? "orange" : (person.victim ? "red" : "#cbd5e1");
+    public getRingColor(person: CirclePerson, layer: number): string {
+        const colors = [person.isProtected && "orange", person.isWerewolf && "black", person.isEnchanted && "deepPink", person.isVictim && "red"].filter(Boolean) as string[];
+        return colors[layer] ?? (layer == 0 ? "#cbd5e1" : "transparent");
     }
 
     public onPersonClicked(person: CirclePerson) {

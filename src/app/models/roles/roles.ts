@@ -38,44 +38,44 @@ export const GroupedRoles = [
         name: "Werwölfe",
         cards: [
             { role: new Werewolf(), selected: isDevMode(), multicard: true },
-            { role: new PrimalWolf(), selected: isDevMode() },
+            { role: new PrimalWolf(), selected: false },
             { role: new WildChild(), selected: isDevMode() },
-            { role: new WhiteWolf(), selected: isDevMode() },
-            { role: new BigWolf(), selected: isDevMode() },
-            { role: new DogWolf(), selected: isDevMode() },
+            { role: new WhiteWolf(), selected: false },
+            { role: new BigWolf(), selected: false },
+            { role: new DogWolf(), selected: false },
         ]
     }, {
         name: "Aktive",
         cards: [
-            { role: new Witch(), selected: isDevMode() },
-            { role: new Seer(), selected: isDevMode() },
-            { role: new Thief(), selected: isDevMode() },
+            { role: new Witch(), selected: false },
+            { role: new Seer(), selected: false },
+            { role: new Thief(), selected: false },
             { role: new Cupit(), selected: isDevMode() },
-            { role: new Healer(), selected: isDevMode() },
-            { role: new SmallChild(), selected: isDevMode() },
+            { role: new Healer(), selected: false },
+            { role: new SmallChild(), selected: false },
             { role: new Bitch(), selected: isDevMode() },
-            { role: new Brothers(), selected: isDevMode(), multicard: true },
-            { role: new Sisters(), selected: isDevMode(), multicard: true },
-            { role: new Scapegoat(), selected: isDevMode() },
-            { role: new Fox(), selected: isDevMode() },
+            { role: new Brothers(), selected: false, multicard: true },
+            { role: new Sisters(), selected: false, multicard: true },
+            { role: new Scapegoat(), selected: false },
+            { role: new Fox(), selected: false },
         ]
     }, {
         name: "Passive",
         cards: [
-            { role: new Villager(), selected: isDevMode(), multicard: true },
-            { role: new Hunter(), selected: isDevMode() },
-            { role: new Knight(), selected: isDevMode() },
-            { role: new BearGuide(), selected: isDevMode() },
-            { role: new Old(), selected: isDevMode() },
-            { role: new VillageIdiot(), selected: isDevMode() },
-            { role: new Juggler(), selected: isDevMode() },
+            { role: new Villager(), selected: false, multicard: true },
+            { role: new Hunter(), selected: false },
+            { role: new Knight(), selected: false },
+            { role: new BearGuide(), selected: false },
+            { role: new Old(), selected: false },
+            { role: new VillageIdiot(), selected: false },
+            { role: new Juggler(), selected: false },
         ]
     }, {
         name: "Einzelgänger",
         cards: [
-            { role: new Angel(), selected: isDevMode() },
-            { role: new OldMan(), selected: isDevMode() },
-            { role: new FlutePlayer(), selected: isDevMode() },
+            { role: new Angel(), selected: false },
+            { role: new OldMan(), selected: false },
+            { role: new FlutePlayer(), selected: false },
         ]
     }
 ];

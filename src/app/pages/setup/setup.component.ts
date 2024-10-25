@@ -18,7 +18,7 @@ export class SetupComponent {
 
     constructor(private state: GameStateService, private router: Router) {
         if (isDevMode()) {
-            this.StartGame();
+            // this.StartGame();
         }
     }
 
@@ -32,7 +32,16 @@ export class SetupComponent {
         this.state.People = this.state.People.slice(0, this.PeopleCount);
         for (let i = 0; i < this.PeopleCount; i++) {
             const person = this.state.People[i];
-            this.state.People[i] = { role: undefined, victim: false, protected: false, dead: false, id: i, name: person?.name ?? "" };
+            this.state.People[i] = {
+                role: undefined,
+                isVictim: false,
+                isProtected: false,
+                isEnchanted: false,
+                isDead: false,
+                isWerewolf: false,
+                id: i,
+                name: person?.name ?? ""
+            };
         }
 
         this.state.StartGame();

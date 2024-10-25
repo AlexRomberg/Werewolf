@@ -35,12 +35,12 @@ export class Witch implements Role, Action {
 
     private async RequstSave({ gameState, dialog }: { gameState: GameStateService, dialog: DialogService }) {
         try {
-            const victims = gameState.People.filter(p => p.victim);
+            const victims = gameState.People.filter(p => p.isVictim);
             const people = await dialog.ShowPeopleDialog("Wähle das Opfer aus", 1);
             if (!victims.includes(people[0])) {
                 return;
             }
-            people[0].victim = false;
+            people[0].isVictim = false;
             this.hasPositivePotion = false;
         } catch {
             // closed
@@ -50,10 +50,10 @@ export class Witch implements Role, Action {
     private async RequstKill({ dialog }: { dialog: DialogService }) {
         try {
             const people = await dialog.ShowPeopleDialog("Wähle das Opfer aus", 1);
-            if (people[0].victim) {
+            if (people[0].isVictim) {
                 return;
             }
-            people[0].victim = true;
+            people[0].isVictim = true;
             this.hasNegativePotion = false;
         } catch {
             // closed

@@ -1,4 +1,5 @@
 <svg width="100%" height="100%" viewBox="0 0 2300 2000" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
+    <!-- Name background-color -->
     <defs>
         <filter x="0" y="0" width="1" height="1" id="solid">
             <feFlood flood-color="rgb(31 41 55)" result="bg" />
@@ -9,26 +10,37 @@
         </filter>
     </defs>
 
+    <!-- Connections -->
     @for (connection of Connections; track $index) {
     <path [attr.d]="getConnectionPath($index)" style="fill:none;stroke-width:22.22px;" [style.stroke]="getConnectionColor(connection.type)" />
     }
 
+    <!-- Ring -->
     <circle cx="1000" cy="1000" r="875" style="fill:none;stroke:rgb(141,141,141);stroke-width:5.28px;stroke-dasharray:26.39,26.39,0,0,0,0;" />
+
+    <!-- People -->
     @for (person of People; track $index) {
+    <!-- - Image -->
     @if (person.role) {
     <clipPath [id]="'clip_'+person.id" class="pointer-events-none" (click)="onPersonClicked(person)">
         <circle [attr.cx]="getCoordinateX($index)" [attr.cy]="getCoordinateY($index)" r="100" class="pointer-events-none" (click)="onPersonClicked(person)" />
     </clipPath>
-    }
-    <text filter="url(#solid)" [attr.x]="getCoordinateX($index) + 150" [attr.y]="getCoordinateY($index) + 20">{{person.name}}</text>
-    @if (person.role) {
     <g [attr.clip-path]="'url(#clip_' + person.id + ')'">
         <image [attr.href]="'/assets/icons/' + person.role.Image + '.png'" [attr.x]="getCoordinateX($index) - 110" [attr.y]="getCoordinateY($index) - 110" width="220" height="220" />
     </g>
     }
-    <circle [attr.cx]="getCoordinateX($index)" [attr.cy]="getCoordinateY($index)" r="100" class="person cursor-pointer" [class.!fill-gray-700]="!person.role" [style.stroke]="getPersonColor(person)" (click)="onPersonClicked(person)" />
 
-    @if (person.dead) {
+    <!-- - Name -->
+    <text filter="url(#solid)" [attr.x]="getCoordinateX($index) + 150" [attr.y]="getCoordinateY($index) + 20">{{person.name}}</text>
+
+    <!-- - Circle -->
+    <circle [attr.cx]="getCoordinateX($index)" [attr.cy]="getCoordinateY($index)" r="100" class="ring cursor-pointer" [class.!fill-gray-700]="!person.role" [style.stroke]="getRingColor(person, 0)" (click)="onPersonClicked(person)" />
+    <circle [attr.cx]="getCoordinateX($index)" [attr.cy]="getCoordinateY($index)" r="115" class="ring pointer-events-none" [style.stroke]="getRingColor(person, 1)" />
+    <circle [attr.cx]="getCoordinateX($index)" [attr.cy]="getCoordinateY($index)" r="130" class="ring pointer-events-none" [style.stroke]="getRingColor(person, 2)" />
+    <circle [attr.cx]="getCoordinateX($index)" [attr.cy]="getCoordinateY($index)" r="145" class="ring pointer-events-none" [style.stroke]="getRingColor(person, 3)" />
+
+    <!-- - Dead -->
+    @if (person.isDead) {
     <path [attr.d]="getCrossPath($index)" style="stroke-width:22.22px;" class="fill-none stroke-red-800 pointer-events-none" />
     }
     }

@@ -31,30 +31,30 @@ export class DialogService {
         if (!this.personDialog) {
             return;
         }
-        this.personDialog.person.protected = state === "protected";
-        this.personDialog.person.victim = state === "victim";
+        this.personDialog.person.isProtected = state === "protected";
+        this.personDialog.person.isVictim = state === "victim";
     }
 
     public PeopleDialogSelectionValid() {
         if (!this.peopleDialog?.numberOfPeople) {
             return true;
         }
-        return this.peopleDialog?.people.filter(p => p.protected).length === this.peopleDialog.numberOfPeople;
+        return this.peopleDialog?.people.filter(p => p.isProtected).length === this.peopleDialog.numberOfPeople;
     }
 
     public OnPersonSelected(person: CirclePerson) {
         if (this.peopleDialog && this.peopleDialog.numberOfPeople === 1) {
-            this.peopleDialog.people.forEach(p => p.protected = false);
+            this.peopleDialog.people.forEach(p => p.isProtected = false);
         }
 
-        person.protected = !person.protected;
+        person.isProtected = !person.isProtected;
     }
 
     public ApplyPeopleDialog() {
         if (!this.peopleDialog) {
             return;
         }
-        this.peopleDialogCallback(this.peopleDialog.people.filter(p => p.protected).map(f => this.gameState.People.find(p => p.id === f.id)!).filter(Boolean));
+        this.peopleDialogCallback(this.peopleDialog.people.filter(p => p.isProtected).map(f => this.gameState.People.find(p => p.id === f.id)!).filter(Boolean));
         this.peopleDialog = undefined;
     }
 
