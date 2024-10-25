@@ -13,9 +13,7 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './narrator.component.css'
 })
 export class NarratorComponent {
-  constructor(public state: GameStateService, public dialog: DialogService) {
-    state.StartGame();
-  }
+  constructor(public state: GameStateService, public dialog: DialogService) { }
 
   public handleAction(fn: ActionCallback) {
     fn({

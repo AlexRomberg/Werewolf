@@ -8,16 +8,17 @@ import { DaybreakAction, NightfallAction, RulesAction } from '../models/actions/
 })
 export class GameStateService {
   public Night: number = 0;
-  public Actions: Action[] = []
+  public Actions: Action[] = [];
   public ActionHistory: Action[] = [];
   public People: CirclePerson[] = [];
-  public Connections: CircleConnection[] = []
-  public Characters: Role[] = []
+  public Connections: CircleConnection[] = [];
+  public Characters: Role[] = [];
 
   public StartGame() {
     this.Night = 0;
     this.Actions = [];
     this.ActionHistory = [];
+    this.Connections = [];
 
     this.Actions.push(RulesAction);
     this.LoadNightActions();

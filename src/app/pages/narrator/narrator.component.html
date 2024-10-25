@@ -44,45 +44,4 @@
             <button class="btn bg-gray-500 block col-span-2" [class.col-span-3]="state.ActionHistory.length == 0" (click)="state.NextAction();">Next →</button>
         </span>
     </div>
-    @if (dialog.peopleDialog || dialog.personDialog) {
-    <div class="fixed top-0 left-0 w-dvw h-dvh bg-gray-950/60 backdrop-blur-sm flex justify-center items-center">
-        <div class="bg-slate-800 h-[36rem] w-[36rem] p-4 rounded-2xl grid grid-rows-[auto_1fr_auto] gap-2">
-            @if (dialog.peopleDialog) {
-            <h1 class="text-gray-200 text-2xl">{{dialog.peopleDialog.title}}</h1>
-            <div class="h-96 self-center ml-12">
-                <app-circle [People]="dialog.peopleDialog.people" (personClick)="dialog.OnPersonSelected($event)"></app-circle>
-            </div>
-            <span class="grid grid-cols-2 gap-2">
-                <button class="text-gray-200 bg-gray-500 w-full btn" (click)="dialog.QuitPeopleDialog()">Cancel</button>
-                <button [class.bg-gray-600]="!dialog.PeopleDialogSelectionValid()" [disabled]="!dialog.PeopleDialogSelectionValid()" class="text-gray-200 bg-gray-500 w-full btn" (click)="dialog.ApplyPeopleDialog()">Ok</button>
-            </span>
-            } @else if(dialog.personDialog) {
-            <h1 class="text-gray-200 text-2xl">Information about Player</h1>
-            <div class="flex flex-col gap-2">
-                <label class="text-gray-200" for="name">Name</label>
-                <input class="rounded-md py-3 px-6 text-gray-100 bg-gray-500" type="text" name="name" id="name" [(ngModel)]="dialog.personDialog.person.name">
-                <label class="text-gray-200 mt-2">State</label>
-                <span class="grid grid-cols-3 rounded-md overflow-hidden">
-                    <Button class="btn bg-gray-600 !rounded-none" [class.!bg-gray-500]="dialog.personDialog.person.protected" (click)="dialog.SetPersonState('protected')">Protected</Button>
-                    <Button class="btn bg-gray-600 !rounded-none" [class.!bg-gray-500]="dialog.personDialog.person.victim" (click)="dialog.SetPersonState('victim')">Victim</Button>
-                    <Button class="btn bg-gray-600 !rounded-none" [class.!bg-gray-500]="!dialog.personDialog.person.protected && !dialog.personDialog.person.victim" (click)="dialog.SetPersonState('nothing')">Nothing</Button>
-                </span>
-                <label class="text-gray-200 mt-2">Function</label>
-                <select class="rounded-md py-3 px-6 text-gray-100 bg-gray-500" name="function" id="function" [(ngModel)]="dialog.personDialog.person.role">
-                    <option class="text-gray-100 bg-gray-500" [ngValue]="undefined">Unbekannt</option>
-                    @for (character of state.Characters; track $index) {
-                    <option class="text-gray-100 bg-gray-500" [ngValue]="character">{{character.Name}}</option>
-                    }
-                </select>
-                <label class="text-gray-200 mt-2">Tod</label>
-                <span class="flex gap-2">
-                    <input class="w-4" type="checkbox" [(ngModel)]="dialog.personDialog.person.dead">
-                    <p class="text-gray-200">Ja</p>
-                </span>
-            </div>
-            <button class="text-gray-200 bg-gray-500 w-full btn" (click)="dialog.QuitPersonDialog()">Ok</button>
-            }
-        </div>
-    </div>
-    }
 </div>

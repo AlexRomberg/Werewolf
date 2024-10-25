@@ -38,3 +38,13 @@ export type ActionCallback = (services: {
     gameState: GameStateService,
     dialog: DialogService,
 }) => void;
+
+
+export interface RoleGroup {
+    name: string;
+    cards: CardSelectionInformation[]
+}
+
+export interface CardSelectionInformation {
+    role: Role, selected: boolean, multicard?: boolean
+}

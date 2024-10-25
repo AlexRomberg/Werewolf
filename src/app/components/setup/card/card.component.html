@@ -1,0 +1,14 @@
+@if(Card) {
+<button class="flex flex-col gap-2 border-4 border-spacing-8 border-gray-800 bg-gray-600 p-2 rounded-2xl" [class.!border-yellow-400]="Card.selected" [class.md-shadow-sm]="Card.selected" (click)="Card.selected = !Card.selected">
+    <div class="grid grid-cols-1 grid-rows-1">
+        @if (Card.multicard) {
+        <div class="card md-shadow-md rotate-3"></div>
+        <div class="card md-shadow-md -rotate-6"></div>
+        }
+        <div class="card md-shadow-md">
+            <img [src]="'/assets/icons/' + Card.role.Image + '.png'">
+        </div>
+    </div>
+    <p class="text-gray-200 text-center text-wrap w-40">{{Card.role.Name}}</p>
+</button>
+}
