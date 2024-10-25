@@ -7,13 +7,11 @@ import { DaybreakAction, NightfallAction, RulesAction } from '../models/actions/
 })
 export class GameStateService {
   public Night: number = 0;
-  public Actions: Action[] = [];
-  public ActionHistory: Action[] = [];
   public People: CirclePerson[] = [];
   public Connections: CircleConnection[] = [];
   public Characters: Role[] = [];
-  public ActiveCharacters: Role[] = [];
-  public ActiveHistoryCharacters: Role[] = [];
+  public Actions: Action[] = [];
+  public ActionHistory: Action[] = [];
 
   public StartGame() {
     this.Night = 0;
@@ -27,9 +25,7 @@ export class GameStateService {
 
   public LoadNightActions() {
     this.Actions.push(NightfallAction);
-    this.Actions.push(...this.Characters
-      .filter(c => c.IsAwakeThisNight(this.Night, this) && c.Action)
-      .map(c => c.Action!))
+    this.Actions.push(...this.Characters.filter(c => c.IsAwakeThisNight(this.Night, this)))
     this.Actions.push(DaybreakAction)
   }
 

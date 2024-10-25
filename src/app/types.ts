@@ -23,14 +23,13 @@ export enum CircleConnectionTypes {
 }
 
 export interface Action {
-    title: string;
-    image: string;
-    points: (string | false)[];
-    buttons: {
+    Name: string;
+    Image: string;
+    GetPoints?: () => (string | false)[]
+    GetButtons?: () => {
         title: string
         action: ActionCallback
-    }[],
-    onNext?: ActionCallback
+    }[]
 }
 
 export type ActionCallback = (services: {
@@ -43,9 +42,9 @@ export interface Role {
     Image: string;
     Priority?: number;
     Action?: Action;
-    IsAwakeThisNight: (nightCount: number, gameState: GameStateService) => boolean;
     AssignedPerson?: CirclePerson
     AssignedPeople?: CirclePerson[]
+    IsAwakeThisNight: (nightCount: number, gameState: GameStateService) => boolean;
 }
 
 export interface RoleGroup {

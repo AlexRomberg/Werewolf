@@ -1,8 +1,7 @@
-import { Role } from "../../types";
+import { Action, Role } from "../../types";
 
-export class Angel implements Role {
-    public Image = "angel";
-    public Name = "Der Engel"
-
+export class Angel implements Role, Action {
+    Image = "angel";
+    Name = "Der Engel"
     IsAwakeThisNight = () => false;
 }

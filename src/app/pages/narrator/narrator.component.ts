@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CircleComponent } from "../../components/circle/circle.component";
 import { GameStateService } from '../../services/game-state.service';
 import { DialogService } from '../../services/dialog.service';
-import { ActionCallback, CirclePerson } from '../../types';
+import { Action, ActionCallback, CirclePerson } from '../../types';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -26,7 +26,11 @@ export class NarratorComponent {
     this.dialog.ShowPersonDialog(person);
   }
 
-  getFilteredPoints(points: (string | false)[]) {
-    return points.filter(Boolean) as string[]
+  getFilteredPoints(action: Action) {
+    return action.GetPoints?.().filter(Boolean) as string[] ?? []
+  }
+
+  getFilteredButtons(action: Action) {
+    return action.GetButtons?.() ?? []
   }
 }

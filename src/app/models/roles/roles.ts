@@ -32,49 +32,51 @@ export enum BasePriority {
     PostWolf = 100,
 }
 
+const SELECTED = true;
+
 export const GroupedRoles = [
     {
         name: "Werwölfe",
         cards: [
-            { role: new Werewolf(), selected: false, multicard: true },
-            { role: new PrimalWolf(), selected: false },
-            { role: new WildChild(), selected: false },
-            { role: new WhiteWolf(), selected: false },
-            { role: new BigWolf(), selected: false },
-            { role: new DogWolf(), selected: false },
+            { role: new Werewolf(), selected: SELECTED, multicard: true },
+            { role: new PrimalWolf(), selected: SELECTED },
+            { role: new WildChild(), selected: SELECTED },
+            { role: new WhiteWolf(), selected: SELECTED },
+            { role: new BigWolf(), selected: SELECTED },
+            { role: new DogWolf(), selected: SELECTED },
         ]
     }, {
         name: "Aktive",
         cards: [
-            { role: new Witch(), selected: false },
-            { role: new Seer(), selected: false },
-            { role: new Thief(), selected: false },
-            { role: new Cupit(), selected: false },
-            { role: new Healer(), selected: false },
-            { role: new SmallChild(), selected: false },
-            { role: new Bitch(), selected: false },
-            { role: new Brothers(), selected: false, multicard: true },
-            { role: new Sisters(), selected: false, multicard: true },
-            { role: new Scapegoat(), selected: false },
-            { role: new Fox(), selected: false },
+            { role: new Witch(), selected: SELECTED },
+            { role: new Seer(), selected: SELECTED },
+            { role: new Thief(), selected: SELECTED },
+            { role: new Cupit(), selected: SELECTED },
+            { role: new Healer(), selected: SELECTED },
+            { role: new SmallChild(), selected: SELECTED },
+            { role: new Bitch(), selected: SELECTED },
+            { role: new Brothers(), selected: SELECTED, multicard: true },
+            { role: new Sisters(), selected: SELECTED, multicard: true },
+            { role: new Scapegoat(), selected: SELECTED },
+            { role: new Fox(), selected: SELECTED },
         ]
     }, {
         name: "Passive",
         cards: [
-            { role: new Villager(), selected: false, multicard: true },
-            { role: new Hunter(), selected: false },
-            { role: new Knight(), selected: false },
-            { role: new BearGuide(), selected: false },
-            { role: new Old(), selected: false },
-            { role: new VillageIdiot(), selected: false },
-            { role: new Juggler(), selected: false },
+            { role: new Villager(), selected: SELECTED, multicard: true },
+            { role: new Hunter(), selected: SELECTED },
+            { role: new Knight(), selected: SELECTED },
+            { role: new BearGuide(), selected: SELECTED },
+            { role: new Old(), selected: SELECTED },
+            { role: new VillageIdiot(), selected: SELECTED },
+            { role: new Juggler(), selected: SELECTED },
         ]
     }, {
         name: "Einzelgänger",
         cards: [
-            { role: new Angel(), selected: false },
-            { role: new OldMan(), selected: false },
-            { role: new FlutePlayer(), selected: false },
+            { role: new Angel(), selected: SELECTED },
+            { role: new OldMan(), selected: SELECTED },
+            { role: new FlutePlayer(), selected: SELECTED },
         ]
     }
 ];

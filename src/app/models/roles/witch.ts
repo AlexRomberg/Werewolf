@@ -4,44 +4,13 @@ import { Action, CirclePerson, Role } from "../../types";
 import { RequestAssignment } from "../actions/buttons";
 import { BasePriority } from "./roles";
 
-export class Witch implements Role {
+export class Witch implements Role, Action {
     public Priority = BasePriority.PostWolf + 1;
     public Image = "witch";
     public Name = "Die Hexe";
     public AssignedPerson: CirclePerson | undefined;
-    public Action: Action;
-
     private hasPositivePotion = true;
     private hasNegativePotion = true;
-
-    constructor() {
-        const role = this;
-        this.Action = {
-            title: role.Name,
-            image: role.Image,
-            get points() {
-                return [
-                    !role.AssignedPerson && "Person zuweisen",
-                    (!role.hasPositivePotion && !role.hasNegativePotion) && "Hat keinen Zaubertrank mehr.",
-                    role.hasPositivePotion && "Kann einen Heiltrank einsetzen",
-                    role.hasNegativePotion && "Kann einen Gifttrank einsetzen"
-                ]
-            },
-            get buttons() {
-                const buttons = [];
-                if (!role.AssignedPerson) {
-                    buttons.push(RequestAssignment(role));
-                }
-                if (role.hasPositivePotion) {
-                    buttons.push({ title: "Retten", action: role.RequstSave.bind(role) })
-                }
-                if (role.hasNegativePotion) {
-                    buttons.push({ title: "Person vergiften", action: role.RequstKill.bind(role) })
-                }
-                return buttons;
-            }
-        }
-    }
 
     private async RequstSave({ gameState, dialog }: { gameState: GameStateService, dialog: DialogService }) {
         try {
@@ -70,5 +39,25 @@ export class Witch implements Role {
         }
     }
 
+
+    GetPoints = () => [
+        !this.AssignedPerson && "Person zuweisen",
+        (!this.hasPositivePotion && !this.hasNegativePotion) && "Hat keinen Zaubertrank mehr.",
+        this.hasPositivePotion && "Kann einen Heiltrank einsetzen",
+        this.hasNegativePotion && "Kann einen Gifttrank einsetzen"
+    ];
+    GetButtons = () => {
+        const buttons = [];
+        if (!this.AssignedPerson) {
+            buttons.push(RequestAssignment(this));
+        }
+        if (this.hasPositivePotion) {
+            buttons.push({ title: "Retten", action: this.RequstSave.bind(this) })
+        }
+        if (this.hasNegativePotion) {
+            buttons.push({ title: "Person vergiften", action: this.RequstKill.bind(this) })
+        }
+        return buttons;
+    };
     IsAwakeThisNight = () => this.hasPositivePotion || this.hasNegativePotion;
 }

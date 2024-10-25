@@ -1,5 +1,5 @@
 import { DialogService } from "../../services/dialog.service";
-import { Role } from "../roles/roles"
+import { Role } from "../../types";
 
 export const RequestAssignment = (thisContext: Role) => {
     return {

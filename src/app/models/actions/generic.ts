@@ -1,36 +1,30 @@
 import { Action } from "../../types";
 
 export const RulesAction: Action = {
-    title: "Regeln & Anfang",
-    image: "rules",
-    points: [
+    Name: "Regeln & Anfang",
+    Image: "rules",
+    GetPoints: () => [
         "Regeln erklären",
         "Anzahl Werwölfe erwähnen",
         "Einleitende Geschichte erzählen"
-    ],
-    buttons: [],
-    onNext: () => {
-        // TODO: Spotify beginning
-    }
+    ]
 }
 
 export const NightfallAction: Action = {
-    title: "Dämmerung",
-    image: "night",
-    points: [
+    Name: "Dämmerung",
+    Image: "night",
+    GetPoints: () => [
         "Und das Dorf schläft ein"
-    ],
-    buttons: [],
+    ]
 }
 
 export const DaybreakAction: Action = {
-    title: "Tagesanbruch",
-    image: "day",
-    points: [
+    Name: "Tagesanbruch",
+    Image: "day",
+    GetPoints: () => [
         "Und das Dorf erwacht",
         "Informiere über Tode",
         "Denke an den Bärenführer",
         "Leite Diskussion ein"
-    ],
-    buttons: [],
+    ]
 }

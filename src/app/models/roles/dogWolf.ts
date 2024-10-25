@@ -1,6 +1,6 @@
-import { Role } from "../../types";
+import { Action, Role } from "../../types";
 
-export class DogWolf implements Role {
+export class DogWolf implements Role, Action {
     public Image = "dog_wolf";
     public Name = "Der Wolfshund";
 

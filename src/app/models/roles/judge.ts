@@ -1,6 +1,6 @@
-import { Role } from "../../types";
+import { Action, Role } from "../../types";
 
-export class Judge implements Role {
+export class Judge implements Role, Action {
     public Image = "judge";
     public Name = "Der Richter"
 

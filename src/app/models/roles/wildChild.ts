@@ -4,34 +4,12 @@ import { Action, CircleConnectionTypes, CirclePerson, Role } from "../../types";
 import { RequestAssignment } from "../actions/buttons";
 import { BasePriority } from "./roles";
 
-export class WildChild implements Role {
+export class WildChild implements Role, Action {
     public Priority = BasePriority.Initial + 8;
     public Image = "wild_child";
     public Name = "Das wilde Kind";
     public AssignedPerson: CirclePerson | undefined;
-    public Action: Action;
     private isDone = false;
-
-    constructor() {
-        const role = this;
-
-        this.Action = {
-            title: role.Name,
-            image: role.Image,
-            get points() { return [!role.AssignedPerson && "Person zuweisen", "Muss ein Vorbild wählen"] },
-            get buttons() {
-                const buttons = [];
-                if (!role.AssignedPerson) {
-                    buttons.push(RequestAssignment(role));
-                } else if (!role.isDone) {
-                    buttons.push({
-                        title: "Vorbild zuweisen", action: role.RequstRolemodel.bind(role)
-                    });
-                }
-                return buttons;
-            }
-        }
-    }
 
     private async RequstRolemodel({ gameState, dialog }: { gameState: GameStateService, dialog: DialogService }) {
         try {
@@ -47,6 +25,18 @@ export class WildChild implements Role {
         }
     }
 
+    GetPoints = () => [!this.AssignedPerson && "Person zuweisen", "Muss ein Vorbild wählen"];
+    GetButtons = () => {
+        const buttons = [];
+        if (!this.AssignedPerson) {
+            buttons.push(RequestAssignment(this));
+        } else if (!this.isDone) {
+            buttons.push({
+                title: "Vorbild zuweisen", action: this.RequstRolemodel.bind(this)
+            });
+        }
+        return buttons;
+    };
     IsAwakeThisNight = (night: number) => night === 0;
 
 }

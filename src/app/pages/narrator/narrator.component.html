@@ -10,25 +10,25 @@
         <hr class="mx-4 bg-slate-500 h-px border-none"> -->
         <span></span>
         <span></span>
-        <h1 class="text-gray-200 text-2xl ml-4">Events</h1>
+        <h1 class="text-gray-200 text-2xl ml-4">Ereignisse</h1>
         <div class="overflow-auto flex flex-col-reverse fade-out">
             <div class="flex flex-col-reverse gap-2 mt-40">
                 @for (action of state.Actions; track $index; let actionIndex = $index) {
                 <div class="mx-4 p-4 rounded-2xl md-shadow-sm" [class.bg-gray-500]="actionIndex === 0" [class.bg-gray-600]="actionIndex !== 0">
                     <div class="grid grid-cols-[1fr_auto] gap-2">
                         <div>
-                            <h1 class="text-xl" [class.text-gray-100]="actionIndex === 0" [class.text-gray-400]="actionIndex !== 0">{{action.title}}</h1>
+                            <h1 class="text-xl" [class.text-gray-100]="actionIndex === 0" [class.text-gray-400]="actionIndex !== 0">{{action.Name}}</h1>
                             <ul>
-                                @for (point of getFilteredPoints(action.points); track $index) {
+                                @for (point of getFilteredPoints(action); track $index) {
                                 <li class="list-disc ml-4" [class.text-gray-200]="actionIndex === 0" [class.text-gray-400]="actionIndex !== 0">{{point}}</li>
                                 }
                             </ul>
                         </div>
-                        <img [src]="'/assets/icons/' + action.image + '.png'" class="w-16 h-16 rounded-md md-shadow-md">
+                        <img [src]="'/assets/icons/' + action.Image + '.png'" class="w-16 h-16 rounded-md md-shadow-md">
                     </div>
-                    @if (actionIndex === 0 && action.buttons.length > 0) {
+                    @if (actionIndex === 0 && getFilteredButtons(action).length > 0) {
                     <div class="flex flex-col gap-2 mt-4">
-                        @for (button of action.buttons; track $index) {
+                        @for (button of getFilteredButtons(action); track $index) {
                         <button class="btn bg-gray-600 w-full" (click)="handleAction(button.action)">{{button.title}}</button>
                         }
                     </div>
@@ -39,9 +39,9 @@
         </div>
         <span class="grid grid-cols-3 mx-4 gap-2">
             @if (state.ActionHistory.length > 0) {
-            <button class="btn bg-gray-500 block" (click)="state.PreviousAction();">← Back</button>
+            <button class="btn bg-gray-500 block" (click)="state.PreviousAction();">← Zurück</button>
             }
-            <button class="btn bg-gray-500 block col-span-2" [class.col-span-3]="state.ActionHistory.length == 0" (click)="state.NextAction();">Next →</button>
+            <button class="btn bg-gray-500 block col-span-2" [class.col-span-3]="state.ActionHistory.length == 0" (click)="state.NextAction();">Weiter →</button>
         </span>
     </div>
 </div>

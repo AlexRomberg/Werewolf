@@ -4,35 +4,12 @@ import { Action, CircleConnectionTypes, CirclePerson, Role } from "../../types";
 import { RequestAssignment } from "../actions/buttons";
 import { BasePriority } from "./roles";
 
-export class Cupit implements Role {
+export class Cupit implements Role, Action {
     public Priority = BasePriority.Initial + 3;
     public Image = "cupit";
     public Name = "Der Amor"
     public AssignedPerson: CirclePerson | undefined;
     private isDone = false;
-    public Action: Action;
-
-    constructor() {
-        const role = this;
-
-        this.Action = {
-            title: role.Name,
-            image: role.Image,
-            get points() { return [!role.AssignedPerson && "Person zuweisen", !role.isDone && "Muss ein Paar bestimmen", "Das Paar muss erwachen"] },
-            get buttons() {
-                const buttons = [];
-                if (!role.AssignedPerson) {
-                    buttons.push(RequestAssignment(role));
-                }
-                if (!role.isDone) {
-                    buttons.push({
-                        title: "Paar zuweisen", action: role.RequestCouple.bind(role)
-                    });
-                }
-                return buttons;
-            }
-        }
-    }
 
     private async RequestCouple({ gameState, dialog }: { gameState: GameStateService, dialog: DialogService }) {
         try {
@@ -48,5 +25,19 @@ export class Cupit implements Role {
         }
     }
 
+
+    GetPoints = () => [!this.AssignedPerson && "Person zuweisen", !this.isDone && "Muss ein Paar bestimmen", "Das Paar muss erwachen"];
+    GetButtons = () => {
+        const buttons = [];
+        if (!this.AssignedPerson) {
+            buttons.push(RequestAssignment(this));
+        }
+        if (!this.isDone) {
+            buttons.push({
+                title: "Paar zuweisen", action: this.RequestCouple.bind(this)
+            });
+        }
+        return buttons;
+    };
     IsAwakeThisNight = (night: number) => night === 0;
 }
