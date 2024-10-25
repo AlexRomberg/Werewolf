@@ -1,3 +1,4 @@
+import { isDevMode } from "@angular/core";
 import { Angel } from "./angel";
 import { BearGuide } from "./bearGuide";
 import { BigWolf } from "./bigWolf";
@@ -32,51 +33,49 @@ export enum BasePriority {
     PostWolf = 100,
 }
 
-const SELECTED = true;
-
 export const GroupedRoles = [
     {
         name: "Werwölfe",
         cards: [
-            { role: new Werewolf(), selected: SELECTED, multicard: true },
-            { role: new PrimalWolf(), selected: SELECTED },
-            { role: new WildChild(), selected: SELECTED },
-            { role: new WhiteWolf(), selected: SELECTED },
-            { role: new BigWolf(), selected: SELECTED },
-            { role: new DogWolf(), selected: SELECTED },
+            { role: new Werewolf(), selected: isDevMode(), multicard: true },
+            { role: new PrimalWolf(), selected: isDevMode() },
+            { role: new WildChild(), selected: isDevMode() },
+            { role: new WhiteWolf(), selected: isDevMode() },
+            { role: new BigWolf(), selected: isDevMode() },
+            { role: new DogWolf(), selected: isDevMode() },
         ]
     }, {
         name: "Aktive",
         cards: [
-            { role: new Witch(), selected: SELECTED },
-            { role: new Seer(), selected: SELECTED },
-            { role: new Thief(), selected: SELECTED },
-            { role: new Cupit(), selected: SELECTED },
-            { role: new Healer(), selected: SELECTED },
-            { role: new SmallChild(), selected: SELECTED },
-            { role: new Bitch(), selected: SELECTED },
-            { role: new Brothers(), selected: SELECTED, multicard: true },
-            { role: new Sisters(), selected: SELECTED, multicard: true },
-            { role: new Scapegoat(), selected: SELECTED },
-            { role: new Fox(), selected: SELECTED },
+            { role: new Witch(), selected: isDevMode() },
+            { role: new Seer(), selected: isDevMode() },
+            { role: new Thief(), selected: isDevMode() },
+            { role: new Cupit(), selected: isDevMode() },
+            { role: new Healer(), selected: isDevMode() },
+            { role: new SmallChild(), selected: isDevMode() },
+            { role: new Bitch(), selected: isDevMode() },
+            { role: new Brothers(), selected: isDevMode(), multicard: true },
+            { role: new Sisters(), selected: isDevMode(), multicard: true },
+            { role: new Scapegoat(), selected: isDevMode() },
+            { role: new Fox(), selected: isDevMode() },
         ]
     }, {
         name: "Passive",
         cards: [
-            { role: new Villager(), selected: SELECTED, multicard: true },
-            { role: new Hunter(), selected: SELECTED },
-            { role: new Knight(), selected: SELECTED },
-            { role: new BearGuide(), selected: SELECTED },
-            { role: new Old(), selected: SELECTED },
-            { role: new VillageIdiot(), selected: SELECTED },
-            { role: new Juggler(), selected: SELECTED },
+            { role: new Villager(), selected: isDevMode(), multicard: true },
+            { role: new Hunter(), selected: isDevMode() },
+            { role: new Knight(), selected: isDevMode() },
+            { role: new BearGuide(), selected: isDevMode() },
+            { role: new Old(), selected: isDevMode() },
+            { role: new VillageIdiot(), selected: isDevMode() },
+            { role: new Juggler(), selected: isDevMode() },
         ]
     }, {
         name: "Einzelgänger",
         cards: [
-            { role: new Angel(), selected: SELECTED },
-            { role: new OldMan(), selected: SELECTED },
-            { role: new FlutePlayer(), selected: SELECTED },
+            { role: new Angel(), selected: isDevMode() },
+            { role: new OldMan(), selected: isDevMode() },
+            { role: new FlutePlayer(), selected: isDevMode() },
         ]
     }
 ];

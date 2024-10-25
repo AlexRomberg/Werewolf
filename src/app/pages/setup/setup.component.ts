@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, isDevMode } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { GameStateService } from '../../services/game-state.service';
 import { Router } from '@angular/router';
@@ -14,7 +14,7 @@ import { GroupedRoles } from '../../models/roles/roles';
 })
 export class SetupComponent {
   public Roles: RoleGroup[] = GroupedRoles;
-  public PeopleCount = 1;
+  public PeopleCount = isDevMode() ? 20 : 1;
 
   constructor(private state: GameStateService, private router: Router) { }
 
