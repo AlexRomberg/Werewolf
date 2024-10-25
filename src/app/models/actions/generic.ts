@@ -8,7 +8,7 @@ export const RulesAction: Action = {
         "Anzahl Werwölfe erwähnen",
         "Einleitende Geschichte erzählen"
     ]
-}
+};
 
 export const NightfallAction: Action = {
     Name: "Dämmerung",
@@ -16,7 +16,7 @@ export const NightfallAction: Action = {
     GetPoints: () => [
         "Und das Dorf schläft ein"
     ]
-}
+};
 
 export const DaybreakAction: Action = {
     Name: "Tagesanbruch",
@@ -27,4 +27,4 @@ export const DaybreakAction: Action = {
         "Denke an den Bärenführer",
         "Leite Diskussion ein"
     ]
-}
+};

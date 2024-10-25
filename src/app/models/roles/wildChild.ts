@@ -11,21 +11,7 @@ export class WildChild implements Role, Action {
     public AssignedPerson: CirclePerson | undefined;
     private isDone = false;
 
-    private async RequstRolemodel({ gameState, dialog }: { gameState: GameStateService, dialog: DialogService }) {
-        try {
-            const people = await dialog.ShowPeopleDialog("Wähle das Vorbild aus", 1);
-            gameState.Connections.push({
-                type: CircleConnectionTypes.Trust,
-                from: this.AssignedPerson!,
-                to: people[0]
-            });
-            this.isDone = true;
-        } catch {
-            // closed
-        }
-    }
-
-    GetPoints = () => [!this.AssignedPerson && "Person zuweisen", "Muss ein Vorbild wählen"];
+    GetPoints = () => [!this.AssignedPerson && "Person zuweisen", !this.isDone && "Muss ein Vorbild wählen", "Wird zum Werwolf, wenn Vorbild stirbt"];
     GetButtons = () => {
         const buttons = [];
         if (!this.AssignedPerson) {
@@ -39,4 +25,17 @@ export class WildChild implements Role, Action {
     };
     IsAwakeThisNight = (night: number) => night === 0;
 
+    private async RequstRolemodel({ gameState, dialog }: { gameState: GameStateService, dialog: DialogService }) {
+        try {
+            const people = await dialog.ShowPeopleDialog("Wähle das Vorbild aus", 1);
+            gameState.Connections.push({
+                type: CircleConnectionTypes.Trust,
+                from: this.AssignedPerson!,
+                to: people[0]
+            });
+            this.isDone = true;
+        } catch {
+            // closed
+        }
+    }
 }

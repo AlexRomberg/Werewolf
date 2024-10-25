@@ -12,10 +12,10 @@ export class PrimalWolf implements Role, Action {
     GetButtons = () => {
         const buttons = [];
         if (!this.AssignedPerson) {
-            buttons.push(RequestAssignment(this))
+            buttons.push(RequestAssignment(this));
         }
         // TODO: Add victim transformation
         return buttons;
     };
-    IsAwakeThisNight = (night: number) => true; // TODO: Add dead wolf check
+    IsAwakeThisNight = () => true; // TODO: Add dead wolf check
 }

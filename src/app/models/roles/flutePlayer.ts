@@ -5,7 +5,7 @@ import { BasePriority } from "./roles";
 export class FlutePlayer implements Role, Action {
     public Priority = BasePriority.PostWolf + 2;
     public Image = "flute_player";
-    public Name = "Der Flötenspieler"
+    public Name = "Der Flötenspieler";
     public AssignedPerson: CirclePerson | undefined;
 
     GetPoints = () => [!this.AssignedPerson && "Person zuweisen", "Kann eine Person verzaubern"];

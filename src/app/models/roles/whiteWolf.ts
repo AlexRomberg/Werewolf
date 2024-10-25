@@ -12,7 +12,7 @@ export class WhiteWolf implements Role, Action {
     GetButtons = () => {
         const buttons = [];
         if (!this.AssignedPerson) {
-            buttons.push(RequestAssignment(this))
+            buttons.push(RequestAssignment(this));
         }
         // TODO add victim method
         return buttons;

@@ -15,8 +15,8 @@ export const RequestAssignment = (thisContext: Role) => {
                 // closed
             }
         }
-    }
-}
+    };
+};
 
 export const RequestAssignments = (thisContext: Role, maximum?: number) => {
     return {
@@ -34,5 +34,5 @@ export const RequestAssignments = (thisContext: Role, maximum?: number) => {
                 // closed
             }
         }
-    }
-}
+    };
+};

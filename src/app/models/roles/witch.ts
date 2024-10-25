@@ -12,6 +12,27 @@ export class Witch implements Role, Action {
     private hasPositivePotion = true;
     private hasNegativePotion = true;
 
+    GetPoints = () => [
+        !this.AssignedPerson && "Person zuweisen",
+        (!this.hasPositivePotion && !this.hasNegativePotion) && "Hat keinen Zaubertrank mehr.",
+        this.hasPositivePotion && "Kann einen Heiltrank einsetzen",
+        this.hasNegativePotion && "Kann einen Gifttrank einsetzen"
+    ];
+    GetButtons = () => {
+        const buttons = [];
+        if (!this.AssignedPerson) {
+            buttons.push(RequestAssignment(this));
+        }
+        if (this.hasPositivePotion) {
+            buttons.push({ title: "Retten", action: this.RequstSave.bind(this) });
+        }
+        if (this.hasNegativePotion) {
+            buttons.push({ title: "Person vergiften", action: this.RequstKill.bind(this) });
+        }
+        return buttons;
+    };
+    IsAwakeThisNight = () => this.hasPositivePotion || this.hasNegativePotion;
+
     private async RequstSave({ gameState, dialog }: { gameState: GameStateService, dialog: DialogService }) {
         try {
             const victims = gameState.People.filter(p => p.victim);
@@ -38,26 +59,4 @@ export class Witch implements Role, Action {
             // closed
         }
     }
-
-
-    GetPoints = () => [
-        !this.AssignedPerson && "Person zuweisen",
-        (!this.hasPositivePotion && !this.hasNegativePotion) && "Hat keinen Zaubertrank mehr.",
-        this.hasPositivePotion && "Kann einen Heiltrank einsetzen",
-        this.hasNegativePotion && "Kann einen Gifttrank einsetzen"
-    ];
-    GetButtons = () => {
-        const buttons = [];
-        if (!this.AssignedPerson) {
-            buttons.push(RequestAssignment(this));
-        }
-        if (this.hasPositivePotion) {
-            buttons.push({ title: "Retten", action: this.RequstSave.bind(this) })
-        }
-        if (this.hasNegativePotion) {
-            buttons.push({ title: "Person vergiften", action: this.RequstKill.bind(this) })
-        }
-        return buttons;
-    };
-    IsAwakeThisNight = () => this.hasPositivePotion || this.hasNegativePotion;
 }

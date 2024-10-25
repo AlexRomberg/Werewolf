@@ -10,16 +10,6 @@ export class Werewolf implements Role, Action {
     public Name = "Der Einfache Werewolf";
     public AssignedPeople: CirclePerson[] = [];
 
-    private async RegisterVictim({ dialog, gameState }: { gameState: GameStateService, dialog: DialogService }) {
-        try {
-            const people = await dialog.ShowPeopleDialog("Wähle das Opfer aus", 1);
-            gameState.People.forEach(p => p.victim = false);
-            people[0].victim = true;
-        } catch {
-            // closed
-        }
-    }
-
     GetPoints = () => [this.AssignedPeople.length <= 0 && "Person zuweisen", "Müssen ein Opfer finden"];
     GetButtons = () => {
         const buttons = [];
@@ -32,4 +22,14 @@ export class Werewolf implements Role, Action {
         return buttons;
     };
     IsAwakeThisNight = () => true;
+
+    private async RegisterVictim({ dialog, gameState }: { gameState: GameStateService, dialog: DialogService }) {
+        try {
+            const people = await dialog.ShowPeopleDialog("Wähle das Opfer aus", 1);
+            gameState.People.forEach(p => p.victim = false);
+            people[0].victim = true;
+        } catch {
+            // closed
+        }
+    }
 }
