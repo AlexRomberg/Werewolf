@@ -166,11 +166,11 @@ export class SpotifyService {
     playPlaylist(identifier: string, looped = false, randomStart = false) {
         return this.headers.pipe(switchMap(headers => {
             return this.shuffleMode(randomStart, headers).pipe(switchMap(() => {
-                return this.http.put(`${this.apiBaseUrl}/me/player/play`, {
-                    context_uri: `spotify:playlist:${identifier}`
-                }, headers).pipe(tap(
-                    looped ? this.repeatMode("context", headers).subscribe() : this.repeatMode("off", headers).subscribe()
-                ));
+                return this.repeatMode(looped ? "context" : "off", headers).pipe(switchMap(() => {
+                    return this.http.put(`${this.apiBaseUrl}/me/player/play`, {
+                        context_uri: `spotify:playlist:${identifier}`
+                    }, headers);
+                }));
             }));
         }));
     }
@@ -191,7 +191,10 @@ export class SpotifyService {
             ...headers,
             responseType: "text",
             params: new HttpParams().set("state", state)
-        });
+        }).pipe(catchError(e => {
+            console.error("got exception", e);
+            return "";
+        }));
     }
 
     private shuffleMode(state: boolean, headers: {

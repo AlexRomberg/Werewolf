@@ -23,15 +23,17 @@ export class SpotifyWidgetComponent implements OnInit, OnDestroy {
 
     async ngOnInit(): Promise<void> {
         this.link = await this.spotify.getAccountConnectionLink();
-        console.log(this.link);
-
         const tenSecondsInterval$ = interval(10000);
         const refresh$ = merge(tenSecondsInterval$, this.forceRefresh$);
 
         this.subscription = refresh$
             .pipe(
                 switchMap(() => this.spotify.getPlayerState()),
-                tap(({ item, is_playing, progress_ms }) => {
+                tap((data) => {
+                    if (!data || !("item" in data && "is_playing" in data && "progress_ms" in data)) {
+                        return;
+                    }
+                    const { item, is_playing, progress_ms } = data;
                     this.title = item.name + " - " + item.artists.map(a => a.name).join(", ");
                     this.isPlaying = is_playing;
                     const timeLeft = item.duration_ms - progress_ms;
