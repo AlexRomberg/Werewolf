@@ -1,0 +1,25 @@
+<div class="p-4 mx-4 bg-gray-600 rounded-xl">
+    <span class="flex justify-between">
+        <h1 class="text-gray-200 text-2xl">Spotify</h1>
+        @if (spotify.IsAuthenticated) {
+        <button class="px-4 pb-3 pt-1 text-gray-200" (click)="spotify.logout();">
+            <ng-icon name="matLogOut"></ng-icon>
+        </button>
+        }
+    </span>
+    @if (spotify.IsAuthenticated) {
+    <div class="grid grid-cols-[1fr_auto_auto] items-center gap-2">
+        <p class="text-gray-300 whitespace-nowrap overflow-hidden text-ellipsis">{{mode === "narrator"? title : "Verbunden"}}</p>
+        @if (mode === "narrator") {
+        <button class="bg-gray-500 rounded-md text-gray-200 py-4 px-4 flex justify-center items-center" (click)="setPlayState(!isPlaying)">
+            <ng-icon [name]="isPlaying ? 'matPause':'matPlayArrow'"></ng-icon>
+        </button>
+        <button class="bg-gray-500 rounded-md text-gray-200 py-4 px-4 flex justify-center items-center" (click)="skipSong()">
+            <ng-icon name="matSkipNext"></ng-icon>
+        </button>
+        }
+    </div>
+    } @else {
+    <button class="btn bg-gray-500 w-full mt-2" (click)="spotify.connectAccount()">Connect</button>
+    }
+</div>

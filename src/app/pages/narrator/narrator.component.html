@@ -3,13 +3,13 @@
         <app-circle [People]="state.People" [Connections]="state.Connections" (personClick)="handlePersonClicked($event)"></app-circle>
     </div>
     <div class="w-[30rem] py-4 bg-gray-700 grid grid-rows-[auto_auto_auto_1fr_auto] h-svh overflow-hidden gap-2">
-        <!-- <div class="p-4 mx-4 bg-gray-600 rounded-xl">
-            <h1 class="text-gray-200 text-2xl">Spotify</h1>
-            <button class="btn bg-gray-500 w-full mt-2">Connect</button>
-        </div>
-        <hr class="mx-4 bg-slate-500 h-px border-none"> -->
+        @if (spotify.IsAuthenticated) {
+        <app-spotify-widget mode="narrator"></app-spotify-widget>
+        <hr class="mx-4 bg-slate-500 h-px border-none">
+        }@else {
         <span></span>
         <span></span>
+        }
         <h1 class="text-gray-200 text-2xl ml-4">Ereignisse</h1>
         <div class="overflow-auto flex flex-col-reverse fade-out pb-2">
             <div class="flex flex-col-reverse gap-2 pt-20">
@@ -41,7 +41,7 @@
             @if (state.ActionHistory.length > 0) {
             <button class="btn bg-gray-500 block" (click)="state.PreviousAction();">← Zurück</button>
             }
-            <button class="btn bg-gray-500 block col-span-2" [class.col-span-3]="state.ActionHistory.length === 0" (click)="state.NextAction();">Weiter →</button>
+            <button class="btn bg-gray-500 block col-span-2" [class.col-span-3]="state.ActionHistory.length === 0" (click)="onNext()">Weiter →</button>
         </span>
     </div>
 </div>

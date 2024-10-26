@@ -5,24 +5,26 @@ import { Router } from "@angular/router";
 import { CardComponent } from "../../components/setup/card/card.component";
 import { RoleGroup } from "../../types";
 import { GroupedRoles } from "../../models/roles/roles";
+import { SpotifyWidgetComponent } from "../../components/spotify-widget/spotify-widget.component";
+import { SpotifyService } from "../../services/spotify.service";
+import { environment } from "../../../environments/environment";
 
 @Component({
     selector: "app-setup",
     standalone: true,
-    imports: [FormsModule, CardComponent],
+    imports: [FormsModule, CardComponent, SpotifyWidgetComponent],
     templateUrl: "./setup.component.html"
 })
 export class SetupComponent {
     public Roles: RoleGroup[] = GroupedRoles;
     public PeopleCount = isDevMode() ? 20 : 1;
 
-    constructor(private state: GameStateService, private router: Router) {
-        if (isDevMode()) {
-            // this.StartGame();
-        }
-    }
+    constructor(private state: GameStateService, private router: Router, private spotify: SpotifyService) { }
 
     public StartGame() {
+        if (this.spotify.IsAuthenticated) {
+            this.spotify.playPlaylist(environment.spotify.playlists.start, true, false).subscribe();
+        }
         this.state.Characters = this.Roles
             .map(r => r.cards)
             .flat()

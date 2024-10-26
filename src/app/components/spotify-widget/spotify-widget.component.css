@@ -1,0 +1,4 @@
+h1::after {
+    content: "BETA";
+    @apply bg-gray-500 px-2 py-1 text-xs ml-4 relative -top-1 rounded-full
+}
