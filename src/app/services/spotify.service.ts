@@ -27,7 +27,7 @@ export class SpotifyService {
         window.addEventListener("storage", this.loadTokens.bind(this));
     }
 
-    async connectAccount() {
+    async getAccountConnectionLink() {
         this.codeVerifier = this.generateCodeVerifier();
         const codeChallenge = await this.generateCodeChallenge(this.codeVerifier);
         window.localStorage.setItem("spotify_code_verifier", this.codeVerifier);
@@ -46,8 +46,7 @@ export class SpotifyService {
             .set("code_challenge_method", "S256")
             .set("code_challenge", codeChallenge);
 
-        const win = window.open(`${this.authUrl}?${authParams.toString()}`, "_blank");
-        win?.focus();
+        return `${this.authUrl}?${authParams.toString()}`;
     }
 
     logout() {
@@ -207,6 +206,9 @@ export class SpotifyService {
     }
 
     private async generateCodeChallenge(verifier: string): Promise<string> {
+        if (!crypto.subtle) {
+            throw new Error("No subtle crypto, are you in insecure context (http)?");
+        }
         const data = new TextEncoder().encode(verifier);
         const hashed = await crypto.subtle.digest("SHA-256", data);
 

@@ -14,13 +14,17 @@ import { AsyncPipe } from "@angular/common";
 export class SpotifyWidgetComponent implements OnInit, OnDestroy {
     title = "Nichts am abspielen";
     isPlaying = false;
+    link = "";
     @Input() mode: "setup" | "narrator" = "setup";
     private forceRefresh$ = new BehaviorSubject<Date>(new Date());
     private subscription: Subscription = new Subscription();
 
     constructor(public spotify: SpotifyService) { }
 
-    ngOnInit(): void {
+    async ngOnInit(): Promise<void> {
+        this.link = await this.spotify.getAccountConnectionLink();
+        console.log(this.link);
+
         const tenSecondsInterval$ = interval(10000);
         const refresh$ = merge(tenSecondsInterval$, this.forceRefresh$);
 
