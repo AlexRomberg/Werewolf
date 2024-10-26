@@ -30,7 +30,7 @@ export class SpotifyService {
     async getAccountConnectionLink() {
         this.codeVerifier = this.generateCodeVerifier();
         const codeChallenge = await this.generateCodeChallenge(this.codeVerifier);
-        window.localStorage.setItem("spotify_code_verifier", this.codeVerifier);
+        localStorage.setItem("spotify_code_verifier", this.codeVerifier);
 
         const scopes = [
             "user-read-playback-state",
@@ -47,6 +47,11 @@ export class SpotifyService {
             .set("code_challenge", codeChallenge);
 
         return `${this.authUrl}?${authParams.toString()}`;
+    }
+
+    saveCodeVerifyer() {
+        // hack since safari does not sore localstorrage unless useraction is performed
+        localStorage.setItem("spotify_code_verifier", this.codeVerifier);
     }
 
     logout() {

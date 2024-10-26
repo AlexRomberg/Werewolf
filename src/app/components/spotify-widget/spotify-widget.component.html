@@ -21,7 +21,7 @@
         }
     </div>
     } @else {
-    <a class="btn bg-gray-500 w-full mt-2 text-center block" [href]="link" target="_blank">Connect</a>
+    <a class="btn bg-gray-500 w-full mt-2 text-center block" [href]="link" (click)="this.spotify.saveCodeVerifyer()" target="_blank">Connect</a>
     }
 </div>
 }

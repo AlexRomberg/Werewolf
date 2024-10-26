@@ -23,7 +23,11 @@ export class SetupComponent {
 
     public StartGame() {
         if (this.spotify.IsAuthenticated) {
-            this.spotify.playPlaylist(environment.spotify.playlists.start, true, false).subscribe();
+            this.spotify.playPlaylist(environment.spotify.playlists.start, true, false).subscribe(() => {
+                if (this.spotify.IsAuthenticated) {
+                    this.router.navigateByUrl("/narrator");
+                }
+            });
         }
         this.state.Characters = this.Roles
             .map(r => r.cards)
@@ -47,6 +51,9 @@ export class SetupComponent {
         }
 
         this.state.StartGame();
-        this.router.navigateByUrl("/narrator");
+        if (!this.spotify.IsAuthenticated) {
+            this.router.navigateByUrl("/narrator");
+        }
     }
+
 }
