@@ -21,9 +21,8 @@ It also lists you the roles that are active this night, with a small description
 Work in progress:
 - Most characters are working, but there are still some actions for them missing.
 - The game does not save your state.
-- Dead characters are still bein listed in the night.
 - The UI is currently just in german.
-- You cannot update connection.
+- You cannot update connections.
 
 ## Disclamer
 This app is an unofficial companion for the game Die Werwölfe von Düsterwald and is not affiliated with or endorsed by Asmodée or the original creators of the game. All images, characters, and intellectual property used within this app remain the full copyright of Asmodée. The images and assets are provided solely for non-commercial, fan-based use.
