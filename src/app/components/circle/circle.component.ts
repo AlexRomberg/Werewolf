@@ -80,6 +80,18 @@ export class CircleComponent {
         this.personClick.emit(person);
     }
 
+    public getTextCoordinateX(index: number) {
+        const locationX = this.getCoordinateX(index);
+        const locationY = this.getCoordinateY(index);
+
+        return locationX + 150 - Math.abs(this.shiftModifyer(locationY)) * 160;
+    }
+
+    public getTextCoordinateY(index: number) {
+        const locationY = this.getCoordinateY(index);
+        return locationY + 20 + this.shiftModifyer(locationY) * 140;
+    }
+
     private getOtherConnections(connection: CircleConnection, index: number) {
         return this.Connections.reduce((prev, curr, idx) => {
             if ((curr.from == connection.from && curr.to == connection.to) || (curr.from == connection.to && curr.to == connection.from)) {
@@ -90,5 +102,15 @@ export class CircleComponent {
             }
             return prev;
         }, { before: 0, all: 0 });
+    }
+
+    private shiftModifyer(y: number) {
+        if (y < 200) {
+            return -1;
+        }
+        if (y > 1800) {
+            return 1;
+        }
+        return 0;
     }
 }

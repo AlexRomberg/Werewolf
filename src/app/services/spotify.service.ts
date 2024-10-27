@@ -3,6 +3,7 @@ import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { catchError, map, of, switchMap, tap } from "rxjs";
 import { environment } from "../../environments/environment";
+import { StorageService as StorageService } from "./storage.service";
 
 @Injectable({
     providedIn: "root"
@@ -22,7 +23,7 @@ export class SpotifyService {
         return Boolean(this.accessToken);
     }
 
-    constructor(private http: HttpClient, private router: Router) {
+    constructor(private http: HttpClient, private router: Router, private storage: StorageService) {
         this.loadTokens();
         window.addEventListener("storage", this.loadTokens.bind(this));
     }
@@ -30,7 +31,7 @@ export class SpotifyService {
     async getAccountConnectionLink() {
         this.codeVerifier = this.generateCodeVerifier();
         const codeChallenge = await this.generateCodeChallenge(this.codeVerifier);
-        localStorage.setItem("spotify_code_verifier", this.codeVerifier);
+        this.storage.SpotifyCodeVerifier = this.codeVerifier;
 
         const scopes = [
             "user-read-playback-state",
@@ -50,8 +51,8 @@ export class SpotifyService {
     }
 
     saveCodeVerifyer() {
-        // hack since safari does not sore localstorrage unless useraction is performed
-        localStorage.setItem("spotify_code_verifier", this.codeVerifier);
+        // hack: since safari does not store localstorage unless user action is performed
+        this.storage.SpotifyCodeVerifier = this.codeVerifier;
     }
 
     logout() {
@@ -59,17 +60,12 @@ export class SpotifyService {
         this.refreshToken = null;
         this.expiry = new Date(0);
 
-        localStorage.removeItem("spotify_access_token");
-        localStorage.removeItem("spotify_code_verifier");
-        localStorage.removeItem("spotify_expires_in");
-        localStorage.removeItem("spotify_refresh_token");
+        this.storage.ClearSpotifyData();
     }
 
     handleAuthCode(code: string) {
-        const codeVerifier = localStorage.getItem("spotify_code_verifier")!;
-        if (codeVerifier) {
-            localStorage.removeItem("spotify_code_verifier");
-        } else {
+        const codeVerifier = this.storage.SpotifyCodeVerifier;
+        if (!codeVerifier) {
             throw new Error("No code_verifier");
         }
 
@@ -89,9 +85,9 @@ export class SpotifyService {
             this.refreshToken = response.refresh_token;
             this.expiry = new Date(new Date().getTime() + (response.expires_in * 1000));
 
-            localStorage.setItem("spotify_access_token", this.accessToken);
-            localStorage.setItem("spotify_refresh_token", this.refreshToken);
-            localStorage.setItem("spotify_expires_in", this.expiry.toString());
+            this.storage.SpotifyAccessToken = this.accessToken;
+            this.storage.SpotifyRefreshToken = this.refreshToken;
+            this.storage.SpotifyExpiresIn = this.expiry;
 
             this.router.navigateByUrl("/spotify/success");
         });
@@ -112,9 +108,9 @@ export class SpotifyService {
             this.refreshToken = response.refresh_token;
             this.expiry = new Date(new Date().getTime() + (response.expires_in * 1000));
 
-            localStorage.setItem("spotify_access_token", this.accessToken);
-            localStorage.setItem("spotify_refresh_token", this.refreshToken);
-            localStorage.setItem("spotify_expires_in", this.expiry.toString());
+            this.storage.SpotifyAccessToken = this.accessToken;
+            this.storage.SpotifyRefreshToken = this.refreshToken;
+            this.storage.SpotifyExpiresIn = this.expiry;
         }));
     }
 
@@ -141,7 +137,7 @@ export class SpotifyService {
 
     getPlayerState() {
         return this.headers.pipe(switchMap(headers => {
-            return this.http.get<{ is_playing: boolean, progress_ms: number, item: { duration_ms: number, name: string, artists: { name: string }[] } }>(`${this.apiBaseUrl}/me/player`, headers);
+            return this.http.get<{ is_playing: boolean, progress_ms: number, item?: { duration_ms: number, name: string, artists: { name: string }[] }, device?: { is_private_session: boolean } }>(`${this.apiBaseUrl}/me/player`, headers);
         }));
     }
 
@@ -227,9 +223,8 @@ export class SpotifyService {
     }
 
     private loadTokens() {
-        this.accessToken = localStorage.getItem("spotify_access_token");
-        this.refreshToken = localStorage.getItem("spotify_refresh_token");
-        const expiry = localStorage.getItem("spotify_expires_in");
-        this.expiry = expiry ? new Date(expiry) : new Date(0);
+        this.accessToken = this.storage.SpotifyAccessToken;
+        this.refreshToken = this.storage.SpotifyRefreshToken;
+        this.expiry = this.storage.SpotifyExpiresIn;
     }
 }

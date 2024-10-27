@@ -31,7 +31,7 @@
     }
 
     <!-- - Name -->
-    <text filter="url(#solid)" [attr.x]="getCoordinateX($index) + 150" [attr.y]="getCoordinateY($index) + 20">{{person.name}}</text>
+    <text filter="url(#solid)" [attr.x]="getTextCoordinateX($index)" [attr.y]="getTextCoordinateY($index)">{{person.name}}</text>
 
     <!-- - Circle -->
     <circle [attr.cx]="getCoordinateX($index)" [attr.cy]="getCoordinateY($index)" r="100" class="ring cursor-pointer" [class.!fill-gray-700]="!person.role" [style.stroke]="getRingColor(person, 0)" (click)="onPersonClicked(person)" />

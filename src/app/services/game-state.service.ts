@@ -47,13 +47,11 @@ export class GameStateService {
             if (person.isVictim && !person.isProtected) {
                 person.isVictim = false;
                 person.isDead = true;
-                console.log("🪦 Person died. Checking relatives", person);
                 diedPeople.push(person, ...this.handleConsequenceofDeath(person));
             }
             person.isProtected = false;
         }
         this.Connections = this.Connections.filter(c => c.type !== CircleConnectionTypes.Sleepover);
-        console.log("Dead people:", diedPeople);
 
         this.Night++;
         this.LoadNightActions();
@@ -69,36 +67,27 @@ export class GameStateService {
 
     private handleConsequenceofDeath(person: CirclePerson, isFollowUpCheck = false) {
         const connections = this.Connections.filter(c => c.from === person || c.to === person).map(c => ({ person: (c.from === person ? c.to : c.from), type: c.type }));
-        console.log("🕳️ Connections:", connections, "is first:", !isFollowUpCheck);
         const diedPeople: CirclePerson[] = [];
         for (const connection of connections) {
             switch (connection.type) {
                 case CircleConnectionTypes.Trust:
-                    console.log("👻 Trust");
                     if (connection.person.role instanceof WildChild) {
-                        console.log("🟢 Trust with WildChild");
                         connection.person.isWerewolf = true;
                     }
                     break;
                 case CircleConnectionTypes.Love:
-                    console.log("👻 Love");
                     if (!isFollowUpCheck && !connection.person.isDead) {
-                        console.log("🟢 Love with Living");
                         connection.person.isVictim = false;
                         connection.person.isDead = true;
                         diedPeople.push(connection.person);
-                        console.log("Checking further consequences");
                         this.handleConsequenceofDeath(connection.person, true);
                     }
                     break;
                 case CircleConnectionTypes.Sleepover:
-                    console.log("👻 Sleepover");
                     if (!isFollowUpCheck && connection.person.role instanceof Bitch) {
-                        console.log("🟢 Sleepover with Bitch");
                         connection.person.isVictim = false;
                         connection.person.isDead = true;
                         diedPeople.push(connection.person);
-                        console.log("Checking further consequences");
                         this.handleConsequenceofDeath(connection.person, true);
                     }
                     break;

@@ -30,12 +30,12 @@ export class NarratorComponent {
     public onNext() {
         if (this.spotify.IsAuthenticated && this.firstNightfall) {
             this.spotify.playPlaylist(environment.spotify.playlists.special, false, true).pipe(delay(1000)).subscribe(() => {
-                this.spotify.getPlayerState().subscribe(({ progress_ms, item: { duration_ms } }) => {
-                    const remainingTime = duration_ms - progress_ms - 500;
+                this.spotify.getPlayerState().subscribe(({ progress_ms, item }) => {
+                    const remainingTime = Math.min(22_000, (item?.duration_ms ?? Number.MAX_SAFE_INTEGER) - progress_ms - 500);
 
                     setTimeout(() => {
                         this.spotify.playPlaylist(environment.spotify.playlists.general, true, true).subscribe();
-                    }, Math.min(22_000, remainingTime));
+                    }, remainingTime);
                 });
             });
         }

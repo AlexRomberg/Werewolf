@@ -8,7 +8,7 @@
         <h1 class="text-gray-200 text-xl mt-4 mb-2">{{role.name}}</h1>
         <div class="flex flex-wrap gap-4">
             @for (card of role.cards; track $index) {
-            <app-card [Card]="card"></app-card>
+            <app-card [Card]="card" (selectionChanged)="handleSelectionStateChange(card, $event)"></app-card>
             }
         </div>
         }
@@ -19,7 +19,7 @@
             <h1 class="text-gray-200 text-2xl ml-4">Spieler</h1>
             <div class="px-4 pt-2 flex flex-col gap-2">
                 <label class="text-gray-200" for="PeopleCount">Anzahl Spieler</label>
-                <input class="rounded-md py-3 px-6 text-gray-100 bg-gray-500" id="PeopleCount" type="number" min="1" max="20" [(ngModel)]="PeopleCount">
+                <input class="rounded-md py-3 px-6 text-gray-100 bg-gray-500" id="PeopleCount" type="number" min="1" max="20" [ngModel]="PeopleCount" (ngModelChange)="handlePeopleCountChanged($event)">
             </div>
         </div>
         <div>

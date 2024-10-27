@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { CardSelectionInformation } from "../../../types";
 
 @Component({
@@ -11,4 +11,10 @@ import { CardSelectionInformation } from "../../../types";
 export class CardComponent {
     @Input()
     public Card?: CardSelectionInformation;
+
+    @Output() selectionChanged = new EventEmitter<boolean>();
+
+    public SetCardSelectionState(state: boolean) {
+        this.selectionChanged.emit(state);
+    }
 }
