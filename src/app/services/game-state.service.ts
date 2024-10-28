@@ -3,6 +3,7 @@ import { Action, CircleConnection, CircleConnectionTypes, CirclePerson, Role } f
 import { DaybreakAction, NightfallAction, RulesAction } from "../models/actions/generic";
 import { WildChild } from "../models/roles/wildChild";
 import { Bitch } from "../models/roles/bitch";
+import { Werewolf } from "../models/roles/werewolf";
 
 @Injectable({
     providedIn: "root"
@@ -97,6 +98,9 @@ export class GameStateService {
     }
 
     private filterActivePeople(role: Role) {
+        if (role instanceof Werewolf) {
+            return true;
+        }
         if (!role.IsAwakeThisNight(this.Night, this)) {
             return false;
         }

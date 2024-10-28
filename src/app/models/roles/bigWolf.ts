@@ -1,14 +1,47 @@
+import { DialogService } from "../../services/dialog.service";
+import { GameStateService } from "../../services/game-state.service";
 import { Action, CirclePerson, Role } from "../../types";
 import { RequestAssignment } from "../actions/buttons";
 import { BasePriority } from "./roles";
+import { Werewolf } from "./werewolf";
+import { WhiteWolf } from "./whiteWolf";
 
 export class BigWolf implements Role, Action {
-    public Priority = BasePriority.Wolf + 4;
-    public Image = "big_wolf";
-    public Name = "Der Grosse, böse Wolf";
-    public AssignedPerson: CirclePerson | undefined;
+    Priority = BasePriority.Wolf + 4;
+    Image = "big_wolf";
+    Name = "Der Grosse, böse Wolf";
+    AssignedPerson: CirclePerson | undefined;
+    private isDone = false;
 
     GetPoints = () => [!this.AssignedPerson && "Person zuweisen", "Kann zweites Opfer definieren"];
-    GetButtons = () => this.AssignedPerson ? [] : [RequestAssignment(this)]; // TODO: Assign new target
-    IsAwakeThisNight = () => true;
+    GetButtons = () => {
+        const buttons = [];
+        if (!this.AssignedPerson) {
+            buttons.push(RequestAssignment(this));
+        }
+        if (!this.isDone) {
+            buttons.push({
+                title: "Zweites Opfer markieren",
+                action: this.RegisterVictim.bind(this)
+            });
+        }
+        return buttons;
+    };
+    IsAwakeThisNight = (_: number, gameState: GameStateService) => {
+        this.isDone = false;
+        return gameState.People.filter(p => p.isDead && (p.role instanceof Werewolf || p.role instanceof WhiteWolf || p.role instanceof BigWolf || p.isWerewolf)).length == 0;
+    };
+
+    private async RegisterVictim({ dialog }: { dialog: DialogService }) {
+        try {
+            const people = await dialog.ShowPeopleDialog("Wähle das zweite Opfer (kein Werwolf) aus", 1);
+            if (people[0].isProtected || people[0].isVictim) {
+                return;
+            }
+            people[0].isVictim = true;
+            this.isDone = true;
+        } catch {
+            // closed
+        }
+    }
 }

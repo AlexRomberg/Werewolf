@@ -5,10 +5,10 @@ import { RequestAssignments } from "../actions/buttons";
 import { BasePriority } from "./roles";
 
 export class Werewolf implements Role, Action {
-    public Priority = BasePriority.Wolf + 1;
-    public Image = "werewolf";
-    public Name = "Der Einfache Werewolf";
-    public AssignedPeople: CirclePerson[] = [];
+    Priority = BasePriority.Wolf + 1;
+    Image = "werewolf";
+    Name = "Der Einfache Werewolf";
+    AssignedPeople: CirclePerson[] = [];
 
     GetPoints = () => [this.AssignedPeople.length <= 0 && "Person zuweisen", "Müssen ein Opfer finden"];
     GetButtons = () => {
