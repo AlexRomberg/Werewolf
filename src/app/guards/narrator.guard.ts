@@ -10,6 +10,6 @@ export const narratorGuard: CanActivateFn = () => {
         return true;
     }
 
-    router.navigateByUrl("/");
+    router.navigateByUrl("/setup");
     return false;
 };
