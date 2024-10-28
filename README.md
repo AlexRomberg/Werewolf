@@ -17,10 +17,12 @@ It also lists you the roles that are active this night, with a small description
   - If there is something you have to do with the role there will be a button on its card.
   - When you need to correct something or want to put a name on someone in the visualization press on the person in the circle.
 
+### A note about Spotify
+I tried to add the playlist I commonly use in the game in a interactive way. While it works mostly it breaks quite quickly. 
+
 ## Current state
 Work in progress:
-- Most characters are working, but there are still some actions for them missing.
-- The game does not save your state.
+- The game does not fully save your state.
 - The UI is currently just in german.
 - You cannot update connections.
 
