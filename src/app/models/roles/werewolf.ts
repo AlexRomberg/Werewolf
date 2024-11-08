@@ -1,14 +1,15 @@
 import { DialogService } from "../../services/dialog.service";
 import { GameStateService } from "../../services/game-state.service";
-import { Action, CirclePerson, Role } from "../../types";
+import { Action, Character, Person } from "../../types";
 import { RequestAssignments } from "../actions/buttons";
 import { BasePriority } from "./roles";
 
-export class Werewolf implements Role, Action {
+export class Werewolf implements Character, Action {
     Priority = BasePriority.Wolf + 1;
     Image = "werewolf";
     Name = "Der Einfache Werewolf";
-    AssignedPeople: CirclePerson[] = [];
+    public IsSingle = false;
+    AssignedPeople: Person[] = [];
 
     GetPoints = () => [this.AssignedPeople.length <= 0 && "Person zuweisen", "Müssen ein Opfer finden"];
     GetButtons = () => {
@@ -17,20 +18,20 @@ export class Werewolf implements Role, Action {
             buttons.push(RequestAssignments(this));
         }
         buttons.push({
-            title: "Opfer markieren", action: this.RegisterVictim.bind(this)
+            Title: "Opfer markieren", Action: this.registerVictim.bind(this)
         });
         return buttons;
     };
     IsAwakeThisNight = () => true;
 
-    private async RegisterVictim({ dialog, gameState }: { gameState: GameStateService, dialog: DialogService }) {
+    private async registerVictim({ Dialog, GameState }: { GameState: GameStateService, Dialog: DialogService }) {
         try {
-            const people = await dialog.ShowPeopleDialog("Wähle das Opfer aus", 1);
-            if (people[0].isProtected) {
+            const people = await Dialog.ShowPeopleDialog("Wähle das Opfer aus", 1);
+            if (people[0].IsProtected) {
                 return;
             }
-            gameState.People.forEach(p => p.isVictim = false);
-            people[0].isVictim = true;
+            GameState.People.forEach(p => p.IsVictim = false);
+            people[0].IsVictim = true;
         } catch {
             // closed
         }

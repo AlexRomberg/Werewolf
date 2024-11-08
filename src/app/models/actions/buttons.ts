@@ -1,16 +1,17 @@
 import { DialogService } from "../../services/dialog.service";
-import { Role } from "../../types";
+import { ActionButton, Character } from "../../types";
 
-export const RequestAssignment = (thisContext: Role) => {
+export const RequestAssignment = (thisContext: Character): ActionButton => {
     return {
-        title: "Person zuweisen", action: async ({ dialog }: { dialog: DialogService }) => {
+        Title: "Person zuweisen",
+        Action: async ({ Dialog }: { Dialog: DialogService }): Promise<void> => {
             try {
-                const people = await dialog.ShowPeopleDialog("Person auswählen", 1);
+                const people = await Dialog.ShowPeopleDialog("Person auswählen", 1);
                 if (thisContext.AssignedPerson) {
-                    thisContext.AssignedPerson.role = undefined;
+                    thisContext.AssignedPerson.Character = undefined;
                 }
                 thisContext.AssignedPerson = people[0];
-                people[0].role = thisContext;
+                people[0].Character = thisContext;
             } catch {
                 // closed
             }
@@ -18,16 +19,17 @@ export const RequestAssignment = (thisContext: Role) => {
     };
 };
 
-export const RequestAssignments = (thisContext: Role, maximum?: number) => {
+export const RequestAssignments = (thisContext: Character, maximum?: number): ActionButton => {
     return {
-        title: "Personen zuweisen", action: async ({ dialog }: { dialog: DialogService }) => {
+        Title: "Personen zuweisen",
+        Action: async ({ Dialog }: { Dialog: DialogService }): Promise<void> => {
             try {
-                const people = await dialog.ShowPeopleDialog("Personen auswählen", maximum);
+                const people = await Dialog.ShowPeopleDialog("Personen auswählen", maximum);
                 for (const person of thisContext.AssignedPeople ?? []) {
-                    person.role = undefined;
+                    person.Character = undefined;
                 }
                 for (const person of people) {
-                    person.role = thisContext;
+                    person.Character = thisContext;
                 }
                 thisContext.AssignedPeople = people;
             } catch {

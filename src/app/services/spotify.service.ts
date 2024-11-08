@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
-import { catchError, map, of, switchMap, tap } from "rxjs";
+import { catchError, map, Observable, of, switchMap, tap } from "rxjs";
 import { environment } from "../../environments/environment";
 import { StorageService as StorageService } from "./storage.service";
 
@@ -19,7 +20,7 @@ export class SpotifyService {
     private expiry: Date = new Date(0);
     private codeVerifier = "";
 
-    public get IsAuthenticated() {
+    public get IsAuthenticated(): boolean {
         return Boolean(this.accessToken);
     }
 
@@ -28,7 +29,7 @@ export class SpotifyService {
         window.addEventListener("storage", this.loadTokens.bind(this));
     }
 
-    async getAccountConnectionLink() {
+    async GetAccountConnectionLink(): Promise<string> {
         this.codeVerifier = this.generateCodeVerifier();
         const codeChallenge = await this.generateCodeChallenge(this.codeVerifier);
         this.storage.SpotifyCodeVerifier = this.codeVerifier;
@@ -50,12 +51,12 @@ export class SpotifyService {
         return `${this.authUrl}?${authParams.toString()}`;
     }
 
-    saveCodeVerifyer() {
+    SaveCodeVerifyer(): void {
         // hack: since safari does not store localstorage unless user action is performed
         this.storage.SpotifyCodeVerifier = this.codeVerifier;
     }
 
-    logout() {
+    Logout(): void {
         this.accessToken = null;
         this.refreshToken = null;
         this.expiry = new Date(0);
@@ -63,7 +64,7 @@ export class SpotifyService {
         this.storage.ClearSpotifyData();
     }
 
-    handleAuthCode(code: string) {
+    HandleAuthCode(code: string): void {
         const codeVerifier = this.storage.SpotifyCodeVerifier;
         if (!codeVerifier) {
             throw new Error("No code_verifier");
@@ -93,7 +94,7 @@ export class SpotifyService {
         });
     }
 
-    public refreshCurrentToken() {
+    public RefreshCurrentToken(): Observable<{ access_token: string; refresh_token: string; expires_in: number; }> {
         const body = new HttpParams()
             .set("client_id", this.clientId)
             .set("grant_type", "refresh_token")
@@ -114,10 +115,10 @@ export class SpotifyService {
         }));
     }
 
-    private get headers() {
+    private get Headers(): Observable<{ headers: HttpHeaders }> {
         if (this.expiry < new Date()) {
-            return this.refreshCurrentToken().pipe(catchError(e => {
-                this.logout();
+            return this.RefreshCurrentToken().pipe(catchError(e => {
+                this.Logout();
                 throw e;
             }), map(t => {
                 return {
@@ -135,35 +136,35 @@ export class SpotifyService {
         });
     }
 
-    getPlayerState() {
-        return this.headers.pipe(switchMap(headers => {
+    GetPlayerState(): Observable<{ is_playing: boolean; progress_ms: number; item?: { duration_ms: number; name: string; artists: { name: string; }[]; }; device?: { is_private_session: boolean; }; }> {
+        return this.Headers.pipe(switchMap(headers => {
             return this.http.get<{ is_playing: boolean, progress_ms: number, item?: { duration_ms: number, name: string, artists: { name: string }[] }, device?: { is_private_session: boolean } }>(`${this.apiBaseUrl}/me/player`, headers);
         }));
     }
 
-    play() {
-        return this.headers.pipe(switchMap(headers => {
+    play(): Observable<string> {
+        return this.Headers.pipe(switchMap(headers => {
             return this.http.put(`${this.apiBaseUrl}/me/player/play`, {}, { ...headers, responseType: "text" });
         }));
     }
 
-    pause() {
-        return this.headers.pipe(switchMap(headers => {
+    pause(): Observable<string> {
+        return this.Headers.pipe(switchMap(headers => {
             return this.http.put(`${this.apiBaseUrl}/me/player/pause`, {}, { ...headers, responseType: "text" });
         }));
     }
 
-    skipSong() {
-        return this.headers.pipe(switchMap(headers => {
+    skipSong(): Observable<string> {
+        return this.Headers.pipe(switchMap(headers => {
             return this.http.post(`${this.apiBaseUrl}/me/player/next`, {}, { ...headers, responseType: "text" });
         }));
     }
 
-    playPlaylist(identifier: string, looped = false, randomStart = false) {
-        return this.headers.pipe(switchMap(headers => {
+    playPlaylist(identifier: string, looped = false, randomStart = false): Observable<string> {
+        return this.Headers.pipe(switchMap(headers => {
             return this.shuffleMode(randomStart, headers).pipe(switchMap(() => {
                 return this.repeatMode(looped ? "context" : "off", headers).pipe(switchMap(() => {
-                    return this.http.put(`${this.apiBaseUrl}/me/player/play`, {
+                    return this.http.put<string>(`${this.apiBaseUrl}/me/player/play`, {
                         context_uri: `spotify:playlist:${identifier}`
                     }, headers);
                 }));
@@ -171,9 +172,9 @@ export class SpotifyService {
         }));
     }
 
-    pushSongToQueue(identifier: string) {
-        return this.headers.pipe(switchMap(headers => {
-            return this.http.post(`${this.apiBaseUrl}/me/player/queue`, {}, {
+    PushSongToQueue(identifier: string): Observable<string> {
+        return this.Headers.pipe(switchMap(headers => {
+            return this.http.post<string>(`${this.apiBaseUrl}/me/player/queue`, {}, {
                 ...headers,
                 params: new HttpParams().set("uri", `spotify:track:${identifier}`)
             });
@@ -182,7 +183,7 @@ export class SpotifyService {
 
     private repeatMode(state: "track" | "context" | "off", headers: {
         headers: HttpHeaders;
-    }) {
+    }): Observable<string> {
         return this.http.put(`${this.apiBaseUrl}/me/player/repeat`, {}, {
             ...headers,
             responseType: "text",
@@ -195,7 +196,7 @@ export class SpotifyService {
 
     private shuffleMode(state: boolean, headers: {
         headers: HttpHeaders;
-    }) {
+    }): Observable<string> {
         return this.http.put(`${this.apiBaseUrl}/me/player/shuffle`, {}, {
             ...headers,
             responseType: "text",
@@ -222,7 +223,7 @@ export class SpotifyService {
             .replace(/\//g, "_");
     }
 
-    private loadTokens() {
+    private loadTokens(): void {
         this.accessToken = this.storage.SpotifyAccessToken;
         this.refreshToken = this.storage.SpotifyRefreshToken;
         this.expiry = this.storage.SpotifyExpiresIn;

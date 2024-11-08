@@ -1,13 +1,14 @@
 import { DialogService } from "../../services/dialog.service";
-import { Action, CirclePerson, Role } from "../../types";
+import { Action, Character, Person } from "../../types";
 import { RequestAssignment } from "../actions/buttons";
 import { BasePriority } from "./roles";
 
-export class FlutePlayer implements Role, Action {
+export class FlutePlayer implements Character, Action {
     Priority = BasePriority.PostWolf + 2;
     Image = "flute_player";
     Name = "Der Flötenspieler";
-    AssignedPerson: CirclePerson | undefined;
+    IsSingle = true;
+    AssignedPerson: Person | undefined;
     private isDone = false;
 
     GetPoints = () => [!this.AssignedPerson && "Person zuweisen", "Kann eine Person verzaubern"];
@@ -18,8 +19,8 @@ export class FlutePlayer implements Role, Action {
         }
         if (!this.isDone) {
             buttons.push({
-                title: "Opfer markieren",
-                action: this.RegisterVictim.bind(this)
+                Title: "Opfer markieren",
+                Action: this.registerVictim.bind(this)
             });
         }
         return buttons;
@@ -29,10 +30,10 @@ export class FlutePlayer implements Role, Action {
         return true;
     };
 
-    private async RegisterVictim({ dialog }: { dialog: DialogService }) {
+    private async registerVictim({ Dialog }: { Dialog: DialogService }) {
         try {
-            const people = await dialog.ShowPeopleDialog("Wähle das Opfer aus", 1);
-            people[0].isEnchanted = true;
+            const people = await Dialog.ShowPeopleDialog("Wähle das Opfer aus", 1);
+            people[0].IsEnchanted = true;
             this.isDone = true;
         } catch {
             // closed

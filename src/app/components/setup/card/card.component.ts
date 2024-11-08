@@ -12,9 +12,9 @@ export class CardComponent {
     @Input()
     public Card?: CardSelectionInformation;
 
-    @Output() selectionChanged = new EventEmitter<boolean>();
+    @Output() SelectionChanged = new EventEmitter<boolean>();
 
-    public SetCardSelectionState(state: boolean) {
-        this.selectionChanged.emit(state);
+    public SetCardSelectionState(state: boolean): void {
+        this.SelectionChanged.emit(state);
     }
 }

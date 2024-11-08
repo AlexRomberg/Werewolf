@@ -1,13 +1,14 @@
 import { DialogService } from "../../services/dialog.service";
-import { Action, CirclePerson, Role } from "../../types";
+import { Action, Character, Person } from "../../types";
 import { RequestAssignment } from "../actions/buttons";
 import { BasePriority } from "./roles";
 
-export class WhiteWolf implements Role, Action {
+export class WhiteWolf implements Character, Action {
     public Priority = BasePriority.Wolf + 2;
     public Image = "white_wolf";
     public Name = "Der weisse Wolf";
-    public AssignedPerson?: CirclePerson | undefined;
+    public AssignedPerson?: Person | undefined;
+    public IsSingle = true;
     private isDone = false;
 
     GetPoints = () => [!this.AssignedPerson && "Person zuweisen", "Kann einen Werwolf umbringen"];
@@ -18,21 +19,21 @@ export class WhiteWolf implements Role, Action {
         }
         if (!this.isDone) {
             buttons.push({
-                title: "Zweites Opfer markieren",
-                action: this.RegisterVictim.bind(this)
+                Title: "Zweites Opfer markieren",
+                Action: this.registerVictim.bind(this)
             });
         }
         return buttons;
     };
     IsAwakeThisNight = (night: number) => night % 2 == 1;
 
-    private async RegisterVictim({ dialog }: { dialog: DialogService }) {
+    private async registerVictim({ Dialog }: { Dialog: DialogService }) {
         try {
-            const people = await dialog.ShowPeopleDialog("Wähle das Opfer (Werewolf) aus", 1);
-            if (people[0].isProtected) {
+            const people = await Dialog.ShowPeopleDialog("Wähle das Opfer (Werewolf) aus", 1);
+            if (people[0].IsProtected) {
                 return;
             }
-            people[0].isVictim = true;
+            people[0].IsVictim = true;
             this.isDone = true;
         } catch {
             // closed

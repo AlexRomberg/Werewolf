@@ -1,14 +1,15 @@
 import { DialogService } from "../../services/dialog.service";
 import { GameStateService } from "../../services/game-state.service";
-import { Action, CircleConnectionTypes, CirclePerson, Role } from "../../types";
+import { Action, Character, ConnectionTypes, Person } from "../../types";
 import { RequestAssignment } from "../actions/buttons";
 import { BasePriority } from "./roles";
 
-export class Cupit implements Role, Action {
-    public Priority = BasePriority.Initial + 3;
-    public Image = "cupit";
-    public Name = "Der Amor";
-    public AssignedPerson: CirclePerson | undefined;
+export class Cupit implements Character, Action {
+    Priority = BasePriority.Initial + 3;
+    Image = "cupit";
+    Name = "Der Amor";
+    IsSingle = true;
+    AssignedPerson: Person | undefined;
     private isDone = false;
 
     GetPoints = () => [!this.AssignedPerson && "Person zuweisen", !this.isDone && "Muss ein Paar bestimmen", "Das Paar muss erwachen"];
@@ -19,20 +20,20 @@ export class Cupit implements Role, Action {
         }
         if (!this.isDone) {
             buttons.push({
-                title: "Paar zuweisen", action: this.RequestCouple.bind(this)
+                Title: "Paar zuweisen", Action: this.requestCouple.bind(this)
             });
         }
         return buttons;
     };
     IsAwakeThisNight = (night: number) => night === 0;
 
-    private async RequestCouple({ gameState, dialog }: { gameState: GameStateService, dialog: DialogService }) {
+    private async requestCouple({ GameState, Dialog }: { GameState: GameStateService, Dialog: DialogService }) {
         try {
-            const people = await dialog.ShowPeopleDialog("Select couple", 2);
-            gameState.Connections.push({
-                type: CircleConnectionTypes.Love,
-                from: people[0],
-                to: people[1]
+            const people = await Dialog.ShowPeopleDialog("Select couple", 2);
+            GameState.Connections.push({
+                Type: ConnectionTypes.Love,
+                From: people[0],
+                To: people[1]
             });
             this.isDone = true;
         } catch {

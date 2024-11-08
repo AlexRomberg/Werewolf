@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Action, CircleConnection, CircleConnectionTypes, CirclePerson, Role } from "../types";
+import { Action, Character, Connection, ConnectionTypes, Person } from "../types";
 import { DaybreakAction, NightfallAction, RulesAction } from "../models/actions/generic";
 import { WildChild } from "../models/roles/wildChild";
 import { Bitch } from "../models/roles/bitch";
@@ -10,13 +10,13 @@ import { Werewolf } from "../models/roles/werewolf";
 })
 export class GameStateService {
     public Night = 0;
-    public People: CirclePerson[] = [];
-    public Connections: CircleConnection[] = [];
-    public Characters: Role[] = [];
+    public People: Person[] = [];
+    public Connections: Connection[] = [];
+    public Characters: Character[] = [];
     public Actions: Action[] = [];
     public ActionHistory: Action[] = [];
 
-    public StartGame() {
+    public StartGame(): void {
         this.Night = 0;
         this.Actions = [];
         this.ActionHistory = [];
@@ -26,68 +26,69 @@ export class GameStateService {
         this.LoadNightActions();
     }
 
-    public LoadNightActions() {
+    public LoadNightActions(): void {
         this.Actions.push(NightfallAction);
         this.Actions.push(...this.Characters.filter(this.filterActivePeople.bind(this)));
         this.Actions.push(DaybreakAction);
     }
 
-    public NextAction() {
+    public NextAction(): void {
         const currentAction = this.Actions.shift();
         if (!currentAction) { return; }
 
         this.ActionHistory.push(currentAction);
         if (this.Actions.length <= 1) {
-            this.handleNightOver();
+            this.HandleNightOver();
         }
     }
 
-    public handleNightOver() {
+    public HandleNightOver(): void {
         const diedPeople = [];
         for (const person of this.People) {
-            if (person.isVictim && !person.isProtected) {
-                person.isVictim = false;
-                person.isDead = true;
+            if (person.IsVictim && !person.IsProtected) {
+                person.IsVictim = false;
+                person.IsDead = true;
                 diedPeople.push(person, ...this.handleConsequenceofDeath(person));
             }
-            person.isProtected = false;
+            person.IsProtected = false;
         }
-        this.Connections = this.Connections.filter(c => c.type !== CircleConnectionTypes.Sleepover);
+        this.Connections = this.Connections.filter(c => c.Type !== ConnectionTypes.Sleepover);
 
         this.Night++;
         this.LoadNightActions();
         this.ActionHistory = [];
     }
 
-    public PreviousAction() {
+    public PreviousAction(): void {
         const lastAction = this.ActionHistory.pop();
         if (!lastAction) { return; }
 
         this.Actions.unshift(lastAction);
     }
 
-    private handleConsequenceofDeath(person: CirclePerson, isFollowUpCheck = false) {
-        const connections = this.Connections.filter(c => c.from === person || c.to === person).map(c => ({ person: (c.from === person ? c.to : c.from), type: c.type }));
-        const diedPeople: CirclePerson[] = [];
+    private handleConsequenceofDeath(person: Person, isFollowUpCheck = false): Person[] {
+        const connections = this.Connections.filter(c => c.From === person || c.To === person).map(c => ({ person: (c.From === person ? c.To : c.From), type: c.Type }));
+        const diedPeople: Person[] = [];
+
         for (const connection of connections) {
             switch (connection.type) {
-                case CircleConnectionTypes.Trust:
-                    if (connection.person.role instanceof WildChild) {
-                        connection.person.isWerewolf = true;
+                case ConnectionTypes.Trust:
+                    if (connection.person.Character instanceof WildChild) {
+                        connection.person.IsWerewolf = true;
                     }
                     break;
-                case CircleConnectionTypes.Love:
-                    if (!isFollowUpCheck && !connection.person.isDead) {
-                        connection.person.isVictim = false;
-                        connection.person.isDead = true;
+                case ConnectionTypes.Love:
+                    if (!isFollowUpCheck && !connection.person.IsDead) {
+                        connection.person.IsVictim = false;
+                        connection.person.IsDead = true;
                         diedPeople.push(connection.person);
                         this.handleConsequenceofDeath(connection.person, true);
                     }
                     break;
-                case CircleConnectionTypes.Sleepover:
-                    if (!isFollowUpCheck && connection.person.role instanceof Bitch) {
-                        connection.person.isVictim = false;
-                        connection.person.isDead = true;
+                case ConnectionTypes.Sleepover:
+                    if (!isFollowUpCheck && connection.person.Character instanceof Bitch) {
+                        connection.person.IsVictim = false;
+                        connection.person.IsDead = true;
                         diedPeople.push(connection.person);
                         this.handleConsequenceofDeath(connection.person, true);
                     }
@@ -97,17 +98,17 @@ export class GameStateService {
         return diedPeople;
     }
 
-    private filterActivePeople(role: Role) {
+    private filterActivePeople(role: Character): boolean {
         if (role instanceof Werewolf) {
             return true;
         }
         if (!role.IsAwakeThisNight(this.Night, this)) {
             return false;
         }
-        if (role.AssignedPerson && role.AssignedPerson.isDead) {
+        if (role.AssignedPerson && role.AssignedPerson.IsDead) {
             return false;
         }
-        if ((role.AssignedPeople?.length ?? 0) > 0 && role.AssignedPeople!.every(p => p.isDead)) {
+        if ((role.AssignedPeople?.length ?? 0) > 0 && role.AssignedPeople!.every(p => p.IsDead)) {
             return false;
         }
         return true;

@@ -1,14 +1,15 @@
 import { DialogService } from "../../services/dialog.service";
 import { GameStateService } from "../../services/game-state.service";
-import { Action, CirclePerson, Role } from "../../types";
+import { Action, Character, Person } from "../../types";
 import { RequestAssignment } from "../actions/buttons";
 import { BasePriority } from "./roles";
 
-export class Witch implements Role, Action {
+export class Witch implements Character, Action {
     public Priority = BasePriority.PostWolf + 1;
     public Image = "witch";
     public Name = "Die Hexe";
-    public AssignedPerson: CirclePerson | undefined;
+    public AssignedPerson: Person | undefined;
+    public IsSingle = true;
     private hasPositivePotion = true;
     private hasNegativePotion = true;
 
@@ -24,36 +25,36 @@ export class Witch implements Role, Action {
             buttons.push(RequestAssignment(this));
         }
         if (this.hasPositivePotion) {
-            buttons.push({ title: "Retten", action: this.RequstSave.bind(this) });
+            buttons.push({ Title: "Retten", Action: this.requstSave.bind(this) });
         }
         if (this.hasNegativePotion) {
-            buttons.push({ title: "Person vergiften", action: this.RequstKill.bind(this) });
+            buttons.push({ Title: "Person vergiften", Action: this.requstKill.bind(this) });
         }
         return buttons;
     };
     IsAwakeThisNight = () => this.hasPositivePotion || this.hasNegativePotion;
 
-    private async RequstSave({ gameState, dialog }: { gameState: GameStateService, dialog: DialogService }) {
+    private async requstSave({ GameState, Dialog }: { GameState: GameStateService, Dialog: DialogService }) {
         try {
-            const victims = gameState.People.filter(p => p.isVictim);
-            const people = await dialog.ShowPeopleDialog("Wähle das Opfer aus", 1);
+            const victims = GameState.People.filter(p => p.IsVictim);
+            const people = await Dialog.ShowPeopleDialog("Wähle das Opfer aus", 1);
             if (!victims.includes(people[0])) {
                 return;
             }
-            people[0].isVictim = false;
+            people[0].IsVictim = false;
             this.hasPositivePotion = false;
         } catch {
             // closed
         }
     }
 
-    private async RequstKill({ dialog }: { dialog: DialogService }) {
+    private async requstKill({ Dialog }: { Dialog: DialogService }) {
         try {
-            const people = await dialog.ShowPeopleDialog("Wähle das Opfer aus", 1);
-            if (people[0].isVictim) {
+            const people = await Dialog.ShowPeopleDialog("Wähle das Opfer aus", 1);
+            if (people[0].IsVictim) {
                 return;
             }
-            people[0].isVictim = true;
+            people[0].IsVictim = true;
             this.hasNegativePotion = false;
         } catch {
             // closed

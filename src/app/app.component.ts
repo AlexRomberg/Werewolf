@@ -12,5 +12,5 @@ import { SpotifyComponent } from "./pages/spotify/spotify.component";
     styleUrl: "./app.component.css"
 })
 export class AppComponent {
-    title = "wolf";
+    Title = "wolf";
 }

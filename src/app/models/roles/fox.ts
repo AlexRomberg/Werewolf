@@ -1,12 +1,13 @@
-import { Action, CirclePerson, Role } from "../../types";
+import { Action, Character, Person } from "../../types";
 import { RequestAssignment } from "../actions/buttons";
 import { BasePriority } from "./roles";
 
-export class Fox implements Role, Action {
-    public Priority = BasePriority.Initial + 5;
-    public Image = "fox";
-    public Name = "Der Fuchs";
-    public AssignedPerson: CirclePerson | undefined;
+export class Fox implements Character, Action {
+    Priority = BasePriority.Initial + 5;
+    Image = "fox";
+    Name = "Der Fuchs";
+    IsSingle = true;
+    AssignedPerson: Person | undefined;
     private hasMisssed = false;
 
     GetPoints = () => [
@@ -21,8 +22,8 @@ export class Fox implements Role, Action {
         }
         if (!this.hasMisssed) {
             buttons.push({
-                title: "Hat verfehlt",
-                action: () => {
+                Title: "Hat verfehlt",
+                Action: () => {
                     this.hasMisssed = true;
                 }
             });

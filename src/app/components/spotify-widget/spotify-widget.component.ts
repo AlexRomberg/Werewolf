@@ -2,34 +2,34 @@ import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { SpotifyService } from "../../services/spotify.service";
 import { NgIconComponent } from "@ng-icons/core";
 import { BehaviorSubject, interval, merge, Subscription, switchMap, tap, timer } from "rxjs";
-import { AsyncPipe } from "@angular/common";
 
 @Component({
     selector: "app-spotify-widget",
     standalone: true,
-    imports: [NgIconComponent, AsyncPipe],
+    imports: [NgIconComponent],
     templateUrl: "./spotify-widget.component.html",
     styleUrl: "./spotify-widget.component.css"
 })
 export class SpotifyWidgetComponent implements OnInit, OnDestroy {
-    title = "Nichts am abspielen";
-    isPlaying = false;
-    link = "";
-    @Input() mode: "setup" | "narrator" = "setup";
+    Title = "Nichts am abspielen";
+    IsPlaying = false;
+    Link = "";
+    @Input() Mode: "setup" | "narrator" = "setup";
+
     private forceRefresh$ = new BehaviorSubject<Date>(new Date());
     private subscription: Subscription = new Subscription();
     private informedAboutPrivateSession = false;
 
-    constructor(public spotify: SpotifyService) { }
+    constructor(public Spotify: SpotifyService) { }
 
     async ngOnInit(): Promise<void> {
-        this.link = await this.spotify.getAccountConnectionLink();
+        this.Link = await this.Spotify.GetAccountConnectionLink();
         const tenSecondsInterval$ = interval(10000);
         const refresh$ = merge(tenSecondsInterval$, this.forceRefresh$);
 
         this.subscription = refresh$
             .pipe(
-                switchMap(() => this.spotify.getPlayerState()),
+                switchMap(() => this.Spotify.GetPlayerState()),
                 tap((data) => {
                     if (!data || !("item" in data && "is_playing" in data && "progress_ms" in data) || !data.item) {
                         if (!this.informedAboutPrivateSession && data?.device?.is_private_session) {
@@ -39,12 +39,12 @@ export class SpotifyWidgetComponent implements OnInit, OnDestroy {
                         return;
                     }
 
-                    const { item, is_playing, progress_ms } = data;
-                    this.title = item?.name + " - " + item?.artists?.map(a => a.name).join(", ");
-                    this.isPlaying = is_playing;
-                    const timeLeft = (item?.duration_ms ?? Number.MAX_SAFE_INTEGER) - progress_ms;
+                    const { item, is_playing: isPlaying, progress_ms: progressMs } = data;
+                    this.Title = item?.name + " - " + item?.artists?.map(a => a.name).join(", ");
+                    this.IsPlaying = isPlaying;
+                    const timeLeft = (item?.duration_ms ?? Number.MAX_SAFE_INTEGER) - progressMs;
 
-                    if (timeLeft <= 10000 && is_playing) {
+                    if (timeLeft <= 10000 && isPlaying) {
                         timer(timeLeft + 1000).subscribe(() => this.forceRefresh$.next(new Date()));
                     }
                 })
@@ -56,20 +56,20 @@ export class SpotifyWidgetComponent implements OnInit, OnDestroy {
         this.subscription.unsubscribe();
     }
 
-    public setPlayState(playing: boolean) {
+    public SetPlayState(playing: boolean): void {
         if (playing) {
-            this.spotify.play().subscribe(() => {
-                this.isPlaying = true;
+            this.Spotify.play().subscribe(() => {
+                this.IsPlaying = true;
             });
         } else {
-            this.spotify.pause().subscribe(() => {
-                this.isPlaying = false;
+            this.Spotify.pause().subscribe(() => {
+                this.IsPlaying = false;
             });
         }
     }
 
-    public skipSong() {
-        this.spotify.skipSong().subscribe(() => {
+    public SkipSong(): void {
+        this.Spotify.skipSong().subscribe(() => {
             this.forceRefresh$.next(new Date());
         });
     }

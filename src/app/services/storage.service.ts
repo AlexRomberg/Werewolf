@@ -1,5 +1,5 @@
 import { Injectable, isDevMode } from "@angular/core";
-import { RoleGroup } from "../types";
+import { CharacterGroup } from "../types";
 import { GroupedRoles } from "../models/roles/roles";
 
 @Injectable({
@@ -38,7 +38,7 @@ export class StorageService {
         localStorage.setItem("spotify_expires_in", value.toString());
     }
 
-    public ClearSpotifyData() {
+    public ClearSpotifyData(): void {
         localStorage.removeItem("spotify_access_token");
         localStorage.removeItem("spotify_code_verifier");
         localStorage.removeItem("spotify_expires_in");
@@ -46,20 +46,20 @@ export class StorageService {
     }
 
     // Setup
-    public get SetupSelection(): RoleGroup[] {
+    public get SetupSelection(): CharacterGroup[] {
         const selection: boolean[][] = JSON.parse(localStorage.getItem("setup_selected_cards") ?? "[]");
         const selectionGroups = GroupedRoles;
         for (let group = 0; group < selectionGroups.length; group++) {
-            for (let selectionIdx = 0; selectionIdx < selectionGroups[group].cards.length; selectionIdx++) {
+            for (let selectionIdx = 0; selectionIdx < selectionGroups[group].Cards.length; selectionIdx++) {
                 if (selection?.[group]?.[selectionIdx]) {
-                    selectionGroups[group].cards[selectionIdx].selected = selection[group][selectionIdx];
+                    selectionGroups[group].Cards[selectionIdx].Selected = selection[group][selectionIdx];
                 }
             }
         }
         return selectionGroups;
     }
-    public set SetupSelection(selectionGroups: RoleGroup[]) {
-        const slection = selectionGroups.map(v => v.cards.map(c => c.selected));
+    public set SetupSelection(selectionGroups: CharacterGroup[]) {
+        const slection = selectionGroups.map(v => v.Cards.map(c => c.Selected));
         localStorage.setItem("setup_selected_cards", JSON.stringify(slection));
     }
 

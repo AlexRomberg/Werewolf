@@ -1,6 +1,6 @@
 <div class="grid grid-cols-[1fr_auto] w-full h-svh">
     <div class="w-full h-svh p-20">
-        <app-circle [People]="state.People" [Connections]="state.Connections" (personClick)="handlePersonClicked($event)"></app-circle>
+        <app-circle [People]="state.People" [Connections]="state.Connections" (PersonClick)="HandlePersonClicked($event)"></app-circle>
     </div>
     <div class="w-[30rem] py-4 bg-gray-700 grid grid-rows-[auto_auto_auto_1fr_auto] h-svh overflow-hidden gap-2">
         @if (spotify.IsAuthenticated) {
@@ -19,17 +19,17 @@
                         <div>
                             <h1 class="text-xl" [class.text-gray-100]="actionIndex === 0" [class.text-gray-400]="actionIndex !== 0">{{action.Name}}</h1>
                             <ul>
-                                @for (point of getFilteredPoints(action); track $index) {
+                                @for (point of GetFilteredPoints(action); track $index) {
                                 <li class="list-disc ml-4" [class.text-gray-200]="actionIndex === 0" [class.text-gray-400]="actionIndex !== 0">{{point}}</li>
                                 }
                             </ul>
                         </div>
                         <img [src]="'/assets/icons/' + action.Image + '.png'" class="w-16 h-16 rounded-md md-shadow-md" [alt]="action.Name">
                     </div>
-                    @if (actionIndex === 0 && getFilteredButtons(action).length > 0) {
+                    @if (actionIndex === 0 && GetFilteredButtons(action).length > 0) {
                     <div class="flex flex-col gap-2 mt-4">
-                        @for (button of getFilteredButtons(action); track $index) {
-                        <button class="btn bg-gray-600 w-full" (click)="handleAction(button.action)">{{button.title}}</button>
+                        @for (button of GetFilteredButtons(action); track $index) {
+                        <button class="btn bg-gray-600 w-full" (click)="HandleAction(button.Action)">{{button.Title}}</button>
                         }
                     </div>
                     }
@@ -41,7 +41,7 @@
             @if (state.ActionHistory.length > 0) {
             <button class="btn bg-gray-500 block" (click)="state.PreviousAction();">← Zurück</button>
             }
-            <button class="btn bg-gray-500 block col-span-2" [class.col-span-3]="state.ActionHistory.length === 0" (click)="onNext()">Weiter →</button>
+            <button class="btn bg-gray-500 block col-span-2" [class.col-span-3]="state.ActionHistory.length === 0" (click)="OnNext()">Weiter →</button>
         </span>
     </div>
 </div>

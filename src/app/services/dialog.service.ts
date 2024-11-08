@@ -1,75 +1,75 @@
 import { Injectable } from "@angular/core";
-import { CirclePerson } from "../types";
+import { Person } from "../types";
 import { GameStateService } from "./game-state.service";
 
 @Injectable({
     providedIn: "root"
 })
 export class DialogService {
-    public peopleDialog: {
-        title: string, numberOfPeople?: number, people: CirclePerson[]
+    public PeopleDialog: {
+        Title: string, NumberOfPeople?: number, People: Person[]
     } | undefined;
-    public personDialog: {
-        person: CirclePerson
+    public PersonDialog: {
+        Person: Person
     } | undefined;
 
     constructor(private gameState: GameStateService) { }
 
-    public async ShowPersonDialog(person: CirclePerson) {
-        this.personDialog = { person };
+    public async ShowPersonDialog(person: Person): Promise<void> {
+        this.PersonDialog = { Person: person };
     }
 
-    public async ShowPeopleDialog(title: string, numberOfPeople?: number) {
-        return await new Promise<CirclePerson[]>((res, rej) => {
+    public async ShowPeopleDialog(title: string, numberOfPeople?: number): Promise<Person[]> {
+        return await new Promise<Person[]>((res, rej) => {
             this.peopleDialogCallback = res;
             this.peopleDialogRejection = rej;
-            this.peopleDialog = { title, numberOfPeople, people: this.gameState.People.map(p => ({ ...p, protected: false })) };
+            this.PeopleDialog = { Title: title, NumberOfPeople: numberOfPeople, People: this.gameState.People.map(p => ({ ...p, protected: false })) };
         });
     }
 
-    public SetPersonState(state: "protected" | "victim" | "nothing") {
-        if (!this.personDialog) {
+    public SetPersonState(state: "protected" | "victim" | "nothing"): void {
+        if (!this.PersonDialog) {
             return;
         }
-        this.personDialog.person.isProtected = state === "protected";
-        this.personDialog.person.isVictim = state === "victim";
+        this.PersonDialog.Person.IsProtected = state === "protected";
+        this.PersonDialog.Person.IsVictim = state === "victim";
     }
 
-    public PeopleDialogSelectionValid() {
-        if (!this.peopleDialog?.numberOfPeople) {
+    public PeopleDialogSelectionValid(): boolean {
+        if (!this.PeopleDialog?.NumberOfPeople) {
             return true;
         }
-        return this.peopleDialog?.people.filter(p => p.isProtected).length === this.peopleDialog.numberOfPeople;
+        return this.PeopleDialog?.People.filter(p => p.IsProtected).length === this.PeopleDialog.NumberOfPeople;
     }
 
-    public OnPersonSelected(person: CirclePerson) {
-        if (this.peopleDialog && this.peopleDialog.numberOfPeople === 1) {
-            this.peopleDialog.people.forEach(p => p.isProtected = false);
+    public OnPersonSelected(person: Person): void {
+        if (this.PeopleDialog && this.PeopleDialog.NumberOfPeople === 1) {
+            this.PeopleDialog.People.forEach(p => p.IsProtected = false);
         }
 
-        person.isProtected = !person.isProtected;
+        person.IsProtected = !person.IsProtected;
     }
 
-    public ApplyPeopleDialog() {
-        if (!this.peopleDialog) {
+    public ApplyPeopleDialog(): void {
+        if (!this.PeopleDialog) {
             return;
         }
-        this.peopleDialogCallback(this.peopleDialog.people.filter(p => p.isProtected).map(f => this.gameState.People.find(p => p.id === f.id)!).filter(Boolean));
-        this.peopleDialog = undefined;
+        this.peopleDialogCallback(this.PeopleDialog.People.filter(p => p.IsProtected).map(f => this.gameState.People.find(p => p.Id === f.Id)!).filter(Boolean));
+        this.PeopleDialog = undefined;
     }
 
-    public QuitPeopleDialog() {
-        if (!this.peopleDialog) {
+    public QuitPeopleDialog(): void {
+        if (!this.PeopleDialog) {
             return;
         }
-        this.peopleDialog = undefined;
+        this.PeopleDialog = undefined;
         this.peopleDialogRejection();
     }
 
-    public QuitPersonDialog() {
-        this.personDialog = undefined;
+    public QuitPersonDialog(): void {
+        this.PersonDialog = undefined;
     }
 
-    private peopleDialogCallback: (people: CirclePerson[]) => void = () => { return; };
-    private peopleDialogRejection = () => { return; };
+    private peopleDialogCallback: (people: Person[]) => void = () => { return; };
+    private peopleDialogRejection: () => void = () => { return; };
 }

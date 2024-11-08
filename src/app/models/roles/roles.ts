@@ -5,7 +5,7 @@ import { BigWolf } from "./bigWolf";
 import { Bitch } from "./bitch";
 import { Brothers } from "./brothers";
 import { Cupit } from "./cupit";
-import { DogWolf } from "./dogWolf";
+import { WolfDog } from "./wolfDog";
 import { FlutePlayer } from "./flutePlayer";
 import { Fox } from "./fox";
 import { Healer } from "./healer";
@@ -26,6 +26,7 @@ import { Werewolf } from "./werewolf";
 import { WhiteWolf } from "./whiteWolf";
 import { WildChild } from "./wildChild";
 import { Witch } from "./witch";
+import { CharacterGroup } from "../../types";
 
 export enum BasePriority {
     Initial = 0,
@@ -33,49 +34,49 @@ export enum BasePriority {
     PostWolf = 100,
 }
 
-export const GroupedRoles = [
+export const GroupedRoles: CharacterGroup[] = [
     {
-        name: "Werwölfe",
-        cards: [
-            { role: new Werewolf(), selected: isDevMode(), multicard: true },
-            { role: new PrimalWolf(), selected: false },
-            { role: new WildChild(), selected: isDevMode() },
-            { role: new WhiteWolf(), selected: false },
-            { role: new BigWolf(), selected: false },
-            { role: new DogWolf(), selected: false },
+        Name: "Werwölfe",
+        Cards: [
+            { Character: new Werewolf(), Selected: isDevMode(), Multicard: true },
+            { Character: new PrimalWolf(), Selected: false },
+            { Character: new WildChild(), Selected: isDevMode() },
+            { Character: new WhiteWolf(), Selected: false },
+            { Character: new BigWolf(), Selected: false },
+            { Character: new WolfDog(), Selected: false },
         ]
     }, {
-        name: "Aktive",
-        cards: [
-            { role: new Witch(), selected: false },
-            { role: new Seer(), selected: false },
-            { role: new Thief(), selected: false },
-            { role: new Cupit(), selected: isDevMode() },
-            { role: new Healer(), selected: false },
-            { role: new SmallChild(), selected: false },
-            { role: new Bitch(), selected: isDevMode() },
-            { role: new Brothers(), selected: false, multicard: true },
-            { role: new Sisters(), selected: false, multicard: true },
-            { role: new Scapegoat(), selected: false },
-            { role: new Fox(), selected: false },
+        Name: "Aktive",
+        Cards: [
+            { Character: new Witch(), Selected: false },
+            { Character: new Seer(), Selected: false },
+            { Character: new Thief(), Selected: false },
+            { Character: new Cupit(), Selected: isDevMode() },
+            { Character: new Healer(), Selected: false },
+            { Character: new SmallChild(), Selected: false },
+            { Character: new Bitch(), Selected: isDevMode() },
+            { Character: new Brothers(), Selected: false, Multicard: true },
+            { Character: new Sisters(), Selected: false, Multicard: true },
+            { Character: new Scapegoat(), Selected: false },
+            { Character: new Fox(), Selected: false },
         ]
     }, {
-        name: "Passive",
-        cards: [
-            { role: new Villager(), selected: false, multicard: true },
-            { role: new Hunter(), selected: false },
-            { role: new Knight(), selected: false },
-            { role: new BearGuide(), selected: false },
-            { role: new Old(), selected: false },
-            { role: new VillageIdiot(), selected: false },
-            { role: new Juggler(), selected: false },
+        Name: "Passive",
+        Cards: [
+            { Character: new Villager(), Selected: false, Multicard: true },
+            { Character: new Hunter(), Selected: false },
+            { Character: new Knight(), Selected: false },
+            { Character: new BearGuide(), Selected: false },
+            { Character: new Old(), Selected: false },
+            { Character: new VillageIdiot(), Selected: false },
+            { Character: new Juggler(), Selected: false },
         ]
     }, {
-        name: "Einzelgänger",
-        cards: [
-            { role: new Angel(), selected: false },
-            { role: new OldMan(), selected: false },
-            { role: new FlutePlayer(), selected: false },
+        Name: "Einzelgänger",
+        Cards: [
+            { Character: new Angel(), Selected: false },
+            { Character: new OldMan(), Selected: false },
+            { Character: new FlutePlayer(), Selected: false },
         ]
     }
 ];

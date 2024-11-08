@@ -1,8 +1,9 @@
-import { Action, Role } from "../../types";
+import { Action, Character } from "../../types";
 
-export class Judge implements Role, Action {
-    public Image = "judge";
-    public Name = "Der Richter";
+export class Judge implements Character, Action {
+    Image = "judge";
+    Name = "Der Richter";
+    IsSingle = true;
 
     IsAwakeThisNight = () => false;
 }

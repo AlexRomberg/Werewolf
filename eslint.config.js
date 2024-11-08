@@ -69,6 +69,104 @@ module.exports = tseslint.config(
         },
       ],
       "no-multiple-empty-lines": ["error", { max: 1 }],
+      "@typescript-eslint/naming-convention": ["error",
+        {
+          selector: "default",
+          format: ["camelCase"],
+          leadingUnderscore: "allow",
+          trailingUnderscore: "forbid",
+        },
+        {
+          selector: "import",
+          format: ["camelCase", "PascalCase"],
+        },
+        {
+          selector: "variable",
+          format: ["camelCase", "UPPER_CASE", "PascalCase"],
+          leadingUnderscore: "allow",
+          trailingUnderscore: "forbid",
+        },
+        {
+          selector: "typeLike",
+          format: ["PascalCase"],
+        },
+        {
+          selector: "class",
+          format: ["PascalCase"]
+        },
+        {
+          selector: "method",
+          modifiers: ["public"],
+          format: ["PascalCase"],
+          leadingUnderscore: "forbid",
+          filter: { regex: "^ng.*", match: false }
+        },
+        {
+          selector: "method",
+          modifiers: ["private"],
+          format: ["camelCase"],
+          leadingUnderscore: "forbid"
+        },
+        {
+          selector: "property",
+          modifiers: ["public"],
+          format: ["PascalCase"],
+          leadingUnderscore: "forbid"
+        },
+        {
+          selector: "property",
+          format: ["PascalCase"],
+          leadingUnderscore: "forbid"
+        },
+        {
+          selector: "property",
+          modifiers: ["private"],
+          format: ["camelCase"],
+          leadingUnderscore: "forbid"
+        },
+        {
+          selector: "classicAccessor",
+          modifiers: ["public"],
+          format: ["PascalCase"],
+          leadingUnderscore: "forbid"
+        },
+        {
+          selector: "classicAccessor",
+          format: ["PascalCase"],
+          leadingUnderscore: "forbid"
+        },
+        {
+          selector: "classicAccessor",
+          modifiers: ["private"],
+          format: ["camelCase"],
+          leadingUnderscore: "forbid"
+        },
+        {
+          selector: "objectLiteralProperty",
+          format: ["camelCase", "PascalCase"],
+          leadingUnderscore: "forbid"
+        },
+        {
+          selector: "variable",
+          format: ["camelCase"]
+        },
+        {
+          selector: "enum",
+          format: ["PascalCase"]
+        },
+        {
+          selector: "enumMember",
+          format: ["PascalCase"]
+        },
+        {
+          selector: "parameterProperty",
+          format: ["PascalCase", "camelCase"]
+        },
+        {
+          selector: "parameter",
+          format: ["PascalCase", "camelCase"]
+        },
+      ]
     },
   },
   {

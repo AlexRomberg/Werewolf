@@ -1,59 +1,62 @@
 import { DialogService } from "./services/dialog.service";
 import { GameStateService } from "./services/game-state.service";
 
-export interface CirclePerson {
-    id: number;
-    name: string | undefined;
-    isProtected: boolean;
-    isVictim: boolean;
-    isEnchanted: boolean;
-    isWerewolf: boolean;
-    isDead: boolean;
-    role?: Role;
+export interface Person {
+    Id: number;
+    Name: string | undefined;
+    IsProtected: boolean;
+    IsVictim: boolean;
+    IsEnchanted: boolean;
+    IsWerewolf: boolean;
+    IsDead: boolean;
+    Character?: Character;
 }
 
-export interface CircleConnection {
-    type: CircleConnectionTypes;
-    from: CirclePerson;
-    to: CirclePerson;
+export interface Connection {
+    Type: ConnectionTypes;
+    From: Person;
+    To: Person;
 }
 
-export enum CircleConnectionTypes {
+export enum ConnectionTypes {
     Love,
     Trust,
-    Sleepover,
+    Sleepover
 }
 
 export interface Action {
     Name: string;
     Image: string;
     GetPoints?: () => (string | false)[]
-    GetButtons?: () => {
-        title: string
-        action: ActionCallback
-    }[]
+    GetButtons?: () => ActionButton[]
+}
+
+export interface ActionButton {
+    Title: string
+    Action: ActionCallback
 }
 
 export type ActionCallback = (services: {
-    gameState: GameStateService,
-    dialog: DialogService,
+    GameState: GameStateService,
+    Dialog: DialogService,
 }) => void;
 
-export interface Role {
+export interface Character {
     Name: string;
     Image: string;
+    IsSingle: boolean;
     Priority?: number;
     Action?: Action;
-    AssignedPerson?: CirclePerson
-    AssignedPeople?: CirclePerson[]
+    AssignedPerson?: Person
+    AssignedPeople?: Person[]
     IsAwakeThisNight: (nightCount: number, gameState: GameStateService) => boolean;
 }
 
-export interface RoleGroup {
-    name: string;
-    cards: CardSelectionInformation[]
+export interface CharacterGroup {
+    Name: string;
+    Cards: CardSelectionInformation[]
 }
 
 export interface CardSelectionInformation {
-    role: Role, selected: boolean, multicard?: boolean
+    Character: Character, Selected: boolean, Multicard?: boolean
 }

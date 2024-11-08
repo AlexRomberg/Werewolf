@@ -12,7 +12,7 @@
 
     <!-- Connections -->
     @for (connection of Connections; track $index) {
-    <path [attr.d]="getConnectionPath($index)" style="fill:none;stroke-width:22.22px;" [style.stroke]="getConnectionColor(connection.type)" />
+    <path [attr.d]="GetConnectionPath($index)" style="fill:none;stroke-width:22.22px;" [style.stroke]="GetConnectionColor(connection.Type)" />
     }
 
     <!-- Ring -->
@@ -21,27 +21,27 @@
     <!-- People -->
     @for (person of People; track $index) {
     <!-- - Image -->
-    @if (person.role) {
-    <clipPath [id]="'clip_'+person.id" class="pointer-events-none" (click)="onPersonClicked(person)">
-        <circle [attr.cx]="getCoordinateX($index)" [attr.cy]="getCoordinateY($index)" r="100" class="pointer-events-none" (click)="onPersonClicked(person)" />
+    @if (person.Character) {
+    <clipPath [id]="'clip_'+person.Id" class="pointer-events-none" (click)="OnPersonClicked(person)">
+        <circle [attr.cx]="GetCoordinateX($index)" [attr.cy]="GetCoordinateY($index)" r="100" class="pointer-events-none" (click)="OnPersonClicked(person)" />
     </clipPath>
-    <g [attr.clip-path]="'url(#clip_' + person.id + ')'">
-        <image [attr.href]="'/assets/icons/' + person.role.Image + '.png'" [attr.x]="getCoordinateX($index) - 110" [attr.y]="getCoordinateY($index) - 110" width="220" height="220" />
+    <g [attr.clip-path]="'url(#clip_' + person.Id + ')'">
+        <image [attr.href]="'/assets/icons/' + person.Character.Image + '.png'" [attr.x]="GetCoordinateX($index) - 110" [attr.y]="GetCoordinateY($index) - 110" width="220" height="220" />
     </g>
     }
 
     <!-- - Name -->
-    <text filter="url(#solid)" [attr.x]="getTextCoordinateX($index)" [attr.y]="getTextCoordinateY($index)">{{person.name}}</text>
+    <text filter="url(#solid)" [attr.x]="GetTextCoordinateX($index)" [attr.y]="GetTextCoordinateY($index)">{{person.Name}}</text>
 
     <!-- - Circle -->
-    <circle [attr.cx]="getCoordinateX($index)" [attr.cy]="getCoordinateY($index)" r="100" class="ring cursor-pointer" [class.!fill-gray-700]="!person.role" [style.stroke]="getRingColor(person, 0)" (click)="onPersonClicked(person)" />
-    <circle [attr.cx]="getCoordinateX($index)" [attr.cy]="getCoordinateY($index)" r="115" class="ring pointer-events-none" [style.stroke]="getRingColor(person, 1)" />
-    <circle [attr.cx]="getCoordinateX($index)" [attr.cy]="getCoordinateY($index)" r="130" class="ring pointer-events-none" [style.stroke]="getRingColor(person, 2)" />
-    <circle [attr.cx]="getCoordinateX($index)" [attr.cy]="getCoordinateY($index)" r="145" class="ring pointer-events-none" [style.stroke]="getRingColor(person, 3)" />
+    <circle [attr.cx]="GetCoordinateX($index)" [attr.cy]="GetCoordinateY($index)" r="100" class="ring cursor-pointer" [class.!fill-gray-700]="!person.Character" [style.stroke]="GetRingColor(person, 0)" (click)="OnPersonClicked(person)" />
+    <circle [attr.cx]="GetCoordinateX($index)" [attr.cy]="GetCoordinateY($index)" r="115" class="ring pointer-events-none" [style.stroke]="GetRingColor(person, 1)" />
+    <circle [attr.cx]="GetCoordinateX($index)" [attr.cy]="GetCoordinateY($index)" r="130" class="ring pointer-events-none" [style.stroke]="GetRingColor(person, 2)" />
+    <circle [attr.cx]="GetCoordinateX($index)" [attr.cy]="GetCoordinateY($index)" r="145" class="ring pointer-events-none" [style.stroke]="GetRingColor(person, 3)" />
 
     <!-- - Dead -->
-    @if (person.isDead) {
-    <path [attr.d]="getCrossPath($index)" style="stroke-width:22.22px;" class="fill-none stroke-red-800 pointer-events-none" />
+    @if (person.IsDead) {
+    <path [attr.d]="GetCrossPath($index)" style="stroke-width:22.22px;" class="fill-none stroke-red-800 pointer-events-none" />
     }
     }
 </svg>

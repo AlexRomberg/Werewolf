@@ -1,8 +1,9 @@
-import { Action, Role } from "../../types";
+import { Action, Character } from "../../types";
 
-export class Maid implements Role, Action {
+export class Maid implements Character, Action {
     public Image = "maid";
     public Name = "Die Ergebene Magd";
+    public IsSingle = true;
 
     IsAwakeThisNight = () => false;
 }

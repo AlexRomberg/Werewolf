@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 import { CircleComponent } from "../../components/circle/circle.component";
 import { GameStateService } from "../../services/game-state.service";
 import { DialogService } from "../../services/dialog.service";
-import { Action, ActionCallback, CirclePerson } from "../../types";
+import { Action, ActionCallback, Person } from "../../types";
 import { FormsModule } from "@angular/forms";
 import { SpotifyWidgetComponent } from "../../components/spotify-widget/spotify-widget.component";
 import { SpotifyService } from "../../services/spotify.service";
@@ -20,18 +20,18 @@ export class NarratorComponent {
     private firstNightfall = true;
     constructor(public state: GameStateService, public dialog: DialogService, public spotify: SpotifyService) { }
 
-    public handleAction(fn: ActionCallback) {
+    public HandleAction(fn: ActionCallback): void {
         fn({
-            gameState: this.state,
-            dialog: this.dialog
+            GameState: this.state,
+            Dialog: this.dialog
         });
     }
 
-    public onNext() {
+    public OnNext(): void {
         if (this.spotify.IsAuthenticated && this.firstNightfall) {
             this.spotify.playPlaylist(environment.spotify.playlists.special, false, true).pipe(delay(1000)).subscribe(() => {
-                this.spotify.getPlayerState().subscribe(({ progress_ms, item }) => {
-                    const remainingTime = Math.min(22_000, (item?.duration_ms ?? Number.MAX_SAFE_INTEGER) - progress_ms - 500);
+                this.spotify.GetPlayerState().subscribe(({ progress_ms: progressMs, item }) => {
+                    const remainingTime = Math.min(22_000, (item?.duration_ms ?? Number.MAX_SAFE_INTEGER) - progressMs - 500);
 
                     setTimeout(() => {
                         this.spotify.playPlaylist(environment.spotify.playlists.general, true, true).subscribe();
@@ -43,15 +43,18 @@ export class NarratorComponent {
         this.state.NextAction();
     }
 
-    async handlePersonClicked(person: CirclePerson) {
+    public async HandlePersonClicked(person: Person): Promise<void> {
         this.dialog.ShowPersonDialog(person);
     }
 
-    getFilteredPoints(action: Action) {
+    public GetFilteredPoints(action: Action): string[] {
         return action.GetPoints?.().filter(Boolean) as string[] ?? [];
     }
 
-    getFilteredButtons(action: Action) {
+    public GetFilteredButtons(action: Action): {
+        Title: string;
+        Action: ActionCallback;
+    }[] {
         return action.GetButtons?.() ?? [];
     }
 }
