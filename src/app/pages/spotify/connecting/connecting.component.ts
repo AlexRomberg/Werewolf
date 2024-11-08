@@ -1,24 +1,24 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import { SpotifyService } from "../../services/spotify.service";
 import { ActivatedRoute } from "@angular/router";
 import { Subscription } from "rxjs";
+import { SpotifyService } from "../../../services/spotify.service";
 
 @Component({
-    selector: "app-spotify",
+    selector: "app-connecting",
     standalone: true,
     imports: [],
-    templateUrl: "./spotify.component.html"
+    templateUrl: "./connecting.component.html"
 })
-export class SpotifyComponent implements OnInit, OnDestroy {
+export class ConnectingComponent implements OnInit, OnDestroy {
     private routeParamsSubscription: Subscription | undefined;
 
-    constructor(public spotify: SpotifyService, private route: ActivatedRoute) { }
+    constructor(public Spotify: SpotifyService, private Route: ActivatedRoute) { }
 
     ngOnInit(): void {
-        this.routeParamsSubscription = this.route.queryParamMap.subscribe(params => {
+        this.routeParamsSubscription = this.Route.queryParamMap.subscribe(params => {
             const code = params.get("code");
             if (code) {
-                this.spotify.handleAuthCode(code);
+                this.Spotify.HandleAuthCode(code);
             }
         });
     }

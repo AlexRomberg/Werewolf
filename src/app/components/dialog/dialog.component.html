@@ -1,53 +1,9 @@
-@if (dialog.PeopleDialog || dialog.PersonDialog) {
+@if (Dialog.PeopleDialog || Dialog.PersonDialog) {
 <div class="fixed top-0 left-0 w-dvw h-dvh bg-gray-950/60 backdrop-blur-sm flex justify-center items-center">
-    <div class="bg-slate-800 h-[36rem] w-[36rem] p-4 rounded-2xl grid grid-rows-[auto_1fr_auto] gap-2">
-        @if (dialog.PeopleDialog) {
-        <h1 class="text-gray-200 text-2xl">{{dialog.PeopleDialog.Title}}</h1>
-        <div class="h-96 self-center ml-12">
-            <app-circle [People]="dialog.PeopleDialog.People" (PersonClick)="dialog.OnPersonSelected($event)"></app-circle>
-        </div>
-        <span class="grid grid-cols-2 gap-2">
-            <button class="text-gray-200 bg-gray-500 w-full btn" (click)="dialog.QuitPeopleDialog()">Abbrechen</button>
-            <button [class.bg-gray-600]="!dialog.PeopleDialogSelectionValid()" [disabled]="!dialog.PeopleDialogSelectionValid()" class="text-gray-200 bg-gray-500 w-full btn" (click)="dialog.ApplyPeopleDialog()">Ok</button>
-        </span>
-        } @else if(dialog.PersonDialog) {
-        <h1 class="text-gray-200 text-2xl">Informationen zum Spieler</h1>
-        <div class="flex flex-col gap-2 overflow-auto">
-            <label class="text-gray-200" for="name">Name</label>
-            <input class="rounded-md py-3 px-6 text-gray-100 bg-gray-500" type="text" name="name" id="name" [(ngModel)]="dialog.PersonDialog.Person.Name">
-            <label class="text-gray-200 mt-2" for="function">Funktion</label>
-            <select class="rounded-md py-3 px-6 text-gray-100 bg-gray-500" name="function" id="function" [(ngModel)]="dialog.PersonDialog.Person.Character">
-                <option class="text-gray-100 bg-gray-500" [ngValue]="undefined">Unbekannt</option>
-                @for (character of gameState.Characters; track $index) {
-                <option class="text-gray-100 bg-gray-500" [ngValue]="character">{{character.Name}}</option>
-                }
-            </select>
-            <label class="text-gray-200 mt-2" for="StateButtons">Zustand</label>
-            <div id="StateButtons" class="grid grid-rows-5">
-                <span class="flex gap-4 p-2 bg-gray-700 rounded-md">
-                    <input type="checkbox" id="protected" class="w-6 h-6" style="accent-color: orange;" [(ngModel)]="dialog.PersonDialog.Person.IsProtected">
-                    <label class="text-gray-200" for="protected">Geschützt</label>
-                </span>
-                <span class="flex gap-4 p-2">
-                    <input type="checkbox" id="victim" class="w-6 h-6" style="accent-color: red;" [(ngModel)]="dialog.PersonDialog.Person.IsVictim">
-                    <label class="text-gray-200" for="victim">Wolfs- / Hexenopfer</label>
-                </span>
-                <span class="flex gap-4 p-2 bg-gray-700 rounded-md">
-                    <input type="checkbox" id="enchanted" class="w-6 h-6" style="accent-color: deepPink;" [(ngModel)]="dialog.PersonDialog.Person.IsEnchanted">
-                    <label class="text-gray-200" for="enchanted">Verzaubert</label>
-                </span>
-                <span class="flex gap-4 p-2">
-                    <input type="checkbox" id="werewolf" class="w-6 h-6" style="accent-color: black;" [(ngModel)]="dialog.PersonDialog.Person.IsWerewolf">
-                    <label class="text-gray-200" for="werewolf">Werwolf (Infiziert / Wildes Kind ohne Vorbild)</label>
-                </span>
-                <span class="flex gap-4 p-2 bg-gray-700 rounded-md">
-                    <input type="checkbox" id="dead" class="w-6 h-6 accent-red-800" [(ngModel)]="dialog.PersonDialog.Person.IsDead">
-                    <label class="text-gray-200" for="dead">Tod</label>
-                </span>
-            </div>
-        </div>
-        <button class="text-gray-200 bg-gray-500 w-full btn" (click)="dialog.QuitPersonDialog()">Ok</button>
-        }
-    </div>
+    @if (Dialog.PeopleDialog) {
+    <app-people-selection [PeopleDialog]="Dialog.PeopleDialog"></app-people-selection>
+    } @else if(Dialog.PersonDialog) {
+    <app-person-details [Person]="Dialog.PersonDialog.Person"></app-person-details>
+    }
 </div>
 }
