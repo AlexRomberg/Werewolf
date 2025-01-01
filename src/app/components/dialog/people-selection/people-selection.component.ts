@@ -6,7 +6,6 @@ import { Person } from "../../../types";
 
 @Component({
     selector: "app-people-selection",
-    standalone: true,
     imports: [CircleComponent],
     templateUrl: "./people-selection.component.html"
 })

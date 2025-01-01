@@ -5,7 +5,6 @@ import { BehaviorSubject, interval, merge, Subscription, switchMap, tap, timer }
 
 @Component({
     selector: "app-spotify-widget",
-    standalone: true,
     imports: [NgIconComponent],
     templateUrl: "./spotify-widget.component.html",
     styleUrl: "./spotify-widget.component.css"

@@ -5,7 +5,6 @@ import { SpotifyService } from "../../../services/spotify.service";
 
 @Component({
     selector: "app-connecting",
-    standalone: true,
     imports: [],
     templateUrl: "./connecting.component.html"
 })

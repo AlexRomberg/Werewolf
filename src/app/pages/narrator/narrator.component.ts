@@ -11,7 +11,6 @@ import { delay } from "rxjs";
 
 @Component({
     selector: "app-narrator",
-    standalone: true,
     imports: [CircleComponent, FormsModule, SpotifyWidgetComponent],
     templateUrl: "./narrator.component.html",
     styleUrl: "./narrator.component.css"

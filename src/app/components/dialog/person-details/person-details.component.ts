@@ -6,7 +6,6 @@ import { DialogService } from "../../../services/dialog.service";
 
 @Component({
     selector: "app-person-details",
-    standalone: true,
     imports: [FormsModule],
     templateUrl: "./person-details.component.html"
 })

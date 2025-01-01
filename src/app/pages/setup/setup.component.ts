@@ -12,7 +12,6 @@ import { StorageService } from "../../services/storage.service";
 
 @Component({
     selector: "app-setup",
-    standalone: true,
     imports: [FormsModule, CardComponent, SpotifyWidgetComponent],
     templateUrl: "./setup.component.html"
 })

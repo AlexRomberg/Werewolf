@@ -5,7 +5,6 @@ import { PersonDetailsComponent } from "./person-details/person-details.componen
 
 @Component({
     selector: "app-dialog",
-    standalone: true,
     imports: [PeopleSelectionComponent, PersonDetailsComponent],
     templateUrl: "./dialog.component.html"
 })

@@ -3,7 +3,6 @@ import { Connection, ConnectionTypes, Person } from "../../types";
 
 @Component({
     selector: "app-circle",
-    standalone: true,
     imports: [],
     templateUrl: "./circle.component.html",
     styleUrl: "./circle.component.css"
