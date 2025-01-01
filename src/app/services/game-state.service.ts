@@ -1,9 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Action, Character, Connection, ConnectionTypes, Person } from "../types";
 import { DaybreakAction, NightfallAction, RulesAction } from "../models/actions/generic";
-import { WildChild } from "../models/characters/wildChild";
-import { Bitch } from "../models/characters/bitch";
-import { Werewolf } from "../models/characters/werewolf";
 
 @Injectable({
     providedIn: "root"
@@ -73,7 +70,7 @@ export class GameStateService {
         for (const connection of connections) {
             switch (connection.type) {
                 case ConnectionTypes.Trust:
-                    if (connection.person.Character instanceof WildChild) {
+                    if (connection.person.Character?.Image === "wild_child") {
                         connection.person.IsWerewolf = true;
                     }
                     break;
@@ -86,7 +83,7 @@ export class GameStateService {
                     }
                     break;
                 case ConnectionTypes.Sleepover:
-                    if (!isFollowUpCheck && connection.person.Character instanceof Bitch) {
+                    if (!isFollowUpCheck && connection.person.Character?.Image === "small_child") {
                         connection.person.IsVictim = false;
                         connection.person.IsDead = true;
                         diedPeople.push(connection.person);
@@ -99,7 +96,7 @@ export class GameStateService {
     }
 
     private filterActivePeople(role: Character): boolean {
-        if (role instanceof Werewolf) {
+        if (role.Image === "werewolf") {
             return true;
         }
         if (!role.IsAwakeThisNight(this.Night, this)) {
