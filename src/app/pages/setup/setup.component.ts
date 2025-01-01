@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { GameStateService } from "../../services/game-state.service";
 import { Router } from "@angular/router";
@@ -16,10 +16,17 @@ import { StorageService } from "../../services/storage.service";
     templateUrl: "./setup.component.html"
 })
 export class SetupComponent {
+    private state = inject(GameStateService);
+    private router = inject(Router);
+    private spotify = inject(SpotifyService);
+    private storage = inject(StorageService);
+
     public Roles: CharacterGroup[];
     public PeopleCount: number;
 
-    constructor(private state: GameStateService, private router: Router, private spotify: SpotifyService, private storage: StorageService) {
+    constructor() {
+        const storage = this.storage;
+
         this.Roles = storage.SetupSelection;
         this.PeopleCount = storage.SetupPeopleCount;
     }

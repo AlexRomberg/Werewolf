@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { DialogService } from "../../services/dialog.service";
 import { PeopleSelectionComponent } from "./people-selection/people-selection.component";
 import { PersonDetailsComponent } from "./person-details/person-details.component";
@@ -9,5 +9,5 @@ import { PersonDetailsComponent } from "./person-details/person-details.componen
     templateUrl: "./dialog.component.html"
 })
 export class DialogComponent {
-    constructor(public Dialog: DialogService) { }
+    Dialog = inject(DialogService);
 }

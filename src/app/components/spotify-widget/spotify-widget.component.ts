@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from "@angular/core";
+import { Component, inject, Input, OnDestroy, OnInit } from "@angular/core";
 import { SpotifyService } from "../../services/spotify.service";
 import { NgIconComponent } from "@ng-icons/core";
 import { BehaviorSubject, interval, merge, Subscription, switchMap, tap, timer } from "rxjs";
@@ -10,6 +10,8 @@ import { BehaviorSubject, interval, merge, Subscription, switchMap, tap, timer }
     styleUrl: "./spotify-widget.component.css"
 })
 export class SpotifyWidgetComponent implements OnInit, OnDestroy {
+    Spotify = inject(SpotifyService);
+
     Title = "Nichts am abspielen";
     IsPlaying = false;
     Link = "";
@@ -18,8 +20,6 @@ export class SpotifyWidgetComponent implements OnInit, OnDestroy {
     private forceRefresh$ = new BehaviorSubject<Date>(new Date());
     private subscription: Subscription = new Subscription();
     private informedAboutPrivateSession = false;
-
-    constructor(public Spotify: SpotifyService) { }
 
     async ngOnInit(): Promise<void> {
         this.Link = await this.Spotify.GetAccountConnectionLink();

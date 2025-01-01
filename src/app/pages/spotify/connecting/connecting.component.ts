@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, inject, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Subscription } from "rxjs";
 import { SpotifyService } from "../../../services/spotify.service";
@@ -9,9 +9,10 @@ import { SpotifyService } from "../../../services/spotify.service";
     templateUrl: "./connecting.component.html"
 })
 export class ConnectingComponent implements OnInit, OnDestroy {
-    private routeParamsSubscription: Subscription | undefined;
+    Spotify = inject(SpotifyService);
+    private Route = inject(ActivatedRoute);
 
-    constructor(public Spotify: SpotifyService, private Route: ActivatedRoute) { }
+    private routeParamsSubscription: Subscription | undefined;
 
     ngOnInit(): void {
         this.routeParamsSubscription = this.Route.queryParamMap.subscribe(params => {

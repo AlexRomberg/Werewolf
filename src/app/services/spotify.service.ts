@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { catchError, map, Observable, of, switchMap, tap } from "rxjs";
 import { environment } from "../../environments/environment";
@@ -9,6 +9,10 @@ import { StorageService as StorageService } from "./storage.service";
     providedIn: "root"
 })
 export class SpotifyService {
+    private http = inject(HttpClient);
+    private router = inject(Router);
+    private storage = inject(StorageService);
+
     private clientId = environment.spotify.clientId;
     private redirectUri = environment.spotify.redirectUri;
     private authUrl = environment.spotify.authUrl;
@@ -22,8 +26,7 @@ export class SpotifyService {
     public get IsAuthenticated(): boolean {
         return Boolean(this.accessToken);
     }
-
-    constructor(private http: HttpClient, private router: Router, private storage: StorageService) {
+    constructor() {
         this.loadTokens();
         window.addEventListener("storage", this.loadTokens.bind(this));
     }

@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { Person } from "../types";
 import { GameStateService } from "./game-state.service";
 
@@ -6,14 +6,14 @@ import { GameStateService } from "./game-state.service";
     providedIn: "root"
 })
 export class DialogService {
+    private gameState = inject(GameStateService);
+
     public PeopleDialog: {
         Title: string, NumberOfPeople?: number, People: Person[]
     } | undefined;
     public PersonDialog: {
         Person: Person
     } | undefined;
-
-    constructor(private gameState: GameStateService) { }
 
     public async ShowPersonDialog(person: Person): Promise<void> {
         this.PersonDialog = { Person: person };

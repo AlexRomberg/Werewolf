@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { CircleComponent } from "../../components/circle/circle.component";
 import { GameStateService } from "../../services/game-state.service";
 import { DialogService } from "../../services/dialog.service";
@@ -16,8 +16,11 @@ import { delay } from "rxjs";
     styleUrl: "./narrator.component.css"
 })
 export class NarratorComponent {
+    state = inject(GameStateService);
+    dialog = inject(DialogService);
+    spotify = inject(SpotifyService);
+
     private firstNightfall = true;
-    constructor(public state: GameStateService, public dialog: DialogService, public spotify: SpotifyService) { }
 
     public HandleAction(fn: ActionCallback): void {
         fn({

@@ -1,4 +1,3 @@
-import { isDevMode } from "@angular/core";
 import { Angel } from "./angel";
 import { BearGuide } from "./bearGuide";
 import { BigWolf } from "./bigWolf";
@@ -38,9 +37,9 @@ export const GroupedRoles: CharacterGroup[] = [
     {
         Name: "Werwölfe",
         Cards: [
-            { Character: new Werewolf(), Selected: isDevMode(), Multicard: true },
+            { Character: new Werewolf(), Selected: false, Multicard: true },
             { Character: new PrimalWolf(), Selected: false },
-            { Character: new WildChild(), Selected: isDevMode() },
+            { Character: new WildChild(), Selected: false },
             { Character: new WhiteWolf(), Selected: false },
             { Character: new BigWolf(), Selected: false },
             { Character: new WolfDog(), Selected: false },
@@ -51,10 +50,10 @@ export const GroupedRoles: CharacterGroup[] = [
             { Character: new Witch(), Selected: false },
             { Character: new Seer(), Selected: false },
             { Character: new Thief(), Selected: false },
-            { Character: new Cupit(), Selected: isDevMode() },
+            { Character: new Cupit(), Selected: false },
             { Character: new Healer(), Selected: false },
             { Character: new SmallChild(), Selected: false },
-            { Character: new Bitch(), Selected: isDevMode() },
+            { Character: new Bitch(), Selected: false },
             { Character: new Brothers(), Selected: false, Multicard: true },
             { Character: new Sisters(), Selected: false, Multicard: true },
             { Character: new Scapegoat(), Selected: false },
