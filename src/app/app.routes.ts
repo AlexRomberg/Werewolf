@@ -5,10 +5,12 @@ import { narratorGuard } from "./guards/narrator.guard";
 import { SuccessComponent } from "./pages/spotify/success/success.component";
 import { HomeComponent } from "./pages/home/home.component";
 import { ConnectingComponent } from "./pages/spotify/connecting/connecting.component";
+import { CardsComponent } from "./pages/setup/cards/cards.component";
 
 export const routes: Routes = [
     { path: "", component: HomeComponent },
     { path: "setup", component: SetupComponent },
+    { path: "setup/cards", component: CardsComponent },
     { path: "narrator", component: NarratorComponent, canActivate: [narratorGuard] },
     { path: "spotify", component: ConnectingComponent },
     { path: "spotify/success", component: SuccessComponent },

@@ -1,4 +1,4 @@
-<div class="bg-slate-800 h-[36rem] w-[36rem] p-4 rounded-2xl grid grid-rows-[auto_1fr_auto] gap-2">
+<div class="bg-slate-800 h-[36rem] lg:w-[36rem] w-full p-4 rounded-2xl grid grid-rows-[auto_1fr_auto] gap-2">
     <h1 class="text-gray-200 text-2xl">{{PeopleDialog().Title}}</h1>
     <div class="h-96 self-center ml-12">
         <app-circle [People]="PeopleDialog().People" (PersonClick)="Dialog.OnPersonSelected($event)"></app-circle>

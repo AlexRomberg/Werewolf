@@ -1,7 +1,7 @@
 import { Component, inject } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { GameStateService } from "../../services/game-state.service";
-import { Router } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
 import { CardComponent } from "../../components/setup/card/card.component";
 import { CardSelectionInformation, CharacterGroup } from "../../types";
 import { SpotifyWidgetComponent } from "../../components/spotify-widget/spotify-widget.component";
@@ -12,8 +12,9 @@ import { StorageService } from "../../services/storage.service";
 
 @Component({
     selector: "app-setup",
-    imports: [FormsModule, CardComponent, SpotifyWidgetComponent],
-    templateUrl: "./setup.component.html"
+    imports: [FormsModule, CardComponent, SpotifyWidgetComponent, RouterLink],
+    templateUrl: "./setup.component.html",
+    styleUrl: "./setup.component.css"
 })
 export class SetupComponent {
     private state = inject(GameStateService);
@@ -21,15 +22,8 @@ export class SetupComponent {
     private spotify = inject(SpotifyService);
     private storage = inject(StorageService);
 
-    public Roles: CharacterGroup[];
-    public PeopleCount: number;
-
-    constructor() {
-        const storage = this.storage;
-
-        this.Roles = storage.SetupSelection;
-        this.PeopleCount = storage.SetupPeopleCount;
-    }
+    public Roles: CharacterGroup[] = this.storage.SetupSelection;
+    public PeopleCount: number = this.storage.SetupPeopleCount;
 
     public StartGame(): void {
         if (this.spotify.IsAuthenticated) {
@@ -77,5 +71,12 @@ export class SetupComponent {
     public HandlePeopleCountChanged(people: number): void {
         this.PeopleCount = people;
         this.storage.SetupPeopleCount = people;
+    }
+
+    public GetSelectedCards(): CardSelectionInformation[] {
+        return this.Roles
+            .map(r => r.Cards)
+            .flat()
+            .filter(r => r.Selected);
     }
 }
