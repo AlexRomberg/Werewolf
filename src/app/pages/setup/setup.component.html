@@ -1,8 +1,8 @@
 <div class="grid grid-cols-[1fr_auto] w-full h-svh">
     <div class="w-full h-svh p-4 overflow-auto max-lg:hidden">
         <span class="flex items-end flex-wrap">
-            <h1 class="text-gray-200 text-3xl">Karten</h1>
-            <i class="ml-4 text-gray-400">durch anklicken wählen. Anzahl der Karten (z.B. Werwölfe, Dorfbewohner) wird nicht benötigt</i>
+            <h1 class="text-gray-200 text-3xl" i18n="@@setup-cards">Karten</h1>
+            <i class="ml-4 text-gray-400" i18n="@@setup-description-click-to-select">durch anklicken wählen. Anzahl der Karten (z.B. Werwölfe, Dorfbewohner) wird nicht benötigt</i>
         </span>
         @for (role of Roles; track $index) {
         <h1 class="text-gray-200 text-xl mt-4 mb-2">{{role.Name}}</h1>
@@ -16,20 +16,20 @@
     <div class="lg:w-[30rem] pt-4 bg-gray-700 grid grid-rows-[auto_auto_1fr_auto_auto] gap-4 h-svh overflow-hidden">
         <app-spotify-widget></app-spotify-widget>
         <div>
-            <h1 class="text-gray-200 text-2xl ml-4">Spieler</h1>
+            <h1 class="text-gray-200 text-2xl ml-4" i18n="@@setup-players">Spieler</h1>
             <div class="px-4 pt-2 flex flex-col gap-2">
-                <label class="text-gray-200" for="PeopleCount">Anzahl Spieler</label>
+                <label class="text-gray-200" for="PeopleCount" i18n="@@setup-nr-of-players">Anzahl Spieler</label>
                 <input class="rounded-md py-3 px-6 text-gray-100 bg-gray-500" id="PeopleCount" type="number" min="1" max="20" [ngModel]="PeopleCount" (ngModelChange)="HandlePeopleCountChanged($event)">
             </div>
             <div class="lg:hidden px-4 pt-2 flex flex-col gap-2">
                 <label class="text-gray-200" for="Cards">Karten</label>
                 <a class="rounded-md py-3 px-6 text-gray-100 bg-gray-500 grid-cols-[1fr_auto] grid-rows-[auto_1fr] grid gap-2" id="Cards" routerLink="/setup/cards">
-                    <p class="col-start-1">{{GetSelectedCards().length}} Karten ausgewählt</p>
+                    <p class="col-start-1" i18n="@@cards-cards-selected">{{GetSelectedCards().length}} Karten ausgewählt</p>
                     <p class="row-span-2 col-start-2 self-center">→</p>
                     <span class="col-start-1 row-span-2 grid overflow-hidden fade-out">
                         @for (card of GetSelectedCards(); track $index) {
                         <div class="col-start-1 row-start-1 bg-neutral-900 p-1 w-14 h-14 rounded-md shadow-md" [style]="{'transform': 'translateX(' + $index * 1.5 + 'rem)', 'z-index': 100-$index}">
-                            <img width="48px" height="48px" [src]="'/assets/icons/' + card.Character.Image + '.png'" [alt]="card.Character.Name">
+                            <img width="48px" height="48px" [src]="'assets/icons/' + card.Character.Image + '.png'" [alt]="card.Character.Name">
                         </div>
                         }
                     </span>
@@ -39,6 +39,6 @@
         <div>
             <!-- TODO: Presets -->
         </div>
-        <button class="btn text-gray-100 bg-gray-500 mx-4" (click)="StartGame()">Spiel starten</button>
+        <button class="btn text-gray-100 bg-gray-500 mx-4" (click)="StartGame()" i18n="@@setup-start-game">Spiel starten</button>
     </div>
 </div>

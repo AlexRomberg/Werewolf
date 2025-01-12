@@ -10,7 +10,7 @@
         <span></span>
         <span></span>
         }
-        <h1 class="text-gray-200 text-2xl ml-4">Ereignisse</h1>
+        <h1 class="text-gray-200 text-2xl ml-4" i18n="@@narrator-events">Ereignisse</h1>
         <div class="overflow-auto flex flex-col-reverse fade-out pb-2">
             <div class="flex flex-col-reverse gap-2 pt-20">
                 @for (action of state.Actions; track $index; let actionIndex = $index) {
@@ -24,7 +24,7 @@
                                 }
                             </ul>
                         </div>
-                        <img [src]="'/assets/icons/' + action.Image + '.png'" class="w-16 h-16 rounded-md md-shadow-md" [alt]="action.Name">
+                        <img [src]="'assets/icons/' + action.Image + '.png'" class="w-16 h-16 rounded-md md-shadow-md" [alt]="action.Name">
                     </div>
                     @if (actionIndex === 0 && GetFilteredButtons(action).length > 0) {
                     <div class="flex flex-col gap-2 mt-4">
@@ -39,9 +39,9 @@
         </div>
         <span class="grid grid-cols-3 mx-4 gap-2">
             @if (state.ActionHistory.length > 0) {
-            <button class="btn bg-gray-500 block" (click)="state.PreviousAction();">← Zurück</button>
+            <button class="btn bg-gray-500 block" (click)="state.PreviousAction();" i18n="@@general-back-button">← Zurück</button>
             }
-            <button class="btn bg-gray-500 block col-span-2" [class.col-span-3]="state.ActionHistory.length === 0" (click)="OnNext()">Weiter →</button>
+            <button class="btn bg-gray-500 block col-span-2" [class.col-span-3]="state.ActionHistory.length === 0" (click)="OnNext()" i18n="@@general-next-button">Weiter →</button>
         </span>
     </div>
 </div>

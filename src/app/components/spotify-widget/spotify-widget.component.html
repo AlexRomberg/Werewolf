@@ -9,12 +9,12 @@
     </span>
     @switch (CurrentState) {
     @case (WidgetState.Disconnected) {
-    <button class="btn bg-gray-500 w-full mt-2 text-center block" (click)="Authenticate()">Verbinden</button>
+    <button class="btn bg-gray-500 w-full mt-2 text-center block" (click)="Authenticate()" i18n="@@spotify-connect">Verbinden</button>
     }
     @case (WidgetState.Connected) {
     <div>
         <span class="flex justify-between">
-            <p class="text-gray-300 whitespace-nowrap overflow-hidden text-ellipsis">Wähle ein Gerät aus:</p>
+            <p class="text-gray-300 whitespace-nowrap overflow-hidden text-ellipsis" i18n="@@spotify-select-a-device">Wähle ein Gerät aus:</p>
             <button class="px-4 pt-1 text-gray-200" (click)="LoadDevices();">
                 <ng-icon name="matRefresh"></ng-icon>
             </button>
@@ -42,10 +42,10 @@
     }
     @case (WidgetState.Playing) {
     <div>
-        <i class="text-gray-300 whitespace-nowrap overflow-hidden text-ellipsis">Verbunden mit: {{Spotify.CurrentDevice?.name}}</i>
+        <i class="text-gray-300 whitespace-nowrap overflow-hidden text-ellipsis" i18n="@@spotify-connected-with">Verbunden mit: {{Spotify.CurrentDevice?.name}}</i>
         @if (!(Mode() === "setup" && Spotify.BackgroundMusicStarted)) {
         <div class="bg-gray-500 grid grid-cols-[1fr_auto_auto] items-center gap-2 p-2 pr-0 pl-4 rounded-xl mt-2">
-            <p class="text-gray-200 whitespace-nowrap overflow-hidden text-ellipsis">{{Mode() === "narrator" ? (Spotify.PlaybackState?.item?.name ?? "Nichts am abspielen"):"Hintergrundmusik starten"}}</p>
+            <p class="text-gray-200 whitespace-nowrap overflow-hidden text-ellipsis">{{Mode() === "narrator" ? (Spotify.PlaybackState?.item?.name ?? FallbackNotPlayingText):StartBackgroundMusicText}}</p>
             @if (Mode() === "narrator") {
             <button class="bg-gray-400/50 rounded-md text-gray-200 p-4 flex justify-center items-center" (click)="TogglePlaybackState()">
                 <ng-icon [name]="Spotify.PlaybackState?.is_playing ? 'matPause':'matPlayArrow'"></ng-icon>

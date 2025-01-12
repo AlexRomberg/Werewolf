@@ -4,7 +4,7 @@
         <app-circle [People]="PeopleDialog().People" (PersonClick)="Dialog.OnPersonSelected($event)"></app-circle>
     </div>
     <span class="grid grid-cols-2 gap-2">
-        <button class="text-gray-200 bg-gray-500 w-full btn" (click)="Dialog.QuitPeopleDialog()">Abbrechen</button>
-        <button [class.bg-gray-600]="!Dialog.PeopleDialogSelectionValid()" [disabled]="!Dialog.PeopleDialogSelectionValid()" class="text-gray-200 bg-gray-500 w-full btn" (click)="Dialog.ApplyPeopleDialog()">Ok</button>
+        <button class="text-gray-200 bg-gray-500 w-full btn" (click)="Dialog.QuitPeopleDialog()" i18n="@@general-abort">Abbrechen</button>
+        <button [class.bg-gray-600]="!Dialog.PeopleDialogSelectionValid()" [disabled]="!Dialog.PeopleDialogSelectionValid()" class="text-gray-200 bg-gray-500 w-full btn" (click)="Dialog.ApplyPeopleDialog()" i18n="@@general-ok">Ok</button>
     </span>
 </div>
