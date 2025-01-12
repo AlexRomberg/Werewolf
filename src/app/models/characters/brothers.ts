@@ -8,7 +8,9 @@ export class Brothers implements Character, Action {
     IsSingle = false;
     AssignedPeople?: Person[] | undefined;
 
-    GetPoints = () => [this.AssignedPeople?.length !== 3 && "Personen zuweisen", "Dürfen sich untereinander austauschen"];
+    GetPoints = () => [
+        this.AssignedPeople?.length !== 3 && $localize`:@@character-button-general-assing-people:Personen zuweisen`,
+        $localize`:@@character-action-brothers-2:Dürfen sich untereinander austauschen`];
     GetButtons = () => this.AssignedPeople?.length === 3 ? [] : [RequestAssignments(this, 3)];
     IsAwakeThisNight = (night: number) => night % 2 === 0;
 }

@@ -8,7 +8,9 @@ export class Seer implements Character, Action {
     public AssignedPerson?: Person | undefined;
     public IsSingle = true;
 
-    GetPoints = () => [!this.AssignedPerson && "Person zuweisen", "Darf sich eine Karte anschauen"];
+    GetPoints = () => [
+        !this.AssignedPerson && $localize`:@@character-button-general-assing-person:Person zuweisen`,
+        $localize`:@@character-action-seer-2:Darf sich eine Karte anschauen`];
     GetButtons = () => this.AssignedPerson ? [] : [RequestAssignment(this)];
     IsAwakeThisNight = () => true;
 

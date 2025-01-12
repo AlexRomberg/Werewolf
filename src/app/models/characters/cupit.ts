@@ -11,7 +11,10 @@ export class Cupit implements Character, Action {
     AssignedPerson: Person | undefined;
     private isDone = false;
 
-    GetPoints = () => [!this.AssignedPerson && "Person zuweisen", !this.isDone && "Muss ein Paar bestimmen", "Das Paar muss erwachen"];
+    GetPoints = () => [
+        !this.AssignedPerson && $localize`:@@character-button-general-assing-person:Person zuweisen`,
+        !this.isDone && $localize`:@@character-action-cupit-2:Muss ein Paar bestimmen`,
+        $localize`:@@character-action-cupit-3:Das Paar muss erwachen`];
     GetButtons = () => {
         const buttons = [];
         if (!this.AssignedPerson) {
@@ -19,7 +22,7 @@ export class Cupit implements Character, Action {
         }
         if (!this.isDone) {
             buttons.push({
-                Title: "Paar zuweisen", Action: this.requestCouple.bind(this)
+                Title: $localize`:@@character-button-cupit-1:Paar zuweisen`, Action: this.requestCouple.bind(this)
             });
         }
         return buttons;
@@ -28,7 +31,7 @@ export class Cupit implements Character, Action {
 
     private async requestCouple({ GameState, Dialog }: { GameState: GameStateService, Dialog: DialogService }) {
         try {
-            const people = await Dialog.ShowPeopleDialog("Select couple", 2);
+            const people = await Dialog.ShowPeopleDialog($localize`:@@character-dialog-cupit-1:Ein Paar auswählen`, 2);
             GameState.Connections.push({
                 Type: ConnectionTypes.Love,
                 From: people[0],

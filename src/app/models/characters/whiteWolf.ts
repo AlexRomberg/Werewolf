@@ -10,7 +10,9 @@ export class WhiteWolf implements Character, Action {
     public IsSingle = true;
     private isDone = false;
 
-    GetPoints = () => [!this.AssignedPerson && "Person zuweisen", "Kann einen Werwolf umbringen"];
+    GetPoints = () => [
+        !this.AssignedPerson && $localize`:@@character-button-general-assing-person:Person zuweisen`,
+        $localize`:@@character-action-white_wolf-2:Kann einen Werwolf umbringen`];
     GetButtons = () => {
         const buttons = [];
         if (!this.AssignedPerson) {
@@ -18,7 +20,7 @@ export class WhiteWolf implements Character, Action {
         }
         if (!this.isDone) {
             buttons.push({
-                Title: "Zweites Opfer markieren",
+                Title: $localize`:@@character-button-white_wolf-1:Zweites Opfer markieren`,
                 Action: this.registerVictim.bind(this)
             });
         }
@@ -28,7 +30,7 @@ export class WhiteWolf implements Character, Action {
 
     private async registerVictim({ Dialog }: { Dialog: DialogService }) {
         try {
-            const people = await Dialog.ShowPeopleDialog("Wähle das Opfer (Werewolf) aus", 1);
+            const people = await Dialog.ShowPeopleDialog($localize`:@@character-dialog-white_wolf-1:Wähle das Opfer (Werewolf) aus`, 1);
             if (people[0].IsProtected) {
                 return;
             }

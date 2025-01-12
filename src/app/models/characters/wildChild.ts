@@ -11,14 +11,17 @@ export class WildChild implements Character, Action {
     public IsSingle = true;
     private isDone = false;
 
-    GetPoints = () => [!this.AssignedPerson && "Person zuweisen", !this.isDone && "Muss ein Vorbild wählen", "Wird zum Werwolf, wenn Vorbild stirbt"];
+    GetPoints = () => [
+        !this.AssignedPerson && $localize`:@@character-button-general-assing-person:Person zuweisen`,
+        !this.isDone && $localize`:@@character-action-wild_child-2:Muss ein Vorbild wählen`,
+        $localize`:@@character-action-wild_child-3:Wird zum Werwolf, wenn Vorbild stirbt`];
     GetButtons = () => {
         const buttons = [];
         if (!this.AssignedPerson) {
             buttons.push(RequestAssignment(this));
         } else if (!this.isDone) {
             buttons.push({
-                Title: "Vorbild zuweisen", Action: this.requstRolemodel.bind(this)
+                Title: $localize`:@@character-button-wild_child-1:Vorbild zuweisen`, Action: this.requstRolemodel.bind(this)
             });
         }
         return buttons;
@@ -27,7 +30,7 @@ export class WildChild implements Character, Action {
 
     private async requstRolemodel({ GameState, Dialog }: { GameState: GameStateService, Dialog: DialogService }) {
         try {
-            const people = await Dialog.ShowPeopleDialog("Wähle das Vorbild aus", 1);
+            const people = await Dialog.ShowPeopleDialog($localize`:@@character-dialog-wild_child-1:Wähle das Vorbild aus`, 1);
             GameState.Connections.push({
                 Type: ConnectionTypes.Trust,
                 From: this.AssignedPerson!,

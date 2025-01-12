@@ -13,10 +13,10 @@ export class Witch implements Character, Action {
     private hasNegativePotion = true;
 
     GetPoints = () => [
-        !this.AssignedPerson && "Person zuweisen",
-        (!this.hasPositivePotion && !this.hasNegativePotion) && "Hat keinen Zaubertrank mehr.",
-        this.hasPositivePotion && "Kann einen Heiltrank einsetzen",
-        this.hasNegativePotion && "Kann einen Gifttrank einsetzen"
+        !this.AssignedPerson && $localize`:@@character-button-general-assing-person:Person zuweisen`,
+        (!this.hasPositivePotion && !this.hasNegativePotion) && $localize`:@@character-action-witch-2:Hat keinen Zaubertrank mehr.`,
+        this.hasPositivePotion && $localize`:@@character-action-witch-3:Kann einen Heiltrank einsetzen`,
+        this.hasNegativePotion && $localize`:@@character-action-witch-4:Kann einen Gifttrank einsetzen`
     ];
     GetButtons = () => {
         const buttons = [];
@@ -24,10 +24,10 @@ export class Witch implements Character, Action {
             buttons.push(RequestAssignment(this));
         }
         if (this.hasPositivePotion) {
-            buttons.push({ Title: "Retten", Action: this.requstSave.bind(this) });
+            buttons.push({ Title: $localize`:@@character-button-witch-1:Retten`, Action: this.requstSave.bind(this) });
         }
         if (this.hasNegativePotion) {
-            buttons.push({ Title: "Person vergiften", Action: this.requstKill.bind(this) });
+            buttons.push({ Title: $localize`:@@character-button-witch-2:Person vergiften`, Action: this.requstKill.bind(this) });
         }
         return buttons;
     };
@@ -36,7 +36,7 @@ export class Witch implements Character, Action {
     private async requstSave({ GameState, Dialog }: { GameState: GameStateService, Dialog: DialogService }) {
         try {
             const victims = GameState.People.filter(p => p.IsVictim);
-            const people = await Dialog.ShowPeopleDialog("Wähle das Opfer aus", 1);
+            const people = await Dialog.ShowPeopleDialog($localize`:@@character-dialog-general-select-victim:Wähle das Opfer aus`, 1);
             if (!victims.includes(people[0])) {
                 return;
             }
@@ -49,7 +49,7 @@ export class Witch implements Character, Action {
 
     private async requstKill({ Dialog }: { Dialog: DialogService }) {
         try {
-            const people = await Dialog.ShowPeopleDialog("Wähle das Opfer aus", 1);
+            const people = await Dialog.ShowPeopleDialog($localize`:@@character-dialog-general-select-victim:Wähle das Opfer aus`, 1);
             if (people[0].IsVictim) {
                 return;
             }

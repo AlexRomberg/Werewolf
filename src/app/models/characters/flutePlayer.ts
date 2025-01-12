@@ -10,7 +10,9 @@ export class FlutePlayer implements Character, Action {
     AssignedPerson: Person | undefined;
     private isDone = false;
 
-    GetPoints = () => [!this.AssignedPerson && "Person zuweisen", "Kann eine Person verzaubern"];
+    GetPoints = () => [
+        !this.AssignedPerson && $localize`:@@character-button-general-assing-person:Person zuweisen`,
+        $localize`:@@character-action-flute_player-2:Kann eine Person verzaubern`];
     GetButtons = () => {
         const buttons = [];
         if (!this.AssignedPerson) {
@@ -18,7 +20,7 @@ export class FlutePlayer implements Character, Action {
         }
         if (!this.isDone) {
             buttons.push({
-                Title: "Opfer markieren",
+                Title: $localize`:@@character-button-flute_player-1:Opfer markieren`,
                 Action: this.registerVictim.bind(this)
             });
         }
@@ -31,7 +33,7 @@ export class FlutePlayer implements Character, Action {
 
     private async registerVictim({ Dialog }: { Dialog: DialogService }) {
         try {
-            const people = await Dialog.ShowPeopleDialog("Wähle das Opfer aus", 1);
+            const people = await Dialog.ShowPeopleDialog($localize`:@@character-dialog-flute_player-1:Wähle das Opfer aus`, 1);
             people[0].IsEnchanted = true;
             this.isDone = true;
         } catch {

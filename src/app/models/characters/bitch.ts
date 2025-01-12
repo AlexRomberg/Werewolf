@@ -12,14 +12,17 @@ export class Bitch implements Character, Action {
     private lastJoinedPerson: Person | undefined;
     private isDone = false;
 
-    GetPoints = () => [!this.AssignedPerson && "Person zuweisen", !this.isDone && "Kann neues Zuhause suchen für die Nacht", this.isDone && "Ist fertig für diese Nacht"];
+    GetPoints = () => [
+        !this.AssignedPerson && $localize`:@@character-button-general-assing-person:Person zuweisen`,
+        !this.isDone && $localize`:@@character-action-bitch-2:Kann neues Zuhause suchen für die Nacht`,
+        this.isDone && $localize`:@@character-action-bitch-3:Ist fertig für diese Nacht`];
     GetButtons = () => {
         const buttons = [];
         if (!this.AssignedPerson) {
             buttons.push(RequestAssignment(this));
         } else if (!this.isDone) {
             buttons.push({
-                Title: "Gastgeber zuweisen",
+                Title: $localize`:@@character-button-bitch-1:Gastgeber zuweisen`,
                 Action: this.requestHostPerson.bind(this)
             });
         }
@@ -29,9 +32,9 @@ export class Bitch implements Character, Action {
 
     private async requestHostPerson({ Dialog, GameState }: { Dialog: DialogService, GameState: GameStateService }) {
         try {
-            const people = await Dialog.ShowPeopleDialog("Eine Person auswählen", 1);
+            const people = await Dialog.ShowPeopleDialog($localize`:@@character-dialog-bitch-1:Eine Person auswählen`, 1);
             if (people[0] === this.lastJoinedPerson) {
-                if (!confirm("Es darf nicht zwei mal hinter einander die gleiche Person gewählt werden. Trotzdem fortfahren?")) {
+                if (!confirm($localize`:@@character-dialog-bitch-2:Es darf nicht zwei mal hinter einander die gleiche Person gewählt werden. Trotzdem fortfahren?`)) {
                     return;
                 }
             }

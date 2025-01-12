@@ -12,7 +12,10 @@ export class Healer implements Character, Action {
     private lastProtectedPerson: Person | undefined;
     private isDone = false;
 
-    GetPoints = () => [!this.AssignedPerson && "Person zuweisen", !this.isDone && "Kann eine Person auswählen die unsterblich ist diese Nacht", this.isDone && "Ist fertig für diese Nacht"];
+    GetPoints = () => [
+        !this.AssignedPerson && $localize`:@@character-button-general-assing-person:Person zuweisen`,
+        !this.isDone && $localize`:@@character-action-healer-2:Kann eine Person auswählen die unsterblich ist diese Nacht`,
+        this.isDone && $localize`:@@character-action-healer-3:Ist fertig für diese Nacht`];
     GetButtons = () => {
         const buttons = [];
         if (!this.AssignedPerson) {
@@ -20,7 +23,7 @@ export class Healer implements Character, Action {
         }
         if (!this.isDone) {
             buttons.push({
-                Title: "Person schützen",
+                Title: $localize`:@@character-button-healer-1:Person schützen`,
                 Action: this.requestProtectedPerson.bind(this)
             });
         }
@@ -30,13 +33,13 @@ export class Healer implements Character, Action {
 
     private async requestProtectedPerson({ Dialog }: { Dialog: DialogService }) {
         try {
-            const people = await Dialog.ShowPeopleDialog("Zu schützende Person auswählen", 1);
+            const people = await Dialog.ShowPeopleDialog($localize`:@@character-dialog-healer-1:Zu schützende Person auswählen`, 1);
             if (people[0] === this.lastProtectedPerson) {
-                if (!confirm("Es kann nicht zwei mal hinter einander die gleiche Person geschützt werden. Trotzdem fortfahren?")) {
+                if (!confirm($localize`:@@character-dialog-healer-2:Es kann nicht zwei mal hinter einander die gleiche Person geschützt werden. Trotzdem fortfahren?`)) {
                     return;
                 }
             } else if (people[0].Character instanceof SmallChild) {
-                if (!confirm("Das kleine Mädchen kann nicht vor den Werwölfen geschützt werden. Trotzdem fortfahren?")) {
+                if (!confirm($localize`:@@character-dialog-healer-3:Das kleine Mädchen kann nicht vor den Werwölfen geschützt werden. Trotzdem fortfahren?`)) {
                     return;
                 }
             }

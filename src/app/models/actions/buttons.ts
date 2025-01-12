@@ -3,10 +3,10 @@ import { ActionButton, Character } from "../../types";
 
 export const RequestAssignment = (thisContext: Character): ActionButton => {
     return {
-        Title: "Person zuweisen",
+        Title: $localize`:@@character-button-general-assing-person:Person zuweisen`,
         Action: async ({ Dialog }: { Dialog: DialogService }): Promise<void> => {
             try {
-                const people = await Dialog.ShowPeopleDialog("Person auswählen", 1);
+                const people = await Dialog.ShowPeopleDialog($localize`:@@dialog-title-select-person:Person auswählen`, 1);
                 if (thisContext.AssignedPerson) {
                     thisContext.AssignedPerson.Character = undefined;
                 }
@@ -21,10 +21,10 @@ export const RequestAssignment = (thisContext: Character): ActionButton => {
 
 export const RequestAssignments = (thisContext: Character, maximum?: number): ActionButton => {
     return {
-        Title: "Personen zuweisen",
+        Title: $localize`:@@character-button-general-assing-people:Personen zuweisen`,
         Action: async ({ Dialog }: { Dialog: DialogService }): Promise<void> => {
             try {
-                const people = await Dialog.ShowPeopleDialog("Personen auswählen", maximum);
+                const people = await Dialog.ShowPeopleDialog($localize`:@@dialog-title-select-people:Personen auswählen`, maximum);
                 for (const person of thisContext.AssignedPeople ?? []) {
                     person.Character = undefined;
                 }

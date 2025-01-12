@@ -13,7 +13,9 @@ export class PrimalWolf implements Character, Action {
     public IsSingle = true;
     private isDone = false;
 
-    GetPoints = () => [!this.AssignedPerson && "Person zuweisen", "Kann Opfer zu Werwolf machen"];
+    GetPoints = () => [
+        !this.AssignedPerson && $localize`:@@character-button-general-assing-person:Person zuweisen`,
+        $localize`:@@character-action-primal_wolf-2:Kann Opfer zu Werwolf machen`];
     GetButtons = () => {
         const buttons: ActionButton[] = [];
         if (!this.AssignedPerson) {
@@ -21,7 +23,7 @@ export class PrimalWolf implements Character, Action {
         }
         if (!this.isDone) {
             buttons.push({
-                Title: "Opfer zu Werwolf verwandeln",
+                Title: $localize`:@@character-button-primal_wolf-1:Opfer zu Werwolf verwandeln`,
                 Action: this.requestVictimStateChangePerson.bind(this),
             });
         }

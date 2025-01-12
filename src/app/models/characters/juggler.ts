@@ -8,7 +8,9 @@ export class Juggler implements Character, Action {
     IsSingle = true;
     AssignedPerson?: Person | undefined;
 
-    GetPoints = () => [!this.AssignedPerson && "Person zuweisen", "Muss Rolle auswählen"];
+    GetPoints = () => [
+        !this.AssignedPerson && $localize`:@@character-button-general-assing-person:Person zuweisen`,
+        $localize`:@@character-action-juggler-2:Muss Rolle auswählen`];
     GetButtons = () => this.AssignedPerson ? [] : [RequestAssignment(this)];
     IsAwakeThisNight = () => true;
 }

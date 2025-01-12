@@ -13,7 +13,9 @@ export class BigWolf implements Character, Action {
     AssignedPerson: Person | undefined;
     private isDone = false;
 
-    GetPoints = () => [!this.AssignedPerson && "Person zuweisen", "Kann zweites Opfer definieren"];
+    GetPoints = () => [
+        !this.AssignedPerson && $localize`:@@character-button-general-assing-person:Person zuweisen`,
+        $localize`:@@character-action-big_wolf-2:Kann zweites Opfer definieren`];
     GetButtons = () => {
         const buttons = [];
         if (!this.AssignedPerson) {
@@ -21,7 +23,7 @@ export class BigWolf implements Character, Action {
         }
         if (!this.isDone) {
             buttons.push({
-                Title: "Zweites Opfer markieren",
+                Title: $localize`:@@character-button-big_wolf-1:Zweites Opfer markieren`,
                 Action: this.registerVictim.bind(this)
             });
         }
@@ -34,7 +36,7 @@ export class BigWolf implements Character, Action {
 
     private async registerVictim({ Dialog }: { Dialog: DialogService }) {
         try {
-            const people = await Dialog.ShowPeopleDialog("Wähle das zweite Opfer (kein Werwolf) aus", 1);
+            const people = await Dialog.ShowPeopleDialog($localize`:@@character-dialog-big_wolf-1:Wähle das zweite Opfer (kein Werwolf) aus`, 1);
             if (people[0].IsProtected || people[0].IsVictim) {
                 return;
             }

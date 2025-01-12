@@ -10,9 +10,9 @@ export class Fox implements Character, Action {
     private hasMisssed = false;
 
     GetPoints = () => [
-        !this.AssignedPerson && "Person zuweisen",
-        !this.hasMisssed && "Darf auf Person zeigen. Wenn diese / einer ihrer Nachbarn ein Werwolf ist, bestätigen",
-        this.hasMisssed && "Hat keine Funktion mehr"
+        !this.AssignedPerson && $localize`:@@character-button-general-assing-person:Person zuweisen`,
+        !this.hasMisssed && $localize`:@@character-action-fox-2:Darf auf Person zeigen. Wenn diese / einer ihrer Nachbarn ein Werwolf ist, bestätigen`,
+        this.hasMisssed && $localize`:@@character-action-fox-3:Hat keine Funktion mehr`
     ];
     GetButtons = () => {
         const buttons = [];
@@ -21,7 +21,7 @@ export class Fox implements Character, Action {
         }
         if (!this.hasMisssed) {
             buttons.push({
-                Title: "Hat verfehlt",
+                Title: $localize`:@@character-button-fox-1:Hat verfehlt`,
                 Action: () => {
                     this.hasMisssed = true;
                 }

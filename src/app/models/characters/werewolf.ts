@@ -10,14 +10,16 @@ export class Werewolf implements Character, Action {
     public IsSingle = false;
     AssignedPeople: Person[] = [];
 
-    GetPoints = () => [this.AssignedPeople.length <= 0 && "Person zuweisen", "Müssen ein Opfer finden"];
+    GetPoints = () => [
+        this.AssignedPeople.length <= 0 && $localize`:@@character-button-general-assing-person:Person zuweisen`,
+        $localize`:@@character-action-werewolf-2:Müssen ein Opfer finden`];
     GetButtons = () => {
         const buttons = [];
         if (this.AssignedPeople.length <= 0) {
             buttons.push(RequestAssignments(this));
         }
         buttons.push({
-            Title: "Opfer markieren", Action: this.registerVictim.bind(this)
+            Title: $localize`:@@character-button-werewolf-1:Opfer markieren`, Action: this.registerVictim.bind(this)
         });
         return buttons;
     };
@@ -25,7 +27,7 @@ export class Werewolf implements Character, Action {
 
     private async registerVictim({ Dialog, GameState }: { GameState: GameStateService, Dialog: DialogService }) {
         try {
-            const people = await Dialog.ShowPeopleDialog("Wähle das Opfer aus", 1);
+            const people = await Dialog.ShowPeopleDialog($localize`:@@character-dialog-general-select-victim:Wähle das Opfer aus`, 1);
             if (people[0].IsProtected) {
                 return;
             }

@@ -13,8 +13,8 @@ import { environment } from "../../../environments/environment";
 export class SpotifyWidgetComponent {
     Spotify = inject(SpotifyService);
     WidgetState = WidgetState;
-    FallbackNotPlayingText = $localize`:{@@spotify-fallback-not-playing}:Nichts am abspielen`;
-    StartBackgroundMusicText = $localize`:{@@spotify-start-background-music}:Hintergrundmusik starten`;
+    FallbackNotPlayingText = $localize`:@@spotify-fallback-not-playing:Nichts am abspielen`;
+    StartBackgroundMusicText = $localize`:@@spotify-start-background-music:Hintergrundmusik starten`;
 
     readonly Mode = input<"setup" | "narrator">("setup");
 

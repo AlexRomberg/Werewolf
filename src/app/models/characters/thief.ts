@@ -8,7 +8,9 @@ export class Thief implements Character, Action {
     public AssignedPerson: Person | undefined;
     public IsSingle = true;
 
-    GetPoints = () => ["Muss Karten tauschen", !this.AssignedPerson && "Person zuweisen"];
+    GetPoints = () => [
+        $localize`:@@character-action-thief-1:Muss Karten tauschen`,
+        !this.AssignedPerson && $localize`:@@character-button-general-assing-person:Person zuweisen`];
     GetButtons = () => this.AssignedPerson ? [] : [RequestAssignment(this)];
     IsAwakeThisNight = (night: number) => night === 0;
 
