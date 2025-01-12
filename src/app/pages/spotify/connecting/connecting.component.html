@@ -1,5 +1,14 @@
 <div class="w-full h-svh flex justify-center items-center">
     <div>
+        @defer () {
+        <div class="w-full flex justify-center items-center mb-4">
+            <ng-icon name="matError" class="mx-auto text-gray-200" size="32"></ng-icon>
+        </div>
+        <h1 class="text-center text-gray-200 text-2xl">Etwas ist schief gelaufen.</h1>
+        <p class="text-center text-gray-400">Versuche es nochmals</p>
+        <a routerLink="/setup" class="btn bg-gray-500 mt-8 block text-center">Zurück zur Übersicht</a>
+        } @placeholder (minimum 3s){
         <h1 class="text-center text-gray-200 text-2xl">Spotify wird verbunden ...</h1>
+        }
     </div>
 </div>

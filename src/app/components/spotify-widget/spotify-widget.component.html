@@ -1,27 +1,65 @@
-@if(Link) {
 <div class="p-4 mx-4 bg-gray-600 rounded-xl">
     <span class="flex justify-between">
         <h1 class="text-gray-200 text-2xl">Spotify</h1>
         @if (Spotify.IsAuthenticated) {
-        <button class="px-4 pb-3 pt-1 text-gray-200" (click)="Spotify.Logout();">
+        <button class="px-4 pb-3 pt-1 text-gray-200" (click)="Logout();">
             <ng-icon name="matLogOut"></ng-icon>
         </button>
         }
     </span>
-    @if (Spotify.IsAuthenticated) {
-    <div class="grid grid-cols-[1fr_auto_auto] items-center gap-2">
-        <p class="text-gray-300 whitespace-nowrap overflow-hidden text-ellipsis">{{Mode === "narrator"? Title : "Verbunden"}}</p>
-        @if (Mode === "narrator") {
-        <button class="bg-gray-500 rounded-md text-gray-200 py-4 px-4 flex justify-center items-center" (click)="SetPlayState(!IsPlaying)">
-            <ng-icon [name]="IsPlaying ? 'matPause':'matPlayArrow'"></ng-icon>
-        </button>
-        <button class="bg-gray-500 rounded-md text-gray-200 py-4 px-4 flex justify-center items-center" (click)="SkipSong()">
-            <ng-icon name="matSkipNext"></ng-icon>
+    @switch (CurrentState) {
+    @case (WidgetState.Disconnected) {
+    <button class="btn bg-gray-500 w-full mt-2 text-center block" (click)="Authenticate()">Verbinden</button>
+    }
+    @case (WidgetState.Connected) {
+    <div>
+        <span class="flex justify-between">
+            <p class="text-gray-300 whitespace-nowrap overflow-hidden text-ellipsis">Wähle ein Gerät aus:</p>
+            <button class="px-4 pt-1 text-gray-200" (click)="LoadDevices();">
+                <ng-icon name="matRefresh"></ng-icon>
+            </button>
+        </span>
+        @for (device of Spotify.AvailableDevices; track $index) {
+        <button class="btn bg-gray-500 w-full mt-2 flex text-start items-center" (click)="SelectDevice(device)">
+            @switch (device.type.toLowerCase()) {
+            @case ("computer") {
+            <ng-icon name="matLaptop"></ng-icon>
+            } @case ("smartphone") {
+            <ng-icon name="matSmartphone"></ng-icon>
+            } @case ("tablet") {
+            <ng-icon name="matTablet"></ng-icon>
+            } @case ("tv") {
+            <ng-icon name="matTv"></ng-icon>
+            } @case ("automobile") {
+            <ng-icon name="matDirectionsCar"></ng-icon>
+            } @default {
+            <ng-icon name="matSpeaker"></ng-icon>
+            }}
+            <p class="ml-4">{{device.name}}</p>
         </button>
         }
     </div>
-    } @else {
-    <a class="btn bg-gray-500 w-full mt-2 text-center block" [href]="Link" (click)="this.Spotify.SaveCodeVerifyer()" target="_blank">Connect</a>
     }
+    @case (WidgetState.Playing) {
+    <div>
+        <i class="text-gray-300 whitespace-nowrap overflow-hidden text-ellipsis">Verbunden mit: {{Spotify.CurrentDevice?.name}}</i>
+        @if (!(Mode() === "setup" && Spotify.BackgroundMusicStarted)) {
+        <div class="bg-gray-500 grid grid-cols-[1fr_auto_auto] items-center gap-2 p-2 pr-0 pl-4 rounded-xl mt-2">
+            <p class="text-gray-200 whitespace-nowrap overflow-hidden text-ellipsis">{{Mode() === "narrator" ? (Spotify.PlaybackState?.item?.name ?? "Nichts am abspielen"):"Hintergrundmusik starten"}}</p>
+            @if (Mode() === "narrator") {
+            <button class="bg-gray-400/50 rounded-md text-gray-200 p-4 flex justify-center items-center" (click)="TogglePlaybackState()">
+                <ng-icon [name]="Spotify.PlaybackState?.is_playing ? 'matPause':'matPlayArrow'"></ng-icon>
+            </button>
+            <button class="bg-gray-400/50 rounded-md text-gray-200 p-4 flex justify-center items-center mr-2" (click)="SkipSong()">
+                <ng-icon name="matSkipNext"></ng-icon>
+            </button>
+            } @else {
+            <button class="bg-gray-400/50 rounded-md text-gray-200 p-4 flex justify-center items-center" (click)="StartBackgroundMusic()">
+                <ng-icon name="matPlayArrow"></ng-icon>
+            </button>
+            }
+        </div>
+        }
+    </div>
+    }}
 </div>
-}

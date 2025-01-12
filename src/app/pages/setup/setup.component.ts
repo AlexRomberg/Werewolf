@@ -7,7 +7,6 @@ import { CardSelectionInformation, CharacterGroup } from "../../types";
 import { SpotifyWidgetComponent } from "../../components/spotify-widget/spotify-widget.component";
 import { SpotifyService } from "../../services/spotify.service";
 import { environment } from "../../../environments/environment";
-import { catchError } from "rxjs";
 import { StorageService } from "../../services/storage.service";
 
 @Component({
@@ -25,17 +24,7 @@ export class SetupComponent {
     public Roles: CharacterGroup[] = this.storage.SetupSelection;
     public PeopleCount: number = this.storage.SetupPeopleCount;
 
-    public StartGame(): void {
-        if (this.spotify.IsAuthenticated) {
-            this.spotify.playPlaylist(environment.spotify.playlists.start, true, false).pipe(catchError(e => {
-                alert("Spotify ist verbunden, aber weiss nicht auf welchem Gerät es abspielen soll. Lass bitte kurz ein Lied laufen und versuche es nochmals. Wenn dies nicht geht melde dich hier wieder von Spotify ab.");
-                throw e;
-            })).subscribe(() => {
-                if (this.spotify.IsAuthenticated) {
-                    this.router.navigateByUrl("/narrator");
-                }
-            });
-        }
+    public async StartGame(): Promise<void> {
         this.state.Characters = this.Roles
             .map(r => r.Cards)
             .flat()
@@ -58,9 +47,11 @@ export class SetupComponent {
         }
 
         this.state.StartGame();
-        if (!this.spotify.IsAuthenticated) {
-            this.router.navigateByUrl("/narrator");
+        if (this.spotify.IsAuthenticated && this.spotify.CurrentDevice && !this.spotify.BackgroundMusicStarted) {
+            await this.spotify.PlayPlaylist(environment.spotify.playlists.start, false);
+            this.spotify.BackgroundMusicStarted = true;
         }
+        this.router.navigateByUrl("/narrator");
     }
 
     public HandleSelectionStateChange(card: CardSelectionInformation, selected: boolean): void {

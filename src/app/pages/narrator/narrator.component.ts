@@ -7,7 +7,6 @@ import { FormsModule } from "@angular/forms";
 import { SpotifyWidgetComponent } from "../../components/spotify-widget/spotify-widget.component";
 import { SpotifyService } from "../../services/spotify.service";
 import { environment } from "../../../environments/environment";
-import { delay } from "rxjs";
 
 @Component({
     selector: "app-narrator",
@@ -30,14 +29,12 @@ export class NarratorComponent {
     }
 
     public OnNext(): void {
-        if (this.spotify.IsAuthenticated && this.firstNightfall) {
-            this.spotify.playPlaylist(environment.spotify.playlists.special, false, true).pipe(delay(1000)).subscribe(() => {
-                this.spotify.GetPlayerState().subscribe(({ progress_ms: progressMs, item }) => {
-                    const remainingTime = Math.min(22_000, (item?.duration_ms ?? Number.MAX_SAFE_INTEGER) - progressMs - 500);
-
-                    setTimeout(() => {
-                        this.spotify.playPlaylist(environment.spotify.playlists.general, true, true).subscribe();
-                    }, remainingTime);
+        if (this.firstNightfall && this.spotify.IsAuthenticated && this.spotify.BackgroundMusicStarted) {
+            this.spotify.Pause().then(() => {
+                this.spotify.QueueSongRandom(environment.spotify.playlists.special).then(() => {
+                    this.spotify.PlayPlaylist(environment.spotify.playlists.general, true).then(async () => {
+                        await this.spotify.SkipSong();
+                    });
                 });
             });
         }
