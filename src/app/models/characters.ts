@@ -1,31 +1,31 @@
-import { Angel } from "./angel";
-import { BearGuide } from "./bearGuide";
-import { BigWolf } from "./bigWolf";
-import { Bitch } from "./bitch";
-import { Brothers } from "./brothers";
-import { Cupit } from "./cupit";
-import { WolfDog } from "./wolfDog";
-import { FlutePlayer } from "./flutePlayer";
-import { Fox } from "./fox";
-import { Healer } from "./healer";
-import { Hunter } from "./hunter";
-import { Juggler } from "./juggler";
-import { Knight } from "./knight";
-import { Old } from "./old";
-import { OldMan } from "./oldMan";
-import { PrimalWolf } from "./primalWolf";
-import { Scapegoat } from "./scapegoat";
-import { Seer } from "./seer";
-import { Sisters } from "./sisters";
-import { SmallChild } from "./smallChild";
-import { Thief } from "./thief";
-import { VillageIdiot } from "./villageIdiot";
-import { Villager } from "./villager";
-import { Werewolf } from "./werewolf";
-import { WhiteWolf } from "./whiteWolf";
-import { WildChild } from "./wildChild";
-import { Witch } from "./witch";
-import { CharacterGroup } from "../../types";
+import { Angel } from "./characters/angel";
+import { BearGuide } from "./characters/bearGuide";
+import { BigWolf } from "./characters/bigWolf";
+import { Bitch } from "./characters/bitch";
+import { Brothers } from "./characters/brothers";
+import { Cupit } from "./characters/cupit";
+import { WolfDog } from "./characters/wolfDog";
+import { FlutePlayer } from "./characters/flutePlayer";
+import { Fox } from "./characters/fox";
+import { Healer } from "./characters/healer";
+import { Hunter } from "./characters/hunter";
+import { Juggler } from "./characters/juggler";
+import { Knight } from "./characters/knight";
+import { Old } from "./characters/old";
+import { OldMan } from "./characters/oldMan";
+import { PrimalWolf } from "./characters/primalWolf";
+import { Scapegoat } from "./characters/scapegoat";
+import { Seer } from "./characters/seer";
+import { Sisters } from "./characters/sisters";
+import { SmallChild } from "./characters/smallChild";
+import { Thief } from "./characters/thief";
+import { VillageIdiot } from "./characters/villageIdiot";
+import { Villager } from "./characters/villager";
+import { Werewolf } from "./characters/werewolf";
+import { WhiteWolf } from "./characters/whiteWolf";
+import { WildChild } from "./characters/wildChild";
+import { Witch } from "./characters/witch";
+import { CharacterGroup } from "../types";
 
 export enum BasePriority {
     Initial = 0,
@@ -37,7 +37,7 @@ export const GroupedRoles: CharacterGroup[] = [
     {
         Name: "Werwölfe",
         Cards: [
-            { Character: new Werewolf(), Selected: false, Multicard: true },
+            { Character: new Werewolf(), Selected: false },
             { Character: new PrimalWolf(), Selected: false },
             { Character: new WildChild(), Selected: false },
             { Character: new WhiteWolf(), Selected: false },
@@ -54,15 +54,15 @@ export const GroupedRoles: CharacterGroup[] = [
             { Character: new Healer(), Selected: false },
             { Character: new SmallChild(), Selected: false },
             { Character: new Bitch(), Selected: false },
-            { Character: new Brothers(), Selected: false, Multicard: true },
-            { Character: new Sisters(), Selected: false, Multicard: true },
+            { Character: new Brothers(), Selected: false },
+            { Character: new Sisters(), Selected: false },
             { Character: new Scapegoat(), Selected: false },
             { Character: new Fox(), Selected: false },
         ]
     }, {
         Name: "Passive",
         Cards: [
-            { Character: new Villager(), Selected: false, Multicard: true },
+            { Character: new Villager(), Selected: false },
             { Character: new Hunter(), Selected: false },
             { Character: new Knight(), Selected: false },
             { Character: new BearGuide(), Selected: false },

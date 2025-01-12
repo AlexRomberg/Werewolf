@@ -1,6 +1,6 @@
 import { Action, Character, Person } from "../../types";
 import { RequestAssignment } from "../actions/buttons";
-import { BasePriority } from "./roles";
+import { BasePriority } from "../characters";
 
 export class Scapegoat implements Character, Action {
     public Priority = BasePriority.Initial + 12;

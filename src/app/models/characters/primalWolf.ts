@@ -2,7 +2,7 @@ import { GameStateService } from "../../services/game-state.service";
 import { Action, ActionButton, Character, Person } from "../../types";
 import { RequestAssignment } from "../actions/buttons";
 import { BigWolf } from "./bigWolf";
-import { BasePriority } from "./roles";
+import { BasePriority } from "../characters";
 import { Werewolf } from "./werewolf";
 import { WhiteWolf } from "./whiteWolf";
 

@@ -1,7 +1,7 @@
 import { DialogService } from "../../services/dialog.service";
 import { Action, Character, Person } from "../../types";
 import { RequestAssignment } from "../actions/buttons";
-import { BasePriority } from "./roles";
+import { BasePriority } from "../characters";
 
 export class WhiteWolf implements Character, Action {
     public Priority = BasePriority.Wolf + 2;

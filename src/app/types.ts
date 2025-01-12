@@ -58,5 +58,5 @@ export interface CharacterGroup {
 }
 
 export interface CardSelectionInformation {
-    Character: Character, Selected: boolean, Multicard?: boolean
+    Character: Character, Selected: boolean
 }

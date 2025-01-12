@@ -1,6 +1,6 @@
 import { Injectable, isDevMode } from "@angular/core";
 import { CharacterGroup } from "../types";
-import { GroupedRoles } from "../models/characters/roles";
+import { GroupedRoles } from "../models/characters";
 
 @Injectable({
     providedIn: "root"

@@ -1,6 +1,6 @@
 import { Action, Character, Person } from "../../types";
 import { RequestAssignments } from "../actions/buttons";
-import { BasePriority } from "./roles";
+import { BasePriority } from "../characters";
 
 export class Sisters implements Character, Action {
     public Priority = BasePriority.Initial + 6;

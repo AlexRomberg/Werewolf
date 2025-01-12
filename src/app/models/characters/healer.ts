@@ -1,7 +1,7 @@
 import { DialogService } from "../../services/dialog.service";
 import { Action, Character, Person } from "../../types";
 import { RequestAssignment } from "../actions/buttons";
-import { BasePriority } from "./roles";
+import { BasePriority } from "../characters";
 import { SmallChild } from "./smallChild";
 
 export class Healer implements Character, Action {

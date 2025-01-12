@@ -83,7 +83,7 @@ export class GameStateService {
                     }
                     break;
                 case ConnectionTypes.Sleepover:
-                    if (!isFollowUpCheck && connection.person.Character?.Image === "small_child") {
+                    if (!isFollowUpCheck && connection.person.Character?.Image === "bitch") {
                         connection.person.IsVictim = false;
                         connection.person.IsDead = true;
                         diedPeople.push(connection.person);
