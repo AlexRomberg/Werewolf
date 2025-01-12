@@ -4,8 +4,7 @@ import { BasePriority } from "../characters";
 
 export class Brothers implements Character, Action {
     Priority = BasePriority.Initial + 7;
-    Image = "brothers";
-    Name = "Die Drei Brüder";
+    Id = "brothers";
     IsSingle = false;
     AssignedPeople?: Person[] | undefined;
 

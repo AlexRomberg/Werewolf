@@ -5,8 +5,7 @@ import { BasePriority } from "../characters";
 
 export class FlutePlayer implements Character, Action {
     Priority = BasePriority.PostWolf + 2;
-    Image = "flute_player";
-    Name = "Der Flötenspieler";
+    Id = "flute_player";
     IsSingle = true;
     AssignedPerson: Person | undefined;
     private isDone = false;

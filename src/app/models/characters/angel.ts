@@ -1,8 +1,7 @@
 import { Action, Character } from "../../types";
 
 export class Angel implements Character, Action {
-    Image = "angel";
-    Name = "Der Engel";
+    Id = "angel";
     IsSingle = true;
     IsAwakeThisNight = () => false;
 }

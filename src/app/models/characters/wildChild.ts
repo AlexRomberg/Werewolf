@@ -6,8 +6,7 @@ import { BasePriority } from "../characters";
 
 export class WildChild implements Character, Action {
     public Priority = BasePriority.Initial + 8;
-    public Image = "wild_child";
-    public Name = "Das wilde Kind";
+    public Id = "wild_child";
     public AssignedPerson: Person | undefined;
     public IsSingle = true;
     private isDone = false;

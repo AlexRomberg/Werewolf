@@ -26,7 +26,7 @@
         <circle [attr.cx]="GetCoordinateX($index)" [attr.cy]="GetCoordinateY($index)" r="100" class="pointer-events-none" (click)="OnPersonClicked(person)" />
     </clipPath>
     <g [attr.clip-path]="'url(#clip_' + person.Id + ')'">
-        <image [attr.href]="'assets/icons/' + person.Character.Image + '.png'" [attr.x]="GetCoordinateX($index) - 110" [attr.y]="GetCoordinateY($index) - 110" width="220" height="220" />
+        <image [attr.href]="'assets/icons/' + person.Character.Id + '.png'" [attr.x]="GetCoordinateX($index) - 110" [attr.y]="GetCoordinateY($index) - 110" width="220" height="220" />
     </g>
     }
 

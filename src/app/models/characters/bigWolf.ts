@@ -8,8 +8,7 @@ import { WhiteWolf } from "./whiteWolf";
 
 export class BigWolf implements Character, Action {
     Priority = BasePriority.Wolf + 4;
-    Image = "big_wolf";
-    Name = "Der Grosse, böse Wolf";
+    Id = "big_wolf";
     IsSingle = true;
     AssignedPerson: Person | undefined;
     private isDone = false;

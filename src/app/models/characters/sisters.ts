@@ -4,8 +4,7 @@ import { BasePriority } from "../characters";
 
 export class Sisters implements Character, Action {
     public Priority = BasePriority.Initial + 6;
-    public Image = "sisters";
-    public Name = "Die Zwei Geschwister";
+    public Id = "sisters";
     public AssignedPeople?: Person[] | undefined;
     public IsSingle = true;
 

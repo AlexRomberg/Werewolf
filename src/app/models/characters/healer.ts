@@ -6,8 +6,7 @@ import { SmallChild } from "./smallChild";
 
 export class Healer implements Character, Action {
     Priority = BasePriority.Initial + 10;
-    Image = "healer";
-    Name = "Der Heiler";
+    Id = "healer";
     IsSingle = true;
     AssignedPerson?: Person | undefined;
     private lastProtectedPerson: Person | undefined;

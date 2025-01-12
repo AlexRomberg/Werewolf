@@ -25,8 +25,7 @@ export enum ConnectionTypes {
 }
 
 export interface Action {
-    Name: string;
-    Image: string;
+    Id: string,
     GetPoints?: () => (string | false)[]
     GetButtons?: () => ActionButton[]
 }
@@ -42,8 +41,7 @@ export type ActionCallback = (services: {
 }) => void;
 
 export interface Character {
-    Name: string;
-    Image: string;
+    Id: string;
     IsSingle: boolean;
     Priority?: number;
     Action?: Action;

@@ -4,8 +4,7 @@ import { BasePriority } from "../characters";
 
 export class Scapegoat implements Character, Action {
     public Priority = BasePriority.Initial + 12;
-    public Image = "scapegoat";
-    public Name = "Der Sündenbock";
+    public Id = "scapegoat";
     public AssignedPerson?: Person | undefined;
     public IsSingle = true;
 

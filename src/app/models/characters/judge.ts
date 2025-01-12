@@ -1,8 +1,7 @@
 import { Action, Character } from "../../types";
 
 export class Judge implements Character, Action {
-    Image = "judge";
-    Name = "Der Richter";
+    Id = "judge";
     IsSingle = true;
 
     IsAwakeThisNight = () => false;

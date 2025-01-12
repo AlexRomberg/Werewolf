@@ -1,8 +1,7 @@
 import { Action } from "../../types";
 
 export const RulesAction: Action = {
-    Name: "Regeln & Anfang",
-    Image: "rules",
+    Id: "rules",
     GetPoints: () => [
         "Regeln erklären",
         "Anzahl Werwölfe erwähnen",
@@ -11,16 +10,14 @@ export const RulesAction: Action = {
 };
 
 export const NightfallAction: Action = {
-    Name: "Dämmerung",
-    Image: "night",
+    Id: "night",
     GetPoints: () => [
         "Und das Dorf schläft ein"
     ]
 };
 
 export const DaybreakAction: Action = {
-    Name: "Tagesanbruch",
-    Image: "day",
+    Id: "day",
     GetPoints: () => [
         "Und das Dorf erwacht",
         "Informiere über Tode",

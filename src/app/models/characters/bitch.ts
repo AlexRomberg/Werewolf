@@ -6,8 +6,7 @@ import { BasePriority } from "../characters";
 
 export class Bitch implements Character, Action {
     Priority = BasePriority.Initial + 11;
-    Image = "bitch";
-    Name = "Die Dorfmatratze";
+    Id = "bitch";
     IsSingle = true;
     AssignedPerson: Person | undefined;
     private lastJoinedPerson: Person | undefined;

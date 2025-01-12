@@ -6,8 +6,7 @@ import { BasePriority } from "../characters";
 
 export class Cupit implements Character, Action {
     Priority = BasePriority.Initial + 3;
-    Image = "cupit";
-    Name = "Der Amor";
+    Id = "cupit";
     IsSingle = true;
     AssignedPerson: Person | undefined;
     private isDone = false;

@@ -6,8 +6,7 @@ import { BasePriority } from "../characters";
 
 export class Witch implements Character, Action {
     public Priority = BasePriority.PostWolf + 1;
-    public Image = "witch";
-    public Name = "Die Hexe";
+    public Id = "witch";
     public AssignedPerson: Person | undefined;
     public IsSingle = true;
     private hasPositivePotion = true;

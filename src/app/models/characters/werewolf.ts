@@ -6,8 +6,7 @@ import { BasePriority } from "../characters";
 
 export class Werewolf implements Character, Action {
     Priority = BasePriority.Wolf + 1;
-    Image = "werewolf";
-    Name = "Der Einfache Werewolf";
+    Id = "werewolf";
     public IsSingle = false;
     AssignedPeople: Person[] = [];
 

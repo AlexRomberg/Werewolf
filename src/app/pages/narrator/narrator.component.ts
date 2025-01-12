@@ -7,10 +7,12 @@ import { FormsModule } from "@angular/forms";
 import { SpotifyWidgetComponent } from "../../components/spotify-widget/spotify-widget.component";
 import { SpotifyService } from "../../services/spotify.service";
 import { environment } from "../../../environments/environment";
+import { I18nSelectPipe } from "@angular/common";
+import { NAME_TRANSLATIONS } from "../../models/characters";
 
 @Component({
     selector: "app-narrator",
-    imports: [CircleComponent, FormsModule, SpotifyWidgetComponent],
+    imports: [CircleComponent, FormsModule, SpotifyWidgetComponent, I18nSelectPipe],
     templateUrl: "./narrator.component.html",
     styleUrl: "./narrator.component.css"
 })
@@ -18,6 +20,7 @@ export class NarratorComponent {
     state = inject(GameStateService);
     dialog = inject(DialogService);
     spotify = inject(SpotifyService);
+    NAME_TRANSLATIONS = NAME_TRANSLATIONS;
 
     private firstNightfall = true;
 

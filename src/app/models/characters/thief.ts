@@ -4,8 +4,7 @@ import { BasePriority } from "../characters";
 
 export class Thief implements Character, Action {
     public Priority = BasePriority.Initial + 1;
-    public Image = "thief";
-    public Name = "Der Dieb";
+    public Id = "thief";
     public AssignedPerson: Person | undefined;
     public IsSingle = true;
 

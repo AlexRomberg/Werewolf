@@ -5,8 +5,7 @@ import { BasePriority } from "../characters";
 
 export class WhiteWolf implements Character, Action {
     public Priority = BasePriority.Wolf + 2;
-    public Image = "white_wolf";
-    public Name = "Der weisse Wolf";
+    public Id = "white_wolf";
     public AssignedPerson?: Person | undefined;
     public IsSingle = true;
     private isDone = false;

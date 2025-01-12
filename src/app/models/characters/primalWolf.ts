@@ -8,8 +8,7 @@ import { WhiteWolf } from "./whiteWolf";
 
 export class PrimalWolf implements Character, Action {
     public Priority = BasePriority.Wolf + 3;
-    public Image = "primal_wolf";
-    public Name = "Der Urwolf";
+    public Id = "primal_wolf";
     public AssignedPerson?: Person | undefined;
     public IsSingle = true;
     private isDone = false;

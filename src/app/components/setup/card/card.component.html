@@ -6,9 +6,9 @@
         <div class="card md-shadow-md -rotate-6"></div>
         }
         <div class="card md-shadow-md">
-            <img [src]="'assets/icons/' + Card.Character.Image + '.png'" [alt]="Card.Character.Name">
+            <img [src]="'assets/icons/' + Card.Character.Id + '.png'" [alt]="Card.Character.Id | i18nSelect: NAME_TRANSLATIONS">
         </div>
     </div>
-    <p class="text-gray-200 text-center text-wrap w-40 h-12 content-center">{{Card.Character.Name}}</p>
+    <p class="text-gray-200 text-center text-wrap w-40 h-12 content-center">{{Card.Character.Id | i18nSelect: NAME_TRANSLATIONS}}</p>
 </button>
 }

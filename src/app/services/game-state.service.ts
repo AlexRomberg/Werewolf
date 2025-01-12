@@ -70,7 +70,7 @@ export class GameStateService {
         for (const connection of connections) {
             switch (connection.type) {
                 case ConnectionTypes.Trust:
-                    if (connection.person.Character?.Image === "wild_child") {
+                    if (connection.person.Character?.Id === "wild_child") {
                         connection.person.IsWerewolf = true;
                     }
                     break;
@@ -83,7 +83,7 @@ export class GameStateService {
                     }
                     break;
                 case ConnectionTypes.Sleepover:
-                    if (!isFollowUpCheck && connection.person.Character?.Image === "bitch") {
+                    if (!isFollowUpCheck && connection.person.Character?.Id === "bitch") {
                         connection.person.IsVictim = false;
                         connection.person.IsDead = true;
                         diedPeople.push(connection.person);
@@ -96,7 +96,7 @@ export class GameStateService {
     }
 
     private filterActivePeople(role: Character): boolean {
-        if (role.Image === "werewolf") {
+        if (role.Id === "werewolf") {
             return true;
         }
         if (!role.IsAwakeThisNight(this.Night, this)) {

@@ -4,8 +4,7 @@ import { BasePriority } from "../characters";
 
 export class BearGuide implements Character, Action {
     Priority = BasePriority.Initial + 9;
-    Image = "bear_guide";
-    Name = "Der Bärenführer";
+    Id = "bear_guide";
     IsSingle = true;
     AssignedPerson: Person | undefined;
 

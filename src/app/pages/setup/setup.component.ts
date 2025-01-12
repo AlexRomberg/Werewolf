@@ -8,10 +8,12 @@ import { SpotifyWidgetComponent } from "../../components/spotify-widget/spotify-
 import { SpotifyService } from "../../services/spotify.service";
 import { environment } from "../../../environments/environment";
 import { StorageService } from "../../services/storage.service";
+import { I18nSelectPipe } from "@angular/common";
+import { NAME_TRANSLATIONS } from "../../models/characters";
 
 @Component({
     selector: "app-setup",
-    imports: [FormsModule, CardComponent, SpotifyWidgetComponent, RouterLink],
+    imports: [FormsModule, CardComponent, SpotifyWidgetComponent, RouterLink, I18nSelectPipe],
     templateUrl: "./setup.component.html",
     styleUrl: "./setup.component.css"
 })
@@ -21,6 +23,7 @@ export class SetupComponent {
     private spotify = inject(SpotifyService);
     private storage = inject(StorageService);
 
+    NAME_TRANSLATIONS = NAME_TRANSLATIONS;
     public Roles: CharacterGroup[] = this.storage.SetupSelection;
     public PeopleCount: number = this.storage.SetupPeopleCount;
 

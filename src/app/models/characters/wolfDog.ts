@@ -1,8 +1,7 @@
 import { Action, Character } from "../../types";
 
 export class WolfDog implements Character, Action {
-    Image = "dog_wolf";
-    Name = "Der Wolfshund";
+    Id = "dog_wolf";
     IsSingle = true;
 
     IsAwakeThisNight = () => false;

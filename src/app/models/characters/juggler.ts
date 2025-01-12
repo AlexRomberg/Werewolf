@@ -4,8 +4,7 @@ import { BasePriority } from "../characters";
 
 export class Juggler implements Character, Action {
     Priority = BasePriority.Initial + 2;
-    Image = "juggler";
-    Name = "Der Gaukler";
+    Id = "juggler";
     IsSingle = true;
     AssignedPerson?: Person | undefined;
 
