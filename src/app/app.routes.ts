@@ -1,18 +1,12 @@
 import { Routes } from "@angular/router";
-import { SetupComponent } from "./pages/setup/setup.component";
-import { NarratorComponent } from "./pages/narrator/narrator.component";
 import { narratorGuard } from "./guards/narrator.guard";
-import { SuccessComponent } from "./pages/spotify/success/success.component";
-import { HomeComponent } from "./pages/home/home.component";
-import { ConnectingComponent } from "./pages/spotify/connecting/connecting.component";
-import { CardsComponent } from "./pages/setup/cards/cards.component";
 
 export const routes: Routes = [
-    { path: "", component: HomeComponent },
-    { path: "setup", component: SetupComponent },
-    { path: "setup/cards", component: CardsComponent },
-    { path: "narrator", component: NarratorComponent, canActivate: [narratorGuard] },
-    { path: "spotify", component: ConnectingComponent },
-    { path: "spotify/success", component: SuccessComponent },
+    { path: "", loadComponent: () => import("./pages/home/home.component").then(m => m.HomeComponent) },
+    { path: "setup", loadComponent: () => import("./pages/setup/setup.component").then(m => m.SetupComponent) },
+    { path: "setup/cards", loadComponent: () => import("./pages/setup/cards/cards.component").then(m => m.CardsComponent) },
+    { path: "narrator", loadComponent: () => import("./pages/narrator/narrator.component").then(m => m.NarratorComponent), canActivate: [narratorGuard] },
+    { path: "spotify", loadComponent: () => import("./pages/spotify/connecting/connecting.component").then(m => m.ConnectingComponent) },
+    { path: "spotify/success", loadComponent: () => import("./pages/spotify/success/success.component").then(m => m.SuccessComponent) },
     { path: "**", pathMatch: "full", redirectTo: "/" }
 ];
