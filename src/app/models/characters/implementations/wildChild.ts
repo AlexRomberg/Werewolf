@@ -1,6 +1,6 @@
 import { DialogService } from "../../../services/dialog.service";
 import { GameStateService } from "../../../services/game-state.service";
-import { ConnectionTypes, GameSets, GroupTypes, iPerson } from "../../../types";
+import { ConnectionTypes, GameSets, GroupTypes } from "../../../types";
 import { RequestAssignment } from "../../actions/buttons";
 import { Character } from "../character";
 import { BasePriority } from "../../../types";
@@ -11,7 +11,7 @@ export class WildChild extends Character {
     Game = GameSets.Characters;
     override Priority = BasePriority.Initial + 8;
     private get isDone() {
-        return this.gameState.Connections.some(c => c.Type === ConnectionTypes.Trust)
+        return this.gameState.Connections.has(ConnectionTypes.Trust);
     };
 
     override GetDescriptions = () => [

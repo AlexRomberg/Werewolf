@@ -3,22 +3,8 @@ import { Person as Person } from "./models/state/person";
 import { DialogService } from "./services/dialog.service";
 import { GameStateService } from "./services/game-state.service";
 
-export interface iPerson {
-    Id: number;
-    Name: string | undefined;
-    IsProtected: boolean;
-    IsVictim: boolean;
-    IsEnchanted: boolean;
-    IsWerewolf: boolean;
-    IsDead: boolean;
-    Character?: iCharacter;
-}
-
-export interface Connection {
-    Type: ConnectionTypes;
-    From: Person;
-    To: Person;
-}
+export type Connection = { From: Person, To: Person };
+export type Connections = Map<Partial<ConnectionTypes>, Connection>;
 
 export enum ConnectionTypes {
     Love,
@@ -56,17 +42,6 @@ export enum GameSets {
     Special
 }
 
-export interface iCharacter extends ActionProvider {
-    Id: string;
-    IsSingle: boolean;
-    Group: GroupTypes;
-    Game: GameSets;
-    Priority?: number;
-    AssignedPerson?: iPerson
-    AssignedPeople?: iPerson[]
-    IsAwakeThisNight: (round: number, gameState: GameStateService) => boolean;
-}
-
 export interface CharacterGroup {
     Name: string;
     Cards: CardSelectionInformation[]
@@ -79,4 +54,11 @@ export enum BasePriority {
     Initial = 0,
     Wolf = 50,
     PostWolf = 100
+}
+
+export interface GameState {
+    round: number,
+    people: Person[],
+    selectedCharacters: Character[],
+    connections: Connections,
 }

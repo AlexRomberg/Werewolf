@@ -1,5 +1,4 @@
 import { inject, Injectable } from "@angular/core";
-import { iPerson } from "../types";
 import { GameStateService } from "./game-state.service";
 import { Person } from "../models/state/person";
 

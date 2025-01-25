@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
-import { ActionProvider, Connection, ConnectionTypes, iPerson } from "../types";
+import { ActionProvider, Connections, ConnectionTypes, GameState } from "../types";
 import { DaybreakAction, NightfallAction, RulesAction } from "../models/actions/generic";
-import { v4 } from "uuid";
 import { Character } from "../models/characters/character";
 import { Angel } from "../models/characters/implementations/angel";
 import { BearGuide } from "../models/characters/implementations/bearGuide";
@@ -41,7 +40,7 @@ export class GameStateService {
         round: 0,
         people: [],
         selectedCharacters: [],
-        connections: [], // TODO: convert to map
+        connections: new Map(),
     };
 
     public Actions: ActionProvider[] = [];
@@ -49,7 +48,7 @@ export class GameStateService {
 
     public get Round() { return this.state.round; };
     public get People(): Person[] { return this.state.people; };
-    public get Connections(): Connection[] { return [...this.state.connections]; }
+    public get Connections(): Connections { return this.state.connections; }
     public get AllCharacters() { return this.allCharacters; }
     public get SelectedCharacters() {
         return this.state.selectedCharacters;
@@ -72,11 +71,11 @@ export class GameStateService {
     }
 
     public addConnection(type: ConnectionTypes, from: Person, to: Person) {
-        this.state.connections = [...this.state.connections.filter(c => c.Type === type), { Type: type, From: from, To: to }];
+        this.state.connections.set(type, { From: from, To: to });
     }
 
     public removeConnection(connectionType: ConnectionTypes) {
-        this.state.connections = this.state.connections.filter(c => c.Type !== connectionType);
+        this.state.connections.delete(connectionType);
     }
 
     public startGame() {
@@ -91,6 +90,7 @@ export class GameStateService {
         for (const character of this.state.selectedCharacters) {
             character.resetAfterNight();
         }
+        this.state.connections = new Map();
         this.applyNightActions();
     }
 
@@ -135,7 +135,7 @@ export class GameStateService {
     }
 
     public resetGame() {
-        this.state = { ...this.state, round: 0, connections: [], selectedCharacters: [] };
+        this.state = { ...this.state, round: 0, connections: new Map(), selectedCharacters: [] };
         this.resetCharacters();
         for (const person of this.state.people) {
             person.resetPerson();
@@ -186,6 +186,13 @@ export class GameStateService {
         }
     }
 
+    public PreviousAction(): void {
+        const lastAction = this.ActionHistory.pop();
+        if (!lastAction) { return; }
+
+        this.Actions.unshift(lastAction);
+    }
+
     // public HandleNightOver(): void {
     //     // const diedPeople = [];
     //     for (const person of this.People) {
@@ -202,13 +209,6 @@ export class GameStateService {
     //     this.LoadNightActions();
     //     this.ActionHistory = [];
     // }
-
-    public PreviousAction(): void {
-        const lastAction = this.ActionHistory.pop();
-        if (!lastAction) { return; }
-
-        this.Actions.unshift(lastAction);
-    }
 
     // private handleConsequenceofDeath(person: iPerson, isFollowUpCheck = false): iPerson[] {
     //     const connections = this.Connections.filter(c => c.From === person || c.To === person).map(c => ({ person: (c.From === person ? c.To : c.From), type: c.Type }));
@@ -257,11 +257,4 @@ export class GameStateService {
     //     // }
     //     return true;
     // }
-}
-
-interface GameState {
-    round: number,
-    people: Person[],
-    selectedCharacters: Character[],
-    connections: Connection[],
 }

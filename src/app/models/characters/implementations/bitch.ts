@@ -13,7 +13,7 @@ export class Bitch extends Character {
     override Priority = BasePriority.Initial + 11;
     private lastJoinedPerson: Person | undefined;
     private get isDone() {
-        return this.gameState.Connections.some(c => c.Type === ConnectionTypes.Sleepover)
+        return this.gameState.Connections.has(ConnectionTypes.Sleepover);
     };
 
     override GetDescriptions = () => [

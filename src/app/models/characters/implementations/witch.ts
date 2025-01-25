@@ -1,6 +1,6 @@
 import { DialogService } from "../../../services/dialog.service";
 import { GameStateService } from "../../../services/game-state.service";
-import { GameSets, GroupTypes, iPerson } from "../../../types";
+import { GameSets, GroupTypes } from "../../../types";
 import { RequestAssignment } from "../../actions/buttons";
 import { Character } from "../character";
 import { BasePriority } from "../../../types";

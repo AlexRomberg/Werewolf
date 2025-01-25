@@ -2,7 +2,7 @@ import { Component, inject } from "@angular/core";
 import { CircleComponent } from "../../components/circle/circle.component";
 import { GameStateService } from "../../services/game-state.service";
 import { DialogService } from "../../services/dialog.service";
-import { ActionProvider, ActionCallback, iPerson } from "../../types";
+import { ActionProvider, ActionCallback } from "../../types";
 import { FormsModule } from "@angular/forms";
 import { SpotifyWidgetComponent } from "../../components/spotify-widget/spotify-widget.component";
 import { SpotifyService } from "../../services/spotify.service";

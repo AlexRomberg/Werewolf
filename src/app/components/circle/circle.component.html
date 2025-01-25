@@ -11,8 +11,8 @@
     </defs>
 
     <!-- Connections -->
-    @for (connection of Connections; track $index) {
-    <path [attr.d]="GetConnectionPath($index)" style="fill:none;stroke-width:22.22px;" [style.stroke]="GetConnectionColor(connection.Type)" />
+    @for (connectionEntry of Connections.entries(); track $index) {
+    <path [attr.d]="GetConnectionPath($index)" style="fill:none;stroke-width:22.22px;" [style.stroke]="GetConnectionColor(connectionEntry[0])" />
     }
 
     <!-- Ring -->

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, inject, Input, Output } from "@angular/core";
-import { Connection, ConnectionTypes, iPerson } from "../../types";
+import { Connection, Connections, ConnectionTypes } from "../../types";
 import { Person } from "../../models/state/person";
 import { GameStateService } from "../../services/game-state.service";
 
@@ -12,7 +12,7 @@ import { GameStateService } from "../../services/game-state.service";
 export class CircleComponent {
     private gameState = inject(GameStateService);
     @Input()
-    public Connections: Connection[] = [];
+    public Connections: Connections = new Map();
 
     @Input()
     public People: Person[] = [];
@@ -28,9 +28,14 @@ export class CircleComponent {
         return 1000 - Math.cos(2 * Math.PI / this.People.length * index) * 875;
     }
 
-    public GetConnectionPath(index: number): string {
-        const originID = this.gameState.People.findIndex(p => p.Id === this.Connections[index].From.Id);
-        const destinationID = this.gameState.People.findIndex(p => p.Id === this.Connections[index].To.Id);
+    public GetConnectionPath(connectionType: ConnectionTypes): string {
+        const connection = this.Connections.get(connectionType);
+        if (!connection) {
+            return "";
+        }
+
+        const originID = this.gameState.People.findIndex(p => p.Id === connection.From.Id);
+        const destinationID = this.gameState.People.findIndex(p => p.Id === connection.To.Id);
         let originX = this.GetCoordinateX(originID);
         let originY = this.GetCoordinateY(originID);
         let destinationX = this.GetCoordinateX(destinationID);
@@ -44,7 +49,7 @@ export class CircleComponent {
 
         const distanceFractionX = distanceX / length;
         const distanceFractionY = distanceY / length;
-        const { Before: before, All: all } = this.getOtherConnections(this.Connections[index], index);
+        const { Before: before, All: all } = this.getOtherConnections(connection, connectionType);
         const shift = (before - (all + 1) / 2) * 30;
 
         originX = originX + shortenBy * distanceFractionX + shift * distanceFractionY;
@@ -97,8 +102,8 @@ export class CircleComponent {
     }
 
     private getOtherConnections(connection: Connection, index: number): { Before: number, All: number } {
-        return this.Connections.reduce((prev, curr, idx) => {
-            if ((curr.From == connection.From && curr.To == connection.To) || (curr.From == connection.To && curr.To == connection.From)) {
+        return Object.entries(this.Connections).reduce((prev, curr, idx) => {
+            if ((curr[1].From == connection.From && curr[1].To == connection.To) || (curr[1].From == connection.To && curr[1].To == connection.From)) {
                 return {
                     Before: prev.Before + (idx <= index ? 1 : 0),
                     All: prev.All + 1
