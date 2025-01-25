@@ -2,13 +2,14 @@ import { Component, inject } from "@angular/core";
 import { CircleComponent } from "../../components/circle/circle.component";
 import { GameStateService } from "../../services/game-state.service";
 import { DialogService } from "../../services/dialog.service";
-import { Action, ActionCallback, Person } from "../../types";
+import { ActionProvider, ActionCallback, iPerson } from "../../types";
 import { FormsModule } from "@angular/forms";
 import { SpotifyWidgetComponent } from "../../components/spotify-widget/spotify-widget.component";
 import { SpotifyService } from "../../services/spotify.service";
 import { environment } from "../../../environments/environment";
 import { I18nSelectPipe } from "@angular/common";
-import { NAME_TRANSLATIONS } from "../../models/characters";
+import { NAME_TRANSLATIONS } from "../../i18n/translations";
+import { Person } from "../../models/state/person";
 
 @Component({
     selector: "app-narrator",
@@ -49,11 +50,11 @@ export class NarratorComponent {
         this.dialog.ShowPersonDialog(person);
     }
 
-    public GetFilteredPoints(action: Action): string[] {
-        return action.GetPoints?.().filter(Boolean) as string[] ?? [];
+    public GetFilteredPoints(action: ActionProvider): string[] {
+        return action.GetDescriptions?.().filter(Boolean) as string[] ?? [];
     }
 
-    public GetFilteredButtons(action: Action): {
+    public GetFilteredButtons(action: ActionProvider): {
         Title: string;
         Action: ActionCallback;
     }[] {

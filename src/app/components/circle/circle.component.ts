@@ -1,5 +1,7 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { Connection, ConnectionTypes, Person } from "../../types";
+import { Component, EventEmitter, inject, Input, Output } from "@angular/core";
+import { Connection, ConnectionTypes, iPerson } from "../../types";
+import { Person } from "../../models/state/person";
+import { GameStateService } from "../../services/game-state.service";
 
 @Component({
     selector: "app-circle",
@@ -8,6 +10,7 @@ import { Connection, ConnectionTypes, Person } from "../../types";
     styleUrl: "./circle.component.css"
 })
 export class CircleComponent {
+    private gameState = inject(GameStateService);
     @Input()
     public Connections: Connection[] = [];
 
@@ -26,10 +29,12 @@ export class CircleComponent {
     }
 
     public GetConnectionPath(index: number): string {
-        let originX = this.GetCoordinateX(this.Connections[index].From.Id);
-        let originY = this.GetCoordinateY(this.Connections[index].From.Id);
-        let destinationX = this.GetCoordinateX(this.Connections[index].To.Id);
-        let destinationY = this.GetCoordinateY(this.Connections[index].To.Id);
+        const originID = this.gameState.People.findIndex(p => p.Id === this.Connections[index].From.Id);
+        const destinationID = this.gameState.People.findIndex(p => p.Id === this.Connections[index].To.Id);
+        let originX = this.GetCoordinateX(originID);
+        let originY = this.GetCoordinateY(originID);
+        let destinationX = this.GetCoordinateX(destinationID);
+        let destinationY = this.GetCoordinateY(destinationID);
 
         const distanceX = destinationX - originX;
         const distanceY = destinationY - originY;

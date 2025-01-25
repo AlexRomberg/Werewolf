@@ -1,6 +1,7 @@
 import { inject, Injectable } from "@angular/core";
-import { Person } from "../types";
+import { iPerson } from "../types";
 import { GameStateService } from "./game-state.service";
+import { Person } from "../models/state/person";
 
 @Injectable({
     providedIn: "root"
@@ -23,7 +24,7 @@ export class DialogService {
         return await new Promise<Person[]>((res, rej) => {
             this.peopleDialogCallback = res;
             this.peopleDialogRejection = rej;
-            this.PeopleDialog = { Title: title, NumberOfPeople: numberOfPeople, People: this.gameState.People.map(p => ({ ...p, protected: false })) };
+            this.PeopleDialog = { Title: title, NumberOfPeople: numberOfPeople, People: this.gameState.People.map(p => p.cloneWithoutEffectState()) };
         });
     }
 

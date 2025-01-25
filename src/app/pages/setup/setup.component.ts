@@ -9,7 +9,7 @@ import { SpotifyService } from "../../services/spotify.service";
 import { environment } from "../../../environments/environment";
 import { StorageService } from "../../services/storage.service";
 import { I18nSelectPipe } from "@angular/common";
-import { NAME_TRANSLATIONS } from "../../models/characters";
+import { NAME_TRANSLATIONS } from "../../i18n/translations";
 
 @Component({
     selector: "app-setup",
@@ -28,28 +28,13 @@ export class SetupComponent {
     public PeopleCount: number = this.storage.SetupPeopleCount;
 
     public async StartGame(): Promise<void> {
-        this.state.Characters = this.Roles
+        this.state.SelectedCharacters = this.Roles
             .map(r => r.Cards)
             .flat()
             .filter(r => r.Selected)
             .sort((ra, rb) => (ra.Character.Priority ?? -1) - (rb.Character.Priority ?? -1))
             .map(r => r.Character);
-        this.state.People = this.state.People.slice(0, this.PeopleCount);
-        for (let i = 0; i < this.PeopleCount; i++) {
-            const person = this.state.People[i];
-            this.state.People[i] = {
-                Character: undefined,
-                IsVictim: false,
-                IsProtected: false,
-                IsEnchanted: false,
-                IsDead: false,
-                IsWerewolf: false,
-                Id: i,
-                Name: person?.Name ?? ""
-            };
-        }
-
-        this.state.StartGame();
+        this.state.startGame();
         if (this.spotify.IsAuthenticated && this.spotify.CurrentDevice && !this.spotify.BackgroundMusicStarted) {
             await this.spotify.PlayPlaylist(environment.spotify.playlists.start, false);
             this.spotify.BackgroundMusicStarted = true;

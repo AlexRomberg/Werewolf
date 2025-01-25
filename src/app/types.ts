@@ -1,7 +1,9 @@
+import { Character } from "./models/characters/character";
+import { Person as Person } from "./models/state/person";
 import { DialogService } from "./services/dialog.service";
 import { GameStateService } from "./services/game-state.service";
 
-export interface Person {
+export interface iPerson {
     Id: number;
     Name: string | undefined;
     IsProtected: boolean;
@@ -9,7 +11,7 @@ export interface Person {
     IsEnchanted: boolean;
     IsWerewolf: boolean;
     IsDead: boolean;
-    Character?: Character;
+    Character?: iCharacter;
 }
 
 export interface Connection {
@@ -24,10 +26,10 @@ export enum ConnectionTypes {
     Sleepover
 }
 
-export interface Action {
+export interface ActionProvider {
     Id: string,
-    GetPoints?: () => (string | false)[]
-    GetButtons?: () => ActionButton[]
+    GetDescriptions: () => (string | false)[]
+    GetButtons: () => ActionButton[]
 }
 
 export interface ActionButton {
@@ -40,14 +42,29 @@ export type ActionCallback = (services: {
     Dialog: DialogService,
 }) => void;
 
-export interface Character {
+export enum GroupTypes {
+    Wolves,
+    Active,
+    Passive,
+    Loners
+}
+
+export enum GameSets {
+    BaseGame,
+    NewMoon,
+    Characters,
+    Special
+}
+
+export interface iCharacter extends ActionProvider {
     Id: string;
     IsSingle: boolean;
+    Group: GroupTypes;
+    Game: GameSets;
     Priority?: number;
-    Action?: Action;
-    AssignedPerson?: Person
-    AssignedPeople?: Person[]
-    IsAwakeThisNight: (nightCount: number, gameState: GameStateService) => boolean;
+    AssignedPerson?: iPerson
+    AssignedPeople?: iPerson[]
+    IsAwakeThisNight: (round: number, gameState: GameStateService) => boolean;
 }
 
 export interface CharacterGroup {
@@ -57,4 +74,9 @@ export interface CharacterGroup {
 
 export interface CardSelectionInformation {
     Character: Character, Selected: boolean
+}
+export enum BasePriority {
+    Initial = 0,
+    Wolf = 50,
+    PostWolf = 100
 }

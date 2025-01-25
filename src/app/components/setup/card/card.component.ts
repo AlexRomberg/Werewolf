@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { CardSelectionInformation } from "../../../types";
 import { I18nSelectPipe } from "@angular/common";
-import { NAME_TRANSLATIONS } from "../../../models/characters";
+import { NAME_TRANSLATIONS } from "../../../i18n/translations";
 
 @Component({
     selector: "app-card",

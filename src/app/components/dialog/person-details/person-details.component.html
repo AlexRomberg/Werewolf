@@ -6,7 +6,7 @@
         <label class="text-gray-200 mt-2" for="function" i18n="@@dialog-function">Funktion</label>
         <select class="rounded-md py-3 px-6 text-gray-100 bg-gray-500" name="function" id="function" [(ngModel)]="Person().Character">
             <option class="text-gray-100 bg-gray-500" [ngValue]="undefined" i18n="@@general-unknown">Unbekannt</option>
-            @for (character of GameState.Characters; track $index) {
+            @for (character of GameState.SelectedCharacters; track $index) {
             <option class="text-gray-100 bg-gray-500" [ngValue]="character">{{character.Id | i18nSelect: NAME_TRANSLATIONS}}</option>
             }
         </select>

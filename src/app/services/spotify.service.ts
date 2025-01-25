@@ -43,6 +43,7 @@ export class SpotifyService {
                 }
             },
         });
+
         this.sdk.getAccessToken().then((token) => {
             this.IsAuthenticated = Boolean(token);
 

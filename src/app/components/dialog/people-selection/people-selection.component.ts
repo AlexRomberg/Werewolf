@@ -2,7 +2,7 @@ import { Component, inject, input } from "@angular/core";
 import { DialogService } from "../../../services/dialog.service";
 import { GameStateService } from "../../../services/game-state.service";
 import { CircleComponent } from "../../circle/circle.component";
-import { Person } from "../../../types";
+import { Person } from "../../../models/state/person";
 
 @Component({
     selector: "app-people-selection",
