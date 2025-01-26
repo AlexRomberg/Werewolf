@@ -6,7 +6,10 @@
         </div>
         <h1 class="text-center text-zinc-200 text-2xl" i18n="@@spotify-something-went-wrong">Etwas ist schief gelaufen.</h1>
         <p class="text-center text-zinc-400" i18n="@@general-try-again">Versuche es nochmals</p>
-        <a routerLink="/setup" class="btn bg-zinc-500 mt-8 block text-center" i18n="@@general-back-to-overview">Zurück zur Übersicht</a>
+        <a routerLink="/setup" class="btn bg-zinc-500 mt-8 text-center flex" i18n="@@general-back-to-overview">
+            <lucide-angular name="arrow-left" class="mr-2" />
+            Zurück zur Übersicht
+        </a>
         } @placeholder (minimum 3s){
         <h1 class="text-center text-zinc-200 text-2xl" i18n="@@spotify-connecting">Spotify wird verbunden ...</h1>
         }

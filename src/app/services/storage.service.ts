@@ -20,8 +20,8 @@ export class StorageService {
         return [];
     }
     public set SetupSelection(selectionGroups: CharacterGroup[]) {
-        const slection = selectionGroups.map(v => v.Cards.map(c => c.Selected));
-        localStorage.setItem("setup_selected_cards", JSON.stringify(slection));
+        // const slection = selectionGroups.map(v => v.Cards.map(c => c.Selected));
+        // localStorage.setItem("setup_selected_cards", JSON.stringify(slection));
     }
 
     public get SetupPeopleCount(): number {

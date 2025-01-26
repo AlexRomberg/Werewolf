@@ -44,12 +44,9 @@ export enum GameSets {
 
 export interface CharacterGroup {
     Name: string;
-    Cards: CardSelectionInformation[]
+    Cards: Character[]
 }
 
-export interface CardSelectionInformation {
-    Character: Character, Selected: boolean
-}
 export enum BasePriority {
     Initial = 0,
     Wolf = 50,

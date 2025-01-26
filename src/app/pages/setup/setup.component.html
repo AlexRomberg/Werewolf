@@ -1,59 +1,137 @@
-<div class="bg-zinc-800 text-zinc-200 shadow-lg fixed top-0 w-full">
+<div class="bg-zinc-800 text-zinc-200 shadow-lg fixed top-0 w-full z-50">
     <div class="max-w-(--breakpoint-md) flex mx-auto items-center">
         <a class="p-8" routerLink="/">
             <lucide-angular name="arrow-left" />
         </a>
         <h1 i18n="@@setup-title" class="text-2xl">Vorbereitung</h1>
+        <p class="ml-auto mr-4" i18n="@@home-title">Werwolf Companion App</p>
+        <img src="img/night.png" class="rounded-lg md-shadow-md w-12 mr-6" alt="Logo">
     </div>
 </div>
-<div class="grid grid-cols-3 mx-auto max-w-(--breakpoint-md) pt-32 px-6 text-zinc-200 gap-4">
-    <h2 class="text-xl max-md:col-span-3">Spotify</h2>
-    <i class="col-span-3 md:col-span-1 md:row-start-2 text-zinc-500 text-sm">Verbinde Spotify um etwas ambiente in die Runde zu bringen</i>
-    <div class="col-span-2 row-span-2 bg-red-200">
-        <app-spotify-widget></app-spotify-widget>
-    </div>
-</div>
-
-<!-- <div class="grid grid-cols-[1fr_auto] w-full h-svh">
-    <div class="w-full h-svh p-4 overflow-auto max-lg:hidden">
-        <span class="flex items-end flex-wrap">
-            <h1 class="text-zinc-200 text-3xl" i18n="@@setup-cards">Karten</h1>
-            <i class="ml-4 text-zinc-400" i18n="@@setup-description-click-to-select">durch anklicken wählen. Anzahl der Karten (z.B. Werwölfe, Dorfbewohner) wird nicht benötigt</i>
-        </span>
-        @for (role of Roles; track $index) {
-        <h1 class="text-zinc-200 text-xl mt-4 mb-2">{{role.Name}}</h1>
-        <div class="flex flex-wrap gap-4">
-            @for (card of role.Cards; track $index) {
-            <app-card [Card]="card" (SelectionChanged)="HandleSelectionStateChange(card, $event)"></app-card>
+<div class="flex flex-col mx-auto max-w-(--breakpoint-md) pt-28 px-6 text-zinc-200">
+    <div class="grid grid-cols-1 sm:grid-cols-[auto_1fr] md:grid-cols-3 grid-rows-[auto_auto_1fr] gap-y-1 gap-x-4 items-center sm:items-end md:items-start w-full">
+        <h2 class="text-xl">Spotify (BETA)</h2>
+        <i class="md:row-start-2 text-zinc-500 text-sm">Verbinde Spotify um etwas ambiente in die Runde zu bringen</i>
+        <div class="sm:col-span-2 md:row-span-3 max-md:mt-4">
+            @if (!spotify.IsAuthenticated) {
+            <button class="btn bg-zinc-700 text-zinc-100 w-full flex justify-center gap-2" (click)="spotify.Authenticate()">Mit Spotify verbinden<lucide-angular name="log-in" /></button>
+            } @else {
+            <div class="bg-zinc-800 p-4 rounded-md">
+                @if (!spotify.CurrentDevice) {
+                <span class="flex justify-between items-center">
+                    <p class="text-zinc-300 whitespace-nowrap overflow-hidden text-ellipsis" i18n="@@spotify-select-a-device">Wähle ein Gerät aus:</p>
+                    <button class="text-zinc-200" (click)="updateDeviceList();" [disabled]="isLoadingDevices()">
+                        <div [class.animate-spin]="isLoadingDevices()">
+                            <lucide-angular name="refresh-cw" />
+                        </div>
+                    </button>
+                </span>
+                <div class="flex flex-col gap-4 pt-4">
+                    @for (device of spotify.AvailableDevices; track $index) {
+                    <button class="w-full flex justify-start p-2" (click)="setDevice(device)" [disabled]="isSelectingDevice()">
+                        <lucide-angular [name]="spotify.getIconOfDevice(device)" />
+                        <p class="ml-4">{{device.name}}</p>
+                    </button>
+                    }
+                </div>
+                } @else {
+                <span class="flex justify-start items-center">
+                    <p class="text-zinc-300 whitespace-nowrap overflow-hidden text-ellipsis mr-4" i18n="@@spotify-selected-device">Verbundenes Gerät:</p>
+                    <span class="flex items-center py-2 px-4 rounded-full bg-zinc-700">
+                        <lucide-angular [name]="spotify.getIconOfDevice(spotify.CurrentDevice)" />
+                        <p class="ml-2">{{spotify.CurrentDevice.name}}</p>
+                        <button class="text-zinc-200 ml-2" (click)="setDevice(undefined);">
+                            <lucide-angular name="x" />
+                        </button>
+                    </span>
+                </span>
+                @if (!spotify.BackgroundMusicStarted) {
+                <button class="btn bg-zinc-700 text-zinc-200 flex w-full justify-center gap-4 mt-4" (click)="startBackgroundMusic()">
+                    <p i18n="@@spotify-start-background-music">Hintergrundmusik starten</p>
+                    <lucide-angular name="play" />
+                </button>
+                } @else {
+                <i class="mt-4 block text-zinc-400 text-center">Spielt Hintergrundmusik ab</i>
+                } }
+            </div>
             }
         </div>
-        }
     </div>
-    <div class="lg:w-[30rem] pt-4 bg-zinc-700 grid grid-rows-[auto_auto_1fr_auto_auto] gap-4 h-svh overflow-hidden">
-        <app-spotify-widget></app-spotify-widget>
-        <div>
-            <h1 class="text-zinc-200 text-2xl ml-4" i18n="@@setup-players">Spieler</h1>
-            <div class="px-4 pt-2 flex flex-col gap-2">
-                <label class="text-zinc-200" for="PeopleCount" i18n="@@setup-nr-of-players">Anzahl Spieler</label>
-                <input class="rounded-md py-3 px-6 text-zinc-100 bg-zinc-500" id="PeopleCount" type="number" min="1" max="20" [ngModel]="PeopleCount" (ngModelChange)="HandlePeopleCountChanged($event)">
-            </div>
-            <div class="lg:hidden px-4 pt-2 flex flex-col gap-2">
-                <label class="text-zinc-200" for="Cards">Karten</label>
-                <a class="rounded-md py-3 px-6 text-zinc-100 bg-zinc-500 grid-cols-[1fr_auto] grid-rows-[auto_1fr] grid gap-2" id="Cards" routerLink="/setup/cards">
-                    <p class="col-start-1" i18n="@@cards-cards-selected">{{GetSelectedCards().length}} Karten ausgewählt</p>
-                    <p class="row-span-2 col-start-2 self-center">→</p>
-                    <span class="col-start-1 row-span-2 grid overflow-hidden fade-out">
-                        @for (card of GetSelectedCards(); track $index) {
-                        <div class="col-start-1 row-start-1 bg-neutral-900 p-1 w-14 h-14 rounded-md shadow-md" [style]="{'transform': 'translateX(' + $index * 1.5 + 'rem)', 'z-index': 100-$index}">
-                            <img width="48px" height="48px" [src]="'img/' + card.Character.Id + '.png'" [alt]="card.Character.Id | i18nSelect: NAME_TRANSLATIONS">
-                        </div>
+    <hr class="w-full my-6 border-zinc-700" />
+    <div class="grid grid-cols-1 sm:grid-cols-[auto_1fr] md:grid-cols-3 grid-rows-[auto_auto_1fr] gap-y-1 gap-x-4 items-center sm:items-end md:items-start w-full">
+        <h2 class="text-xl">Spieler</h2>
+        <i class="md:row-start-2 text-zinc-500 text-sm">Füge Spieler hinzu<br class="max-md:hidden"> (Die Namen und Reihenfolge kannst du auch später ändern)</i>
+        <div class="sm:col-span-2 md:row-span-3 max-md:mt-4 grid grid-cols-1 gap-4 p-4 bg-zinc-800 rounded-md">
+            <button class="py-2 flex justify-between pr-2" (click)="isPeopleEditorOpen.set(!isPeopleEditorOpen())">
+                <p class="text-lg">{{state.People.length}} Personen</p>
+                <lucide-angular [name]="isPeopleEditorOpen()?'chevron-up':'chevron-down'" />
+            </button>
+            @if (isPeopleEditorOpen()) {
+            <hr class="w-full border-zinc-500" />
+            @if (state.People.length < 20) { <button (click)="state.addPerson()" class="flex items-center gap-4 border-dashed border-zinc-500 border-2 p-1.5 rounded-md">
+                <lucide-angular name="plus" size="32px" />
+                <p class="whitespace-nowrap text-ellipsis">Hinzufügen</p>
+                </button>
+                }
+                @for (person of state.People; track $index) {
+                <div class="flex items-center gap-4 p-2">
+                    <lucide-angular name="circle-user-round" size="32px" />
+                    <input type="text" [(ngModel)]="person.Name" placeholder="Unbenannt" class="w-full">
+                    <button (click)="state.removePerson(person)" class="text-red-400">
+                        <lucide-angular name="trash-2" />
+                    </button>
+                </div>
+                }
+                }
+        </div>
+    </div>
+    <hr class="w-full my-6 border-zinc-700" />
+    <div class="grid grid-cols-1 sm:grid-cols-[auto_1fr] md:grid-cols-3 grid-rows-[auto_auto_1fr] gap-y-1 gap-x-4 items-center sm:items-end md:items-start w-full">
+        <h2 class="text-xl">Charaktere</h2>
+        <i class="md:row-start-2 text-zinc-500 text-sm">Wähle hier die Charaktere aus mit denen ihr spielt</i>
+        <div class="sm:col-span-2 md:row-span-3 max-md:mt-4 grid grid-cols-1 p-4 bg-zinc-800 rounded-md">
+            <button class="grid grid-cols-[1fr_auto] grid-rows-[auto_auto] items-center pr-2 gap-y-2" (click)="isCharacterEditorOpen.set(!isCharacterEditorOpen())">
+                <p class="text-left text-lg">{{selectedCharacters.length}} Charaktere ausgewählt</p>
+                <span class="col-start-1 row-start-2 grid overflow-hidden w-full fade-out">
+                    @for (character of selectedCharacters; track $index) {
+                    <div class="col-start-1 row-start-1 bg-neutral-900 p-1 w-14 h-14 rounded-md shadow-md" [style]="{'transform': 'translateX(' + $index * 1.5 + 'rem)', 'z-index': 100-$index}">
+                        <img width="48px" height="48px" [src]="'img/' + character.Id + '.png'" [alt]="character.Id | i18nSelect: NAME_TRANSLATIONS">
+                    </div>
+                    }
+                </span>
+                <lucide-angular [name]="isCharacterEditorOpen()?'chevron-up':'chevron-down'" class="row-span-2" />
+            </button>
+            @if (isCharacterEditorOpen()) {
+            <hr class="w-full border-zinc-500 my-4" />
+            <span class="flex items-center gap-2">
+                <p>Gruppieren nach:</p>
+                <button class="px-4 py-1 bg-zinc-700 rounded-full ring-amber-500" [class.ring-2]="grouping() === 'group'" (click)="grouping.set('group')">Gruppe</button>
+                <button class="px-4 py-1 bg-zinc-700 rounded-full ring-amber-500" [class.ring-2]="grouping() === 'game'" (click)="grouping.set('game')">Spiel</button>
+            </span>
+            <div class="flex flex-col">
+                @for (group of getCharacterGroup(); track $index) {
+                <h3 class="text-lg mt-4">{{group.Name}}</h3>
+                <div class="grid grid-cols-2 gap-2">
+                    @for (character of group.Cards; track $index) {
+                    <div class="bg-zinc-700 p-2 rounded-md grid grid-cols-[4rem_1fr] gap-2 items-center ring-amber-500" [class.ring-2]="selectedCharacters.includes(character)" (click)="toggleCharacterSelection(character)">
+                        @if (!character.IsSingle) {
+                        <div class="border-4 border-zinc-800 rounded md-shadow-md w-16 h-16 col-start-1 row-start-1 rotate-3"></div>
+                        <div class="border-4 border-zinc-900 rounded md-shadow-md w-16 h-16 col-start-1 row-start-1 -rotate-6"></div>
                         }
-                    </span>
-                </a>
+                        <div class="border-4 border-black rounded md-shadow-md w-16 col-start-1 row-start-1 z-10">
+                            <img class="w-16" [src]="'img/' + character.Id + '.png'" [alt]="character.Id | i18nSelect: NAME_TRANSLATIONS">
+                        </div>
+                        <p class="text-center">{{character.Id | i18nSelect: NAME_TRANSLATIONS}}</p>
+                    </div>
+                    }
+                </div>
+                }
             </div>
+            }
         </div>
-        <div>
-        </div>
-        <button class="btn text-zinc-100 bg-zinc-500 mx-4" (click)="StartGame()" i18n="@@setup-start-game">Spiel starten</button>
     </div>
-</div> -->
+    <hr class="w-full my-6 border-zinc-700" />
+    <div class="flex mb-6">
+        <button class="btn bg-zinc-700 text-zinc-200 w-full flex gap-2 justify-center" (click)="startGame()" i18n="@@setup-start-game">Spiel starten<lucide-angular name="arrow-right" /> </button>
+    </div>
+</div>

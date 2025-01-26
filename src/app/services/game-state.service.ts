@@ -55,23 +55,28 @@ export class GameStateService {
     }
     public set SelectedCharacters(value: Character[]) {
         this.state.selectedCharacters = value;
+        // TODO: Save state
     }
 
     constructor() {
         this.resetCharacters();
+        // TODO: Load saved state
     }
 
     public addPerson() {
         const newPerson = new Person();
         this.state.people.push(newPerson);
+        // TODO: Save state
     }
 
     public removePerson(person: Person) {
         this.state.people = this.state.people.filter(p => p !== person);
+        // TODO: Save state
     }
 
     public addConnection(type: ConnectionTypes, from: Person, to: Person) {
         this.state.connections.set(type, { From: from, To: to });
+        // TODO: Save state
     }
 
     public removeConnection(connectionType: ConnectionTypes) {
@@ -92,6 +97,7 @@ export class GameStateService {
         }
         this.state.connections = new Map();
         this.applyNightActions();
+        // TODO: Save state
     }
 
     public applyNightActions() {
@@ -135,8 +141,10 @@ export class GameStateService {
     }
 
     public resetGame() {
-        this.state = { ...this.state, round: 0, connections: new Map(), selectedCharacters: [] };
         this.resetCharacters();
+        const selectedCharacterIds = this.state.selectedCharacters.map(c => c.Id);
+        const selectedCharacters = this.allCharacters.filter(c => selectedCharacterIds.includes(c.Id));
+        this.state = { ...this.state, round: 0, connections: new Map(), selectedCharacters };
         for (const person of this.state.people) {
             person.resetPerson();
         }

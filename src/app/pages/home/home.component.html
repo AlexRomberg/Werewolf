@@ -5,13 +5,15 @@
             <h1 class="text-center text-zinc-200 text-2xl" i18n="@@home-title">Werwolf Companion App</h1>
         </div>
         <div class="row-start-3 w-full px-4 max-w-80 mx-auto">
-            <a routerLink="/setup" class="w-full btn bg-zinc-700 flex justify-between" i18n="@@home-start-new-game">Neues Spiel starten<lucide-angular name="arrow-right" /></a>
-            <a href="/en" class="w-full btn bg-zinc-700 mt-4 flex justify-between" i18n="@@home-switch-langulage" i18n-href="@@home-language-link">Switch to english <lucide-angular name="globe" /></a>
+            <a routerLink="/setup" class="w-full btn bg-zinc-700 flex justify-center gap-2" i18n="@@home-start-new-game">Neues Spiel starten<lucide-angular name="arrow-right" /></a>
         </div>
     </div>
     <div class="bg-zinc-800 flex flex-col gap-6 items-center p-8">
-        <p class="text-zinc-300 flex" i18n="@@home-created-by">Erstellt mit <lucide-icon name="heart" class="mx-1" /> by Alex</p>
-        <a class="text-zinc-300 underline flex" href="https://github.com/AlexRomberg/Werewolf"><lucide-icon name="github" class="mr-1" /> Github</a>
+        <div class="grid sm:grid-cols-3 max-smgrid-rows-3 max-sm:justify-center max-sm:gap-4 w-full">
+            <a class="text-zinc-300 max-sm:justify-center underline flex" href="/en" i18n="@@home-switch-langulage" i18n-href="@@home-language-link"><lucide-icon name="globe" class="mr-1" />Switch to english</a>
+            <p class="text-zinc-300 max-sm:justify-center flex sm:justify-self-center" i18n="@@home-created-by">Erstellt mit <lucide-icon name="heart" class="mx-1" /> by Alex</p>
+            <a class="text-zinc-300 max-sm:justify-center underline flex sm:justify-self-end" href="https://github.com/AlexRomberg/Werewolf"><lucide-icon name="github" class="mr-1" />Github</a>
+        </div>
         <hr class="w-16 border-none h-px bg-zinc-400">
         <p class="text-zinc-500 text-xs text-center" i18n="@@home-disclaimer">Diese App ist eine inoffizielle Begleit-App für das Spiel "Die Werwölfe von Düsterwald" und steht in keiner Verbindung zu lui-même, Asmodee oder den ursprünglichen Erstellern des Spiels und wird von diesen nicht auch unterstützt. Alle Bilder, Charaktere und das geistige Eigentum, dass in dieser App verwendet wird, unterliegen dem Copyright von lui-même. Die Bilder und Inhalte werden ausschließlich für die nicht-kommerzielle Nutzung durch Fans zur Verfügung gestellt.</p>
     </div>

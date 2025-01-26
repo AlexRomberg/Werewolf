@@ -30,12 +30,6 @@ export class SpotifyWidgetComponent {
         return WidgetState.Playing;
     }
 
-    public async StartBackgroundMusic(): Promise<void> {
-        await this.Spotify.PlayPlaylist(environment.spotify.playlists.start, false);
-        this.Spotify.BackgroundMusicStarted = true;
-        await this.Spotify.UpdatePlaybackState();
-    }
-
     public async TogglePlaybackState(): Promise<void> {
         if (this.Spotify.PlaybackState?.is_playing) {
             await this.Spotify.Pause();

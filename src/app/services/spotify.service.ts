@@ -101,8 +101,13 @@ export class SpotifyService {
         }
     }
 
-    public async SetDevice(device: Device) {
-        if (!this.IsAuthenticated || !device.id) {
+    public async SetDevice(device: Device | undefined) {
+        if (!this.IsAuthenticated) {
+            return;
+        }
+        if (!device?.id) {
+            this.CurrentDevice = null;
+            this.BackgroundMusicStarted = false;
             return;
         }
 
@@ -168,5 +173,16 @@ export class SpotifyService {
         const tracks = (await this.sdk.playlists.getPlaylistItems(playlist)).items;
         const track = tracks[Math.floor(Math.random() * tracks.length)].track;
         await this.sdk.player.addItemToPlaybackQueue(track.uri, this.CurrentDevice.id!);
+    }
+
+    public getIconOfDevice(device: Device): string {
+        switch (device.type.toLowerCase()) {
+            case "computer": return "laptop";
+            case "smartphone": return "smartphone";
+            case "tablet": return "tablet";
+            case "tv": return "tv";
+            case "automobile": return "car-front";
+            default: return "speaker";
+        }
     }
 }
