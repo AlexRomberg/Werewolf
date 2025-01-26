@@ -1,12 +1,12 @@
 import { Component, inject, input } from "@angular/core";
 import { SpotifyService } from "../../services/spotify.service";
-import { NgIconComponent } from "@ng-icons/core";
 import { Device } from "@spotify/web-api-ts-sdk";
 import { environment } from "../../../environments/environment";
+import { LucideAngularModule } from "lucide-angular";
 
 @Component({
     selector: "app-spotify-widget",
-    imports: [NgIconComponent],
+    imports: [LucideAngularModule],
     templateUrl: "./spotify-widget.component.html",
     styleUrl: "./spotify-widget.component.css"
 })

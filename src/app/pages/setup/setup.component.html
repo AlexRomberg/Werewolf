@@ -1,4 +1,20 @@
-<div class="grid grid-cols-[1fr_auto] w-full h-svh">
+<div class="bg-zinc-800 text-zinc-200 shadow-lg fixed top-0 w-full">
+    <div class="max-w-screen-md flex mx-auto items-center">
+        <a class="p-8" routerLink="/">
+            <lucide-angular name="arrow-left" />
+        </a>
+        <h1 i18n="@@setup-title" class="text-2xl">Vorbereitung</h1>
+    </div>
+</div>
+<div class="grid grid-cols-3 mx-auto max-w-screen-md pt-32 px-6 text-zinc-200 gap-4">
+    <h2 class="text-xl max-md:col-span-3">Spotify</h2>
+    <i class="col-span-3 md:col-span-1 md:row-start-2 text-zinc-500 text-sm">Verbinde Spotify um etwas ambiente in die Runde zu bringen</i>
+    <div class="col-span-2 row-span-2 bg-red-200">
+        <app-spotify-widget></app-spotify-widget>
+    </div>
+</div>
+
+<!-- <div class="grid grid-cols-[1fr_auto] w-full h-svh">
     <div class="w-full h-svh p-4 overflow-auto max-lg:hidden">
         <span class="flex items-end flex-wrap">
             <h1 class="text-gray-200 text-3xl" i18n="@@setup-cards">Karten</h1>
@@ -37,8 +53,7 @@
             </div>
         </div>
         <div>
-            <!-- TODO: Presets -->
         </div>
         <button class="btn text-gray-100 bg-gray-500 mx-4" (click)="StartGame()" i18n="@@setup-start-game">Spiel starten</button>
     </div>
-</div>
+</div> -->

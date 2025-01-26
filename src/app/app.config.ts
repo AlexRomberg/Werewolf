@@ -18,6 +18,7 @@ import {
     matTablet,
     matTv,
 } from "@ng-icons/material-icons/baseline";
+import { LucideIconProvider, icons, LUCIDE_ICONS } from 'lucide-angular';
 
 export const appConfig: ApplicationConfig = {
     providers: [provideRouter(routes), provideHttpClient(), provideIcons({
@@ -33,5 +34,9 @@ export const appConfig: ApplicationConfig = {
         matSpeaker,
         matTablet,
         matTv,
-    })]
+    }), {
+        provide: LUCIDE_ICONS,
+        multi: true,
+        useValue: new LucideIconProvider(icons)
+    }]
 };

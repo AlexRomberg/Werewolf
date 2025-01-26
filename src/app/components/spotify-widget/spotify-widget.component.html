@@ -1,9 +1,9 @@
-<div class="p-4 mx-4 bg-gray-600 rounded-xl">
+<div class="p-4 bg-gray-600 rounded-xl">
     <span class="flex justify-between">
         <h1 class="text-gray-200 text-2xl">Spotify</h1>
         @if (Spotify.IsAuthenticated) {
         <button class="px-4 pb-3 pt-1 text-gray-200" (click)="Logout();">
-            <ng-icon name="matLogOut"></ng-icon>
+            <lucide-icon name="refresh-cw" />
         </button>
         }
     </span>
@@ -16,24 +16,24 @@
         <span class="flex justify-between">
             <p class="text-gray-300 whitespace-nowrap overflow-hidden text-ellipsis" i18n="@@spotify-select-a-device">Wähle ein Gerät aus:</p>
             <button class="px-4 pt-1 text-gray-200" (click)="LoadDevices();">
-                <ng-icon name="matRefresh"></ng-icon>
+                <lucide-icon name="logout" />
             </button>
         </span>
         @for (device of Spotify.AvailableDevices; track $index) {
         <button class="btn bg-gray-500 w-full mt-2 flex text-start items-center" (click)="SelectDevice(device)">
             @switch (device.type.toLowerCase()) {
             @case ("computer") {
-            <ng-icon name="matLaptop"></ng-icon>
+            <lucide-angular name="laptop" />
             } @case ("smartphone") {
-            <ng-icon name="matSmartphone"></ng-icon>
+            <lucide-angular name="smartphone" />
             } @case ("tablet") {
-            <ng-icon name="matTablet"></ng-icon>
+            <lucide-angular name="tablet" />
             } @case ("tv") {
-            <ng-icon name="matTv"></ng-icon>
+            <lucide-angular name="tv" />
             } @case ("automobile") {
-            <ng-icon name="matDirectionsCar"></ng-icon>
+            <lucide-angular name="car-front" />
             } @default {
-            <ng-icon name="matSpeaker"></ng-icon>
+            <lucide-angular name="speaker" />
             }}
             <p class="ml-4">{{device.name}}</p>
         </button>
@@ -48,14 +48,14 @@
             <p class="text-gray-200 whitespace-nowrap overflow-hidden text-ellipsis">{{Mode() === "narrator" ? (Spotify.PlaybackState?.item?.name ?? FallbackNotPlayingText):StartBackgroundMusicText}}</p>
             @if (Mode() === "narrator") {
             <button class="bg-gray-400/50 rounded-md text-gray-200 p-4 flex justify-center items-center" (click)="TogglePlaybackState()">
-                <ng-icon [name]="Spotify.PlaybackState?.is_playing ? 'matPause':'matPlayArrow'"></ng-icon>
+                <lucide-angular [name]="Spotify.PlaybackState?.is_playing ? 'pause':'play'" />
             </button>
             <button class="bg-gray-400/50 rounded-md text-gray-200 p-4 flex justify-center items-center mr-2" (click)="SkipSong()">
-                <ng-icon name="matSkipNext"></ng-icon>
+                <lucide-angular name="skip-forward" />
             </button>
             } @else {
             <button class="bg-gray-400/50 rounded-md text-gray-200 p-4 flex justify-center items-center" (click)="StartBackgroundMusic()">
-                <ng-icon name="matPlayArrow"></ng-icon>
+                <lucide-angular name="play" />
             </button>
             }
         </div>

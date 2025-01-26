@@ -10,10 +10,11 @@ import { environment } from "../../../environments/environment";
 import { StorageService } from "../../services/storage.service";
 import { I18nSelectPipe } from "@angular/common";
 import { NAME_TRANSLATIONS } from "../../i18n/translations";
+import { LucideAngularModule } from "lucide-angular";
 
 @Component({
     selector: "app-setup",
-    imports: [FormsModule, CardComponent, SpotifyWidgetComponent, RouterLink, I18nSelectPipe],
+    imports: [FormsModule, CardComponent, SpotifyWidgetComponent, RouterLink, I18nSelectPipe, LucideAngularModule],
     templateUrl: "./setup.component.html",
     styleUrl: "./setup.component.css"
 })
