@@ -24,7 +24,7 @@
                                 }
                             </ul>
                         </div>
-                        <img [src]="'assets/icons/' + action.Id + '.png'" class="w-16 h-16 rounded-md md-shadow-md" [alt]="action.Id | i18nSelect: NAME_TRANSLATIONS">
+                        <img [src]="'img/' + action.Id + '.png'" class="w-16 h-16 rounded-md md-shadow-md" [alt]="action.Id | i18nSelect: NAME_TRANSLATIONS">
                     </div>
                     @if (actionIndex === 0 && GetFilteredButtons(action).length > 0) {
                     <div class="flex flex-col gap-2 mt-4">

@@ -2,11 +2,11 @@ import { Component, inject, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import { Subscription } from "rxjs";
 import { SpotifyService } from "../../../services/spotify.service";
-import { NgIconComponent } from "@ng-icons/core";
+import { LucideAngularModule } from "lucide-angular";
 
 @Component({
     selector: "app-connecting",
-    imports: [RouterLink, NgIconComponent],
+    imports: [RouterLink, LucideAngularModule],
     templateUrl: "./connecting.component.html"
 })
 export class ConnectingComponent implements OnInit, OnDestroy {

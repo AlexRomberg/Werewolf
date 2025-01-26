@@ -6,7 +6,7 @@
         <div class="card md-shadow-md -rotate-6"></div>
         }
         <div class="card md-shadow-md">
-            <img [src]="'assets/icons/' + Card.Character.Id + '.png'" [alt]="Card.Character.Id | i18nSelect: NAME_TRANSLATIONS">
+            <img [src]="'img/' + Card.Character.Id + '.png'" [alt]="Card.Character.Id | i18nSelect: NAME_TRANSLATIONS">
         </div>
     </div>
     <p class="text-zinc-200 text-center text-wrap w-40 h-12 content-center">{{Card.Character.Id | i18nSelect: NAME_TRANSLATIONS}}</p>

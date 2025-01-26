@@ -45,7 +45,7 @@
                     <span class="col-start-1 row-span-2 grid overflow-hidden fade-out">
                         @for (card of GetSelectedCards(); track $index) {
                         <div class="col-start-1 row-start-1 bg-neutral-900 p-1 w-14 h-14 rounded-md shadow-md" [style]="{'transform': 'translateX(' + $index * 1.5 + 'rem)', 'z-index': 100-$index}">
-                            <img width="48px" height="48px" [src]="'assets/icons/' + card.Character.Id + '.png'" [alt]="card.Character.Id | i18nSelect: NAME_TRANSLATIONS">
+                            <img width="48px" height="48px" [src]="'img/' + card.Character.Id + '.png'" [alt]="card.Character.Id | i18nSelect: NAME_TRANSLATIONS">
                         </div>
                         }
                     </span>
