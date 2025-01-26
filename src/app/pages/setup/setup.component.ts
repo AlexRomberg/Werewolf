@@ -2,19 +2,17 @@ import { Component, inject } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { GameStateService } from "../../services/game-state.service";
 import { Router, RouterLink } from "@angular/router";
-import { CardComponent } from "../../components/setup/card/card.component";
 import { CardSelectionInformation, CharacterGroup } from "../../types";
 import { SpotifyWidgetComponent } from "../../components/spotify-widget/spotify-widget.component";
 import { SpotifyService } from "../../services/spotify.service";
 import { environment } from "../../../environments/environment";
 import { StorageService } from "../../services/storage.service";
-import { I18nSelectPipe } from "@angular/common";
 import { NAME_TRANSLATIONS } from "../../i18n/translations";
 import { LucideAngularModule } from "lucide-angular";
 
 @Component({
     selector: "app-setup",
-    imports: [FormsModule, CardComponent, SpotifyWidgetComponent, RouterLink, I18nSelectPipe, LucideAngularModule],
+    imports: [FormsModule, SpotifyWidgetComponent, RouterLink, LucideAngularModule],
     templateUrl: "./setup.component.html",
     styleUrl: "./setup.component.css"
 })

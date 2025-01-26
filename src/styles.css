@@ -1,15 +1,15 @@
 @import 'tailwindcss';
 
 .btn {
-    @apply rounded-md py-3 px-6 text-gray-100 font-bold;
+    @apply rounded-md py-3 px-6 text-zinc-100 font-bold;
 }
 
 .btn:disabled {
-    @apply text-gray-300;
+    @apply text-zinc-300;
 }
 
 html {
-    @apply bg-zinc-900
+    @apply bg-zinc-900;
 }
 
 .md-shadow-sm {

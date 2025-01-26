@@ -1,26 +1,26 @@
-<div class="p-4 bg-gray-600 rounded-xl">
+<div class="p-4 bg-zinc-600 rounded-xl">
     <span class="flex justify-between">
-        <h1 class="text-gray-200 text-2xl">Spotify</h1>
+        <h1 class="text-zinc-200 text-2xl">Spotify</h1>
         @if (Spotify.IsAuthenticated) {
-        <button class="px-4 pb-3 pt-1 text-gray-200" (click)="Logout();">
+        <button class="px-4 pb-3 pt-1 text-zinc-200" (click)="Logout();">
             <lucide-icon name="refresh-cw" />
         </button>
         }
     </span>
     @switch (CurrentState) {
     @case (WidgetState.Disconnected) {
-    <button class="btn bg-gray-500 w-full mt-2 text-center block" (click)="Authenticate()" i18n="@@spotify-connect">Verbinden</button>
+    <button class="btn bg-zinc-500 w-full mt-2 text-center block" (click)="Authenticate()" i18n="@@spotify-connect">Verbinden</button>
     }
     @case (WidgetState.Connected) {
     <div>
         <span class="flex justify-between">
-            <p class="text-gray-300 whitespace-nowrap overflow-hidden text-ellipsis" i18n="@@spotify-select-a-device">Wähle ein Gerät aus:</p>
-            <button class="px-4 pt-1 text-gray-200" (click)="LoadDevices();">
+            <p class="text-zinc-300 whitespace-nowrap overflow-hidden text-ellipsis" i18n="@@spotify-select-a-device">Wähle ein Gerät aus:</p>
+            <button class="px-4 pt-1 text-zinc-200" (click)="LoadDevices();">
                 <lucide-icon name="logout" />
             </button>
         </span>
         @for (device of Spotify.AvailableDevices; track $index) {
-        <button class="btn bg-gray-500 w-full mt-2 flex text-start items-center" (click)="SelectDevice(device)">
+        <button class="btn bg-zinc-500 w-full mt-2 flex text-start items-center" (click)="SelectDevice(device)">
             @switch (device.type.toLowerCase()) {
             @case ("computer") {
             <lucide-angular name="laptop" />
@@ -42,19 +42,19 @@
     }
     @case (WidgetState.Playing) {
     <div>
-        <i class="text-gray-300 whitespace-nowrap overflow-hidden text-ellipsis" i18n="@@spotify-connected-with">Verbunden mit: {{Spotify.CurrentDevice?.name}}</i>
+        <i class="text-zinc-300 whitespace-nowrap overflow-hidden text-ellipsis" i18n="@@spotify-connected-with">Verbunden mit: {{Spotify.CurrentDevice?.name}}</i>
         @if (!(Mode() === "setup" && Spotify.BackgroundMusicStarted)) {
-        <div class="bg-gray-500 grid grid-cols-[1fr_auto_auto] items-center gap-2 p-2 pr-0 pl-4 rounded-xl mt-2">
-            <p class="text-gray-200 whitespace-nowrap overflow-hidden text-ellipsis">{{Mode() === "narrator" ? (Spotify.PlaybackState?.item?.name ?? FallbackNotPlayingText):StartBackgroundMusicText}}</p>
+        <div class="bg-zinc-500 grid grid-cols-[1fr_auto_auto] items-center gap-2 p-2 pr-0 pl-4 rounded-xl mt-2">
+            <p class="text-zinc-200 whitespace-nowrap overflow-hidden text-ellipsis">{{Mode() === "narrator" ? (Spotify.PlaybackState?.item?.name ?? FallbackNotPlayingText):StartBackgroundMusicText}}</p>
             @if (Mode() === "narrator") {
-            <button class="bg-gray-400/50 rounded-md text-gray-200 p-4 flex justify-center items-center" (click)="TogglePlaybackState()">
+            <button class="bg-zinc-400/50 rounded-md text-zinc-200 p-4 flex justify-center items-center" (click)="TogglePlaybackState()">
                 <lucide-angular [name]="Spotify.PlaybackState?.is_playing ? 'pause':'play'" />
             </button>
-            <button class="bg-gray-400/50 rounded-md text-gray-200 p-4 flex justify-center items-center mr-2" (click)="SkipSong()">
+            <button class="bg-zinc-400/50 rounded-md text-zinc-200 p-4 flex justify-center items-center mr-2" (click)="SkipSong()">
                 <lucide-angular name="skip-forward" />
             </button>
             } @else {
-            <button class="bg-gray-400/50 rounded-md text-gray-200 p-4 flex justify-center items-center" (click)="StartBackgroundMusic()">
+            <button class="bg-zinc-400/50 rounded-md text-zinc-200 p-4 flex justify-center items-center" (click)="StartBackgroundMusic()">
                 <lucide-angular name="play" />
             </button>
             }

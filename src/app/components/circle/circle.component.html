@@ -31,10 +31,10 @@
     }
 
     <!-- - Name -->
-    <text class="fill-gray-300" filter="url(#solid)" [attr.x]="GetTextCoordinateX($index)" [attr.y]="GetTextCoordinateY($index)">{{person.Name}}</text>
+    <text class="fill-zinc-300" filter="url(#solid)" [attr.x]="GetTextCoordinateX($index)" [attr.y]="GetTextCoordinateY($index)">{{person.Name}}</text>
 
     <!-- - Circle -->
-    <circle [attr.cx]="GetCoordinateX($index)" [attr.cy]="GetCoordinateY($index)" r="100" class="ring cursor-pointer" [class.!fill-gray-700]="!person.Character" [style.stroke]="GetRingColor(person, 0)" (click)="OnPersonClicked(person)" />
+    <circle [attr.cx]="GetCoordinateX($index)" [attr.cy]="GetCoordinateY($index)" r="100" class="ring cursor-pointer" [class.!fill-zinc-700]="!person.Character" [style.stroke]="GetRingColor(person, 0)" (click)="OnPersonClicked(person)" />
     <circle [attr.cx]="GetCoordinateX($index)" [attr.cy]="GetCoordinateY($index)" r="115" class="ring pointer-events-none" [style.stroke]="GetRingColor(person, 1)" />
     <circle [attr.cx]="GetCoordinateX($index)" [attr.cy]="GetCoordinateY($index)" r="130" class="ring pointer-events-none" [style.stroke]="GetRingColor(person, 2)" />
     <circle [attr.cx]="GetCoordinateX($index)" [attr.cy]="GetCoordinateY($index)" r="145" class="ring pointer-events-none" [style.stroke]="GetRingColor(person, 3)" />
