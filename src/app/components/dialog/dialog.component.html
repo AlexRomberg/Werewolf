@@ -1,5 +1,5 @@
 @if (Dialog.PeopleDialog || Dialog.PersonDialog) {
-<div class="fixed top-0 left-0 w-dvw h-dvh bg-gray-950/60 backdrop-blur-sm flex justify-center items-center z-[100]">
+<div class="fixed top-0 left-0 w-dvw h-dvh bg-gray-950/60 backdrop-blur-xs flex justify-center items-center z-100">
     @if (Dialog.PeopleDialog) {
     <app-people-selection [PeopleDialog]="Dialog.PeopleDialog"></app-people-selection>
     } @else if(Dialog.PersonDialog) {
