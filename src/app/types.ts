@@ -52,10 +52,3 @@ export enum BasePriority {
     Wolf = 50,
     PostWolf = 100
 }
-
-export interface GameState {
-    round: number,
-    people: Person[],
-    selectedCharacters: Character[],
-    connections: Connections,
-}

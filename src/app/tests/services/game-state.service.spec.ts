@@ -15,15 +15,15 @@ describe("GameStateService", () => {
         expect(service).toBeTruthy();
     });
 
-    it("initialize in first night", () => {
+    it("should initialize in first night", () => {
         expect(service.Round).toBe(0);
     });
 
-    it("initialize without people", () => {
+    it("should initialize without people", () => {
         expect(service.People.length).toBe(0);
     });
 
-    it("add empty person", () => {
+    it("should add empty person", () => {
         service.addPerson();
         expect(service.People.length).toBe(1);
 
@@ -38,7 +38,7 @@ describe("GameStateService", () => {
         expect(person.Character).toBeUndefined();
     });
 
-    it("set name of person", () => {
+    it("should set name of person", () => {
         const expectedName = "Mr. Wolf";
 
         service.addPerson();
@@ -51,25 +51,25 @@ describe("GameStateService", () => {
         expect(person.Name).toBe(expectedName);
     });
 
-    it("filter characters", () => {
+    it("should filter characters", () => {
         expect(service.AllCharacters.filter(c => c.Group == GroupTypes.Wolves).length).toBe(6);
         expect(service.AllCharacters.filter(c => c.Group == GroupTypes.Active).length).toBe(10);
-        expect(service.AllCharacters.filter(c => c.Group == GroupTypes.Passive).length).toBe(8);
+        expect(service.AllCharacters.filter(c => c.Group == GroupTypes.Passive).length).toBe(10);
         expect(service.AllCharacters.filter(c => c.Group == GroupTypes.Loners).length).toBe(3);
 
         expect(service.AllCharacters.filter(c => c.Game == GameSets.BaseGame).length).toBe(8);
-        expect(service.AllCharacters.filter(c => c.Game == GameSets.Characters).length).toBe(13);
+        expect(service.AllCharacters.filter(c => c.Game == GameSets.Characters).length).toBe(15);
         expect(service.AllCharacters.filter(c => c.Game == GameSets.NewMoon).length).toBe(5);
         expect(service.AllCharacters.filter(c => c.Game == GameSets.Special).length).toBe(1);
     });
 
-    it("set characters", () => {
+    it("should set characters", () => {
         service.SelectedCharacters = service.AllCharacters;
 
-        expect(service.SelectedCharacters.length).toBe(27);
+        expect(service.SelectedCharacters.length).toBe(29);
     });
 
-    it("actions propperly calculated", () => {
+    it("should calculate actions propperly", () => {
         service.SelectedCharacters = service.AllCharacters;
 
         const actorsFirstNight = service.getActionsForNight();

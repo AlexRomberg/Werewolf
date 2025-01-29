@@ -11,30 +11,53 @@ export class Person {
     private isDead = false;
     private character?: Character;
 
-    public get Id(): string { return this.id; }
+    get Id(): string { return this.id; }
 
-    public get Name(): string { return this.name; }
-    public set Name(value: string) { this.name = value; }
+    get Name(): string { return this.name; }
+    set Name(value: string) {
+        this.name = value;
+        this.onChanged();
+    }
 
-    public get Character(): Character | undefined { return this.character; }
-    public set Character(value: Character | undefined) { this.character = value; }
+    get Character(): Character | undefined { return this.character; }
+    set Character(value: Character | undefined) {
+        this.character = value;
+        this.onChanged();
+    }
 
-    public get IsProtected() { return this.isProtected; }
-    public set IsProtected(value: boolean) { this.isProtected = value; }
+    get IsProtected() { return this.isProtected; }
+    set IsProtected(value: boolean) {
+        this.isProtected = value;
+        this.onChanged();
+    }
 
-    public get IsVictim() { return this.isVictim; }
-    public set IsVictim(value: boolean) { this.isVictim = value; }
+    get IsVictim() { return this.isVictim; }
+    set IsVictim(value: boolean) {
+        this.isVictim = value;
+        this.onChanged();
+    }
 
-    public get IsEnchanted() { return this.isEnchanted; }
-    public set IsEnchanted(value: boolean) { this.isEnchanted = value; }
+    get IsEnchanted() { return this.isEnchanted; }
+    set IsEnchanted(value: boolean) {
+        this.isEnchanted = value;
+        this.onChanged();
+    }
 
-    public get IsWerewolf() { return this.isWerewolf; }
-    public set IsWerewolf(value: boolean) { this.isWerewolf = value; }
+    get IsWerewolf() { return this.isWerewolf; }
+    set IsWerewolf(value: boolean) {
+        this.isWerewolf = value;
+        this.onChanged();
+    }
 
-    public get IsDead() { return this.isDead; }
-    public set IsDead(value: boolean) { this.isDead = value; }
+    get IsDead() { return this.isDead; }
+    set IsDead(value: boolean) {
+        this.isDead = value;
+        this.onChanged();
+    }
 
-    public resetPerson() {
+    constructor(private onChanged = () => { }) { }
+
+    resetPerson() {
         this.isProtected = false;
         this.isVictim = false;
         this.isEnchanted = false;
@@ -43,11 +66,46 @@ export class Person {
         this.character = undefined;
     }
 
-    public cloneWithoutEffectState(): Person {
+    cloneWithoutEffectState(): Person {
         const person = new Person();
         person.id = this.id;
         person.name = this.name;
         person.character = this.character;
+        return person;
+    }
+
+    asSerializeable() {
+        return {
+            id: this.id,
+            name: this.name,
+            isProtected: this.isProtected,
+            isVictim: this.isVictim,
+            isEnchanted: this.isEnchanted,
+            isWerewolf: this.isWerewolf,
+            isDead: this.isDead,
+            character: this.character?.Id
+        };
+    }
+
+    static fromSerializeable(data: {
+        id: string,
+        name: string,
+        isProtected: boolean,
+        isVictim: boolean,
+        isEnchanted: boolean,
+        isWerewolf: boolean,
+        isDead: boolean,
+        character: Character | undefined
+    }, onChanged = () => { }): Person {
+        const person = new Person(onChanged);
+        person.id = data.id ?? v4();
+        person.name = data.name ?? "";
+        person.isProtected = data.isProtected ?? false;
+        person.isVictim = data.isVictim ?? false;
+        person.isEnchanted = data.isEnchanted ?? false;
+        person.isWerewolf = data.isWerewolf ?? false;
+        person.isDead = data.isDead ?? false;
+        person.character = data.character ?? undefined;
         return person;
     }
 }

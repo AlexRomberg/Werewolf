@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { ActionProvider, Connections, ConnectionTypes, GameState } from "../types";
+import { ActionProvider, Connections, ConnectionTypes } from "../types";
 import { DaybreakAction, NightfallAction, RulesAction } from "../models/actions/generic";
 import { Character } from "../models/characters/character";
 import { Angel } from "../models/characters/implementations/angel";
@@ -30,57 +30,58 @@ import { WildChild } from "../models/characters/implementations/wildChild";
 import { Witch } from "../models/characters/implementations/witch";
 import { WolfDog } from "../models/characters/implementations/wolfDog";
 import { Person } from "../models/state/person";
+import { GameState } from "../models/state/gameState";
+import { Judge } from "../models/characters/implementations/judge";
+import { Maid } from "../models/characters/implementations/maid";
+import { environment } from "../../environments/environment";
 
 @Injectable({
     providedIn: "root"
 })
 export class GameStateService {
     private allCharacters: Character[] = [];
-    private state: GameState = {
-        round: 0,
-        people: [],
-        selectedCharacters: [],
-        connections: new Map(),
-    };
+    private state = new GameState(this.saveState.bind(this));
 
     public Actions: ActionProvider[] = [];
     public ActionHistory: ActionProvider[] = [];
 
-    public get Round() { return this.state.round; };
-    public get People(): Person[] { return this.state.people; };
-    public get Connections(): Connections { return this.state.connections; }
+    public get Round() { return this.state.Round; };
+    public get People(): Person[] { return this.state.People; };
+    public get Connections(): Connections { return this.state.Connections; }
     public get AllCharacters() { return this.allCharacters; }
     public get SelectedCharacters() {
-        return this.state.selectedCharacters;
+        return this.state.SelectedCharacters;
     }
     public set SelectedCharacters(value: Character[]) {
-        this.state.selectedCharacters = value;
-        // TODO: Save state
+        this.state.SelectedCharacters = value;
+        this.saveState();
     }
 
     constructor() {
         this.resetCharacters();
-        // TODO: Load saved state
+
+        if (!environment.isTesting) {
+            this.state = GameState.deserialize(window.localStorage.getItem("werewolf-state"), this.allCharacters, this.saveState.bind(this));
+        }
     }
 
     public addPerson() {
-        const newPerson = new Person();
-        this.state.people.push(newPerson);
-        // TODO: Save state
+        const newPerson = new Person(this.saveState.bind(this));
+        this.state.People = [...this.state.People, newPerson];
     }
 
     public removePerson(person: Person) {
-        this.state.people = this.state.people.filter(p => p !== person);
-        // TODO: Save state
+        this.state.People = this.state.People.filter(p => p !== person);
     }
 
     public addConnection(type: ConnectionTypes, from: Person, to: Person) {
-        this.state.connections.set(type, { From: from, To: to });
-        // TODO: Save state
+        this.state.Connections.set(type, { From: from, To: to });
+        this.saveState();
     }
 
     public removeConnection(connectionType: ConnectionTypes) {
-        this.state.connections.delete(connectionType);
+        this.state.Connections.delete(connectionType);
+        this.saveState();
     }
 
     public startGame() {
@@ -91,19 +92,19 @@ export class GameStateService {
     }
 
     public startNextRound() {
-        this.state.round++;
-        for (const character of this.state.selectedCharacters) {
+        this.state.Round++;
+        for (const character of this.state.SelectedCharacters) {
             character.resetAfterNight();
         }
-        this.state.connections = new Map();
+        this.state.Connections = new Map();
         this.applyNightActions();
-        // TODO: Save state
+        this.saveState();
     }
 
     public applyNightActions() {
         this.ActionHistory = [];
         this.Actions = [];
-        if (this.state.round === 0) {
+        if (this.state.Round === 0) {
             this.Actions.push(RulesAction);
         }
         this.Actions.push(NightfallAction);
@@ -113,7 +114,7 @@ export class GameStateService {
 
     public getActionsForNight() {
         return [
-            ...(this.state.round === 0 ? [RulesAction] : []),
+            ...(this.state.Round === 0 ? [RulesAction] : []),
             NightfallAction,
             ...this.SelectedCharacters.filter(this.filterActiveActions.bind(this)) as ActionProvider[],
             DaybreakAction,
@@ -124,7 +125,7 @@ export class GameStateService {
         if (character.Id === "werewolf") {
             return true;
         }
-        if (!character.IsAwakeThisNight(this.state.round, this)) {
+        if (!character.IsAwakeThisNight(this.state.Round, this)) {
             return false;
         }
 
@@ -137,49 +138,52 @@ export class GameStateService {
     }
 
     public getPeopleForCharacter(character: Character) {
-        return this.state.people.filter(p => p.Character === character);
+        return this.state.People.filter(p => p.Character === character);
     }
 
     public resetGame() {
         this.resetCharacters();
-        const selectedCharacterIds = this.state.selectedCharacters.map(c => c.Id);
+        const selectedCharacterIds = this.state.SelectedCharacters.map(c => c.Id);
         const selectedCharacters = this.allCharacters.filter(c => selectedCharacterIds.includes(c.Id));
-        this.state = { ...this.state, round: 0, connections: new Map(), selectedCharacters };
-        for (const person of this.state.people) {
-            person.resetPerson();
-        }
+        this.state.reset(selectedCharacters);
     }
 
     private resetCharacters() {
         this.allCharacters = [
-            new Werewolf(this),
-            new PrimalWolf(this),
-            new WildChild(this),
-            new WhiteWolf(this),
+            new Angel(this),
+            new BearGuide(this),
             new BigWolf(this),
-            new WolfDog(this),
-            new Witch(this),
-            new Seer(this),
-            new Thief(this),
-            new Cupit(this),
-            new Healer(this),
-            new SmallChild(this),
             new Bitch(this),
             new Brothers(this),
-            new Sisters(this),
-            new Scapegoat(this),
-            new Fox(this),
-            new Villager(this),
-            new Hunter(this),
-            new Knight(this),
-            new BearGuide(this),
-            new Old(this),
-            new VillageIdiot(this),
-            new Juggler(this),
-            new Angel(this),
-            new OldMan(this),
+            new Cupit(this),
             new FlutePlayer(this),
+            new Fox(this),
+            new Healer(this),
+            new Hunter(this),
+            new Judge(this),
+            new Juggler(this),
+            new Knight(this),
+            new Maid(this),
+            new Old(this),
+            new OldMan(this),
+            new PrimalWolf(this),
+            new Scapegoat(this),
+            new Seer(this),
+            new Sisters(this),
+            new SmallChild(this),
+            new Thief(this),
+            new VillageIdiot(this),
+            new Villager(this),
+            new Werewolf(this),
+            new WhiteWolf(this),
+            new WildChild(this),
+            new Witch(this),
+            new WolfDog(this),
         ];
+    }
+
+    private saveState() {
+        window.localStorage.setItem("werewolf-state", this.state.serialize())
     }
 
     // CLEANED UP CODE ------------------------------------------------------------------------------------------------------------------------------------

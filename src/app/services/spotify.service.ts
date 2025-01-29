@@ -51,7 +51,6 @@ export class SpotifyService {
         });
 
         setInterval(async () => {
-            console.table({ authenticated: this.IsAuthenticated, currentDevice: Boolean(this.CurrentDevice), backgroundMusicStarted: this.BackgroundMusicStarted, playbackState: { Values: this.PlaybackState } });
             if (this.IsAuthenticated && this.CurrentDevice && this.BackgroundMusicStarted) {
                 await this.UpdatePlaybackState();
                 if (this.PlaybackState?.progress_ms && this.PlaybackState?.item?.duration_ms) {
