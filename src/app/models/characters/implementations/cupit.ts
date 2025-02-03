@@ -1,5 +1,5 @@
 import { DialogService } from "../../../services/dialog.service";
-import { GameStateService } from "../../../services/game-state.service";
+import { StateService } from "../../../services/state.service";
 import { ConnectionTypes, GameSets, GroupTypes } from "../../../types";
 import { RequestAssignment } from "../../actions/buttons";
 import { Character } from "../character";
@@ -11,7 +11,7 @@ export class Cupit extends Character {
     Game = GameSets.BaseGame;
     override Priority = BasePriority.Initial + 3;
     private get isDone() {
-        return this.gameState.Connections.has(ConnectionTypes.Love);
+        return this.gameState.Connections.some(c => c.ConnectionType === ConnectionTypes.Love);
     };
 
     override GetDescriptions = () => [
@@ -33,7 +33,7 @@ export class Cupit extends Character {
 
     override IsAwakeThisNight = (round: number) => round === 0;
 
-    private async requestCouple({ GameState, Dialog }: { GameState: GameStateService, Dialog: DialogService }) {
+    private async requestCouple({ GameState, Dialog }: { GameState: StateService, Dialog: DialogService }) {
         try {
             const people = await Dialog.ShowPeopleDialog($localize`:@@character-dialog-cupit-1:Ein Paar auswählen`, 2);
             GameState.addConnection(

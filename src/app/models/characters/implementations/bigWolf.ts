@@ -1,5 +1,5 @@
 import { DialogService } from "../../../services/dialog.service";
-import { GameStateService } from "../../../services/game-state.service";
+import { StateService } from "../../../services/state.service";
 import { GameSets, GroupTypes } from "../../../types";
 import { RequestAssignment } from "../../actions/buttons";
 import { BasePriority } from "../../../types";
@@ -29,7 +29,7 @@ export class BigWolf extends WerewolfCharacter {
         return buttons;
     };
 
-    override IsAwakeThisNight = (_round: number, gameState: GameStateService) => {
+    override IsAwakeThisNight = (_round: number, gameState: StateService) => {
         return !gameState.People.some(p => p.IsDead && this.isWerewolf(p));
     };
 

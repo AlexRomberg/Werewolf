@@ -1,16 +1,16 @@
 import { TestBed } from "@angular/core/testing";
-import { GameStateService } from "../../services/game-state.service";
+import { StateService } from "../../services/state.service";
 import { ConnectionTypes, GameSets, GroupTypes } from "../../types";
 import { Bitch } from "../../models/characters/implementations/bitch";
 
 
 describe("Bitch", () => {
-    let gameState: GameStateService;
+    let gameState: StateService;
     let character: Bitch;
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
-        gameState = TestBed.inject(GameStateService);
+        gameState = TestBed.inject(StateService);
         character = new Bitch(gameState);
     });
 
@@ -65,7 +65,13 @@ describe("Bitch", () => {
     });
 
     it("should be able to reset after night", () => {
+        gameState.addPerson();
+        gameState.addPerson();
+        gameState.addConnection(ConnectionTypes.Sleepover, gameState.People[0], gameState.People[1]);
+        expect(gameState.Connections.length).toBe(1);
+
         character.resetAfterNight();
+        expect(gameState.Connections.length).toBe(0);
     });
 
     it("should have no people assigned", () => {

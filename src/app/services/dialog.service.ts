@@ -1,12 +1,12 @@
 import { inject, Injectable } from "@angular/core";
-import { GameStateService } from "./game-state.service";
+import { StateService } from "./state.service";
 import { Person } from "../models/state/person";
 
 @Injectable({
     providedIn: "root"
 })
 export class DialogService {
-    private gameState = inject(GameStateService);
+    private gameState = inject(StateService);
 
     public PeopleDialog: {
         Title: string, NumberOfPeople?: number, People: Person[]

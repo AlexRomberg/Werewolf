@@ -1,4 +1,4 @@
-import { GameStateService } from "../../../services/game-state.service";
+import { StateService } from "../../../services/state.service";
 import { ActionButton, GameSets, GroupTypes } from "../../../types";
 import { RequestAssignment } from "../../actions/buttons";
 import { BasePriority } from "../../../types";
@@ -28,9 +28,9 @@ export class PrimalWolf extends WerewolfCharacter {
         return buttons;
     };
 
-    override IsAwakeThisNight = (_round: number, gameState: GameStateService) => !(this.isDone || gameState.People.some(p => p.IsDead && this.isWerewolf(p)));
+    override IsAwakeThisNight = (_round: number, gameState: StateService) => !(this.isDone || gameState.People.some(p => p.IsDead && this.isWerewolf(p)));
 
-    private async requestVictimStateChangePerson({ GameState }: { GameState: GameStateService }) {
+    private async requestVictimStateChangePerson({ GameState }: { GameState: StateService }) {
         const victim = GameState.People.find(p => p.IsVictim);
         if (victim) {
             victim.IsVictim = false;

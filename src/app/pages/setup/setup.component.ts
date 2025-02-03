@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { GameStateService } from "../../services/game-state.service";
+import { StateService } from "../../services/state.service";
 import { Router, RouterLink } from "@angular/router";
 import { CharacterGroup, GameSets, GroupTypes } from "../../types";
 import { SpotifyService } from "../../services/spotify.service";
@@ -19,7 +19,7 @@ import { Character } from "../../models/characters/character";
 })
 export class SetupComponent implements OnInit {
     private router = inject(Router);
-    state = inject(GameStateService);
+    state = inject(StateService);
     spotify = inject(SpotifyService);
 
     isLoadingDevices = signal(false);
@@ -28,7 +28,6 @@ export class SetupComponent implements OnInit {
     isCharacterEditorOpen = signal(false);
     grouping = signal<"group" | "game">("group");
 
-    selectedCharacters: Character[] = [];
     NAME_TRANSLATIONS = NAME_TRANSLATIONS;
 
     ngOnInit(): void {
@@ -38,7 +37,11 @@ export class SetupComponent implements OnInit {
             }
         }
 
-        this.selectedCharacters = this.state.SelectedCharacters;
+        if (this.state.SelectedCharacters.length <= 0) {
+            this.state.SelectedCharacters = this.state.AllCharacters.filter(c => c.Game === GameSets.BaseGame);
+        }
+
+        this.state.InGame = false;
     }
 
     async updateDeviceList(): Promise<void> {
@@ -52,14 +55,14 @@ export class SetupComponent implements OnInit {
 
     async setDevice(device: Device | undefined): Promise<void> {
         this.isSelectingDevice.set(true);
-        await this.spotify.SetDevice(device).then(() => {
+        await this.spotify.SetDevice(device?.id ?? undefined, false).then(() => {
             this.isSelectingDevice.set(false);
         });
     }
 
     public async startBackgroundMusic(): Promise<void> {
         await this.spotify.PlayPlaylist(environment.spotify.playlists.start, false);
-        this.spotify.BackgroundMusicStarted = true;
+        this.state.MusicStarted = true;
         await this.spotify.UpdatePlaybackState();
     }
 
@@ -81,19 +84,19 @@ export class SetupComponent implements OnInit {
     }
 
     toggleCharacterSelection(character: Character): void {
-        if (this.selectedCharacters.includes(character)) {
-            this.selectedCharacters = this.selectedCharacters.filter(c => c !== character);
+        if (this.state.SelectedCharacters.includes(character)) {
+            this.state.SelectedCharacters = this.state.SelectedCharacters.filter(c => c !== character);
         } else {
-            this.selectedCharacters.push(character);
+            this.state.SelectedCharacters = [...this.state.SelectedCharacters, character];
         }
     }
 
     async startGame() {
-        this.state.SelectedCharacters = this.selectedCharacters;
+        this.state.SelectedCharacters = this.state.SelectedCharacters;
         this.state.startGame();
-        if (this.spotify.IsAuthenticated && this.spotify.CurrentDevice && !this.spotify.BackgroundMusicStarted) {
+        if (this.spotify.IsAuthenticated && this.spotify.CurrentDevice && !this.state.MusicStarted) {
             await this.spotify.PlayPlaylist(environment.spotify.playlists.start, false);
-            this.spotify.BackgroundMusicStarted = true;
+            this.state.MusicStarted = true;
         }
         this.router.navigateByUrl("/narrator");
     }

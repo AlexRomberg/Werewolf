@@ -1,5 +1,5 @@
 import { DialogService } from "../../../services/dialog.service";
-import { GameStateService } from "../../../services/game-state.service";
+import { StateService } from "../../../services/state.service";
 import { ConnectionTypes, GameSets, GroupTypes } from "../../../types";
 import { RequestAssignment } from "../../actions/buttons";
 import { Character } from "../character";
@@ -11,7 +11,7 @@ export class WildChild extends Character {
     Game = GameSets.Characters;
     override Priority = BasePriority.Initial + 8;
     private get isDone() {
-        return this.gameState.Connections.has(ConnectionTypes.Trust);
+        return this.gameState.Connections.some(c => c.ConnectionType === ConnectionTypes.Trust);
     };
 
     override GetDescriptions = () => [
@@ -32,7 +32,7 @@ export class WildChild extends Character {
 
     override IsAwakeThisNight = (round: number) => round === 0;
 
-    private async requstRolemodel({ GameState, Dialog }: { GameState: GameStateService, Dialog: DialogService }) {
+    private async requstRolemodel({ GameState, Dialog }: { GameState: StateService, Dialog: DialogService }) {
         try {
             const people = await Dialog.ShowPeopleDialog($localize`:@@character-dialog-wild_child-1:Wähle das Vorbild aus`, 1);
             GameState.addConnection(

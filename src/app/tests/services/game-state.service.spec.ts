@@ -1,14 +1,14 @@
 import { TestBed } from "@angular/core/testing";
 
-import { GameStateService } from "../../services/game-state.service";
+import { StateService } from "../../services/state.service";
 import { GameSets, GroupTypes } from "../../types";
 
 describe("GameStateService", () => {
-    let service: GameStateService;
+    let service: StateService;
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
-        service = TestBed.inject(GameStateService);
+        service = TestBed.inject(StateService);
     });
 
     it("should be created", () => {

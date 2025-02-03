@@ -1,5 +1,5 @@
 import { ActionButton, ActionProvider as ActionProvider, GameSets, GroupTypes } from "../../types";
-import { GameStateService } from "../../services/game-state.service";
+import { StateService } from "../../services/state.service";
 
 export abstract class Character implements ActionProvider {
     abstract Id: string;
@@ -12,8 +12,8 @@ export abstract class Character implements ActionProvider {
         return this.gameState.getPeopleForCharacter(this).length > 0;
     }
 
-    constructor(protected gameState: GameStateService) { }
-    IsAwakeThisNight = (_round: number, _gameState: GameStateService) => false;
+    constructor(protected gameState: StateService) { }
+    IsAwakeThisNight = (_round: number, _gameState: StateService) => false;
     resetAfterNight = () => { };
 
     GetDescriptions = (): (string | false)[] => [];

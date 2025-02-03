@@ -45,7 +45,7 @@
                         </button>
                     </span>
                 </span>
-                @if (!spotify.BackgroundMusicStarted) {
+                @if (!state.MusicStarted) {
                 <button class="btn bg-zinc-700 text-zinc-200 flex w-full justify-center gap-4 mt-4" (click)="startBackgroundMusic()">
                     <p i18n="@@spotify-start-background-music">Hintergrundmusik starten</p>
                     <lucide-angular name="play" />
@@ -91,9 +91,9 @@
         <i class="md:row-start-2 text-zinc-500 text-sm">Wähle hier die Charaktere aus mit denen ihr spielt</i>
         <div class="sm:col-span-2 md:row-span-3 max-md:mt-4 grid grid-cols-1 p-4 bg-zinc-800 rounded-md">
             <button class="grid grid-cols-[1fr_auto] grid-rows-[auto_auto] items-center pr-2 gap-y-2" (click)="isCharacterEditorOpen.set(!isCharacterEditorOpen())">
-                <p class="text-left text-lg">{{selectedCharacters.length}} Charaktere ausgewählt</p>
+                <p class="text-left text-lg">{{state.SelectedCharacters.length}} Charaktere ausgewählt</p>
                 <span class="col-start-1 row-start-2 grid overflow-hidden w-full fade-out">
-                    @for (character of selectedCharacters; track $index) {
+                    @for (character of state.SelectedCharacters; track $index) {
                     <div class="col-start-1 row-start-1 bg-neutral-900 p-1 w-14 h-14 rounded-md shadow-md" [style]="{'transform': 'translateX(' + $index * 1.5 + 'rem)', 'z-index': 100-$index}">
                         <img width="48px" height="48px" [src]="'img/' + character.Id + '.png'" [alt]="character.Id | i18nSelect: NAME_TRANSLATIONS">
                     </div>
@@ -113,7 +113,7 @@
                 <h3 class="text-lg mt-4">{{group.Name}}</h3>
                 <div class="grid grid-cols-2 gap-2">
                     @for (character of group.Cards; track $index) {
-                    <div class="bg-zinc-700 p-2 rounded-md grid grid-cols-[4rem_1fr] gap-2 items-center ring-amber-500" [class.ring-2]="selectedCharacters.includes(character)" (click)="toggleCharacterSelection(character)">
+                    <div class="bg-zinc-700 p-2 rounded-md grid grid-cols-[4rem_1fr] gap-2 items-center ring-amber-500" [class.ring-2]="state.SelectedCharacters.includes(character)" (click)="toggleCharacterSelection(character)">
                         @if (!character.IsSingle) {
                         <div class="border-4 border-zinc-800 rounded md-shadow-md w-16 h-16 col-start-1 row-start-1 rotate-3"></div>
                         <div class="border-4 border-zinc-900 rounded md-shadow-md w-16 h-16 col-start-1 row-start-1 -rotate-6"></div>

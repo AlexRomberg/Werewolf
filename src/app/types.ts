@@ -1,9 +1,9 @@
 import { Character } from "./models/characters/character";
 import { Person as Person } from "./models/state/person";
 import { DialogService } from "./services/dialog.service";
-import { GameStateService } from "./services/game-state.service";
+import { StateService } from "./services/state.service";
 
-export type Connection = { From: Person, To: Person };
+export type Connection = { ConnectionType: ConnectionTypes, From: Person, To: Person };
 export type Connections = Map<Partial<ConnectionTypes>, Connection>;
 
 export enum ConnectionTypes {
@@ -24,7 +24,7 @@ export interface ActionButton {
 }
 
 export type ActionCallback = (services: {
-    GameState: GameStateService,
+    GameState: StateService,
     Dialog: DialogService,
 }) => void;
 
@@ -51,4 +51,41 @@ export enum BasePriority {
     Initial = 0,
     Wolf = 50,
     PostWolf = 100
+}
+
+export enum ChangeReason {
+    DiedGotKilled,
+    DiedSleptWithVictim,
+    DiedOfBrokenHeart,
+    TurnedIntoWolf,
+}
+
+export interface DaybreakChange {
+    person: Person,
+    reason: ChangeReason,
+    apply: () => void
+}
+
+export interface AppState {
+    inGame: boolean,
+    spotify: {
+        currentDevice: string | undefined,
+        musicStarted: boolean,
+    }
+}
+
+export interface State {
+    app: {
+        inGame: boolean,
+    },
+    game: {
+        round: number,
+        people: Person[],
+        selectedCharacters: Character[],
+        connections: Connections
+    },
+    music: {
+        currentDevice: string | undefined,
+        musicStarted: boolean,
+    }
 }

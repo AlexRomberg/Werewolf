@@ -1,6 +1,6 @@
 import { Component, inject, input } from "@angular/core";
 import { DialogService } from "../../../services/dialog.service";
-import { GameStateService } from "../../../services/game-state.service";
+import { StateService } from "../../../services/state.service";
 import { CircleComponent } from "../../circle/circle.component";
 import { Person } from "../../../models/state/person";
 
@@ -11,7 +11,7 @@ import { Person } from "../../../models/state/person";
 })
 export class PeopleSelectionComponent {
     Dialog = inject(DialogService);
-    GameState = inject(GameStateService);
+    GameState = inject(StateService);
 
     readonly PeopleDialog = input.required<{
         Title: string;

@@ -1,5 +1,5 @@
 import { DialogService } from "../../../services/dialog.service";
-import { GameStateService } from "../../../services/game-state.service";
+import { StateService } from "../../../services/state.service";
 import { GameSets, GroupTypes } from "../../../types";
 import { RequestAssignment } from "../../actions/buttons";
 import { Character } from "../character";
@@ -35,7 +35,7 @@ export class Witch extends Character {
 
     override IsAwakeThisNight = () => this.hasPositivePotion || this.hasNegativePotion;
 
-    private async requstSave({ GameState, Dialog }: { GameState: GameStateService, Dialog: DialogService }) {
+    private async requstSave({ GameState, Dialog }: { GameState: StateService, Dialog: DialogService }) {
         try {
             const people = await Dialog.ShowPeopleDialog($localize`:@@character-dialog-general-select-victim:Wähle das Opfer aus`, 1);
             const victims = GameState.People.filter(p => p.IsVictim);

@@ -1,16 +1,16 @@
 import { TestBed } from "@angular/core/testing";
-import { GameStateService } from "../../services/game-state.service";
+import { StateService } from "../../services/state.service";
 import { GameSets, GroupTypes } from "../../types";
 import { Knight } from "../../models/characters/implementations/knight";
 
 
 describe("Knight", () => {
-    let gameState: GameStateService;
+    let gameState: StateService;
     let character: Knight;
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
-        gameState = TestBed.inject(GameStateService);
+        gameState = TestBed.inject(StateService);
         character = new Knight(gameState);
     });
 

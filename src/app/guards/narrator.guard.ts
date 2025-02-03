@@ -1,12 +1,12 @@
-import { inject } from "@angular/core";
+import { inject, isDevMode } from "@angular/core";
 import { CanActivateFn, Router } from "@angular/router";
-import { GameStateService } from "../services/game-state.service";
+import { StateService } from "../services/state.service";
 
 export const narratorGuard: CanActivateFn = () => {
-    const gameState = inject(GameStateService);
+    const gameState = inject(StateService);
     const router = inject(Router);
 
-    if (gameState.People.length > 0) {
+    if (gameState.People.length > 0 && gameState.SelectedCharacters.length > 0 && gameState.InGame || isDevMode()) {
         return true;
     }
 

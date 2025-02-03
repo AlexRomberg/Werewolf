@@ -1,5 +1,5 @@
 import { DialogService } from "../../../services/dialog.service";
-import { GameStateService } from "../../../services/game-state.service";
+import { StateService } from "../../../services/state.service";
 import { GameSets, GroupTypes } from "../../../types";
 import { RequestAssignments } from "../../actions/buttons";
 import { BasePriority } from "../../../types";
@@ -33,7 +33,7 @@ export class Werewolf extends WerewolfCharacter {
 
     override IsAwakeThisNight = () => true;
 
-    private async registerVictim({ Dialog, GameState }: { GameState: GameStateService, Dialog: DialogService }) {
+    private async registerVictim({ Dialog, GameState }: { GameState: StateService, Dialog: DialogService }) {
         try {
             const people = await Dialog.ShowPeopleDialog($localize`:@@character-dialog-general-select-victim:Wähle das Opfer aus`, 1);
             if (people[0].IsProtected) {

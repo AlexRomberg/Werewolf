@@ -1,5 +1,5 @@
 import { TestBed } from "@angular/core/testing";
-import { GameStateService } from "../../services/game-state.service";
+import { StateService } from "../../services/state.service";
 import { GameSets, GroupTypes } from "../../types";
 import { BigWolf } from "../../models/characters/implementations/bigWolf";
 import { Werewolf } from "../../models/characters/implementations/werewolf";
@@ -8,12 +8,12 @@ import { WhiteWolf } from "../../models/characters/implementations/whiteWolf";
 import { PrimalWolf } from "../../models/characters/implementations/primalWolf";
 
 describe("BigWolf", () => {
-    let gameState: GameStateService;
+    let gameState: StateService;
     let character: BigWolf;
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
-        gameState = TestBed.inject(GameStateService);
+        gameState = TestBed.inject(StateService);
         character = new BigWolf(gameState);
     });
 

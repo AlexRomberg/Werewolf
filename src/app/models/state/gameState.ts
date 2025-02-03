@@ -6,7 +6,8 @@ export class GameState {
     private round: number = 0;
     private people: Person[] = [];
     private selectedCharacters: Character[] = [];
-    private connections: Connections = new Map();
+    private connections: Connection[] = [];
+    // private connections: Connections = new Map();
 
     get Round(): number { return this.round; }
     set Round(value: number) {
@@ -26,8 +27,8 @@ export class GameState {
         this.onChanged();
     }
 
-    get Connections(): Connections { return this.connections; }
-    set Connections(value: Connections) {
+    get Connections(): Connection[] { return this.connections; }
+    set Connections(value: Connection[]) {
         this.connections = value;
         this.onChanged();
     }
@@ -39,7 +40,7 @@ export class GameState {
             round: this.round,
             people: this.people.map(p => p.asSerializeable()),
             selectedCharacters: this.selectedCharacters.map(c => c.Id),
-            connections: Array.from(this.connections.entries()).map<[Partial<ConnectionTypes>, Partial<{ From: string | undefined, To: string | undefined }>]>(([key, value]) => [key, { From: value.From?.Id, To: value.To?.Id }]).filter(([_, value]) => value.From && value.To)
+            connections: this.connections.map((c) => ({ ...c, From: c.From.Id, To: c.To.Id }))
         });
     }
 
@@ -61,16 +62,18 @@ export class GameState {
             state.round = obj.round;
             state.people = obj.people;
             state.selectedCharacters = obj.selectedCharacters;
-            for (const connection of obj.connections ?? []) {
-                state.connections.set(connection[0], { From: obj.people.find((p: Person) => p.Id === connection[1].From), To: obj.people.find((p: Person) => p.Id === connection[1].To) });
-            }
+            state.connections = (obj.connections ?? []).map((c: any) => ({
+                ConnectionType: c?.ConnectionType ?? ConnectionTypes.Love,
+                From: obj.people.find((p: Person) => p.Id === c?.From),
+                To: obj.people.find((p: Person) => p.Id === c?.To)
+            }));
         }
         return state;
     }
 
     reset(selectedCharacters: Character[]): void {
         this.round = 0;
-        this.connections = new Map();
+        this.connections = [];
         for (const person of this.people) {
             person.resetPerson();
         }

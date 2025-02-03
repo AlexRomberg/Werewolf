@@ -1,5 +1,5 @@
 import { DialogService } from "../../../services/dialog.service";
-import { GameStateService } from "../../../services/game-state.service";
+import { StateService } from "../../../services/state.service";
 import { ConnectionTypes, GameSets, GroupTypes } from "../../../types";
 import { RequestAssignment } from "../../actions/buttons";
 import { Character } from "../character";
@@ -13,7 +13,7 @@ export class Bitch extends Character {
     override Priority = BasePriority.Initial + 11;
     private lastJoinedPerson: Person | undefined;
     private get isDone() {
-        return this.gameState.Connections.has(ConnectionTypes.Sleepover);
+        return this.gameState.Connections.some(c => c.ConnectionType === ConnectionTypes.Sleepover);
     };
 
     override GetDescriptions = () => [
@@ -34,9 +34,9 @@ export class Bitch extends Character {
     };
 
     override IsAwakeThisNight = () => { return true; };
-    override resetAfterNight = () => { this.gameState.removeConnection(ConnectionTypes.Love) };
+    override resetAfterNight = () => { this.gameState.removeConnection(ConnectionTypes.Sleepover) };
 
-    private async requestHostPerson({ Dialog, GameState }: { Dialog: DialogService, GameState: GameStateService }) {
+    private async requestHostPerson({ Dialog, GameState }: { Dialog: DialogService, GameState: StateService }) {
         try {
             const people = await Dialog.ShowPeopleDialog($localize`:@@character-dialog-bitch-1:Eine Person auswählen`, 1);
             if (people[0] === this.lastJoinedPerson) {
@@ -44,6 +44,8 @@ export class Bitch extends Character {
                     return;
                 }
             }
+
+            console.log("Adding connection");
 
             this.lastJoinedPerson = people[0];
             GameState.addConnection(

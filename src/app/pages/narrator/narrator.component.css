@@ -1,3 +1,9 @@
-.fade-out {
-    mask-image: linear-gradient(to top, #000f,#000f 80%, transparent 98%);
+@reference "../../../styles.css";
+
+.grid-sidebar {
+    grid-template-rows: repeat(5, auto) 1fr;
+}
+
+.col-span-3 {
+    @apply col-span-3;
 }

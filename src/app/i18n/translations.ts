@@ -1,4 +1,4 @@
-import { GameSets, GroupTypes } from "../types";
+import { ChangeReason, GameSets, GroupTypes } from "../types";
 
 export const NAME_TRANSLATIONS = {
     "rules": $localize`:@@character-name-rules:Regeln & Anfang`,
@@ -48,4 +48,11 @@ export const GAME_SET_TRANSLATIONS = {
     [GameSets.NewMoon]: $localize`:@@setup-new-moon:Neumond`,
     [GameSets.Characters]: $localize`:@@setup-characters:Charaktere`,
     [GameSets.Special]: $localize`:@@setup-special:Spezielle`
+};
+
+export const CHANGE_TRANSLATIONS = {
+    [ChangeReason.DiedGotKilled]: $localize`:@@change-died-got-killed:gestorben (Opfer von Werwolf/Hexe)`,
+    [ChangeReason.DiedOfBrokenHeart]: $localize`:@@change-died-of-broken-heart:gestorben (Liebeskummer)`,
+    [ChangeReason.DiedSleptWithVictim]: $localize`:@@change-died-slept-with-victim:gestorben (War im haus des Ofers)`,
+    [ChangeReason.TurnedIntoWolf]: $localize`:@@change-turned-into-wolf:verwandelt in Werewolf (NICHT SAGEN)`,
 };
