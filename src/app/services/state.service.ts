@@ -54,9 +54,14 @@ export class StateService {
     public Changes: DaybreakChange[] = [];
 
     public get Round() { return this.gameState.Round; };
-    public get People(): Person[] { return this.gameState.People; };
     public get Connections(): Connection[] { return this.gameState.Connections; }
     public get AllCharacters() { return this.allCharacters; }
+
+    public get People(): Person[] { return this.gameState.People; };
+    public set People(value: Person[]) {
+        this.gameState.People = value;
+        this.saveState();
+    }
 
     public get SelectedCharacters() { return this.gameState.SelectedCharacters; }
     public set SelectedCharacters(value: Character[]) {

@@ -89,3 +89,8 @@ export interface State {
         musicStarted: boolean,
     }
 }
+
+export interface Point {
+    x: number,
+    y: number
+}

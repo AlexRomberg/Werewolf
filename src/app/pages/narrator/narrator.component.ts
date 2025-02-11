@@ -6,15 +6,16 @@ import { ActionProvider, ActionCallback } from "../../types";
 import { FormsModule } from "@angular/forms";
 import { SpotifyService } from "../../services/spotify.service";
 import { environment } from "../../../environments/environment";
-import { I18nSelectPipe, JsonPipe } from "@angular/common";
+import { I18nSelectPipe } from "@angular/common";
 import { NAME_TRANSLATIONS } from "../../i18n/translations";
 import { Person } from "../../models/state/person";
 import { LucideAngularModule } from "lucide-angular";
 import { SidebarGroupComponent } from "./sidebar-group/sidebar-group.component";
+import { Router } from "@angular/router";
 
 @Component({
     selector: "app-narrator",
-    imports: [CircleComponent, FormsModule, I18nSelectPipe, LucideAngularModule, SidebarGroupComponent, JsonPipe],
+    imports: [CircleComponent, FormsModule, I18nSelectPipe, LucideAngularModule, SidebarGroupComponent],
     templateUrl: "./narrator.component.html",
     styleUrl: "./narrator.component.css"
 })
@@ -24,7 +25,9 @@ export class NarratorComponent {
     spotify = inject(SpotifyService);
     NAME_TRANSLATIONS = NAME_TRANSLATIONS;
     FallbackNotPlayingText = $localize`:@@spotify-fallback-not-playing:Nichts am abspielen`;
+    IsEditingPlayers = false;
 
+    private router = inject(Router);
     private firstNightfall = true;
 
     public HandleAction(fn: ActionCallback): void {
@@ -82,5 +85,11 @@ export class NarratorComponent {
 
     public get spotifySummary(): string {
         return this.spotify.CurrentDevice?.name + ": " + this.songTitle;
+    }
+
+    public goBack(): void {
+        if (confirm("Willst du wirklich das Spiel verlassen?")) {
+            this.router.navigate(["/setup"]);
+        }
     }
 }
