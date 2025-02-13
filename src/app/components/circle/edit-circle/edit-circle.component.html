@@ -10,10 +10,10 @@
         </filter>
     </defs>
 
-    <path [attr.d]="GetMovementHintArrowPaths()[0]" style="fill:none;stroke:rgb(213,213,213);stroke-width:22.22px;" />
-    <path [attr.d]="GetMovementHintArrowPaths()[1]" style="fill:none;stroke:rgb(213,213,213);stroke-width:22.22px;" />
-    <path [attr.d]="GetMovementHintPath()" style="fill:none;stroke:rgb(213,213,213);stroke-width:22.22px;stroke-dasharray:32,48,0,0,0,0;" />
-    <text class="fill-zinc-300 text-center" filter="url(#solid)" x="600" y="1000" textLength="800">Verschiebe die Personen</text>
+    <path [attr.d]="GetMovementHintArrowPaths()[0]" class="fill-none stroke-zinc-500 stroke-[18px]" />
+    <path [attr.d]="GetMovementHintArrowPaths()[1]" class="fill-none stroke-zinc-500 stroke-[18px]" />
+    <path [attr.d]="GetMovementHintPath()" class="fill-none stroke-zinc-500 stroke-[18px]" style="stroke-dasharray:32,48,0,0,0,0;" />
+    <text class="fill-zinc-500 text-center italic" filter="url(#solid)" x="600" y="1000" textLength="800">Verschiebe die Personen</text>
 
     @for (person of StaticPeople(); track person.Id; let idx = $index) {
     <g class="shake animate" [style.animationDelay]="-idx/7+'s'" (mousedown)="grab(person.Id, $event)" (touchstart)="grab(person.Id, $event)">

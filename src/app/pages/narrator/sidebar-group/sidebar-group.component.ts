@@ -10,6 +10,7 @@ import { LucideAngularModule } from 'lucide-angular';
 export class SidebarGroupComponent implements OnInit {
   public collapsedOnStart = input(false);
   public isClosed = signal(this.collapsedOnStart());
+  public flipIcon = input(false)
   public title = input.required();
   public summary = input<string>();
 

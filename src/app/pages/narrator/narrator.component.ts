@@ -92,4 +92,8 @@ export class NarratorComponent {
             this.router.navigate(["/setup"]);
         }
     }
+
+    public isRoleInGame(role: string): boolean {
+        return this.state.SelectedCharacters.some(c => c.Id === role);
+    }
 }

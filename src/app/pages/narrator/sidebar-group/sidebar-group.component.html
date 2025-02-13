@@ -2,7 +2,7 @@
     <button (click)="isClosed.set(!isClosed())" class="grid grid-cols-[auto_auto_1fr] gap-4 items-center w-full">
         <h1 class="text-zinc-200 text-2xl">{{title()}}</h1>
         <i class="text-zinc-400 text-sm whitespace-nowrap overflow-hidden text-ellipsis">{{isClosed() ? summary() : ''}}</i>
-        <lucide-angular [name]="isClosed() ? 'chevron-down':'chevron-up'" class="text-zinc-200 ml-auto" />
+        <lucide-angular [name]="(flipIcon() ? !isClosed() : isClosed())  ? 'chevron-down':'chevron-up'" class="text-zinc-200 ml-auto" />
     </button>
     <div class="hidden" [class.hidden]="isClosed()">
         <ng-content></ng-content>

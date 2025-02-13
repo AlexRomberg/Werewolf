@@ -1,27 +1,40 @@
 <div class="grid lg:grid-cols-[1fr_auto] grid-rows-2 w-full h-svh">
     <div class="w-full lg:h-svh lg:px-20 max-lg:pl-10 max-lg:h-[30rem] max-lg:top-0 max-lg:left-0 max-lg:fixed relative">
         <app-circle [(People)]="state.People" [Connections]="state.Connections" (PersonClick)="HandlePersonClicked($event)" [IsEditMode]="IsEditingPlayers" />
+        @if (!IsEditingPlayers) {
         <button class="absolute top-6 left-6 z-0 bg-zinc-800 btn flex gap-4 items-center !px-3" (click)="goBack()">
             <lucide-angular name="arrow-left" class="text-zinc-200" size="20px" />
         </button>
+        }
         <button class="absolute top-6 right-6 z-0 bg-zinc-800 btn flex gap-4 items-center !px-3" (click)="IsEditingPlayers = !IsEditingPlayers">
-            <lucide-angular name="user-pen" class="text-zinc-200" size="20px" title="Sitzreihenfolge ändern" />
+            <lucide-angular [name]="IsEditingPlayers? 'check':'user-pen'" class="text-zinc-200" size="20px" title="Sitzreihenfolge ändern" />
         </button>
+        @if (!IsEditingPlayers && (isRoleInGame("cupit") || isRoleInGame("wild_child") || isRoleInGame("bitch"))) {
         <button class="absolute bottom-6 left-6 z-0 bg-zinc-800 rounded-md p-4 text-left text-zinc-200">
-            <p class="pb-2">Verbindungen:</p>
+            <span class="flex justify-between items-center pb-2">
+                <p>Verbindungen:</p>
+                <lucide-angular name="pen" size="16px" />
+            </span>
+            @if (isRoleInGame("cupit")) {
             <span class="flex gap-2 items-center">
                 <div class="w-4 h-2 rounded-full" style="background-color: red;"></div>
                 <p>Liebe (Ehepaar)</p>
             </span>
+            }
+            @if (isRoleInGame("wild_child")) {
             <span class="flex gap-2 items-center">
                 <div class="w-4 h-2 rounded-full" style="background-color: orange;"></div>
                 <p>Vertrauen (Wildes Kind)</p>
             </span>
+            }
+            @if (isRoleInGame("bitch")) {
             <span class="flex gap-2 items-center">
                 <div class="w-4 h-2 rounded-full" style="background-color: blue;"></div>
                 <p>Beischlaf (Dorfmatratze)</p>
             </span>
+            }
         </button>
+        }
     </div>
     <div class="lg:w-[30rem] w-full bg-zinc-800 grid grid-sidebar lg:h-svh h-[75svh] max-lg:rounded-t-3xl overflow-y-auto z-50 max-lg:mt-[65svh] p-6">
         @if (spotify.IsAuthenticated && spotify.CurrentDevice) {
@@ -49,7 +62,7 @@
         </app-sidebar-group>
         <hr class="border-zinc-700 my-4">
         }
-        <app-sidebar-group title="Ereignisse" [collapsedOnStart]="false" [summary]="state.Actions[0].Id ? (state.Actions[0].Id | i18nSelect: NAME_TRANSLATIONS):undefined" class="mt-auto overflow-hidden row-start-6">
+        <app-sidebar-group title="Ereignisse" [collapsedOnStart]="false" [summary]="state.Actions[0].Id ? (state.Actions[0].Id | i18nSelect: NAME_TRANSLATIONS):undefined" class="mt-auto overflow-hidden row-start-6" [flipIcon]="true">
             @if (state.Actions[0].Id) {
             <div class="grid grid-cols-1 grid-rows-1 min-h-44">
                 @if (state.Actions.length > 2) {

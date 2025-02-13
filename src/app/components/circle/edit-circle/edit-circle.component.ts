@@ -29,13 +29,11 @@ export class EditCircleComponent extends CircleShared {
     let offsetIndex = index;
     if (this.grabbedPerson()) {
       if (index === this.movementIndex()) {
-        offsetIndex += 0.1;
+        offsetIndex += 0.2;
       } else if (((index + 1) % this.StaticPeople().length) === this.movementIndex()) {
-        offsetIndex -= 0.1;
+        offsetIndex -= 0.2;
       }
     }
-    console.log(offsetIndex);
-
     return this.GetIndexCoordinate(offsetIndex, this.StaticPeople().length);
   }
 

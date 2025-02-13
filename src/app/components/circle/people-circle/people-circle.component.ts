@@ -78,7 +78,7 @@ export class PeopleCircleComponent extends CircleShared {
     if (y < 400) {
       return -1;
     }
-    if (y > 1700) {
+    if (y > 1600) {
       return 1;
     }
     return 0;
