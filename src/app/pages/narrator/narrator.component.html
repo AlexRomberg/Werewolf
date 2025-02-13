@@ -7,7 +7,7 @@
         <button class="absolute top-6 right-6 z-0 bg-zinc-800 btn flex gap-4 items-center !px-3" (click)="IsEditingPlayers = !IsEditingPlayers">
             <lucide-angular name="user-pen" class="text-zinc-200" size="20px" title="Sitzreihenfolge ändern" />
         </button>
-        <!-- <button class="absolute bottom-6 left-6 z-0 bg-zinc-800 rounded-md p-4 text-left text-zinc-200">
+        <button class="absolute bottom-6 left-6 z-0 bg-zinc-800 rounded-md p-4 text-left text-zinc-200">
             <p class="pb-2">Verbindungen:</p>
             <span class="flex gap-2 items-center">
                 <div class="w-4 h-2 rounded-full" style="background-color: red;"></div>
@@ -21,7 +21,7 @@
                 <div class="w-4 h-2 rounded-full" style="background-color: blue;"></div>
                 <p>Beischlaf (Dorfmatratze)</p>
             </span>
-        </button> -->
+        </button>
     </div>
     <div class="lg:w-[30rem] w-full bg-zinc-800 grid grid-sidebar lg:h-svh h-[75svh] max-lg:rounded-t-3xl overflow-y-auto z-50 max-lg:mt-[65svh] p-6">
         @if (spotify.IsAuthenticated && spotify.CurrentDevice) {

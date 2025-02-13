@@ -11,34 +11,64 @@ import { Point } from '../../../types';
 })
 export class EditCircleComponent extends CircleShared {
   readonly People = input<Person[]>([]);
-  readonly MoveDraggedPerson = signal<number | undefined>(undefined);
+  readonly StaticPeople = computed(() => this.People().filter(p => p !== this.grabbedPerson()));
+  grabbedPerson = signal<Person | undefined>(undefined);
+  movementPosition = signal<Point>({ x: 1000, y: 1000 });
+  movementIndex = computed(() => {
+    return this.getIndexByCoordinate(this.movementPosition());
+  })
 
-  private movementLocation = signal<Point>({ x: 0, y: 0 })
-  private grabbedElement = signal<{ id: string, x: number, y: number } | undefined>(undefined);
   @ViewChild('svg') svgElement!: ElementRef<SVGElement>;
   @Output() PeopleChange: EventEmitter<Person[]> = new EventEmitter<Person[]>();
 
-  readonly EditModePeople = computed(() => {
-    let list = this.People().map((p) => ({ id: p.Id, characterId: p.Character?.Id, name: p.Name }));
-    if (this.MoveDraggedPerson()) {
-      const grabbedPerson = this.People().findIndex(p => p.Id === this.grabbedElement()?.id);
-      if (grabbedPerson >= 0) {
-        let shift = this.MoveDraggedPerson()!;
-        let newIndex = (grabbedPerson + shift + list.length) % list.length;
-        let item = list.splice(grabbedPerson, 1)[0];
-        if (grabbedPerson + shift < 0) {
-          list.unshift(list.pop()!);
-          shift -= 1
-        } else if (grabbedPerson + shift >= list.length) {
-          list.push(list.shift()!);
-          shift -= 1
-        }
-        list.splice(newIndex, 0, item);
+  IsSelected(index: number) {
+    return this.grabbedPerson() === this.People()[index];
+  }
+
+  GetEditModeCoordinate(index: number) {
+    let offsetIndex = index;
+    if (this.grabbedPerson()) {
+      if (index === this.movementIndex()) {
+        offsetIndex += 0.1;
+      } else if (((index + 1) % this.StaticPeople().length) === this.movementIndex()) {
+        offsetIndex -= 0.1;
       }
     }
+    console.log(offsetIndex);
 
-    return list;
-  });
+    return this.GetIndexCoordinate(offsetIndex, this.StaticPeople().length);
+  }
+
+  grab(elementId: string, evt: MouseEvent | TouchEvent) {
+    this.grabbedPerson.set(this.People().find(p => p.Id === elementId));
+
+    const pos = this.getPositionFromEvent(evt);
+    this.movementPosition.set(this.translateCoordinate(pos.x, pos.y));
+  }
+
+  @HostListener("mouseup")
+  @HostListener("touchend")
+  @HostListener("touchcancel")
+  private drop() {
+    if (this.grabbedPerson() !== undefined) {
+      const people = this.StaticPeople()
+      people.splice(((this.movementIndex()) % this.StaticPeople().length), 0, this.grabbedPerson()!)
+      this.PeopleChange.emit(people);
+    }
+    this.grabbedPerson.set(undefined);
+  }
+
+  @HostListener("mousemove", ['$event'])
+  @HostListener("touchmove", ['$event'])
+  private handleMove(event: MouseEvent | TouchEvent) {
+    if (this.grabbedPerson() !== undefined) {
+      const pos = this.getPositionFromEvent(event);
+      this.movementPosition.set(this.translateCoordinate(pos.x, pos.y));
+
+      event.stopPropagation();
+      event.preventDefault();
+    }
+  }
 
   private translateCoordinate(x: number, y: number) {
     const boundingBox = this.svgElement?.nativeElement.getBoundingClientRect();
@@ -52,37 +82,15 @@ export class EditCircleComponent extends CircleShared {
     }
   }
 
-  private updateFakeElement(x: number, y: number) {
-    const boundingBox = this.svgElement?.nativeElement.getBoundingClientRect();
-    if (!boundingBox) { return }
-
-    const center = {
-      x: boundingBox.x + boundingBox.width / 2,
-      y: boundingBox.y + boundingBox.height / 2
-    }
-    const distance = Math.sqrt((x - center.x) ** 2 + (y - center.y) ** 2);
-    if (distance < boundingBox.width / 4) {
-      return;
-    }
-
-    const topNormalizedAngle = (Math.atan2(y - center.y, x - center.x) + 3.5 * Math.PI);
-    const indexOfSelectedPerson = this.People().findIndex(p => p.Id === this.grabbedElement()?.id);
-    const angleRelativeToSelectedIndex = (topNormalizedAngle - (2 * Math.PI / this.People().length * indexOfSelectedPerson)) % (2 * Math.PI) - Math.PI;
-    const mappedIndex = ((Math.round(this.People().length / (2 * Math.PI) * angleRelativeToSelectedIndex)) + (this.People().length / 2)) % this.People().length - this.People().length / 2;
-
-    this.MoveDraggedPerson.set(mappedIndex);
+  private getPositionFromEvent(event: MouseEvent | TouchEvent) {
+    const normalizedEvent = ("touches" in event) ? event.touches[0] : event
+    return { x: normalizedEvent.clientX, y: normalizedEvent.clientY };
   }
 
-  IsSelected(index: number) {
-    return this.grabbedElement()?.id === this.EditModePeople()[index].id;
-  }
-
-  GetEditModeCoordinate(index: number) {
-    if (this.IsSelected(index)) {
-      return this.movementLocation()
-    }
-
-    return this.GetIndexCoordinate(index, this.EditModePeople().length);
+  private getIndexByCoordinate(position: Point) {
+    const interval = Math.PI * 2 / this.StaticPeople().length
+    const topNormalizedAngle = (Math.atan2(position.y - 1000, position.x - 1000) + 2.5 * Math.PI) % (2 * Math.PI);
+    return Math.ceil(topNormalizedAngle / interval) % this.StaticPeople().length;
   }
 
   GetMovementHintPath() {
@@ -97,7 +105,7 @@ export class EditCircleComponent extends CircleShared {
   }
 
   private GetArrowPathDescription(fromIndex: number, toIndex: number) {
-    let { destination, origin } = this.computeEndpoints(fromIndex, toIndex, this.EditModePeople().length, 300, 0);
+    let { destination, origin } = this.computeEndpoints(fromIndex, toIndex, this.People().length, 300, 0);
 
     const angle = Math.atan2(destination.y - origin.y, destination.x - origin.x);
     const angle1 = angle + Math.PI / 4; // 45°
@@ -109,35 +117,5 @@ export class EditCircleComponent extends CircleShared {
     const yA2 = destination.y - 50 * Math.sin(angle2);
 
     return `M${destination.x},${destination.y}L${xA1},${yA1}M${destination.x},${destination.y}L${xA2},${yA2}`
-  }
-
-  grab(elementId: string, evt: MouseEvent | TouchEvent) {
-    const location = ("touches" in evt) ? evt.touches[0] : evt;
-    this.grabbedElement.set({ id: elementId, x: location.clientX, y: location.clientY });
-    this.movementLocation.set(this.translateCoordinate(location.clientX, location.clientY));
-  }
-
-  @HostListener("mouseup")
-  @HostListener("touchend")
-  @HostListener("touchcancel")
-  drop() {
-    if (this.grabbedElement() !== undefined) {
-      this.PeopleChange.emit(this.EditModePeople().map(p => this.People().find(p2 => p2.Id === p.id)!));
-    }
-    this.grabbedElement.set(undefined);
-    this.MoveDraggedPerson.set(undefined);
-  }
-
-  @HostListener("mousemove", ['$event'])
-  @HostListener("touchmove", ['$event'])
-  private handleMove(event: MouseEvent | TouchEvent) {
-    if (this.grabbedElement() !== undefined) {
-      const location = ("touches" in event) ? event.touches[0] : event;
-      this.movementLocation.set(this.translateCoordinate(location.clientX, location.clientY));
-      this.updateFakeElement(location.clientX, location.clientY);
-
-      event.stopPropagation();
-      event.preventDefault();
-    }
   }
 }

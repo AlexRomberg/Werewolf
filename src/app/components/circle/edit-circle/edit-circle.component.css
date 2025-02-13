@@ -13,6 +13,12 @@ text {
     @apply !fill-zinc-700
 }
 
+.animate circle,
+.animate text,
+.animate image {
+    transition: all 0.3s;
+}
+
 .shake {
     animation: shaking infinite 1.5s linear;
 }

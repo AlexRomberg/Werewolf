@@ -1,5 +1,3 @@
-import { Point } from "../../types";
-
 export class CircleShared {
     GetIndexCoordinate(index: number, amount: number) {
         const angle = 2 * Math.PI / amount * index

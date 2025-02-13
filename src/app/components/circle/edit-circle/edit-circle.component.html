@@ -15,20 +15,35 @@
     <path [attr.d]="GetMovementHintPath()" style="fill:none;stroke:rgb(213,213,213);stroke-width:22.22px;stroke-dasharray:32,48,0,0,0,0;" />
     <text class="fill-zinc-300 text-center" filter="url(#solid)" x="600" y="1000" textLength="800">Verschiebe die Personen</text>
 
-    @for (person of EditModePeople(); track person.id; let idx = $index) {
-    <g class="shake" [style.animationDelay]="-idx/7+'s'" (mousedown)="grab(person.id, $event)" (touchstart)="grab(person.id, $event)">
-        @if (person.characterId) {
-        <clipPath [id]="'clip_'+person.id" class="pointer-events-none">
+    @for (person of StaticPeople(); track person.Id; let idx = $index) {
+    <g class="shake animate" [style.animationDelay]="-idx/7+'s'" (mousedown)="grab(person.Id, $event)" (touchstart)="grab(person.Id, $event)">
+        @if (person.Character?.Id) {
+        <clipPath [id]="'clip_'+person.Id" class="pointer-events-none">
             <circle [attr.cx]="GetEditModeCoordinate(idx).x" [attr.cy]="GetEditModeCoordinate(idx).y" r="100" class="pointer-events-none" />
         </clipPath>
-        <g [attr.clip-path]="'url(#clip_' + person.id + ')'">
-            <image [attr.href]="'img/' + person.characterId + '.png'" [attr.x]="GetEditModeCoordinate(idx).x - 110" [attr.y]="GetEditModeCoordinate(idx).y - 110" width="220" height="220" />
+        <g [attr.clip-path]="'url(#clip_' + person.Id + ')'">
+            <image [attr.href]="'img/' + person.Character!.Id + '.png'" [attr.x]="GetEditModeCoordinate(idx).x - 110" [attr.y]="GetEditModeCoordinate(idx).y - 110" width="220" height="220" />
         </g>
         }
 
-        <text class="fill-zinc-300" filter="url(#solid)" [attr.x]="GetEditModeCoordinate(idx).x + 150" [attr.y]="GetEditModeCoordinate(idx).y + 20">{{person.name}}</text>
+        <text class="fill-zinc-300" filter="url(#solid)" [attr.x]="GetEditModeCoordinate(idx).x + 150" [attr.y]="GetEditModeCoordinate(idx).y + 20">{{person.Name}}</text>
+        <circle [attr.cx]="GetEditModeCoordinate(idx).x" [attr.cy]="GetEditModeCoordinate(idx).y" r="100" class="ring cursor-pointer fill-transparent" [class.!fill-zinc-700]="!person.Character?.Id" />
+    </g>
+    }
 
-        <circle [attr.cx]="GetEditModeCoordinate(idx).x" [attr.cy]="GetEditModeCoordinate(idx).y" r="100" class="ring cursor-pointer fill-transparent transition-all duration-1000" [class.!fill-zinc-700]="!person.characterId" />
+    @if (grabbedPerson()) {
+    <g class="z-50">
+        @if (grabbedPerson()?.Character?.Id) {
+        <clipPath [id]="'clip_'+grabbedPerson()!.Id" class="pointer-events-none">
+            <circle [attr.cx]="movementPosition().x" [attr.cy]="movementPosition().y" r="100" class="pointer-events-none" />
+        </clipPath>
+        <g [attr.clip-path]="'url(#clip_' + grabbedPerson()!.Id + ')'">
+            <image [attr.href]="'img/' + grabbedPerson()!.Character!.Id + '.png'" [attr.x]="movementPosition().x - 110" [attr.y]="movementPosition().y - 110" width="220" height="220" />
+        </g>
+        }
+
+        <text class="fill-zinc-300" filter="url(#solid)" [attr.x]="movementPosition().x + 150" [attr.y]="movementPosition().y + 20">{{grabbedPerson()!.Name}}</text>
+        <circle [attr.cx]="movementPosition().x" [attr.cy]="movementPosition().y" r="100" class="ring cursor-pointer fill-transparent" [class.!fill-zinc-700]="!grabbedPerson()!.Character?.Id" />
     </g>
     }
 </svg>

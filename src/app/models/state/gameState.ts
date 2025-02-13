@@ -66,7 +66,7 @@ export class GameState {
                 ConnectionType: c?.ConnectionType ?? ConnectionTypes.Love,
                 From: obj.people.find((p: Person) => p.Id === c?.From),
                 To: obj.people.find((p: Person) => p.Id === c?.To)
-            }));
+            })).filter((c: Connection) => c.From && c.To);
         }
         return state;
     }
