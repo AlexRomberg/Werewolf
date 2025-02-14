@@ -8,7 +8,7 @@ export const RequestAssignment = (thisContext: Character): ActionButton => {
         Title: $localize`:@@character-button-general-assing-person:Person zuweisen`,
         Action: async ({ GameState, Dialog }: { GameState: StateService, Dialog: DialogService }): Promise<void> => {
             try {
-                const people = await Dialog.ShowPeopleDialog($localize`:@@dialog-title-select-person:Person auswählen`, 1);
+                const people = await Dialog.ShowPeopleSelectionDialog($localize`:@@dialog-title-select-person:Person auswählen`, 1);
                 for (const person of GameState.getPeopleForCharacter(thisContext) ?? []) {
                     person.Character = undefined;
                 }
@@ -25,7 +25,7 @@ export const RequestAssignments = (thisContext: Character, maximum?: number): Ac
         Title: $localize`:@@character-button-general-assing-people:Personen zuweisen`,
         Action: async ({ GameState, Dialog }: { GameState: StateService, Dialog: DialogService }): Promise<void> => {
             try {
-                const people = await Dialog.ShowPeopleDialog($localize`:@@dialog-title-select-people:Personen auswählen`, maximum);
+                const people = await Dialog.ShowPeopleSelectionDialog($localize`:@@dialog-title-select-people:Personen auswählen`, maximum);
                 for (const person of GameState.getPeopleForCharacter(thisContext) ?? []) {
                     person.Character = undefined;
                 }

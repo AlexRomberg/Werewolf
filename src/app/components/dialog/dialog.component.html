@@ -1,9 +1,7 @@
-@if (Dialog.PeopleDialog || Dialog.PersonDialog) {
+@if (Dialog.DialogData) {
 <div class="fixed top-0 left-0 w-dvw h-dvh bg-zinc-950/60 backdrop-blur-xs flex justify-center items-center z-100">
-    @if (Dialog.PeopleDialog) {
-    <app-people-selection [PeopleDialog]="Dialog.PeopleDialog"></app-people-selection>
-    } @else if(Dialog.PersonDialog) {
-    <app-person-details [Person]="Dialog.PersonDialog.Person"></app-person-details>
-    }
+    <app-people-selection></app-people-selection>
+    <app-person-details></app-person-details>
+    <app-confirm-dialog></app-confirm-dialog>
 </div>
 }

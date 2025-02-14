@@ -94,3 +94,40 @@ export interface Point {
     x: number,
     y: number
 }
+
+export enum DialogTypes {
+    PeopleSelection,
+    PersonDetails,
+    Confirm
+}
+
+export interface PeopleSelectionDialogData {
+    title: string,
+    numberOfPeople: number | undefined,
+    people: Person[]
+}
+
+export interface PersonDetailsDialogData {
+    person: Person
+}
+
+export interface ConfirmDialogData {
+    title: string,
+}
+
+export type DialogData = {
+    type: DialogTypes.PeopleSelection,
+    data: PeopleSelectionDialogData,
+    res: (people: Person[]) => void,
+    rej: () => void
+} | {
+    type: DialogTypes.PersonDetails,
+    data: PersonDetailsDialogData,
+    res: () => void,
+    rej: () => void
+} | {
+    type: DialogTypes.Confirm,
+    data: ConfirmDialogData,
+    res: () => void,
+    rej: () => void
+}

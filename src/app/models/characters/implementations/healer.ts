@@ -37,7 +37,7 @@ export class Healer extends Character {
 
     private async requestProtectedPerson({ Dialog }: { Dialog: DialogService }) {
         try {
-            const people = await Dialog.ShowPeopleDialog($localize`:@@character-dialog-healer-1:Zu schützende Person auswählen`, 1);
+            const people = await Dialog.ShowPeopleSelectionDialog($localize`:@@character-dialog-healer-1:Zu schützende Person auswählen`, 1);
             if (people[0] === this.lastProtectedPerson) {
                 if (!confirm($localize`:@@character-dialog-healer-2:Es kann nicht zwei mal hinter einander die gleiche Person geschützt werden. Trotzdem fortfahren?`)) {
                     return;

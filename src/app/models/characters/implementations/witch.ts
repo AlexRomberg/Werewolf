@@ -37,7 +37,7 @@ export class Witch extends Character {
 
     private async requstSave({ GameState, Dialog }: { GameState: StateService, Dialog: DialogService }) {
         try {
-            const people = await Dialog.ShowPeopleDialog($localize`:@@character-dialog-general-select-victim:Wähle das Opfer aus`, 1);
+            const people = await Dialog.ShowPeopleSelectionDialog($localize`:@@character-dialog-general-select-victim:Wähle das Opfer aus`, 1);
             const victims = GameState.People.filter(p => p.IsVictim);
             if (!victims.includes(people[0])) {
                 if (!confirm($localize`:@@character-dialog-witch-1:Die Person ist kein Wolfsopfer. Trotzdem Heiltrank verwenden?`)) {
@@ -53,7 +53,7 @@ export class Witch extends Character {
 
     private async requstKill({ Dialog }: { Dialog: DialogService }) {
         try {
-            const people = await Dialog.ShowPeopleDialog($localize`:@@character-dialog-general-select-victim:Wähle das Opfer aus`, 1);
+            const people = await Dialog.ShowPeopleSelectionDialog($localize`:@@character-dialog-general-select-victim:Wähle das Opfer aus`, 1);
             if (people[0].IsVictim) {
                 if (!confirm($localize`:@@character-dialog-witch-2:Die Person ist bereits ein Wolfsopfer. Trotzdem Zaubertrank verwenden?`)) {
                     return;

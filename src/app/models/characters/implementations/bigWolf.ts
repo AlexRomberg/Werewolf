@@ -37,7 +37,7 @@ export class BigWolf extends WerewolfCharacter {
 
     private async registerVictim({ Dialog }: { Dialog: DialogService }) {
         try {
-            const people = await Dialog.ShowPeopleDialog($localize`:@@character-dialog-big_wolf-1:Wähle das zweite Opfer (kein Werwolf) aus`, 1);
+            const people = await Dialog.ShowPeopleSelectionDialog($localize`:@@character-dialog-big_wolf-1:Wähle das zweite Opfer (kein Werwolf) aus`, 1);
             if (people[0].IsProtected || people[0].IsVictim) {
                 return;
             }

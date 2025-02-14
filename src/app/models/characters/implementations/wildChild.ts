@@ -34,7 +34,7 @@ export class WildChild extends Character {
 
     private async requstRolemodel({ GameState, Dialog }: { GameState: StateService, Dialog: DialogService }) {
         try {
-            const people = await Dialog.ShowPeopleDialog($localize`:@@character-dialog-wild_child-1:Wähle das Vorbild aus`, 1);
+            const people = await Dialog.ShowPeopleSelectionDialog($localize`:@@character-dialog-wild_child-1:Wähle das Vorbild aus`, 1);
             GameState.addConnection(
                 ConnectionTypes.Trust,
                 this.gameState.getPeopleForCharacter(this)[0],

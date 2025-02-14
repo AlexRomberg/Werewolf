@@ -52,7 +52,7 @@ export class NarratorComponent {
     }
 
     public async HandlePersonClicked(person: Person): Promise<void> {
-        this.dialog.ShowPersonDialog(person);
+        this.dialog.ShowPersonDetailsDialog(person);
     }
 
     public GetFilteredPoints(action: ActionProvider): string[] {

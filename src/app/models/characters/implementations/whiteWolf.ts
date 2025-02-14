@@ -34,7 +34,7 @@ export class WhiteWolf extends WerewolfCharacter {
 
     private async registerVictim({ Dialog }: { Dialog: DialogService }) {
         try {
-            const people = await Dialog.ShowPeopleDialog($localize`:@@character-dialog-white_wolf-1:Wähle das Opfer (Werewolf) aus`, 1);
+            const people = await Dialog.ShowPeopleSelectionDialog($localize`:@@character-dialog-white_wolf-1:Wähle das Opfer (Werewolf) aus`, 1);
             if (people[0].IsProtected) {
                 return;
             }

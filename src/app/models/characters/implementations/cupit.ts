@@ -35,7 +35,7 @@ export class Cupit extends Character {
 
     private async requestCouple({ GameState, Dialog }: { GameState: StateService, Dialog: DialogService }) {
         try {
-            const people = await Dialog.ShowPeopleDialog($localize`:@@character-dialog-cupit-1:Ein Paar auswählen`, 2);
+            const people = await Dialog.ShowPeopleSelectionDialog($localize`:@@character-dialog-cupit-1:Ein Paar auswählen`, 2);
             GameState.addConnection(
                 ConnectionTypes.Love,
                 people[0],

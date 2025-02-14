@@ -1,75 +1,48 @@
 import { inject, Injectable } from "@angular/core";
 import { StateService } from "./state.service";
 import { Person } from "../models/state/person";
+import { DialogData, DialogTypes } from "../types";
 
 @Injectable({
     providedIn: "root"
 })
 export class DialogService {
     private gameState = inject(StateService);
+    public DialogData: DialogData | undefined = undefined;
 
-    public PeopleDialog: {
-        Title: string, NumberOfPeople?: number, People: Person[]
-    } | undefined;
-    public PersonDialog: {
-        Person: Person
-    } | undefined;
-
-    public async ShowPersonDialog(person: Person): Promise<void> {
-        this.PersonDialog = { Person: person };
+    public async ShowPersonDetailsDialog(person: Person): Promise<void> {
+        return await new Promise<void>((res, rej) => {
+            this.DialogData = {
+                type: DialogTypes.PersonDetails,
+                data: { person },
+                res,
+                rej
+            }
+        })
     }
 
-    public async ShowPeopleDialog(title: string, numberOfPeople?: number): Promise<Person[]> {
+    public async ShowPeopleSelectionDialog(title: string, numberOfPeople?: number): Promise<Person[]> {
         return await new Promise<Person[]>((res, rej) => {
-            this.peopleDialogCallback = res;
-            this.peopleDialogRejection = rej;
-            this.PeopleDialog = { Title: title, NumberOfPeople: numberOfPeople, People: this.gameState.People.map(p => p.cloneWithoutEffectState()) };
+            this.DialogData = {
+                type: DialogTypes.PeopleSelection,
+                data: {
+                    title: title,
+                    numberOfPeople: numberOfPeople,
+                    people: this.gameState.People.map(p => p.cloneWithoutEffectState())
+                },
+                res,
+                rej
+            }
         });
     }
 
-    public SetPersonState(state: "protected" | "victim" | "nothing"): void {
-        if (!this.PersonDialog) {
-            return;
-        }
-        this.PersonDialog.Person.IsProtected = state === "protected";
-        this.PersonDialog.Person.IsVictim = state === "victim";
+    public ConfirmDialog(data: Person[] | undefined = undefined) {
+        if (data || this.DialogData?.type === DialogTypes.PeopleSelection) {
+            this.DialogData?.res(data ?? []);
+        } else {
+            this.DialogData?.res();
+        };
+        this.DialogData = undefined;
     }
-
-    public PeopleDialogSelectionValid(): boolean {
-        if (!this.PeopleDialog?.NumberOfPeople) {
-            return true;
-        }
-        return this.PeopleDialog?.People.filter(p => p.IsProtected).length === this.PeopleDialog.NumberOfPeople;
-    }
-
-    public OnPersonSelected(person: Person): void {
-        if (this.PeopleDialog && this.PeopleDialog.NumberOfPeople === 1) {
-            this.PeopleDialog.People.forEach(p => p.IsProtected = false);
-        }
-
-        person.IsProtected = !person.IsProtected;
-    }
-
-    public ApplyPeopleDialog(): void {
-        if (!this.PeopleDialog) {
-            return;
-        }
-        this.peopleDialogCallback(this.PeopleDialog.People.filter(p => p.IsProtected).map(f => this.gameState.People.find(p => p.Id === f.Id)!).filter(Boolean));
-        this.PeopleDialog = undefined;
-    }
-
-    public QuitPeopleDialog(): void {
-        if (!this.PeopleDialog) {
-            return;
-        }
-        this.PeopleDialog = undefined;
-        this.peopleDialogRejection();
-    }
-
-    public QuitPersonDialog(): void {
-        this.PersonDialog = undefined;
-    }
-
-    private peopleDialogCallback: (people: Person[]) => void = () => { return; };
-    private peopleDialogRejection: () => void = () => { return; };
+    public RejectDialog() { this.DialogData?.rej(); this.DialogData = undefined };
 }

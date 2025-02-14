@@ -1,10 +1,12 @@
+@if (Dialog.DialogData && Dialog.DialogData.type === DialogTypes.PeopleSelection) {
 <div class="bg-slate-800 h-[36rem] lg:w-[36rem] w-full p-4 rounded-2xl grid grid-rows-[auto_1fr_auto] gap-2">
-    <h1 class="text-zinc-200 text-2xl">{{PeopleDialog().Title}}</h1>
+    <h1 class="text-zinc-200 text-2xl">{{Dialog.DialogData.data.title}}</h1>
     <div class="h-96 self-center ml-12">
-        <app-circle [People]="PeopleDialog().People" (PersonClick)="Dialog.OnPersonSelected($event)"></app-circle>
+        <app-circle [People]="Dialog.DialogData.data.people" (PersonClick)="OnPersonSelected($event)"></app-circle>
     </div>
     <span class="grid grid-cols-2 gap-2">
-        <button class="text-zinc-200 bg-zinc-500 w-full btn" (click)="Dialog.QuitPeopleDialog()" i18n="@@general-abort">Abbrechen</button>
-        <button [class.bg-zinc-600]="!Dialog.PeopleDialogSelectionValid()" [disabled]="!Dialog.PeopleDialogSelectionValid()" class="text-zinc-200 bg-zinc-500 w-full btn" (click)="Dialog.ApplyPeopleDialog()" i18n="@@general-ok">Ok</button>
+        <button class="text-zinc-200 bg-zinc-500 w-full btn" (click)="Dialog.RejectDialog()" i18n="@@general-abort">Abbrechen</button>
+        <button [class.bg-zinc-600]="!PeopleDialogSelectionValid()" [disabled]="!PeopleDialogSelectionValid()" class="text-zinc-200 bg-zinc-500 w-full btn" (click)="Dialog.ConfirmDialog()" i18n="@@general-ok">Ok</button>
     </span>
 </div>
+}

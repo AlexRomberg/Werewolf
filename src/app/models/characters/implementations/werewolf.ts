@@ -35,7 +35,7 @@ export class Werewolf extends WerewolfCharacter {
 
     private async registerVictim({ Dialog, GameState }: { GameState: StateService, Dialog: DialogService }) {
         try {
-            const people = await Dialog.ShowPeopleDialog($localize`:@@character-dialog-general-select-victim:Wähle das Opfer aus`, 1);
+            const people = await Dialog.ShowPeopleSelectionDialog($localize`:@@character-dialog-general-select-victim:Wähle das Opfer aus`, 1);
             if (people[0].IsProtected) {
                 return;
             }

@@ -38,7 +38,7 @@ export class Bitch extends Character {
 
     private async requestHostPerson({ Dialog, GameState }: { Dialog: DialogService, GameState: StateService }) {
         try {
-            const people = await Dialog.ShowPeopleDialog($localize`:@@character-dialog-bitch-1:Eine Person auswählen`, 1);
+            const people = await Dialog.ShowPeopleSelectionDialog($localize`:@@character-dialog-bitch-1:Eine Person auswählen`, 1);
             if (people[0] === this.lastJoinedPerson) {
                 if (!confirm($localize`:@@character-dialog-bitch-2:Es darf nicht zwei mal hinter einander die gleiche Person gewählt werden. Trotzdem fortfahren?`)) {
                     return;
