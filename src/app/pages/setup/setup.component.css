@@ -4,16 +4,8 @@
     mask-image: linear-gradient( to right, #000, #000 calc(100% - 80px), transparent calc(100% - 20px));
 }
 
-/* HACK: Safelisting for tailwind v4 */
-.animate-spin {
+.spin-animation {
     @apply animate-spin;
-    animation-duration: 2s !important;
-}
-
-.text-zinc-400 {
-    @apply text-zinc-400;
-}
-
-.ring-2 {
-    @apply ring-2;
+    --tw-duration: 2s;
+    transition-duration: 2s;
 }

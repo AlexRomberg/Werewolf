@@ -21,7 +21,7 @@
                 <span class="flex justify-between items-center">
                     <p class="text-zinc-300 whitespace-nowrap overflow-hidden text-ellipsis" i18n="@@spotify-select-a-device">Wähle ein Gerät aus:</p>
                     <button class="text-zinc-200" (click)="updateDeviceList();" [disabled]="isLoadingDevices()">
-                        <div [class.animate-spin]="isLoadingDevices()">
+                        <div [class.spin-animation]="isLoadingDevices()">
                             <lucide-angular name="refresh-cw" />
                         </div>
                     </button>

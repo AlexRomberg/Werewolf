@@ -9,10 +9,6 @@ text {
     font-size: 66.667px;
 }
 
-.\!fill-zinc-700 {
-    @apply !fill-zinc-700
-}
-
 .animate circle,
 .animate text,
 .animate image {

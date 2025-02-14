@@ -13,7 +13,3 @@ text {
     font-family: 'ArialMT', 'Arial', sans-serif;
     font-size: 66.667px;
 }
-
-.\!fill-zinc-700 {
-    @apply !fill-zinc-700
-}
