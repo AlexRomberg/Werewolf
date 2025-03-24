@@ -62,7 +62,8 @@
         </app-sidebar-group>
         <hr class="border-zinc-700 my-4">
         }
-        <app-sidebar-group title="Ereignisse" [collapsedOnStart]="false" [summary]="state.Actions[0].Id ? (state.Actions[0].Id | i18nSelect: NAME_TRANSLATIONS):undefined" class="mt-auto overflow-hidden row-start-6" [flipIcon]="true">
+        @if (!AreEventsMaximized) {
+        <app-sidebar-group title="Ereignisse" [collapsedOnStart]="false" [secondIcon]="AreEventsMaximized ? 'minimize-2' : 'maximize-2'" (secondIconPressedEvent)="AreEventsMaximized = !AreEventsMaximized" [summary]="state.Actions[0].Id ? (state.Actions[0].Id | i18nSelect: NAME_TRANSLATIONS):undefined" class="mt-auto overflow-hidden row-start-6" [flipIcon]="true">
             @if (state.Actions[0].Id) {
             <div class="grid grid-cols-1 grid-rows-1 min-h-44">
                 @if (state.Actions.length > 2) {
@@ -100,5 +101,81 @@
                 <button class="btn bg-zinc-500 block col-span-2" [class.col-span-3]="state.ActionHistory.length === 0" (click)="OnNext()" i18n="@@general-next-button">Weiter →</button>
             </span>
         </app-sidebar-group>
+        }
     </div>
+    @if (AreEventsMaximized) {
+    <div class="fixed top-0 left-0 w-dvw h-dvh bg-zinc-950/60 backdrop-blur-xs z-50 flex justify-center items-center">
+        <button class="btn text-zinc-700 fixed top-8 right-8 bg-zinc-700 !px-3" (click)="AreEventsMaximized = false">
+            <lucide-icon name="x" size="24px" />
+        </button>
+        <div class="w-full grid grid-cols-[1fr_34rem_1fr] gap-x-4 gap-y-2">
+            <div class="col-start-1 row-start-1 overflow-hidden flex flex-row-reverse">
+                <div class="flex gap-2">
+                    @for (action of state.ActionHistory; track $index) {
+                    <div class="p-4 rounded-2xl bg-zinc-700 min-w-120 h-40 self-center">
+                        <div class="grid grid-cols-[1fr_auto] gap-2">
+                            <div>
+                                <h1 class="text-xl text-zinc-300">{{action.Id | i18nSelect: NAME_TRANSLATIONS}}</h1>
+                                <ul>
+                                    @for (point of GetFilteredPoints(action); track $index) {
+                                    <li class="list-disc ml-4 text-zinc-400">{{point}}</li>
+                                    }
+                                </ul>
+                            </div>
+                            <img [src]="'img/' + action.Id + '.png'" class="w-16 h-16 rounded-md md-shadow-md" [alt]="action.Id | i18nSelect: NAME_TRANSLATIONS">
+                        </div>
+                    </div>
+                    }
+                </div>
+            </div>
+            @if (state.Actions[0].Id) {
+            <div class="col-start-2 row-start-1 h-120 items-center grid">
+                <div class="p-4 rounded-2xl bg-zinc-500 min-h-40">
+                    <div class="grid grid-cols-[1fr_auto] gap-2">
+                        <div>
+                            <h1 class="text-2xl text-zinc-100">{{state.Actions[0].Id | i18nSelect: NAME_TRANSLATIONS}}</h1>
+                            <ul>
+                                @for (point of GetFilteredPoints(state.Actions[0]); track $index) {
+                                <li class="list-disc ml-4 text-lg text-zinc-200">{{point}}</li>
+                                }
+                            </ul>
+                        </div>
+                        <img [src]="'img/' + state.Actions[0].Id + '.png'" class="w-16 h-16 rounded-md md-shadow-md" [alt]="state.Actions[0].Id | i18nSelect: NAME_TRANSLATIONS">
+                    </div>
+                    @if (GetFilteredButtons(state.Actions[0]).length > 0) {
+                    <div class="flex flex-col gap-2 mt-4">
+                        @for (button of GetFilteredButtons(state.Actions[0]); track $index) {
+                        <button class="btn bg-zinc-600 w-full" (click)="HandleAction(button.Action)">{{button.Title}}</button>
+                        }
+                    </div>
+                    }
+                </div>
+            </div>
+            }
+            <div class="col-start-3 row-start-1 overflow-hidden flex gap-2">
+                @for (action of getNextActions(); track $index) {
+                <div class="p-4 rounded-2xl bg-zinc-700 min-w-120 h-40 self-center">
+                    <div class="grid grid-cols-[1fr_auto] gap-2">
+                        <div>
+                            <h1 class="text-xl text-zinc-300">{{action.Id | i18nSelect: NAME_TRANSLATIONS}}</h1>
+                            <ul>
+                                @for (point of GetFilteredPoints(action); track $index) {
+                                <li class="list-disc ml-4 text-zinc-400">{{point}}</li>
+                                }
+                            </ul>
+                        </div>
+                        <img [src]="'img/' + action.Id + '.png'" class="w-16 h-16 rounded-md md-shadow-md" [alt]="action.Id | i18nSelect: NAME_TRANSLATIONS">
+                    </div>
+                </div>
+                }
+            </div>
+            <span class="grid grid-cols-3 gap-2 mt-4 row-start-2 col-start-2">
+                @if (state.ActionHistory.length > 0) {
+                <button class="btn bg-zinc-500 block" (click)="state.previousAction();" i18n="@@general-back-button">← Zurück</button>
+                }
+                <button class="btn bg-zinc-500 block col-span-2" [class.col-span-3]="state.ActionHistory.length === 0" (click)="OnNext()" i18n="@@general-next-button">Weiter →</button>
+            </span>
+        </div>
+    </div>
+    }
 </div>

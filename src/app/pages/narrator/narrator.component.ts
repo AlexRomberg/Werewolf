@@ -26,6 +26,7 @@ export class NarratorComponent {
     NAME_TRANSLATIONS = NAME_TRANSLATIONS;
     FallbackNotPlayingText = $localize`:@@spotify-fallback-not-playing:Nichts am abspielen`;
     IsEditingPlayers = false;
+    AreEventsMaximized = false;
 
     private router = inject(Router);
     private firstNightfall = true;
@@ -97,5 +98,9 @@ export class NarratorComponent {
 
     public isRoleInGame(role: string): boolean {
         return this.state.SelectedCharacters.some(c => c.Id === role);
+    }
+
+    public getNextActions() {
+        return this.state.Actions.slice(1);
     }
 }
