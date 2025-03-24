@@ -1,5 +1,5 @@
 <div class="grid lg:grid-cols-[1fr_auto] grid-rows-2 w-full h-svh">
-    <div class="w-full lg:h-svh lg:px-20 max-lg:pl-10 max-lg:h-[30rem] max-lg:top-0 max-lg:left-0 max-lg:fixed relative">
+    <div class="w-full lg:h-svh lg:px-20 max-lg:pl-10 max-lg:h-[30rem] max-lg:top-0 max-lg:left-0 max-lg:fixed relative content-center">
         <app-circle [(People)]="state.People" [Connections]="state.Connections" (PersonClick)="HandlePersonClicked($event)" [IsEditMode]="IsEditingPlayers" />
         @if (!IsEditingPlayers) {
         <button class="absolute top-6 left-6 z-0 bg-zinc-800 btn flex gap-4 items-center !px-3" (click)="goBack()">
@@ -13,7 +13,7 @@
         <button class="absolute bottom-6 left-6 z-0 bg-zinc-800 rounded-md p-4 text-left text-zinc-200">
             <span class="flex justify-between items-center pb-2">
                 <p>Verbindungen:</p>
-                <lucide-angular name="pen" size="16px" />
+                <!-- <lucide-angular name="pen" size="16px" /> -->
             </span>
             @if (isRoleInGame("cupit")) {
             <span class="flex gap-2 items-center">

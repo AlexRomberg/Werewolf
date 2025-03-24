@@ -5,11 +5,13 @@ import { DialogService } from "../../../services/dialog.service";
 import { I18nSelectPipe } from "@angular/common";
 import { NAME_TRANSLATIONS } from "../../../i18n/translations";
 import { DialogTypes } from "../../../types";
+import { LucideAngularModule } from "lucide-angular";
 
 @Component({
     selector: "app-person-details",
-    imports: [FormsModule, I18nSelectPipe],
-    templateUrl: "./person-details.component.html"
+    imports: [FormsModule, I18nSelectPipe, LucideAngularModule],
+    templateUrl: "./person-details.component.html",
+    styleUrl: "./person-details.component.css"
 })
 export class PersonDetailsComponent {
     Dialog = inject(DialogService);

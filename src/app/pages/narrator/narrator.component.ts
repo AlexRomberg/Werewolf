@@ -88,9 +88,9 @@ export class NarratorComponent {
     }
 
     public goBack(): void {
-        if (confirm("Willst du wirklich das Spiel verlassen?")) {
+        this.dialog.ShowConfirmDialog($localize`:@@leave-game-question:Willst du wirklich das Spiel verlassen?`).then(() => {
             this.router.navigate(["/setup"]);
-        }
+        }).catch(() => { /* ignored */ });
     }
 
     public isRoleInGame(role: string): boolean {

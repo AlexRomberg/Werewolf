@@ -128,6 +128,6 @@ export type DialogData = {
 } | {
     type: DialogTypes.Confirm,
     data: ConfirmDialogData,
-    res: () => void,
+    res: (response: boolean) => void,
     rej: () => void
 }

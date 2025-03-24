@@ -10,7 +10,7 @@ export class DialogService {
     private gameState = inject(StateService);
     public DialogData: DialogData | undefined = undefined;
 
-    public async ShowPersonDetailsDialog(person: Person): Promise<void> {
+    public async ShowPersonDetailsDialog(person: Person) {
         return await new Promise<void>((res, rej) => {
             this.DialogData = {
                 type: DialogTypes.PersonDetails,
@@ -21,13 +21,13 @@ export class DialogService {
         })
     }
 
-    public async ShowPeopleSelectionDialog(title: string, numberOfPeople?: number): Promise<Person[]> {
+    public async ShowPeopleSelectionDialog(title: string, numberOfPeople?: number) {
         return await new Promise<Person[]>((res, rej) => {
             this.DialogData = {
                 type: DialogTypes.PeopleSelection,
                 data: {
-                    title: title,
-                    numberOfPeople: numberOfPeople,
+                    title,
+                    numberOfPeople,
                     people: this.gameState.People.map(p => p.cloneWithoutEffectState())
                 },
                 res,
@@ -36,13 +36,27 @@ export class DialogService {
         });
     }
 
-    public ConfirmDialog(data: Person[] | undefined = undefined) {
-        if (data || this.DialogData?.type === DialogTypes.PeopleSelection) {
-            this.DialogData?.res(data ?? []);
+    public async ShowConfirmDialog(title: string) {
+        return await new Promise<boolean>((res, rej) => {
+            this.DialogData = {
+                type: DialogTypes.Confirm,
+                data: { title },
+                res,
+                rej
+            }
+        });
+    }
+
+    public ConfirmDialog(data: any = undefined) {
+        if (this.DialogData?.type === DialogTypes.PeopleSelection) {
+            this.DialogData?.res((data ?? []).map((p: Person) => this.gameState.People.find(gp => gp.Id === p.Id)!));
+        } else if (this.DialogData?.type === DialogTypes.Confirm) {
+            this.DialogData.res(Boolean(data));
         } else {
             this.DialogData?.res();
-        };
+        }
         this.DialogData = undefined;
     }
+
     public RejectDialog() { this.DialogData?.rej(); this.DialogData = undefined };
 }
