@@ -40,12 +40,10 @@ export class Bitch extends Character {
         try {
             const people = await Dialog.ShowPeopleSelectionDialog($localize`:@@character-dialog-bitch-1:Eine Person auswählen`, 1);
             if (people[0] === this.lastJoinedPerson) {
-                if (!confirm($localize`:@@character-dialog-bitch-2:Es darf nicht zwei mal hinter einander die gleiche Person gewählt werden. Trotzdem fortfahren?`)) {
+                if (!await Dialog.ShowConfirmDialog($localize`:@@character-dialog-bitch-2:Es darf nicht zwei mal hinter einander die gleiche Person gewählt werden. Trotzdem fortfahren?`)) {
                     return;
                 }
             }
-
-            console.log("Adding connection");
 
             this.lastJoinedPerson = people[0];
             GameState.addConnection(

@@ -39,11 +39,11 @@ export class Healer extends Character {
         try {
             const people = await Dialog.ShowPeopleSelectionDialog($localize`:@@character-dialog-healer-1:Zu schützende Person auswählen`, 1);
             if (people[0] === this.lastProtectedPerson) {
-                if (!confirm($localize`:@@character-dialog-healer-2:Es kann nicht zwei mal hinter einander die gleiche Person geschützt werden. Trotzdem fortfahren?`)) {
+                if (!await Dialog.ShowConfirmDialog($localize`:@@character-dialog-healer-2:Es kann nicht zwei mal hinter einander die gleiche Person geschützt werden. Trotzdem fortfahren?`)) {
                     return;
                 }
             } else if (people[0].Character instanceof SmallChild) {
-                if (!confirm($localize`:@@character-dialog-healer-3:Das kleine Mädchen kann nicht vor den Werwölfen geschützt werden. Trotzdem fortfahren?`)) {
+                if (!await Dialog.ShowConfirmDialog($localize`:@@character-dialog-healer-3:Das kleine Mädchen kann nicht vor den Werwölfen geschützt werden. Trotzdem fortfahren?`)) {
                     return;
                 }
             }

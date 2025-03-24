@@ -88,9 +88,11 @@ export class NarratorComponent {
     }
 
     public goBack(): void {
-        this.dialog.ShowConfirmDialog($localize`:@@leave-game-question:Willst du wirklich das Spiel verlassen?`).then(() => {
-            this.router.navigate(["/setup"]);
-        }).catch(() => { /* ignored */ });
+        this.dialog.ShowConfirmDialog($localize`:@@leave-game-question:Willst du wirklich das Spiel verlassen?`).then((response) => {
+            if (response) {
+                this.router.navigate(["/setup"]);
+            }
+        });
     }
 
     public isRoleInGame(role: string): boolean {
