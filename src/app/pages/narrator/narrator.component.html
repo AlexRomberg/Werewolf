@@ -7,30 +7,30 @@
         </button>
         }
         <button class="absolute top-6 right-6 z-0 bg-zinc-800 btn flex gap-4 items-center !px-3" (click)="IsEditingPlayers = !IsEditingPlayers">
-            <lucide-angular [name]="IsEditingPlayers? 'check':'user-pen'" class="text-zinc-200" size="20px" title="Sitzreihenfolge ändern" />
+            <lucide-angular [name]="IsEditingPlayers? 'check':'user-pen'" class="text-zinc-200" size="20px" i18n-title="@@narrator-change-seating" title="Sitzreihenfolge ändern" />
         </button>
         @if (!IsEditingPlayers && (isRoleInGame("cupit") || isRoleInGame("wild_child") || isRoleInGame("bitch"))) {
         <button class="absolute bottom-6 left-6 z-0 bg-zinc-800 rounded-md p-4 text-left text-zinc-200">
             <span class="flex justify-between items-center pb-2">
-                <p>Verbindungen:</p>
+                <p i18n="@@general-connections">Verbindungen:</p>
                 <!-- <lucide-angular name="pen" size="16px" /> -->
             </span>
             @if (isRoleInGame("cupit")) {
             <span class="flex gap-2 items-center">
                 <div class="w-4 h-2 rounded-full" style="background-color: red;"></div>
-                <p>Liebe (Ehepaar)</p>
+                <p i18n="@@general-connections-love">Liebe (Ehepaar)</p>
             </span>
             }
             @if (isRoleInGame("wild_child")) {
             <span class="flex gap-2 items-center">
                 <div class="w-4 h-2 rounded-full" style="background-color: orange;"></div>
-                <p>Vertrauen (Wildes Kind)</p>
+                <p i18n="@@general-connections-trust">Vertrauen (Wildes Kind)</p>
             </span>
             }
             @if (isRoleInGame("bitch")) {
             <span class="flex gap-2 items-center">
                 <div class="w-4 h-2 rounded-full" style="background-color: blue;"></div>
-                <p>Beischlaf (Dorfmatratze)</p>
+                <p i18n="@@general-connections-sleepover">Beischlaf (Dorfmatratze)</p>
             </span>
             }
         </button>
@@ -63,7 +63,7 @@
         <hr class="border-zinc-700 my-4">
         }
         @if (!AreEventsMaximized) {
-        <app-sidebar-group title="Ereignisse" [collapsedOnStart]="false" [secondIcon]="AreEventsMaximized ? 'minimize-2' : 'maximize-2'" (secondIconPressedEvent)="AreEventsMaximized = !AreEventsMaximized" [summary]="state.Actions[0].Id ? (state.Actions[0].Id | i18nSelect: NAME_TRANSLATIONS):undefined" class="mt-auto overflow-hidden row-start-6" [flipIcon]="true">
+        <app-sidebar-group title="Ereignisse" i18n-title="@@narrator-events" [collapsedOnStart]="false" [secondIcon]="AreEventsMaximized ? 'minimize-2' : 'maximize-2'" (secondIconPressedEvent)="AreEventsMaximized = !AreEventsMaximized" [summary]="state.Actions[0].Id ? (state.Actions[0].Id | i18nSelect: NAME_TRANSLATIONS):undefined" class="mt-auto overflow-hidden row-start-6" [flipIcon]="true">
             @if (state.Actions[0].Id) {
             <div class="grid grid-cols-1 grid-rows-1 min-h-44">
                 @if (state.Actions.length > 2) {

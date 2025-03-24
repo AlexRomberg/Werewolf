@@ -127,23 +127,23 @@ describe("GameStateService", () => {
         //  - 1x Scapegoat
 
         expect(actorsFirstNight.length).toBe(21);
-        expect(actionsFirstNight).toBe(27);
-        expect(descriptionsFirstNight).toBe(53);
+        expect(actionsFirstNight).toBe(26);
+        expect(descriptionsFirstNight).toBe(54);
 
         expect(actorsSecondNight.length).toBe(13);
         expect(actionsSecondNight).toBe(20);
-        expect(descriptionsSecondNight).toBe(32);
+        expect(descriptionsSecondNight).toBe(33);
 
         expect(actorsThirdNight.length).toBe(14);
         expect(actionsThirdNight).toBe(20);
-        expect(descriptionsThirdNight).toBe(34);
+        expect(descriptionsThirdNight).toBe(35);
 
         expect(actorsFourthNight.length).toBe(13);
         expect(actionsFourthNight).toBe(20);
-        expect(descriptionsFourthNight).toBe(32);
+        expect(descriptionsFourthNight).toBe(33);
 
         expect(actorsFifthNight.length).toBe(14);
         expect(actionsFifthNight).toBe(20);
-        expect(descriptionsFifthNight).toBe(34);
+        expect(descriptionsFifthNight).toBe(35);
     });
 });

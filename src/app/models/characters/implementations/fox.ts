@@ -12,15 +12,15 @@ export class Fox extends Character {
 
     override GetDescriptions = () => [
         !this.isAssigned && $localize`:@@character-button-general-assing-person:Person zuweisen`,
-        !this.hasMisssed && $localize`:@@character-action-fox-2:Darf auf Person zeigen. Wenn diese / einer ihrer Nachbarn ein Werwolf ist, bestätigen`,
-        this.hasMisssed && $localize`:@@character-action-fox-3:Hat keine Funktion mehr`
+        !this.hasMisssed && this.gameState.Round > 0 && $localize`:@@character-action-fox-2:Darf auf Person zeigen. Wenn diese / einer ihrer Nachbarn ein Werwolf ist, bestätigen`,
+        this.hasMisssed && $localize`:@@character-action-fox-3:Hat keine Funktion mehr in dieser Nacht`
     ];
     override GetButtons = () => {
         const buttons = [];
         if (!this.isAssigned) {
             buttons.push(RequestAssignment(this));
         }
-        if (!this.hasMisssed) {
+        if (!this.hasMisssed && this.gameState.Round > 0) {
             buttons.push({
                 Title: $localize`:@@character-button-fox-1:Hat verfehlt`,
                 Action: () => {

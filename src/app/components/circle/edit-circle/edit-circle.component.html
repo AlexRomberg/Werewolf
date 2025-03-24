@@ -2,7 +2,7 @@
     <!-- Name background-color -->
     <defs>
         <filter x="-0.125" y="-0.125" width="1.25" height="1.25" id="solid">
-            <feFlood flood-color="oklch(0.21 0.006 285.885)" result="bg" />
+            <feFlood flood-color="oklch(.21 .006 285.885)" result="bg" />
             <feMerge>
                 <feMergeNode in="bg" />
                 <feMergeNode in="SourceGraphic" />
@@ -13,7 +13,7 @@
     <path [attr.d]="GetMovementHintArrowPaths()[0]" class="fill-none stroke-zinc-500 stroke-[18px]" />
     <path [attr.d]="GetMovementHintArrowPaths()[1]" class="fill-none stroke-zinc-500 stroke-[18px]" />
     <path [attr.d]="GetMovementHintPath()" class="fill-none stroke-zinc-500 stroke-[18px]" style="stroke-dasharray:32,48,0,0,0,0;" />
-    <text class="fill-zinc-500 text-center italic" filter="url(#solid)" x="600" y="1000" textLength="800">Verschiebe die Personen</text>
+    <text class="fill-zinc-500 text-center italic" filter="url(#solid)" x="600" y="1000" textLength="800" i18n="@@circle-move-the-person">Verschiebe die Personen</text>
 
     @for (person of StaticPeople(); track person.Id; let idx = $index) {
     <g class="shake animate" [style.animationDelay]="-idx/7+'s'" (mousedown)="grab(person.Id, $event)" (touchstart)="grab(person.Id, $event)">

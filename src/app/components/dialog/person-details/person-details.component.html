@@ -25,7 +25,7 @@
         </span>
         <div class="flex flex-col overflow-auto px-4">
             <label class="text-zinc-200" for="name" i18n="@@general-name">Name</label>
-            <input class="rounded-md py-3 px-6 text-zinc-100 bg-zinc-500 mb-2" type="text" placeholder="Unbenannt" name="name" id="name" autocomplete="off" [(ngModel)]="Dialog.DialogData.data.person.Name" (keydown.enter)="Dialog.ConfirmDialog()" />
+            <input class="rounded-md py-3 px-6 text-zinc-100 bg-zinc-500 mb-2" type="text" placeholder="Unbenannt" i18n-placeholder="@@generic-unnamed" name="name" id="name" autocomplete="off" [(ngModel)]="Dialog.DialogData.data.person.Name" (keydown.enter)="Dialog.ConfirmDialog()" />
             <label class="text-zinc-200" for="function" i18n="@@dialog-function">Funktion</label>
             <select class="rounded-md py-3 px-6 text-zinc-100 bg-zinc-500" name="function" id="function" [(ngModel)]="Dialog.DialogData.data.person.Character">
                 <option class="text-zinc-100 bg-zinc-500" [ngValue]="undefined" i18n="@@general-unknown">Unbekannt</option>

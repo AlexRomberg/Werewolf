@@ -5,8 +5,8 @@
         <h1 class="text-zinc-200 text-lg">{{Dialog.DialogData.data.title}}</h1>
     </span>
     <span class="flex gap-2 mt-4">
-        <button class="w-24 bg-zinc-700 btn ml-auto" (click)="Dialog.ConfirmDialog(false)">Nein</button>
-        <button class="w-24 bg-zinc-700 btn" (click)="Dialog.ConfirmDialog(true)">Ja</button>
+        <button class="w-24 bg-zinc-700 btn ml-auto" (click)="Dialog.ConfirmDialog(false)" i18n="@@dialog-no">Nein</button>
+        <button class="w-24 bg-zinc-700 btn" (click)="Dialog.ConfirmDialog(true)" i18n="@@dialog-yes">Ja</button>
     </span>
 </div>
 }
