@@ -11,7 +11,7 @@ export class BigWolf extends WerewolfCharacter {
     readonly Game = GameSets.Characters;
     override readonly Priority = BasePriority.Wolf + 4;
     override readonly Description = [
-        { title: $localize`:@@character-description-general:Allgemein`, description: $localize`:@@character-description-big_wolf-general:Jede Nacht erwacht der Große, böse Wolf mit den anderen Wölfen und sucht sich ein Opfer. Doch solange kein Werwolf, das Wilde Kind (als Wolf) oder der Wolfshund (als Wolf) eliminiert wurde, erwacht er direkt im Anschluss an die Wolfsphase erneut, aber alleine, und sucht sich ein weiteres Opfer. Er darf keinen Werwolf fressen.` }];
+        { title: $localize`:@@character-description-general:Allgemein`, description: $localize`:@@character-description-big_wolf-general:Jede Nacht erwacht der Grosse, böse Wolf mit den anderen Wölfen und sucht sich ein Opfer. Doch solange kein Werwolf, das Wilde Kind (als Wolf) oder der Wolfshund (als Wolf) eliminiert wurde, erwacht er direkt im Anschluss an die Wolfsphase erneut, aber alleine, und sucht sich ein weiteres Opfer. Er darf keinen Werwolf fressen.` }];
     private isDone = false;
 
     override GetActions = () => [

@@ -12,6 +12,7 @@ import { Person } from "../../models/state/person";
 import { LucideAngularModule } from "lucide-angular";
 import { SidebarGroupComponent } from "./sidebar-group/sidebar-group.component";
 import { Router } from "@angular/router";
+import { Character } from "../../models/characters/character";
 
 @Component({
     selector: "app-narrator",
@@ -27,6 +28,8 @@ export class NarratorComponent {
     FallbackNotPlayingText = $localize`:@@spotify-fallback-not-playing:Nichts am abspielen`;
     IsEditingPlayers = false;
     AreEventsMaximized = false;
+    RedactCircle = false;
+    MobileShowSidebar = true;
 
     private router = inject(Router);
     private firstNightfall = true;
@@ -102,5 +105,17 @@ export class NarratorComponent {
 
     public getNextActions() {
         return this.state.Actions.slice(1);
+    }
+
+    public openCharacterDetails(character: Character): void {
+        this.RedactCircle = true;
+        this.dialog.ShowCharacterDetailsDialog(character).finally(() => {
+            this.RedactCircle = false;
+        });
+    }
+
+    public setEventMaximized(maximized: boolean): void {
+        this.MobileShowSidebar = !maximized;
+        this.AreEventsMaximized = maximized;
     }
 }

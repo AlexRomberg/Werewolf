@@ -1,5 +1,18 @@
 <div class="grid lg:grid-cols-[1fr_auto] grid-rows-2 w-full h-svh">
-    <div class="w-full lg:h-svh lg:px-20 max-lg:pl-10 max-lg:h-[30rem] max-lg:top-0 max-lg:left-0 max-lg:fixed relative content-center">
+    @if (!IsEditingPlayers) {
+    @if (MobileShowSidebar) {
+    <div class="lg:hidden w-full h-23 fixed z-30 top-0 left-0 flex items-center backdrop-blur-md bg-zinc-900/50">
+        <button class="bg-zinc-700 btn flex gap-4 items-center !px-3 ml-6" (click)="goBack()">
+            <lucide-angular name="arrow-left" class="text-zinc-200" size="20px" />
+        </button>
+    </div>
+    }
+    <div class="lg:hidden w-60 h-11 fixed z-30 top-6 left-1/2 bg-zinc-700 grid grid-cols-2 p-1 -translate-x-1/2 rounded-full">
+        <button class="text-zinc-200 rounded-full" (click)="MobileShowSidebar = false" [class.bg-zinc-600]="!MobileShowSidebar" i18n="@@narrator-mobile-circle">Kreis</button>
+        <button class="text-zinc-200 rounded-full" (click)="MobileShowSidebar = true" [class.bg-zinc-600]="MobileShowSidebar" i18n="@@narrator-mobile-overview">Übersicht</button>
+    </div>
+    }
+    <div class="w-full h-svh px-20 max-lg:fixed relative content-center" [class.blur-2xl]="RedactCircle" [class.saturate-0]="RedactCircle">
         <app-circle [(People)]="state.People" [Connections]="state.Connections" (PersonClick)="HandlePersonClicked($event)" [IsEditMode]="IsEditingPlayers" />
         @if (!IsEditingPlayers) {
         <button class="absolute top-6 left-6 z-0 bg-zinc-800 btn flex gap-4 items-center !px-3" (click)="goBack()">
@@ -36,7 +49,7 @@
         </button>
         }
     </div>
-    <div class="lg:w-[30rem] w-full bg-zinc-800 grid grid-sidebar lg:h-svh h-[75svh] max-lg:rounded-t-3xl overflow-y-auto z-50 max-lg:mt-[65svh] p-6">
+    <div class="lg:w-[30rem] w-full bg-zinc-800 grid h-svh max-h-svh overflow-y-auto z-20 p-6 max-lg:pt-27 gap-2" [class.max-lg:hidden]="!MobileShowSidebar">
         @if (spotify.IsAuthenticated && spotify.CurrentDevice) {
         <app-sidebar-group title="Spotify" [collapsedOnStart]="true" [summary]="spotifySummary">
             <span class="flex justify-start items-center overflow-hidden">
@@ -62,8 +75,24 @@
         </app-sidebar-group>
         <hr class="border-zinc-700 my-4">
         }
+        <app-sidebar-group title="Charaktere" i18n-title="@@setup-characters" [collapsedOnStart]="true">
+            <div class="grid grid-cols-2 gap-2 lg:max-h-50 lg:overflow-y-auto">
+                @for (character of state.SelectedCharacters; track $index) {
+                <button class="bg-zinc-700 p-2 rounded-md grid grid-cols-[4rem_1fr] gap-2 items-center text-zinc-200" (click)="openCharacterDetails(character)">
+                    @if (!character.IsSingle) {
+                    <div class="border-4 border-zinc-800 rounded md-shadow-md w-16 h-16 col-start-1 row-start-1 rotate-3"></div>
+                    <div class="border-4 border-zinc-900 rounded md-shadow-md w-16 h-16 col-start-1 row-start-1 -rotate-6"></div>
+                    }
+                    <div class="border-4 border-black rounded md-shadow-md w-16 col-start-1 row-start-1 z-10">
+                        <img class="w-16" [src]="'img/' + character.Id + '.png'" [alt]="character.Id | i18nSelect: NAME_TRANSLATIONS">
+                    </div>
+                    <p class="text-center">{{character.Id | i18nSelect: NAME_TRANSLATIONS}}</p>
+                </button>
+                }
+            </div>
+        </app-sidebar-group>
         @if (!AreEventsMaximized) {
-        <app-sidebar-group title="Ereignisse" i18n-title="@@narrator-events" [collapsedOnStart]="false" [secondIcon]="AreEventsMaximized ? 'minimize-2' : 'maximize-2'" (secondIconPressedEvent)="AreEventsMaximized = !AreEventsMaximized" [summary]="state.Actions[0].Id ? (state.Actions[0].Id | i18nSelect: NAME_TRANSLATIONS):undefined" class="mt-auto overflow-hidden row-start-6" [flipIcon]="true">
+        <app-sidebar-group title="Ereignisse" i18n-title="@@narrator-events" [collapsedOnStart]="false" [secondIcon]="AreEventsMaximized ? 'minimize-2' : 'maximize-2'" (secondIconPressedEvent)="setEventMaximized(!AreEventsMaximized)" [summary]="state.Actions[0].Id ? (state.Actions[0].Id | i18nSelect: NAME_TRANSLATIONS):undefined" class="mt-auto overflow-hidden row-start-6" [flipIcon]="true">
             @if (state.Actions[0].Id) {
             <div class="grid grid-cols-1 grid-rows-1 min-h-44">
                 @if (state.Actions.length > 2) {
@@ -96,16 +125,16 @@
             }
             <span class="grid grid-cols-3 gap-2 mt-4">
                 @if (state.ActionHistory.length > 0) {
-                <button class="btn bg-zinc-500 block" (click)="state.previousAction();" i18n="@@general-back-button">← Zurück</button>
+                <button class="btn bg-zinc-500 flex gap-2 justify-center" (click)="state.previousAction();" i18n="@@general-back-button"><lucide-angular name="arrow-left" /> Zurück</button>
                 }
-                <button class="btn bg-zinc-500 block col-span-2" [class.col-span-3]="state.ActionHistory.length === 0" (click)="OnNext()" i18n="@@general-next-button">Weiter →</button>
+                <button class="btn bg-zinc-500 flex gap-2 justify-center col-span-2" [class.col-span-3]="state.ActionHistory.length === 0" (click)="OnNext()" i18n="@@general-next-button">Weiter <lucide-angular name="arrow-right" /></button>
             </span>
         </app-sidebar-group>
         }
     </div>
     @if (AreEventsMaximized) {
     <div class="fixed top-0 left-0 w-dvw h-dvh bg-zinc-950/60 backdrop-blur-xs z-50 flex justify-center items-center">
-        <button class="btn text-zinc-700 fixed top-8 right-8 bg-zinc-700 !px-3" (click)="AreEventsMaximized = false">
+        <button class="btn text-zinc-700 fixed top-8 right-8 bg-zinc-700 !px-3" (click)="setEventMaximized(false)">
             <lucide-icon name="x" size="24px" />
         </button>
         <div class="w-full grid grid-cols-[1fr_34rem_1fr] gap-x-4 gap-y-2">
@@ -171,9 +200,9 @@
             </div>
             <span class="grid grid-cols-3 gap-2 mt-4 row-start-2 col-start-2">
                 @if (state.ActionHistory.length > 0) {
-                <button class="btn bg-zinc-500 block" (click)="state.previousAction();" i18n="@@general-back-button">← Zurück</button>
+                <button class="btn bg-zinc-500 flex gap-2 justify-center" (click)="state.previousAction();" i18n="@@general-back-button"><lucide-angular name="arrow-left" /> Zurück</button>
                 }
-                <button class="btn bg-zinc-500 block col-span-2" [class.col-span-3]="state.ActionHistory.length === 0" (click)="OnNext()" i18n="@@general-next-button">Weiter →</button>
+                <button class="btn bg-zinc-500 flex gap-2 justify-center col-span-2" [class.col-span-3]="state.ActionHistory.length === 0" (click)="OnNext()" i18n="@@general-next-button">Weiter <lucide-angular name="arrow-right" /></button>
             </span>
         </div>
     </div>
