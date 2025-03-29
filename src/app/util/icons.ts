@@ -1,0 +1,35 @@
+import { ArrowLeft, ArrowRight, CarFront, Check, ChevronDown, ChevronUp, CircleUserRound, CircleX, Github, Globe, Heart, Laptop, LogIn, Maximize2, Minimize2, Pause, Pen, Play, Plus, RefreshCw, SkipForward, Smartphone, Speaker, Tablet, Trash2, TriangleAlert, Tv, UserPen, UserRound, X } from "lucide-angular";
+
+
+export const icons = {
+    ArrowLeft,
+    ArrowRight,
+    CarFront,
+    Check,
+    ChevronDown,
+    ChevronUp,
+    CircleUserRound,
+    CircleX,
+    Github,
+    Globe,
+    Heart,
+    Laptop,
+    LogIn,
+    Maximize2,
+    Minimize2,
+    Pause,
+    Pen,
+    Play,
+    Plus,
+    RefreshCw,
+    SkipForward,
+    Smartphone,
+    Speaker,
+    Tablet,
+    Trash2,
+    TriangleAlert,
+    Tv,
+    UserPen,
+    UserRound,
+    X
+}

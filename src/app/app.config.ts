@@ -3,8 +3,9 @@ import { provideRouter } from "@angular/router";
 
 import { routes } from "./app.routes";
 import { provideHttpClient } from "@angular/common/http";
-import { LucideIconProvider, icons, LUCIDE_ICONS } from 'lucide-angular';
+import { LUCIDE_ICONS, LucideIconProvider } from 'lucide-angular';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { icons } from "./util/icons";
 
 export const appConfig: ApplicationConfig = {
     providers: [provideRouter(routes), provideHttpClient(), {
