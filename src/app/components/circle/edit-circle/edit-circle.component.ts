@@ -1,4 +1,4 @@
-import { Component, computed, ElementRef, EventEmitter, HostListener, input, Output, signal, ViewChild } from '@angular/core';
+import { Component, computed, ElementRef, EventEmitter, HostListener, input, OnInit, Output, signal, ViewChild } from '@angular/core';
 import { CircleShared } from '../circle.shared';
 import { Person } from '../../../models/state/person';
 import { Point } from '../../../types';
@@ -9,7 +9,10 @@ import { Point } from '../../../types';
   templateUrl: './edit-circle.component.html',
   styleUrl: './edit-circle.component.css'
 })
-export class EditCircleComponent extends CircleShared {
+export class EditCircleComponent extends CircleShared implements OnInit {
+  ngOnInit(): void {
+    document.addEventListener("touchmove", (e) => this.handleMove(e), { passive: false });
+  }
   readonly People = input<Person[]>([]);
   readonly StaticPeople = computed(() => this.People().filter(p => p !== this.grabbedPerson()));
   grabbedPerson = signal<Person | undefined>(undefined);
@@ -38,17 +41,21 @@ export class EditCircleComponent extends CircleShared {
   }
 
   grab(elementId: string, evt: MouseEvent | TouchEvent) {
-    this.grabbedPerson.set(this.People().find(p => p.Id === elementId));
+    evt.preventDefault();
+    evt.stopPropagation();
 
+    this.grabbedPerson.set(this.People().find(p => p.Id === elementId));
     const pos = this.getPositionFromEvent(evt);
     this.movementPosition.set(this.translateCoordinate(pos.x, pos.y));
   }
 
-  @HostListener("mouseup")
-  @HostListener("touchend")
-  @HostListener("touchcancel")
-  private drop() {
+  @HostListener("pointerup", ['$event'])
+  @HostListener("pointercancel", ['$event'])
+  private drop(event: MouseEvent | TouchEvent) {
     if (this.grabbedPerson() !== undefined) {
+      event.stopPropagation();
+      event.preventDefault();
+
       const people = this.StaticPeople()
       people.splice(((this.movementIndex()) % this.StaticPeople().length), 0, this.grabbedPerson()!)
       this.PeopleChange.emit(people);
@@ -56,15 +63,14 @@ export class EditCircleComponent extends CircleShared {
     this.grabbedPerson.set(undefined);
   }
 
-  @HostListener("mousemove", ['$event'])
-  @HostListener("touchmove", ['$event'])
+  @HostListener("pointermove", ['$event'])
   private handleMove(event: MouseEvent | TouchEvent) {
     if (this.grabbedPerson() !== undefined) {
-      const pos = this.getPositionFromEvent(event);
-      this.movementPosition.set(this.translateCoordinate(pos.x, pos.y));
-
       event.stopPropagation();
       event.preventDefault();
+
+      const pos = this.getPositionFromEvent(event);
+      this.movementPosition.set(this.translateCoordinate(pos.x, pos.y));
     }
   }
 

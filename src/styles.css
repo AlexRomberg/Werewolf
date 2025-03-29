@@ -1,5 +1,9 @@
 @import 'tailwindcss';
 
+html, body {
+    @apply h-full w-full overflow-auto;
+}
+
 .btn {
     @apply rounded-md py-3 px-6 text-zinc-100 font-bold;
     touch-action: manipulation;

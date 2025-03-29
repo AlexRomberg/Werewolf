@@ -1,4 +1,4 @@
-<div class="grid lg:grid-cols-[1fr_auto] grid-rows-2 w-full h-svh">
+<div class="grid lg:grid-cols-[1fr_auto] grid-rows-2 w-full h-dvh">
     @if (!IsEditingPlayers) {
     @if (MobileShowSidebar) {
     <div class="lg:hidden w-full h-23 fixed z-30 top-0 left-0 flex items-center backdrop-blur-md bg-zinc-900/50">
@@ -12,7 +12,7 @@
         <button class="text-zinc-200 rounded-full" (click)="MobileShowSidebar = true" [class.bg-zinc-600]="MobileShowSidebar" i18n="@@narrator-mobile-overview">Übersicht</button>
     </div>
     }
-    <div class="w-full h-svh px-20 max-lg:fixed relative content-center" [class.blur-2xl]="RedactCircle" [class.saturate-0]="RedactCircle">
+    <div class="w-full h-dvh px-20 max-lg:fixed relative content-center" [class.blur-2xl]="RedactCircle" [class.saturate-0]="RedactCircle">
         <app-circle [(People)]="state.People" [Connections]="state.Connections" (PersonClick)="HandlePersonClicked($event)" [IsEditMode]="IsEditingPlayers" />
         @if (!IsEditingPlayers) {
         <button class="absolute top-6 left-6 z-0 bg-zinc-800 btn flex gap-4 items-center !px-3" (click)="goBack()">
@@ -49,7 +49,7 @@
         </button>
         }
     </div>
-    <div class="lg:w-[30rem] w-full bg-zinc-800 grid h-svh max-h-svh overflow-y-auto z-20 p-6 max-lg:pt-27 gap-2" [class.max-lg:hidden]="!MobileShowSidebar">
+    <div class="lg:w-[30rem] w-full bg-zinc-800 grid h-dvh max-h-dvh overflow-y-auto z-20 p-6 max-lg:pt-27 gap-2" [class.max-lg:hidden]="!MobileShowSidebar">
         @if (spotify.IsAuthenticated && spotify.CurrentDevice) {
         <app-sidebar-group title="Spotify" [collapsedOnStart]="true" [summary]="spotifySummary">
             <span class="flex justify-start items-center overflow-hidden">
