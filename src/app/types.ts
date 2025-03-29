@@ -14,7 +14,7 @@ export enum ConnectionTypes {
 
 export interface ActionProvider {
     Id: string,
-    GetDescriptions: () => (string | false)[]
+    GetActions: () => (string | false)[]
     GetButtons: () => ActionButton[]
 }
 
@@ -98,6 +98,7 @@ export interface Point {
 export enum DialogTypes {
     PeopleSelection,
     PersonDetails,
+    CharacterDetails,
     Confirm
 }
 
@@ -109,6 +110,10 @@ export interface PeopleSelectionDialogData {
 
 export interface PersonDetailsDialogData {
     person: Person
+}
+
+export interface CharacterDetailsDialogData {
+    character: Character
 }
 
 export interface ConfirmDialogData {
@@ -123,6 +128,11 @@ export type DialogData = {
 } | {
     type: DialogTypes.PersonDetails,
     data: PersonDetailsDialogData,
+    res: () => void,
+    rej: () => void
+} | {
+    type: DialogTypes.CharacterDetails,
+    data: CharacterDetailsDialogData,
     res: () => void,
     rej: () => void
 } | {

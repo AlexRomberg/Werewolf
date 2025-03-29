@@ -6,13 +6,15 @@ import { BasePriority } from "../../../types";
 import { WerewolfCharacter } from "../werewolfCharacter";
 
 export class BigWolf extends WerewolfCharacter {
-    Id = "big_wolf";
-    Group = GroupTypes.Wolves;
-    Game = GameSets.Characters;
-    override Priority = BasePriority.Wolf + 4;
+    readonly Id = "big_wolf";
+    readonly Group = GroupTypes.Wolves;
+    readonly Game = GameSets.Characters;
+    override readonly Priority = BasePriority.Wolf + 4;
+    override readonly Description = [
+        { title: $localize`:@@character-description-general:Allgemein`, description: $localize`:@@character-description-big_wolf-general:Jede Nacht erwacht der Große, böse Wolf mit den anderen Wölfen und sucht sich ein Opfer. Doch solange kein Werwolf, das Wilde Kind (als Wolf) oder der Wolfshund (als Wolf) eliminiert wurde, erwacht er direkt im Anschluss an die Wolfsphase erneut, aber alleine, und sucht sich ein weiteres Opfer. Er darf keinen Werwolf fressen.` }];
     private isDone = false;
 
-    override GetDescriptions = () => [
+    override GetActions = () => [
         !this.isAssigned && $localize`:@@character-button-general-assing-person:Person zuweisen`,
         !this.isDone && $localize`:@@character-action-big_wolf-2:Kann zweites Opfer definieren`];
     override GetButtons = () => {

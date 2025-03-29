@@ -2,9 +2,11 @@
 <div class="fixed top-0 left-0 w-dvw h-dvh bg-zinc-950/60 backdrop-blur-xs z-100">
     @switch (Dialog.DialogData.type) {
     @case (DialogTypes.PeopleSelection) {
-    <app-people-selection></app-people-selection>
-    } @case (DialogTypes.PersonDetails) {
-    <app-person-details></app-person-details>
+    <app-people-selection></app-people-selection>}
+    @case (DialogTypes.PersonDetails) {
+    <app-person-details></app-person-details>}
+    @case (DialogTypes.CharacterDetails) {
+    <app-character-details></app-character-details>
     } @case (DialogTypes.Confirm) {
     <app-confirm-dialog></app-confirm-dialog>
     }}

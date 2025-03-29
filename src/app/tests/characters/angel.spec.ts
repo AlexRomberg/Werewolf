@@ -44,12 +44,12 @@ describe("Angel", () => {
     });
 
     it("should calculate descriptions propperly", () => {
-        expect(character.GetDescriptions().filter(Boolean).length).toBe(0);
+        expect(character.GetActions().filter(Boolean).length).toBe(0);
 
         gameState.addPerson();
         gameState.People[0].Character = character;
 
-        expect(character.GetDescriptions().filter(Boolean).length).toBe(0);
+        expect(character.GetActions().filter(Boolean).length).toBe(0);
     });
 
     it("should calculate buttons propperly", () => {

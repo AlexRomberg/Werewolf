@@ -6,14 +6,15 @@ import { Character } from "../character";
 import { BasePriority } from "../../../types";
 
 export class Witch extends Character {
-    Id = "witch";
-    Group = GroupTypes.Active;
-    Game = GameSets.BaseGame;
-    override Priority = BasePriority.PostWolf + 1;
+    readonly Id = "witch";
+    readonly Group = GroupTypes.Active;
+    readonly Game = GameSets.BaseGame;
+    override readonly Priority = BasePriority.PostWolf + 1;
+    override readonly Description = [{ title: $localize`:@@character-description-general:Allgemein`, description: $localize`:@@character-description-witch-general:Sie kann zwei sehr mächtige Zaubertränke brauen: Einen Heiltrank, um einen Spieler, der Opfer der Werwölfe wurde, vor dem Tod zu bewahren. Und ein Gift, um des Nachts einen beliebigen Spieler zu vergiften und somit ausscheiden zu lassen. Die Hexe kann diese Zaubertränke jeweils nur einmal im Verlauf einer Partie nutzen. Sie kann beide Zaubertränke in derselben Nacht einsetzen. Am Morgen, nachdem die Hexe ihre Fähigkeit eingesetzt hat, kann es demnach keinen, 1 oder auch 2 Tote geben (ohne Berücksichtigung der Fähigkeiten anderer Charaktere). Die Hexe kann den Heiltrank auch bei sich selbst anwenden, um sich zu heilen, wenn sie von den Werwölfen angegriffen wurde.` }];
     private hasPositivePotion = true;
     private hasNegativePotion = true;
 
-    override GetDescriptions = () => [
+    override GetActions = () => [
         !this.isAssigned && $localize`:@@character-button-general-assing-person:Person zuweisen`,
         (!this.hasPositivePotion && !this.hasNegativePotion) && $localize`:@@character-action-witch-2:Hat keinen Zaubertrank mehr.`,
         this.hasPositivePotion && $localize`:@@character-action-witch-3:Kann einen Heiltrank einsetzen`,

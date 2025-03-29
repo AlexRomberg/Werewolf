@@ -74,27 +74,27 @@ describe("GameStateService", () => {
 
         const actorsFirstNight = service.getActionsForNight();
         const actionsFirstNight = actorsFirstNight.map((a) => a.GetButtons().length).reduce((a, b) => a + b, 0);
-        const descriptionsFirstNight = actorsFirstNight.map((a) => a.GetDescriptions().length).reduce((a, b) => a + b, 0);
+        const descriptionsFirstNight = actorsFirstNight.map((a) => a.GetActions().length).reduce((a, b) => a + b, 0);
 
         service.startNextRound();
         const actorsSecondNight = service.getActionsForNight();
         const actionsSecondNight = actorsSecondNight.map((a) => a.GetButtons().length).reduce((a, b) => a + b, 0);
-        const descriptionsSecondNight = actorsSecondNight.map((a) => a.GetDescriptions().length).reduce((a, b) => a + b, 0);
+        const descriptionsSecondNight = actorsSecondNight.map((a) => a.GetActions().length).reduce((a, b) => a + b, 0);
 
         service.startNextRound();
         const actorsThirdNight = service.getActionsForNight();
         const actionsThirdNight = actorsThirdNight.map((a) => a.GetButtons().length).reduce((a, b) => a + b, 0);
-        const descriptionsThirdNight = actorsThirdNight.map((a) => a.GetDescriptions().length).reduce((a, b) => a + b, 0);
+        const descriptionsThirdNight = actorsThirdNight.map((a) => a.GetActions().length).reduce((a, b) => a + b, 0);
 
         service.startNextRound();
         const actorsFourthNight = service.getActionsForNight();
         const actionsFourthNight = actorsFourthNight.map((a) => a.GetButtons().length).reduce((a, b) => a + b, 0);
-        const descriptionsFourthNight = actorsFourthNight.map((a) => a.GetDescriptions().length).reduce((a, b) => a + b, 0);
+        const descriptionsFourthNight = actorsFourthNight.map((a) => a.GetActions().length).reduce((a, b) => a + b, 0);
 
         service.startNextRound();
         const actorsFifthNight = service.getActionsForNight();
         const actionsFifthNight = actorsFifthNight.map((a) => a.GetButtons().length).reduce((a, b) => a + b, 0);
-        const descriptionsFifthNight = actorsFifthNight.map((a) => a.GetDescriptions().length).reduce((a, b) => a + b, 0);
+        const descriptionsFifthNight = actorsFifthNight.map((a) => a.GetActions().length).reduce((a, b) => a + b, 0);
 
         // Every night (12 Characters, 18 Actions)
         //  - 0x Nightfall
@@ -126,9 +126,9 @@ describe("GameStateService", () => {
         //  - 1x The Old
         //  - 1x Scapegoat
 
-        expect(actorsFirstNight.length).toBe(21);
-        expect(actionsFirstNight).toBe(26);
-        expect(descriptionsFirstNight).toBe(54);
+        expect(actorsFirstNight.length).toBe(22);
+        expect(actionsFirstNight).toBe(27);
+        expect(descriptionsFirstNight).toBe(57);
 
         expect(actorsSecondNight.length).toBe(13);
         expect(actionsSecondNight).toBe(20);

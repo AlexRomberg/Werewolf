@@ -7,16 +7,19 @@ import { BasePriority } from "../../../types";
 import { Person } from "../../state/person";
 
 export class Bitch extends Character {
-    Id = "bitch";
-    Group = GroupTypes.Active;
-    Game = GameSets.Special;
-    override Priority = BasePriority.Initial + 11;
+    readonly Id = "bitch";
+    readonly Group = GroupTypes.Active;
+    readonly Game = GameSets.Special;
+    override readonly Priority = BasePriority.Initial + 11;
+    override readonly Description = [
+        { title: $localize`:@@character-description-general:Allgemein`, description: $localize`:@@character-description-bitch-general:Wenn die Dorfmatratze nachts vor den Werwölfen aufgerufen wird, kann sie wählen ob sie bei einem anderen Spieler diese nacht unterkommt. Sollte dieser Spieler in der Nacht sterben, stirbt sie mit. Wird die Dorfmatratze von den Werwölfen heimgesucht während sie bei einem anden Spieler ist, beleibt sie verschont.` },
+        { title: $localize`:@@character-description-attention:Achtung`, description: $localize`:@@character-description-bitch-attention:Die Dorfmatratze kann auch bei sich Zuhause bleiben. Sie darf nicht in zwei aufeinanderfolgenden Nächten bei demselben Spieler übernachten. Tränke der Hexe und der Schutz des Heilers werden von dem Spieler auf die Dorfmatratze angewendet, jedoch nicht umgekeht.` }];
     private lastJoinedPerson: Person | undefined;
     private get isDone() {
         return this.gameState.Connections.some(c => c.ConnectionType === ConnectionTypes.Sleepover);
     };
 
-    override GetDescriptions = () => [
+    override GetActions = () => [
         !this.isAssigned && $localize`:@@character-button-general-assing-person:Person zuweisen`,
         !this.isDone && $localize`:@@character-action-bitch-2:Kann neues Zuhause suchen für die Nacht`,
         this.isDone && $localize`:@@character-action-bitch-3:Ist fertig für diese Nacht`];

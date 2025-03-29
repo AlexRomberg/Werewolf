@@ -1,0 +1,36 @@
+<div class="bg-zinc-800 text-zinc-200 shadow-lg fixed top-0 w-full z-50">
+    <div class="lg:max-w-(--breakpoint-lg) max-w-(--breakpoint-md) flex mx-auto items-center">
+        <a class="p-8" routerLink="/">
+            <lucide-angular name="arrow-left" />
+        </a>
+        <h1 class="text-2xl" i18n="@@setup-characters">Charaktere</h1>
+        <p class="max-sm:hidden ml-auto mr-4" i18n="@@home-title">Werwolf Companion App</p>
+        <img src="img/night.png" class="max-sm:ml-auto rounded-lg md-shadow-md w-12 mr-6" alt="Logo">
+    </div>
+</div>
+<div class="lg:max-w-(--breakpoint-lg) max-w-(--breakpoint-md) mt-26 mb-4 mx-auto px-6 text-zinc-200">
+    <span class="flex items-center gap-2">
+        <p i18n="@@setup-grouped-by">Gruppieren nach:</p>
+        <button class="px-4 py-1 bg-zinc-700 rounded-full ring-amber-500" [class.ring-2]="grouping() === 'group'" (click)="grouping.set('group')" i18n="@@setup-group">Gruppe</button>
+        <button class="px-4 py-1 bg-zinc-700 rounded-full ring-amber-500" [class.ring-2]="grouping() === 'game'" (click)="grouping.set('game')" i18n="@@setup-game">Spiel</button>
+    </span>
+    <div>
+        @for (group of getCharacterGroup(); track $index) {
+        <h3 class="text-lg mt-4">{{group.Name}}</h3>
+        <div class="grid grid-cols-2 gap-2 max-sm:grid-cols-1">
+            @for (character of group.Cards; track $index) {
+            <button class="bg-zinc-700 p-2 rounded-md grid grid-cols-[4rem_1fr] gap-2 items-center" (click)="openCharacter(character)">
+                @if (!character.IsSingle) {
+                <div class="border-4 border-zinc-800 rounded md-shadow-md w-16 h-16 col-start-1 row-start-1 rotate-3"></div>
+                <div class="border-4 border-zinc-900 rounded md-shadow-md w-16 h-16 col-start-1 row-start-1 -rotate-6"></div>
+                }
+                <div class="border-4 border-black rounded md-shadow-md w-16 col-start-1 row-start-1 z-10">
+                    <img class="w-16" [src]="'img/' + character.Id + '.png'" [alt]="character.Id | i18nSelect: NAME_TRANSLATIONS">
+                </div>
+                <p class="text-center">{{character.Id | i18nSelect: NAME_TRANSLATIONS}}</p>
+            </button>
+            }
+        </div>
+        }
+    </div>
+</div>

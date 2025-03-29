@@ -35,26 +35,26 @@ describe("Judge", () => {
     });
 
     it("should have correct priority", () => {
-        expect(character.Priority).toBe(-1);
+        expect(character.Priority).toBe(14);
     });
 
     it("should calculate awake state propperly", () => {
-        expect(character.IsAwakeThisNight(0, gameState)).toBeFalse();
-        expect(character.IsAwakeThisNight(1, gameState)).toBeFalse();
-        expect(character.IsAwakeThisNight(2, gameState)).toBeFalse();
+        expect(character.IsAwakeThisNight(0)).toBeTrue();
+        expect(character.IsAwakeThisNight(1)).toBeFalse();
+        expect(character.IsAwakeThisNight(2)).toBeFalse();
     });
 
     it("should calculate descriptions propperly", () => {
-        expect(character.GetDescriptions().filter(Boolean).length).toBe(0);
+        expect(character.GetActions().filter(Boolean).length).toBe(3);
 
         gameState.addPerson();
         gameState.People[0].Character = character;
 
-        expect(character.GetDescriptions().filter(Boolean).length).toBe(0);
+        expect(character.GetActions().filter(Boolean).length).toBe(2);
     });
 
     it("should calculate buttons propperly", () => {
-        expect(character.GetButtons().filter(Boolean).length).toBe(0);
+        expect(character.GetButtons().filter(Boolean).length).toBe(1);
 
         gameState.addPerson();
         gameState.People[0].Character = character;

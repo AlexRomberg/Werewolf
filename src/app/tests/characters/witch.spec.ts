@@ -47,21 +47,21 @@ describe("Witch", () => {
     });
 
     it("should calculate descriptions propperly", () => {
-        expect(character.GetDescriptions().filter(Boolean).length).toBe(3);
+        expect(character.GetActions().filter(Boolean).length).toBe(3);
 
         gameState.addPerson();
         gameState.People[0].Character = character;
 
-        expect(character.GetDescriptions().filter(Boolean).length).toBe(2);
+        expect(character.GetActions().filter(Boolean).length).toBe(2);
 
         character["hasNegativePotion"] = false;
-        expect(character.GetDescriptions().filter(Boolean).length).toBe(1);
+        expect(character.GetActions().filter(Boolean).length).toBe(1);
 
         character["hasPositivePotion"] = false;
-        expect(character.GetDescriptions().filter(Boolean).length).toBe(1);
+        expect(character.GetActions().filter(Boolean).length).toBe(1);
 
         character["hasNegativePotion"] = true;
-        expect(character.GetDescriptions().filter(Boolean).length).toBe(1);
+        expect(character.GetActions().filter(Boolean).length).toBe(1);
     });
 
     it("should calculate buttons propperly", () => {

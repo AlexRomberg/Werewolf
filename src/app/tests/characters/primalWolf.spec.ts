@@ -74,12 +74,12 @@ describe("PrimalWolf", () => {
     });
 
     it("should calculate descriptions propperly", () => {
-        expect(character.GetDescriptions().filter(Boolean).length).toBe(2);
+        expect(character.GetActions().filter(Boolean).length).toBe(2);
 
         gameState.addPerson();
         gameState.People[0].Character = character;
 
-        expect(character.GetDescriptions().filter(Boolean).length).toBe(1);
+        expect(character.GetActions().filter(Boolean).length).toBe(1);
     });
 
     it("should calculate buttons propperly", () => {

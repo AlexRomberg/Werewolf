@@ -57,7 +57,7 @@ export class NarratorComponent {
     }
 
     public GetFilteredPoints(action: ActionProvider): string[] {
-        return action.GetDescriptions?.().filter(Boolean) as string[] ?? [];
+        return action.GetActions?.().filter(Boolean) as string[] ?? [];
     }
 
     public GetFilteredButtons(action: ActionProvider): {

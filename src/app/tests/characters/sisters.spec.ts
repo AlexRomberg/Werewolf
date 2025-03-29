@@ -46,13 +46,13 @@ describe("Sisters", () => {
 
     it("should calculate descriptions propperly", () => {
         for (let person = 0; person < 2; person++) {
-            expect(character.GetDescriptions().filter(Boolean).length).toBe(2);
+            expect(character.GetActions().filter(Boolean).length).toBe(2);
 
             gameState.addPerson();
             gameState.People[person].Character = character;
         }
 
-        expect(character.GetDescriptions().filter(Boolean).length).toBe(1);
+        expect(character.GetActions().filter(Boolean).length).toBe(1);
     });
 
     it("should calculate buttons propperly", () => {

@@ -4,10 +4,11 @@ import { PeopleSelectionComponent } from "./people-selection/people-selection.co
 import { PersonDetailsComponent } from "./person-details/person-details.component";
 import { DialogTypes } from "../../types";
 import { ConfirmDialogComponent } from "./confirm-dialog/confirm-dialog.component";
+import { CharacterDetailsComponent } from "./character-details/character-details.component";
 
 @Component({
     selector: "app-dialog",
-    imports: [PeopleSelectionComponent, PersonDetailsComponent, ConfirmDialogComponent],
+    imports: [PeopleSelectionComponent, PersonDetailsComponent, CharacterDetailsComponent, ConfirmDialogComponent],
     templateUrl: "./dialog.component.html"
 })
 export class DialogComponent {

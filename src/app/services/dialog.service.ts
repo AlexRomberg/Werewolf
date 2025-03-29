@@ -2,6 +2,7 @@ import { inject, Injectable } from "@angular/core";
 import { StateService } from "./state.service";
 import { Person } from "../models/state/person";
 import { DialogData, DialogTypes } from "../types";
+import { Character } from "../models/characters/character";
 
 @Injectable({
     providedIn: "root"
@@ -15,6 +16,17 @@ export class DialogService {
             this.DialogData = {
                 type: DialogTypes.PersonDetails,
                 data: { person },
+                res,
+                rej
+            }
+        })
+    }
+
+    public async ShowCharacterDetailsDialog(character: Character) {
+        return await new Promise<void>((res, rej) => {
+            this.DialogData = {
+                type: DialogTypes.CharacterDetails,
+                data: { character },
                 res,
                 rej
             }

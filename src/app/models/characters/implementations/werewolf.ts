@@ -6,16 +6,17 @@ import { BasePriority } from "../../../types";
 import { WerewolfCharacter } from "../werewolfCharacter";
 
 export class Werewolf extends WerewolfCharacter {
-    Id = "werewolf";
-    Game = GameSets.BaseGame;
-    Group = GroupTypes.Wolves;
-    override Priority = BasePriority.Wolf + 1;
-    override IsSingle = false;
+    readonly Id = "werewolf";
+    readonly Game = GameSets.BaseGame;
+    readonly Group = GroupTypes.Wolves;
+    override readonly Priority = BasePriority.Wolf + 1;
+    override readonly IsSingle = false;
+    override readonly Description = [{ title: $localize`:@@character-description-general:Allgemein`, description: $localize`:@@character-description-werewolf-general:Jede Nacht frisst er einen Dorfbewohner. Tagsüber versucht er, seine wahre Identität zu verbergen. Ein Werwolf kann auf gar keinen Fall einen anderen Werwolf fressen.` }];
     private get isDone() {
         return this.gameState.People.some(p => p.IsVictim);
     };
 
-    override GetDescriptions = () => [
+    override GetActions = () => [
         this.gameState.getPeopleForCharacter(this).length <= 0 && $localize`:@@character-button-general-assing-person:Person zuweisen`,
         !this.isDone && $localize`:@@character-action-werewolf-2:Müssen ein Opfer finden`];
     override GetButtons = () => {

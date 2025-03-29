@@ -6,7 +6,7 @@ import { WerewolfCharacter } from "../characters/werewolfCharacter";
 
 export class RulesAction implements ActionProvider {
     Id = "rules";
-    GetDescriptions = () => [
+    GetActions = () => [
         $localize`:@@actions-rules-1:Regeln erklären`,
         this.getWerewolfCharacters().length > 0 && $localize`:@@actions-rules-2:Anzahl Werwölfe erwähnen (${this.gameState.SelectedCharacters
             .filter((c) => c instanceof WerewolfCharacter)
@@ -22,7 +22,7 @@ export class RulesAction implements ActionProvider {
 
 export const NightfallAction: ActionProvider = {
     Id: "night",
-    GetDescriptions: () => [
+    GetActions: () => [
         $localize`:@@actions-night-1:Und das Dorf schläft ein`
     ],
     GetButtons: () => []
@@ -30,7 +30,7 @@ export const NightfallAction: ActionProvider = {
 
 export class DaybreakAction implements ActionProvider {
     Id = "day";
-    GetDescriptions = () => [
+    GetActions = () => [
         $localize`:@@actions-day-1:Und das Dorf erwacht`,
         this.gameState.Changes.length > 0 && $localize`:@@actions-day-2:Informiere über Tode:`,
         ...this.gameState.Changes.map(change => this.getChangeDescription(change)),
