@@ -1,17 +1,17 @@
 import { TestBed } from "@angular/core/testing";
 import { StateService } from "../../services/state.service";
-import { ConnectionTypes, GameSets, GroupTypes } from "../../types";
-import { Cupit } from "../../models/characters/implementations/cupit";
+import { GameSets, GroupTypes } from "../../types";
+import { BitterOldMan } from "../../models/characters/implementations/bitterOldMan";
 
 
-describe("Cupit", () => {
+describe("BitterOldMan", () => {
     let gameState: StateService;
-    let character: Cupit;
+    let character: BitterOldMan;
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
         gameState = TestBed.inject(StateService);
-        character = new Cupit(gameState);
+        character = new BitterOldMan(gameState);
     });
 
     it("should be created", () => {
@@ -19,15 +19,15 @@ describe("Cupit", () => {
     });
 
     it("should have correct id", () => {
-        expect(character.Id).toBe("cupit");
+        expect(character.Id).toBe("bitter_old_man");
     });
 
     it("should have correct group", () => {
-        expect(character.Group).toBe(GroupTypes.Active);
+        expect(character.Group).toBe(GroupTypes.Loners);
     });
 
     it("should have correct game type", () => {
-        expect(character.Game).toBe(GameSets.BaseGame);
+        expect(character.Game).toBe(GameSets.NewMoon);
     });
 
     it("should be single", () => {
@@ -35,7 +35,7 @@ describe("Cupit", () => {
     });
 
     it("should have correct priority", () => {
-        expect(character.Priority).toBe(3);
+        expect(character.Priority).toBe(13);
     });
 
     it("should calculate awake state propperly", () => {
@@ -51,24 +51,13 @@ describe("Cupit", () => {
         gameState.People[0].Character = character;
 
         expect(character.GetActions().filter(Boolean).length).toBe(2);
-
-        gameState.addPerson();
-        gameState.addConnection(ConnectionTypes.Love, gameState.People[0], gameState.People[1]);
-
-        expect(character.GetActions().filter(Boolean).length).toBe(1);
     });
 
     it("should calculate buttons propperly", () => {
-        expect(character.GetButtons().filter(Boolean).length).toBe(2);
-
-        gameState.addPerson();
-        gameState.People[0].Character = character;
-
         expect(character.GetButtons().filter(Boolean).length).toBe(1);
 
         gameState.addPerson();
-        gameState.addConnection(ConnectionTypes.Love, gameState.People[0], gameState.People[1]);
-
+        gameState.People[0].Character = character;
         expect(character.GetButtons().filter(Boolean).length).toBe(0);
     });
 

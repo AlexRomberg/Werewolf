@@ -9,13 +9,13 @@
         <button class="absolute top-6 right-6 z-0 bg-zinc-800 btn flex gap-4 items-center !px-3" (click)="IsEditingPlayers = !IsEditingPlayers">
             <lucide-angular [name]="IsEditingPlayers? 'check':'user-pen'" class="text-zinc-200" size="20px" i18n-title="@@narrator-change-seating" title="Sitzreihenfolge ändern" />
         </button>
-        @if (!IsEditingPlayers && (isRoleInGame("cupit") || isRoleInGame("wild_child") || isRoleInGame("bitch"))) {
+        @if (!IsEditingPlayers && (isRoleInGame("cupid") || isRoleInGame("wild_child") || isRoleInGame("hoodrat"))) {
         <button class="absolute bottom-6 left-6 z-0 bg-zinc-800 rounded-md p-4 text-left text-zinc-200">
             <span class="flex justify-between items-center pb-2">
                 <p i18n="@@general-connections">Verbindungen:</p>
                 <!-- <lucide-angular name="pen" size="16px" /> -->
             </span>
-            @if (isRoleInGame("cupit")) {
+            @if (isRoleInGame("cupid")) {
             <span class="flex gap-2 items-center">
                 <div class="w-4 h-2 rounded-full" style="background-color: red;"></div>
                 <p i18n="@@general-connections-love">Liebe (Ehepaar)</p>
@@ -27,7 +27,7 @@
                 <p i18n="@@general-connections-trust">Vertrauen (Wildes Kind)</p>
             </span>
             }
-            @if (isRoleInGame("bitch")) {
+            @if (isRoleInGame("hoodrat")) {
             <span class="flex gap-2 items-center">
                 <div class="w-4 h-2 rounded-full" style="background-color: blue;"></div>
                 <p i18n="@@general-connections-sleepover">Beischlaf (Dorfmatratze)</p>

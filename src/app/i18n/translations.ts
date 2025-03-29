@@ -8,9 +8,9 @@ export const NAME_TRANSLATIONS = {
     "angel": $localize`:@@character-name-angel:Der Engel`,
     "bear_guide": $localize`:@@character-name-bear_guide:Der Bärenführer`,
     "big_wolf": $localize`:@@character-name-big_wolf:Der Grosse, böse Wolf`,
-    "bitch": $localize`:@@character-name-bitch:Die Dorfmatratze`,
+    "hoodrat": $localize`:@@character-name-hoodrat:Die Dorfmatratze`,
     "brothers": $localize`:@@character-name-brothers:Die Drei Brüder`,
-    "cupit": $localize`:@@character-name-cupit:Der Amor`,
+    "cupid": $localize`:@@character-name-cupid:Der Amor`,
     "flute_player": $localize`:@@character-name-flute_player:Der Flötenspieler`,
     "fox": $localize`:@@character-name-fox:Der Fuchs`,
     "healer": $localize`:@@character-name-healer:Der Heiler`,
@@ -19,8 +19,8 @@ export const NAME_TRANSLATIONS = {
     "juggler": $localize`:@@character-name-juggler:Der Gaukler`,
     "knight": $localize`:@@character-name-knight:Der Ritter der rostigen Klinge`,
     "maid": $localize`:@@character-name-maid:Die Ergebene Magd`,
-    "old": $localize`:@@character-name-old:Der Alte`,
-    "old_man": $localize`:@@character-name-old_man:Der Verbitterte Greis`,
+    "old_man": $localize`:@@character-name-old_man:Der Alte`,
+    "bitter_old_man": $localize`:@@character-name-bitter_old_man:Der Verbitterte Greis`,
     "primal_wolf": $localize`:@@character-name-primal_wolf:Der Urwolf`,
     "scapegoat": $localize`:@@character-name-scapegoat:Der Sündenbock`,
     "seer": $localize`:@@character-name-seer:Die Seherin`,
@@ -33,7 +33,7 @@ export const NAME_TRANSLATIONS = {
     "white_wolf": $localize`:@@character-name-white_wolf:Der weisse Wolf`,
     "wild_child": $localize`:@@character-name-wild_child:Das wilde Kind`,
     "witch": $localize`:@@character-name-witch:Die Hexe`,
-    "wolf_dog": $localize`:@@character-name-wolf_dog:Der Wolfshund`,
+    "wolfdog": $localize`:@@character-name-wolfdog:Der Wolfshund`,
 };
 
 export const GROUP_TRANSLATIONS = {

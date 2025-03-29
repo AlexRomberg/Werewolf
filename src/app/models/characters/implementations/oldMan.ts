@@ -1,22 +1,12 @@
-import { BasePriority, GameSets, GroupTypes } from "../../../types";
-import { RequestAssignment } from "../../actions/buttons";
+import { GameSets, GroupTypes } from "../../../types";
 import { Character } from "../character";
 
 export class OldMan extends Character {
     readonly Id = "old_man";
-    readonly Group = GroupTypes.Loners;
-    readonly Game = GameSets.NewMoon;
-    override readonly Priority = BasePriority.Initial + 13;
+    readonly Group = GroupTypes.Passive;
+    readonly Game = GameSets.Characters;
     override readonly Description = [
-        { title: $localize`:@@character-description-general:Allgemein`, description: $localize`:@@character-description-old_man-general:Vor Anfang der Partie teilt der Spielleiter das Dorf in zwei Gruppen und verkündet dies laut. Dabei erfolgt die Einteilung aufgrund von offensichtlichen Kriterien (Geschlecht, Brille, Größe, Alter, Bart, etc.). Der Verbitterte Greis muss einer der beiden Gruppen eindeutig zugeordnet werden können. Das Ziel dieses Charakters ist es, alle Spieler der jeweils anderen Gruppe zu eliminieren. In diesem Falle, und nur in diesem Falle, gewinnt er das Spiel ganz allein. Er besitzt dazu keine Sonderfähigkeit – das Wort und seine Fähigkeit zu manipulieren sind seine einzigen Waffen.` },
-        { title: $localize`:@@character-description-hint-for-narrator:Tipp für den Spielleiter`, description: $localize`:@@character-description-old_man-hint-for-narrator:Es ist nicht notwendig, dass beide Gruppen gleich groß sind. Zögere im Zweifel nicht, alle Spieler darauf hinzuweisen, welcher Gruppe sie zugehörig sind.` }];
-
-
-    override GetActions = () => [
-        !this.isAssigned && $localize`:@@character-button-general-assing-person:Person zuweisen`,
-        $localize`:@@character-action-old_man-2:Kann direkt wieder schlafen gehen`,
-        $localize`:@@character-action-old_man-3:Ist Teil einer hälfte der Spieler und versucht die andere Hälfte umzubringen`];
-    override GetButtons = () => this.isAssigned ? [] : [RequestAssignment(this)];
-
-    override IsAwakeThisNight = (round: number) => round <= 0;
+        { title: $localize`:@@character-description-general:Allgemein`, description: $localize`:@@character-description-old_man-general:Er hat siegreich all die furchtbaren Prüfungen des Lebens durchschritten und eine Widerstandskraft außerhalb des Gewöhnlichen erreicht. Die Werwölfe müssen sich zweimal für ihn entscheiden, um ihn zu verschlingen. Beim ersten Mal, sobald die Werwölfe den Alten des Dorfes reißen, überlebt er und der Spielleiter dreht seine Karte nicht um. Auch der Urwolf kann ihn nach dem ersten Biss nicht infizieren. Der Alte wird nur eliminiert, sobald er zweimal verschlungen wird. Die Abstimmung des Dorfes, der Gifttrank der Hexe, der Schuss des Jägers oder das Rasiermesser des Barbiers eliminieren den Alten jedoch schon beim ersten Mal. Allerdings verlieren die Dorfbewohner ihre besonderen Fähigkeiten aus Verzweiflung darüber, einen solch hoch gelehrten Mann getötet zu haben.` },
+        { title: $localize`:@@character-description-attention:Achtung`, description: $localize`:@@character-description-old_man-attention:Wenn der Alte von der Hexe geheilt wird, gewinnt er nur ein einziges Leben.` },
+        { title: ":@@character-description-variant-for-brave:Variante für Mutige", description: $localize`:@@character-description-old_man-variant-for-brave:Wenn der Dorfdepp bereits aufgedeckt ist, so scheidet er gemeinsam mit dem Alten aus, da das Dorf, welches nun seine Weisheit verloren hat, seine Entscheidung revidiert, den Dorfdeppen zu verschonen.` }];
 }

@@ -4,7 +4,7 @@ import { GameSets, GroupTypes } from "../../types";
 import { OldMan } from "../../models/characters/implementations/oldMan";
 
 
-describe("OldMan", () => {
+describe("oldMan", () => {
     let gameState: StateService;
     let character: OldMan;
 
@@ -23,11 +23,11 @@ describe("OldMan", () => {
     });
 
     it("should have correct group", () => {
-        expect(character.Group).toBe(GroupTypes.Loners);
+        expect(character.Group).toBe(GroupTypes.Passive);
     });
 
     it("should have correct game type", () => {
-        expect(character.Game).toBe(GameSets.NewMoon);
+        expect(character.Game).toBe(GameSets.Characters);
     });
 
     it("should be single", () => {
@@ -35,26 +35,26 @@ describe("OldMan", () => {
     });
 
     it("should have correct priority", () => {
-        expect(character.Priority).toBe(13);
+        expect(character.Priority).toBe(-1);
     });
 
     it("should calculate awake state propperly", () => {
-        expect(character.IsAwakeThisNight(0)).toBeTrue();
-        expect(character.IsAwakeThisNight(1)).toBeFalse();
-        expect(character.IsAwakeThisNight(2)).toBeFalse();
+        expect(character.IsAwakeThisNight(0, gameState)).toBeFalse();
+        expect(character.IsAwakeThisNight(1, gameState)).toBeFalse();
+        expect(character.IsAwakeThisNight(2, gameState)).toBeFalse();
     });
 
     it("should calculate descriptions propperly", () => {
-        expect(character.GetActions().filter(Boolean).length).toBe(3);
+        expect(character.GetActions().filter(Boolean).length).toBe(0);
 
         gameState.addPerson();
         gameState.People[0].Character = character;
 
-        expect(character.GetActions().filter(Boolean).length).toBe(2);
+        expect(character.GetActions().filter(Boolean).length).toBe(0);
     });
 
     it("should calculate buttons propperly", () => {
-        expect(character.GetButtons().filter(Boolean).length).toBe(1);
+        expect(character.GetButtons().filter(Boolean).length).toBe(0);
 
         gameState.addPerson();
         gameState.People[0].Character = character;

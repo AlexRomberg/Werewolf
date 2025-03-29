@@ -1,17 +1,17 @@
 import { TestBed } from "@angular/core/testing";
 import { StateService } from "../../services/state.service";
-import { GameSets, GroupTypes } from "../../types";
-import { WolfDog } from "../../models/characters/implementations/wolfDog";
+import { ConnectionTypes, GameSets, GroupTypes } from "../../types";
+import { Cupid } from "../../models/characters/implementations/cupid";
 
 
-describe("WolfDog", () => {
+describe("Cupid", () => {
     let gameState: StateService;
-    let character: WolfDog;
+    let character: Cupid;
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
         gameState = TestBed.inject(StateService);
-        character = new WolfDog(gameState);
+        character = new Cupid(gameState);
     });
 
     it("should be created", () => {
@@ -19,15 +19,15 @@ describe("WolfDog", () => {
     });
 
     it("should have correct id", () => {
-        expect(character.Id).toBe("wolf_dog");
+        expect(character.Id).toBe("cupid");
     });
 
     it("should have correct group", () => {
-        expect(character.Group).toBe(GroupTypes.Wolves);
+        expect(character.Group).toBe(GroupTypes.Active);
     });
 
     it("should have correct game type", () => {
-        expect(character.Game).toBe(GameSets.Characters);
+        expect(character.Game).toBe(GameSets.BaseGame);
     });
 
     it("should be single", () => {
@@ -35,29 +35,40 @@ describe("WolfDog", () => {
     });
 
     it("should have correct priority", () => {
-        expect(character.Priority).toBe(-1);
+        expect(character.Priority).toBe(3);
     });
 
     it("should calculate awake state propperly", () => {
-        expect(character.IsAwakeThisNight(0, gameState)).toBeFalse();
-        expect(character.IsAwakeThisNight(1, gameState)).toBeFalse();
-        expect(character.IsAwakeThisNight(2, gameState)).toBeFalse();
+        expect(character.IsAwakeThisNight(0)).toBeTrue();
+        expect(character.IsAwakeThisNight(1)).toBeFalse();
+        expect(character.IsAwakeThisNight(2)).toBeFalse();
     });
 
     it("should calculate descriptions propperly", () => {
-        expect(character.GetActions().filter(Boolean).length).toBe(0);
+        expect(character.GetActions().filter(Boolean).length).toBe(3);
 
         gameState.addPerson();
         gameState.People[0].Character = character;
 
-        expect(character.GetActions().filter(Boolean).length).toBe(0);
+        expect(character.GetActions().filter(Boolean).length).toBe(2);
+
+        gameState.addPerson();
+        gameState.addConnection(ConnectionTypes.Love, gameState.People[0], gameState.People[1]);
+
+        expect(character.GetActions().filter(Boolean).length).toBe(1);
     });
 
     it("should calculate buttons propperly", () => {
-        expect(character.GetButtons().filter(Boolean).length).toBe(0);
+        expect(character.GetButtons().filter(Boolean).length).toBe(2);
 
         gameState.addPerson();
         gameState.People[0].Character = character;
+
+        expect(character.GetButtons().filter(Boolean).length).toBe(1);
+
+        gameState.addPerson();
+        gameState.addConnection(ConnectionTypes.Love, gameState.People[0], gameState.People[1]);
+
         expect(character.GetButtons().filter(Boolean).length).toBe(0);
     });
 

@@ -1,21 +1,21 @@
-import { computed, Injectable, signal } from "@angular/core";
-import { ActionProvider, AppState, ChangeReason, Connection, Connections, ConnectionTypes, DaybreakChange, State } from "../types";
+import { Injectable } from "@angular/core";
+import { ActionProvider, AppState, ChangeReason, Connection, ConnectionTypes, DaybreakChange } from "../types";
 import { DaybreakAction, NightfallAction, RulesAction } from "../models/actions/generic";
 import { Character } from "../models/characters/character";
 import { Angel } from "../models/characters/implementations/angel";
 import { BearGuide } from "../models/characters/implementations/bearGuide";
 import { BigWolf } from "../models/characters/implementations/bigWolf";
-import { Bitch } from "../models/characters/implementations/bitch";
+import { Hoodrat } from "../models/characters/implementations/hoodrat";
 import { Brothers } from "../models/characters/implementations/brothers";
-import { Cupit } from "../models/characters/implementations/cupit";
+import { Cupid } from "../models/characters/implementations/cupid";
 import { FlutePlayer } from "../models/characters/implementations/flutePlayer";
 import { Fox } from "../models/characters/implementations/fox";
 import { Healer } from "../models/characters/implementations/healer";
 import { Hunter } from "../models/characters/implementations/hunter";
 import { Juggler } from "../models/characters/implementations/juggler";
 import { Knight } from "../models/characters/implementations/knight";
-import { Old } from "../models/characters/implementations/old";
 import { OldMan } from "../models/characters/implementations/oldMan";
+import { BitterOldMan } from "../models/characters/implementations/bitterOldMan";
 import { PrimalWolf } from "../models/characters/implementations/primalWolf";
 import { Scapegoat } from "../models/characters/implementations/scapegoat";
 import { Seer } from "../models/characters/implementations/seer";
@@ -28,7 +28,7 @@ import { Werewolf } from "../models/characters/implementations/werewolf";
 import { WhiteWolf } from "../models/characters/implementations/whiteWolf";
 import { WildChild } from "../models/characters/implementations/wildChild";
 import { Witch } from "../models/characters/implementations/witch";
-import { WolfDog } from "../models/characters/implementations/wolfDog";
+import { Wolfdog } from "../models/characters/implementations/wolfdog";
 import { Person } from "../models/state/person";
 import { GameState } from "../models/state/gameState";
 import { Judge } from "../models/characters/implementations/judge";
@@ -91,11 +91,15 @@ export class StateService {
         this.resetCharacters();
 
         if (!environment.isTesting) {
-            this.gameState = GameState.deserialize(window.localStorage.getItem("werewolf-game-state"), this.allCharacters, this.saveState.bind(this));
-            this.Actions = this.getActionsForNight();
+            try {
+                this.gameState = GameState.deserialize(window.localStorage.getItem("werewolf-game-state"), this.allCharacters, this.saveState.bind(this));
+                this.Actions = this.getActionsForNight();
 
-            this.appState = { inGame: false, spotify: { musicStarted: false, currentDevice: undefined }, ...JSON.parse(window.localStorage.getItem("werewolf-app-state") ?? "{}") };
-            (window as any).state = { game: this.gameState, app: this.appState };
+                this.appState = { inGame: false, spotify: { musicStarted: false, currentDevice: undefined }, ...JSON.parse(window.localStorage.getItem("werewolf-app-state") ?? "{}") };
+                (window as any).state = { game: this.gameState, app: this.appState };
+            } catch (e) {
+                window.localStorage.removeItem("werewolf-game-state");
+            }
         }
     }
 
@@ -109,8 +113,6 @@ export class StateService {
     }
 
     public addConnection(type: ConnectionTypes, from: Person, to: Person) {
-        console.log("Adding connection", type, from, to);
-
         this.gameState.Connections = [
             ...this.gameState.Connections.filter(c => c.ConnectionType !== type),
             { ConnectionType: type, From: from, To: to }
@@ -188,9 +190,9 @@ export class StateService {
             new Angel(this),
             new BearGuide(this),
             new BigWolf(this),
-            new Bitch(this),
+            new Hoodrat(this),
             new Brothers(this),
-            new Cupit(this),
+            new Cupid(this),
             new FlutePlayer(this),
             new Fox(this),
             new Healer(this),
@@ -199,8 +201,8 @@ export class StateService {
             new Juggler(this),
             new Knight(this),
             new Maid(this),
-            new Old(this),
             new OldMan(this),
+            new BitterOldMan(this),
             new PrimalWolf(this),
             new Scapegoat(this),
             new Seer(this),
@@ -213,7 +215,7 @@ export class StateService {
             new WhiteWolf(this),
             new WildChild(this),
             new Witch(this),
-            new WolfDog(this),
+            new Wolfdog(this),
         ];
     }
 

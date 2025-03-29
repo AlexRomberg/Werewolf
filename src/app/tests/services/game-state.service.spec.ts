@@ -106,7 +106,7 @@ describe("GameStateService", () => {
         //  - 1x Seer
         //  - 2x FlutePlayer
         //  - 2x Fox
-        //  - 1x Bitch -> +1 after assignment
+        //  - 1x Hoodrat -> +1 after assignment
         //  - 2x Healer
         //  - 1x Juggler
 
@@ -122,7 +122,7 @@ describe("GameStateService", () => {
         //  - 1x BearGuide
         //  - 1x WildChild -> +1 after assignment
         //  - 1x Thief
-        //  - 2x Cupit
+        //  - 2x Cupid
         //  - 1x The Old
         //  - 1x Scapegoat
 
