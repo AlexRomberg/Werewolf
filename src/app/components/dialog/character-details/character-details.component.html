@@ -1,0 +1,26 @@
+@if (Dialog.DialogData && Dialog.DialogData.type === DialogTypes.CharacterDetails) {
+<div class="bg-zinc-800 py-4 rounded-2xl grid grid-rows-[auto_auto_1fr] max-h-[calc(100dvh_-_var(--spacing)_*_46)] mt-32">
+    <span class="flex justify-center relative">
+        <div class="absolute w-42 h-42 -top-24 rounded-full grid grid-cols-1 grid-rows-1 justify-center items-center overflow-hidden p-2 bg-black">
+            <img [src]="'img/' + Dialog.DialogData.data.character.Id + '.png'" class="w-38 h-38 rounded-full" />
+        </div>
+    </span>
+    <span class="flex mb-10 px-4">
+        <button class="ml-auto btn !px-3" (click)="Dialog.ConfirmDialog()">
+            <lucide-angular name="x"></lucide-angular>
+        </button>
+    </span>
+    <div class="flex flex-col gap-2 overflow-auto">
+        <span class="flex items-center gap-4 px-4">
+            <h1 class="text-zinc-200 text-xl">{{Dialog.DialogData.data.character.Id | i18nSelect: NAME_TRANSLATIONS}}</h1>
+            <hr class="flex-grow border-zinc-600" />
+        </span>
+        @for (description of Dialog.DialogData.data.character.Description; track $index) {
+        <div class="grid sm:grid-cols-[12rem_1fr] grid-cols-1 gap-x-4 px-4">
+            <p class="text-zinc-200 font-bold">{{description.title}}</p>
+            <p class="text-zinc-200">{{description.description}}</p>
+        </div>
+        }
+    </div>
+</div>
+}

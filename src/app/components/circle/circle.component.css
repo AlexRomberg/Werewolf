@@ -1,9 +1,5 @@
-.ring {
-    @apply fill-white/0;
-    stroke-width: 10px;
-}
+@reference "../../../styles.css";
 
-text {
-    font-family: 'ArialMT', 'Arial', sans-serif;
-    font-size: 66.667px;
+:host {
+    @apply grid
 }

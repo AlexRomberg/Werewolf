@@ -1,47 +1,9 @@
-<svg width="100%" height="100%" viewBox="0 0 2300 2000" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
-    <!-- Name background-color -->
-    <defs>
-        <filter x="0" y="0" width="1" height="1" id="solid">
-            <feFlood flood-color="rgb(31 41 55)" result="bg" />
-            <feMerge>
-                <feMergeNode in="bg" />
-                <feMergeNode in="SourceGraphic" />
-            </feMerge>
-        </filter>
-    </defs>
-
-    <!-- Connections -->
-    @for (connection of Connections; track $index) {
-    <path [attr.d]="GetConnectionPath($index)" style="fill:none;stroke-width:22.22px;" [style.stroke]="GetConnectionColor(connection.Type)" />
-    }
-
-    <!-- Ring -->
-    <circle cx="1000" cy="1000" r="875" style="fill:none;stroke:rgb(141,141,141);stroke-width:5.28px;stroke-dasharray:26.39,26.39,0,0,0,0;" />
-
-    <!-- People -->
-    @for (person of People; track $index) {
-    <!-- - Image -->
-    @if (person.Character) {
-    <clipPath [id]="'clip_'+person.Id" class="pointer-events-none" (click)="OnPersonClicked(person)">
-        <circle [attr.cx]="GetCoordinateX($index)" [attr.cy]="GetCoordinateY($index)" r="100" class="pointer-events-none" (click)="OnPersonClicked(person)" />
-    </clipPath>
-    <g [attr.clip-path]="'url(#clip_' + person.Id + ')'">
-        <image [attr.href]="'assets/icons/' + person.Character.Image + '.png'" [attr.x]="GetCoordinateX($index) - 110" [attr.y]="GetCoordinateY($index) - 110" width="220" height="220" />
-    </g>
-    }
-
-    <!-- - Name -->
-    <text class="fill-gray-300" filter="url(#solid)" [attr.x]="GetTextCoordinateX($index)" [attr.y]="GetTextCoordinateY($index)">{{person.Name}}</text>
-
-    <!-- - Circle -->
-    <circle [attr.cx]="GetCoordinateX($index)" [attr.cy]="GetCoordinateY($index)" r="100" class="ring cursor-pointer" [class.!fill-gray-700]="!person.Character" [style.stroke]="GetRingColor(person, 0)" (click)="OnPersonClicked(person)" />
-    <circle [attr.cx]="GetCoordinateX($index)" [attr.cy]="GetCoordinateY($index)" r="115" class="ring pointer-events-none" [style.stroke]="GetRingColor(person, 1)" />
-    <circle [attr.cx]="GetCoordinateX($index)" [attr.cy]="GetCoordinateY($index)" r="130" class="ring pointer-events-none" [style.stroke]="GetRingColor(person, 2)" />
-    <circle [attr.cx]="GetCoordinateX($index)" [attr.cy]="GetCoordinateY($index)" r="145" class="ring pointer-events-none" [style.stroke]="GetRingColor(person, 3)" />
-
-    <!-- - Dead -->
-    @if (person.IsDead) {
-    <path [attr.d]="GetCrossPath($index)" style="stroke-width:22.22px;" class="fill-none stroke-red-800 pointer-events-none" />
-    }
-    }
+<!-- Ring -->
+<svg viewBox="0 0 2000 2000" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;" class="max-w-svw max-h-dvh mx-auto col-start-1 row-start-1">
+    <circle cx="1000" cy="1000" r="700" style="fill:none;stroke:rgb(141,141,141);stroke-width:5.28px;stroke-dasharray:26.39,26.39,0,0,0,0;" />
 </svg>
+@if (IsEditMode()) {
+<app-edit-circle [People]="People()" (PeopleChange)="onPeopleChanged($event)" />
+}@else {
+<app-people-circle [People]="People()" [Connections]="Connections()" (PersonClick)="onPersonClicked($event)" />
+}

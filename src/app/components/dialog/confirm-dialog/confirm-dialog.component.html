@@ -1,0 +1,12 @@
+@if (Dialog.DialogData && Dialog.DialogData.type === DialogTypes.Confirm) {
+<div class="bg-zinc-800 p-4 rounded-2xl grid gap-2 max-h-[calc(100dvh_-_var(--spacing)_*_14)] mt-[30dvh] mx-auto w-fit">
+    <span class="grid grid-cols-[auto_1fr] items-center gap-4 mr-16">
+        <lucide-angular name="triangle-alert" class="text-zinc-200" size="30"></lucide-angular>
+        <h1 class="text-zinc-200 text-lg">{{Dialog.DialogData.data.title}}</h1>
+    </span>
+    <span class="flex gap-2 mt-4">
+        <button class="w-24 bg-zinc-700 btn ml-auto" (click)="Dialog.ConfirmDialog(false)" i18n="@@dialog-no">Nein</button>
+        <button class="w-24 bg-zinc-700 btn" (click)="Dialog.ConfirmDialog(true)" i18n="@@dialog-yes">Ja</button>
+    </span>
+</div>
+}

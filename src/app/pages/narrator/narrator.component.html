@@ -1,47 +1,210 @@
-<div class="grid lg:grid-cols-[1fr_auto] grid-rows-2 w-full h-svh">
-    <div class="w-full lg:h-svh lg:p-20 max-lg:pl-10 max-lg:h-[30rem] max-lg:top-0 max-lg:left-0 max-lg:fixed">
-        <app-circle [People]="state.People" [Connections]="state.Connections" (PersonClick)="HandlePersonClicked($event)"></app-circle>
+<div class="grid lg:grid-cols-[1fr_auto] grid-rows-2 w-full h-dvh">
+    @if (!IsEditingPlayers) {
+    @if (MobileShowSidebar) {
+    <div class="lg:hidden w-full h-23 fixed z-30 top-0 left-0 flex items-center backdrop-blur-md bg-zinc-900/50">
+        <button class="bg-zinc-700 btn flex gap-4 items-center !px-3 ml-6" (click)="goBack()">
+            <lucide-angular name="arrow-left" class="text-zinc-200" size="20px" />
+        </button>
     </div>
-    <div class="lg:w-[30rem] w-full py-4 bg-gray-700 grid grid-rows-[auto_auto_auto_1fr_auto] lg:h-svh h-[75svh] max-lg:rounded-t-3xl overflow-hidden gap-2 z-50 max-lg:mt-[65svh]">
-        @if (spotify.IsAuthenticated) {
-        <app-spotify-widget Mode="narrator"></app-spotify-widget>
-        <hr class="mx-4 bg-slate-500 h-px border-none">
-        }@else {
-        <span></span>
-        <span></span>
+    }
+    <div class="lg:hidden w-60 h-11 fixed z-30 top-6 left-1/2 bg-zinc-700 grid grid-cols-2 p-1 -translate-x-1/2 rounded-full">
+        <button class="text-zinc-200 rounded-full" (click)="MobileShowSidebar = false" [class.bg-zinc-600]="!MobileShowSidebar" i18n="@@narrator-mobile-circle">Kreis</button>
+        <button class="text-zinc-200 rounded-full" (click)="MobileShowSidebar = true" [class.bg-zinc-600]="MobileShowSidebar" i18n="@@narrator-mobile-overview">Übersicht</button>
+    </div>
+    }
+    <div class="w-full h-dvh px-20 max-lg:fixed relative content-center" [class.blur-2xl]="RedactCircle" [class.saturate-0]="RedactCircle">
+        <app-circle [(People)]="state.People" [Connections]="state.Connections" (PersonClick)="HandlePersonClicked($event)" [IsEditMode]="IsEditingPlayers" />
+        @if (!IsEditingPlayers) {
+        <button class="absolute top-6 left-6 z-0 bg-zinc-800 btn flex gap-4 items-center !px-3" (click)="goBack()">
+            <lucide-angular name="arrow-left" class="text-zinc-200" size="20px" />
+        </button>
         }
-        <h1 class="text-gray-200 text-2xl ml-4" i18n="@@narrator-events">Ereignisse</h1>
-        <div class="overflow-auto flex flex-col-reverse fade-out pb-2">
-            <div class="flex flex-col-reverse gap-2 pt-20">
-                @for (action of state.Actions; track $index; let actionIndex = $index) {
-                <div class="mx-4 p-4 rounded-2xl md-shadow-sm" [class.bg-gray-500]="actionIndex === 0" [class.bg-gray-600]="actionIndex !== 0">
+        <button class="absolute top-6 right-6 z-0 bg-zinc-800 btn flex gap-4 items-center !px-3" (click)="IsEditingPlayers = !IsEditingPlayers">
+            <lucide-angular [name]="IsEditingPlayers? 'check':'user-pen'" class="text-zinc-200" size="20px" i18n-title="@@narrator-change-seating" title="Sitzreihenfolge ändern" />
+        </button>
+        @if (!IsEditingPlayers && (isRoleInGame("cupid") || isRoleInGame("wild_child") || isRoleInGame("hoodrat"))) {
+        <button class="absolute bottom-6 left-6 z-0 bg-zinc-800 rounded-md p-4 text-left text-zinc-200">
+            <span class="flex justify-between items-center pb-2">
+                <p i18n="@@general-connections">Verbindungen:</p>
+                <!-- <lucide-angular name="pen" size="16px" /> -->
+            </span>
+            @if (isRoleInGame("cupid")) {
+            <span class="flex gap-2 items-center">
+                <div class="w-4 h-2 rounded-full" style="background-color: red;"></div>
+                <p i18n="@@general-connections-love">Liebe (Ehepaar)</p>
+            </span>
+            }
+            @if (isRoleInGame("wild_child")) {
+            <span class="flex gap-2 items-center">
+                <div class="w-4 h-2 rounded-full" style="background-color: orange;"></div>
+                <p i18n="@@general-connections-trust">Vertrauen (Wildes Kind)</p>
+            </span>
+            }
+            @if (isRoleInGame("hoodrat")) {
+            <span class="flex gap-2 items-center">
+                <div class="w-4 h-2 rounded-full" style="background-color: blue;"></div>
+                <p i18n="@@general-connections-sleepover">Beischlaf (Dorfmatratze)</p>
+            </span>
+            }
+        </button>
+        }
+    </div>
+    <div class="lg:w-[30rem] w-full bg-zinc-800 grid h-dvh max-h-dvh overflow-y-auto z-20 p-6 max-lg:pt-27 gap-2" [class.max-lg:hidden]="!MobileShowSidebar">
+        @if (spotify.IsAuthenticated && spotify.CurrentDevice) {
+        <app-sidebar-group title="Spotify" [collapsedOnStart]="true" [summary]="spotifySummary">
+            <span class="flex justify-start items-center overflow-hidden">
+                @if (spotify.CurrentDevice) {
+                <p class="text-zinc-300 whitespace-nowrap overflow-hidden text-ellipsis mr-4" i18n="@@spotify-selected-device">Verbundenes Gerät:</p>
+                <span class="flex items-center py-2 px-4 rounded-full bg-zinc-700 text-zinc-200">
+                    <lucide-angular [name]="spotify.getIconOfDevice(spotify.CurrentDevice)" />
+                    <p class="ml-2">{{spotify.CurrentDevice.name}}</p>
+                </span>
+                } @else {
+                <p class="text-zinc-300 whitespace-nowrap overflow-hidden text-ellipsis" i18n="@@spotify-no-device-selected">Kein Gerät ausgewählt</p>
+                }
+            </span>
+            <div class="bg-zinc-700 grid grid-cols-[1fr_auto_auto] items-center gap-2 p-2 pr-0 pl-4 rounded-xl mt-2">
+                <p class="text-zinc-200 whitespace-nowrap overflow-hidden text-ellipsis">{{songTitle}}</p>
+                <button class="bg-zinc-600 rounded-md text-zinc-200 p-3 flex justify-center items-center" (click)="togglePlaybackState()">
+                    <lucide-angular [name]="spotify.PlaybackState?.is_playing ? 'pause':'play'" />
+                </button>
+                <button class="bg-zinc-600 rounded-md text-zinc-200 p-3 flex justify-center items-center mr-2" (click)="skipSong()">
+                    <lucide-angular name="skip-forward" />
+                </button>
+            </div>
+        </app-sidebar-group>
+        <hr class="border-zinc-700 my-4">
+        }
+        <app-sidebar-group title="Charaktere" i18n-title="@@setup-characters" [collapsedOnStart]="true">
+            <div class="grid grid-cols-2 gap-2 lg:max-h-50 lg:overflow-y-auto">
+                @for (character of state.SelectedCharacters; track $index) {
+                <button class="bg-zinc-700 p-2 rounded-md grid grid-cols-[4rem_1fr] gap-2 items-center text-zinc-200" (click)="openCharacterDetails(character)">
+                    @if (!character.IsSingle) {
+                    <div class="border-4 border-zinc-800 rounded md-shadow-md w-16 h-16 col-start-1 row-start-1 rotate-3"></div>
+                    <div class="border-4 border-zinc-900 rounded md-shadow-md w-16 h-16 col-start-1 row-start-1 -rotate-6"></div>
+                    }
+                    <div class="border-4 border-black rounded md-shadow-md w-16 col-start-1 row-start-1 z-10">
+                        <img class="w-16" [src]="'img/' + character.Id + '.png'" [alt]="character.Id | i18nSelect: NAME_TRANSLATIONS">
+                    </div>
+                    <p class="text-center">{{character.Id | i18nSelect: NAME_TRANSLATIONS}}</p>
+                </button>
+                }
+            </div>
+        </app-sidebar-group>
+        @if (!AreEventsMaximized) {
+        <app-sidebar-group title="Ereignisse" i18n-title="@@narrator-events" [collapsedOnStart]="false" [secondIcon]="AreEventsMaximized ? 'minimize-2' : 'maximize-2'" (secondIconPressedEvent)="setEventMaximized(!AreEventsMaximized)" [summary]="state.Actions[0].Id ? (state.Actions[0].Id | i18nSelect: NAME_TRANSLATIONS):undefined" class="mt-auto overflow-hidden row-start-6" [flipIcon]="true">
+            @if (state.Actions[0].Id) {
+            <div class="grid grid-cols-1 grid-rows-1 min-h-44">
+                @if (state.Actions.length > 2) {
+                <div class="rounded-2xl col-start-1 row-start-1 bg-zinc-700 transform rotate-2 -translate-y-1 z-0"></div>
+                }
+                @if (state.Actions.length > 1) {
+                <div class="rounded-2xl col-start-1 row-start-1 bg-zinc-600 transform -rotate-2 z-0"></div>
+                }
+                <div class="p-4 rounded-2xl col-start-1 row-start-1 bg-zinc-500 z-10">
                     <div class="grid grid-cols-[1fr_auto] gap-2">
                         <div>
-                            <h1 class="text-xl" [class.text-gray-100]="actionIndex === 0" [class.text-gray-400]="actionIndex !== 0">{{action.Name}}</h1>
+                            <h1 class="text-xl text-zinc-100">{{state.Actions[0].Id | i18nSelect: NAME_TRANSLATIONS}}</h1>
                             <ul>
-                                @for (point of GetFilteredPoints(action); track $index) {
-                                <li class="list-disc ml-4" [class.text-gray-200]="actionIndex === 0" [class.text-gray-400]="actionIndex !== 0">{{point}}</li>
+                                @for (point of GetFilteredPoints(state.Actions[0]); track $index) {
+                                <li class="list-disc ml-4 text-zinc-200">{{point}}</li>
                                 }
                             </ul>
                         </div>
-                        <img [src]="'assets/icons/' + action.Image + '.png'" class="w-16 h-16 rounded-md md-shadow-md" [alt]="action.Name">
+                        <img [src]="'img/' + state.Actions[0].Id + '.png'" class="w-16 h-16 rounded-md md-shadow-md" [alt]="state.Actions[0].Id | i18nSelect: NAME_TRANSLATIONS">
                     </div>
-                    @if (actionIndex === 0 && GetFilteredButtons(action).length > 0) {
+                    @if (GetFilteredButtons(state.Actions[0]).length > 0) {
                     <div class="flex flex-col gap-2 mt-4">
-                        @for (button of GetFilteredButtons(action); track $index) {
-                        <button class="btn bg-gray-600 w-full" (click)="HandleAction(button.Action)">{{button.Title}}</button>
+                        @for (button of GetFilteredButtons(state.Actions[0]); track $index) {
+                        <button class="btn bg-zinc-600 w-full" (click)="HandleAction(button.Action)">{{button.Title}}</button>
                         }
                     </div>
                     }
                 </div>
+            </div>
+            }
+            <span class="grid grid-cols-3 gap-2 mt-4">
+                @if (state.ActionHistory.length > 0) {
+                <button class="btn bg-zinc-500 flex gap-2 justify-center" (click)="state.previousAction();" i18n="@@general-back-button"><lucide-angular name="arrow-left" /> Zurück</button>
+                }
+                <button class="btn bg-zinc-500 flex gap-2 justify-center col-span-2" [class.col-span-3]="state.ActionHistory.length === 0" (click)="OnNext()" i18n="@@general-next-button">Weiter <lucide-angular name="arrow-right" /></button>
+            </span>
+        </app-sidebar-group>
+        }
+    </div>
+    @if (AreEventsMaximized) {
+    <div class="fixed top-0 left-0 w-dvw h-dvh bg-zinc-950/60 backdrop-blur-xs z-50 flex justify-center items-center">
+        <button class="btn text-zinc-700 fixed top-8 right-8 bg-zinc-700 !px-3" (click)="setEventMaximized(false)">
+            <lucide-icon name="x" size="24px" />
+        </button>
+        <div class="w-full grid grid-cols-[1fr_34rem_1fr] gap-x-4 gap-y-2">
+            <div class="col-start-1 row-start-1 overflow-hidden flex flex-row-reverse">
+                <div class="flex gap-2">
+                    @for (action of state.ActionHistory; track $index) {
+                    <div class="p-4 rounded-2xl bg-zinc-700 min-w-120 h-40 self-center">
+                        <div class="grid grid-cols-[1fr_auto] gap-2">
+                            <div>
+                                <h1 class="text-xl text-zinc-300">{{action.Id | i18nSelect: NAME_TRANSLATIONS}}</h1>
+                                <ul>
+                                    @for (point of GetFilteredPoints(action); track $index) {
+                                    <li class="list-disc ml-4 text-zinc-400">{{point}}</li>
+                                    }
+                                </ul>
+                            </div>
+                            <img [src]="'img/' + action.Id + '.png'" class="w-16 h-16 rounded-md md-shadow-md" [alt]="action.Id | i18nSelect: NAME_TRANSLATIONS">
+                        </div>
+                    </div>
+                    }
+                </div>
+            </div>
+            @if (state.Actions[0].Id) {
+            <div class="col-start-2 row-start-1 h-120 items-center grid">
+                <div class="p-4 rounded-2xl bg-zinc-500 min-h-40">
+                    <div class="grid grid-cols-[1fr_auto] gap-2">
+                        <div>
+                            <h1 class="text-2xl text-zinc-100">{{state.Actions[0].Id | i18nSelect: NAME_TRANSLATIONS}}</h1>
+                            <ul>
+                                @for (point of GetFilteredPoints(state.Actions[0]); track $index) {
+                                <li class="list-disc ml-4 text-lg text-zinc-200">{{point}}</li>
+                                }
+                            </ul>
+                        </div>
+                        <img [src]="'img/' + state.Actions[0].Id + '.png'" class="w-16 h-16 rounded-md md-shadow-md" [alt]="state.Actions[0].Id | i18nSelect: NAME_TRANSLATIONS">
+                    </div>
+                    @if (GetFilteredButtons(state.Actions[0]).length > 0) {
+                    <div class="flex flex-col gap-2 mt-4">
+                        @for (button of GetFilteredButtons(state.Actions[0]); track $index) {
+                        <button class="btn bg-zinc-600 w-full" (click)="HandleAction(button.Action)">{{button.Title}}</button>
+                        }
+                    </div>
+                    }
+                </div>
+            </div>
+            }
+            <div class="col-start-3 row-start-1 overflow-hidden flex gap-2">
+                @for (action of getNextActions(); track $index) {
+                <div class="p-4 rounded-2xl bg-zinc-700 min-w-120 h-40 self-center">
+                    <div class="grid grid-cols-[1fr_auto] gap-2">
+                        <div>
+                            <h1 class="text-xl text-zinc-300">{{action.Id | i18nSelect: NAME_TRANSLATIONS}}</h1>
+                            <ul>
+                                @for (point of GetFilteredPoints(action); track $index) {
+                                <li class="list-disc ml-4 text-zinc-400">{{point}}</li>
+                                }
+                            </ul>
+                        </div>
+                        <img [src]="'img/' + action.Id + '.png'" class="w-16 h-16 rounded-md md-shadow-md" [alt]="action.Id | i18nSelect: NAME_TRANSLATIONS">
+                    </div>
+                </div>
                 }
             </div>
+            <span class="grid grid-cols-3 gap-2 mt-4 row-start-2 col-start-2">
+                @if (state.ActionHistory.length > 0) {
+                <button class="btn bg-zinc-500 flex gap-2 justify-center" (click)="state.previousAction();" i18n="@@general-back-button"><lucide-angular name="arrow-left" /> Zurück</button>
+                }
+                <button class="btn bg-zinc-500 flex gap-2 justify-center col-span-2" [class.col-span-3]="state.ActionHistory.length === 0" (click)="OnNext()" i18n="@@general-next-button">Weiter <lucide-angular name="arrow-right" /></button>
+            </span>
         </div>
-        <span class="grid grid-cols-3 mx-4 gap-2">
-            @if (state.ActionHistory.length > 0) {
-            <button class="btn bg-gray-500 block" (click)="state.PreviousAction();" i18n="@@general-back-button">← Zurück</button>
-            }
-            <button class="btn bg-gray-500 block col-span-2" [class.col-span-3]="state.ActionHistory.length === 0" (click)="OnNext()" i18n="@@general-next-button">Weiter →</button>
-        </span>
     </div>
+    }
 </div>

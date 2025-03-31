@@ -1,0 +1,49 @@
+<svg #svg viewBox="0 0 2000 2000" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;" class="max-w-svw max-h-dvh mx-auto">
+    <!-- Name background-color -->
+    <defs>
+        <filter x="-0.125" y="-0.125" width="1.25" height="1.25" id="solid">
+            <feFlood flood-color="oklch(.21 .006 285.885)" result="bg" />
+            <feMerge>
+                <feMergeNode in="bg" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+
+    <path [attr.d]="GetMovementHintArrowPaths()[0]" class="fill-none stroke-zinc-500 stroke-[18px]" />
+    <path [attr.d]="GetMovementHintArrowPaths()[1]" class="fill-none stroke-zinc-500 stroke-[18px]" />
+    <path [attr.d]="GetMovementHintPath()" class="fill-none stroke-zinc-500 stroke-[18px]" style="stroke-dasharray:32,48,0,0,0,0;" />
+    <text class="fill-zinc-500 text-center italic" filter="url(#solid)" x="600" y="1000" textLength="800" i18n="@@circle-move-the-person">Verschiebe die Personen</text>
+
+    @for (person of StaticPeople(); track person.Id; let idx = $index) {
+    <g class="shake animate" [style.animationDelay]="-idx/7+'s'" (pointerdown)="grab(person.Id, $event)">
+        @if (person.Character?.Id) {
+        <clipPath [id]="'clip_'+person.Id" class="pointer-events-none">
+            <circle [attr.cx]="GetEditModeCoordinate(idx).x" [attr.cy]="GetEditModeCoordinate(idx).y" r="100" class="pointer-events-none" />
+        </clipPath>
+        <g [attr.clip-path]="'url(#clip_' + person.Id + ')'">
+            <image [attr.href]="'img/' + person.Character!.Id + '.png'" [attr.x]="GetEditModeCoordinate(idx).x - 110" [attr.y]="GetEditModeCoordinate(idx).y - 110" width="220" height="220" />
+        </g>
+        }
+
+        <text class="fill-zinc-300" filter="url(#solid)" [attr.x]="GetEditModeCoordinate(idx).x + 150" [attr.y]="GetEditModeCoordinate(idx).y + 20">{{person.Name}}</text>
+        <circle [attr.cx]="GetEditModeCoordinate(idx).x" [attr.cy]="GetEditModeCoordinate(idx).y" r="100" class="ring cursor-pointer fill-transparent" [class.!fill-zinc-700]="!person.Character?.Id" />
+    </g>
+    }
+
+    @if (grabbedPerson()) {
+    <g class="z-50">
+        @if (grabbedPerson()?.Character?.Id) {
+        <clipPath [id]="'clip_'+grabbedPerson()!.Id" class="pointer-events-none">
+            <circle [attr.cx]="movementPosition().x" [attr.cy]="movementPosition().y" r="100" class="pointer-events-none" />
+        </clipPath>
+        <g [attr.clip-path]="'url(#clip_' + grabbedPerson()!.Id + ')'">
+            <image [attr.href]="'img/' + grabbedPerson()!.Character!.Id + '.png'" [attr.x]="movementPosition().x - 110" [attr.y]="movementPosition().y - 110" width="220" height="220" />
+        </g>
+        }
+
+        <text class="fill-zinc-300" filter="url(#solid)" [attr.x]="movementPosition().x + 150" [attr.y]="movementPosition().y + 20">{{grabbedPerson()!.Name}}</text>
+        <circle [attr.cx]="movementPosition().x" [attr.cy]="movementPosition().y" r="100" class="ring cursor-pointer fill-transparent" [class.!fill-zinc-700]="!grabbedPerson()!.Character?.Id" />
+    </g>
+    }
+</svg>

@@ -1,17 +1,21 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+html, body {
+    @apply h-full w-full overflow-auto;
+}
 
 .btn {
-    @apply rounded-md py-3 px-6 text-gray-100 font-bold;
+    @apply rounded-md py-3 px-6 text-zinc-100 font-bold;
+    touch-action: manipulation;
 }
 
 .btn:disabled {
-    @apply text-gray-300;
+    @apply text-zinc-300;
 }
 
 html {
-    @apply bg-gray-800
+    @apply bg-zinc-900;
+    overscroll-behavior: none;
 }
 
 .md-shadow-sm {
@@ -20,4 +24,9 @@ html {
 
 .md-shadow-md {
     box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+}
+
+.dialog-svg svg {
+    max-width: calc(100dvw - var(--spacing) * 16) !important;
+    max-height: calc(100dvh - var(--spacing) * 50) !important;
 }

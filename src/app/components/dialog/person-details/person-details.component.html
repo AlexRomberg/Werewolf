@@ -1,38 +1,65 @@
-<div class="bg-slate-800 h-[36rem] lg:w-[36rem] w-full p-4 rounded-2xl grid grid-rows-[auto_1fr_auto] gap-2">
-    <h1 class="text-gray-200 text-2xl" i18n="@@dialog-title-information-about-player">Informationen zum Spieler</h1>
-    <div class="flex flex-col gap-2 overflow-auto">
-        <label class="text-gray-200" for="name" i18n="@@general-name">Name</label>
-        <input class="rounded-md py-3 px-6 text-gray-100 bg-gray-500" type="text" name="name" id="name" [(ngModel)]="Person().Name">
-        <label class="text-gray-200 mt-2" for="function">Funktion</label>
-        <select class="rounded-md py-3 px-6 text-gray-100 bg-gray-500" name="function" id="function" [(ngModel)]="Person().Character">
-            <option class="text-gray-100 bg-gray-500" [ngValue]="undefined" i18n="@@general-unknown">Unbekannt</option>
-            @for (character of GameState.Characters; track $index) {
-            <option class="text-gray-100 bg-gray-500" [ngValue]="character">{{character.Name}}</option>
+@if (Dialog.DialogData && Dialog.DialogData.type === DialogTypes.PersonDetails) {
+<div class="bg-zinc-800 py-4 rounded-2xl grid grid-rows-[auto_1fr_auto] max-h-[calc(100dvh_-_var(--spacing)_*_14)] mt-32">
+    <span class="flex justify-center relative">
+        <div class="absolute w-40 h-40 -top-24 rounded-full bg-zinc-700 grid grid-cols-1 grid-rows-1 justify-center items-center overflow-hidden">
+            @if (Dialog.DialogData.data.person.Character) {
+            <span class="text-zinc-200 mx-auto">
+                <img [src]="'img/' + Dialog.DialogData.data.person.Character.Id + '.png'" class="w-40 h-40" />
+            </span>
+            } @else {
+            <span class="text-zinc-200 mx-auto">
+                <lucide-angular name="user-round" size="80"></lucide-angular>
+            </span>
             }
-        </select>
-        <label class="text-gray-200 mt-2" for="StateButtons" i18n="@@dialog-state">Zustand</label>
-        <div id="StateButtons" class="grid grid-rows-5">
-            <span class="flex gap-4 p-2 bg-gray-700 rounded-md">
-                <input type="checkbox" id="protected" class="w-6 h-6" style="accent-color: orange;" [(ngModel)]="Person().IsProtected">
-                <label class="text-gray-200" for="protected" i18n="@@dialog-is-protected">Geschützt</label>
+        </div>
+    </span>
+    <span class="flex mb-10 px-4">
+        <button class="ml-auto btn !px-3" (click)="Dialog.ConfirmDialog()">
+            <lucide-angular name="x"></lucide-angular>
+        </button>
+    </span>
+    <div class="flex flex-col gap-2">
+        <span class="flex items-center gap-4 px-4">
+            <h1 class="text-zinc-200 text-xl" i18n="@@dialog-title-information-about-player">Informationen zum Spieler</h1>
+            <hr class="flex-grow border-zinc-600" />
+        </span>
+        <div class="flex flex-col overflow-auto px-4">
+            <label class="text-zinc-200" for="name" i18n="@@general-name">Name</label>
+            <input class="rounded-md py-3 px-6 text-zinc-100 bg-zinc-500 mb-2" type="text" placeholder="Unbenannt" i18n-placeholder="@@generic-unnamed" name="name" id="name" autocomplete="off" [(ngModel)]="Dialog.DialogData.data.person.Name" (keydown.enter)="Dialog.ConfirmDialog()" />
+            <label class="text-zinc-200" for="function" i18n="@@dialog-function">Funktion</label>
+            <select class="rounded-md py-3 px-6 text-zinc-100 bg-zinc-500" name="function" id="function" [(ngModel)]="Dialog.DialogData.data.person.Character">
+                <option class="text-zinc-100 bg-zinc-500" [ngValue]="undefined" i18n="@@general-unknown">Unbekannt</option>
+                @for (character of GameState.SelectedCharacters; track $index) {
+                <option class="text-zinc-100 bg-zinc-500" [ngValue]="character">{{character.Id | i18nSelect: NAME_TRANSLATIONS}}</option>
+                }
+            </select>
+        </div>
+        <span class="flex items-center gap-4 px-4">
+            <h1 class="text-zinc-200 text-xl" i18n="@@dialog-state">Zustand</h1>
+            <hr class="flex-grow border-zinc-600" />
+        </span>
+        <div class="grid grid-rows-5 px-4">
+            <span class="flex gap-4 p-2 bg-zinc-700 rounded-md">
+                <input type="checkbox" id="protected" class="w-6 h-6" style="accent-color: orange;" [(ngModel)]="Dialog.DialogData.data.person.IsProtected">
+                <label class="text-zinc-200" for="protected" i18n="@@dialog-is-protected">Geschützt</label>
             </span>
             <span class="flex gap-4 p-2">
-                <input type="checkbox" id="victim" class="w-6 h-6" style="accent-color: red;" [(ngModel)]="Person().IsVictim">
-                <label class="text-gray-200" for="victim" i18n="@@dialog-is-victim">Wolfs- / Hexenopfer</label>
+                <input type="checkbox" id="victim" class="w-6 h-6" style="accent-color: red;" [(ngModel)]="Dialog.DialogData.data.person.IsVictim">
+                <label class="text-zinc-200" for="victim" i18n="@@dialog-is-victim">Wolfs- / Hexenopfer</label>
             </span>
-            <span class="flex gap-4 p-2 bg-gray-700 rounded-md">
-                <input type="checkbox" id="enchanted" class="w-6 h-6" style="accent-color: deepPink;" [(ngModel)]="Person().IsEnchanted">
-                <label class="text-gray-200" for="enchanted" i18n="@@dialog-is-enchanted">Verzaubert</label>
+            <span class="flex gap-4 p-2 bg-zinc-700 rounded-md">
+                <input type="checkbox" id="enchanted" class="w-6 h-6" style="accent-color: deepPink;" [(ngModel)]="Dialog.DialogData.data.person.IsEnchanted">
+                <label class="text-zinc-200" for="enchanted" i18n="@@dialog-is-enchanted">Verzaubert</label>
             </span>
             <span class="flex gap-4 p-2">
-                <input type="checkbox" id="werewolf" class="w-6 h-6" style="accent-color: black;" [(ngModel)]="Person().IsWerewolf">
-                <label class="text-gray-200" for="werewolf" i18n="@@dialog-is-werewolf">Werwolf (Infiziert / Wildes Kind ohne Vorbild)</label>
+                <input type="checkbox" id="werewolf" class="w-6 h-6" style="accent-color: black;" [(ngModel)]="Dialog.DialogData.data.person.IsWerewolf">
+                <label class="text-zinc-200" for="werewolf" i18n="@@dialog-is-werewolf">Werwolf (Infiziert / Wildes Kind ohne Vorbild)</label>
             </span>
-            <span class="flex gap-4 p-2 bg-gray-700 rounded-md">
-                <input type="checkbox" id="dead" class="w-6 h-6 accent-red-800" [(ngModel)]="Person().IsDead">
-                <label class="text-gray-200" for="dead" i18n="@@dialog-is-dead">Tot</label>
+            <span class="flex gap-4 p-2 bg-zinc-700 rounded-md">
+                <input type="checkbox" id="dead" class="w-6 h-6 accent-red-800" [(ngModel)]="Dialog.DialogData.data.person.IsDead">
+                <label class="text-zinc-200" for="dead" i18n="@@dialog-is-dead">Tot</label>
             </span>
         </div>
     </div>
-    <button class="text-gray-200 bg-gray-500 w-full btn" (click)="Dialog.QuitPersonDialog()">Ok</button>
 </div>
+}

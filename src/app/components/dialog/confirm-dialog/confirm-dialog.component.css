@@ -1,0 +1,5 @@
+@reference "../../../../styles.css";
+
+:host {
+    @apply block w-dvw h-dvh p-8 max-w-240 mx-auto items-center;
+}

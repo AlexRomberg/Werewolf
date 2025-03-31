@@ -1,18 +1,18 @@
-// @ts-check
-const eslint = require("@eslint/js");
-const tseslint = require("typescript-eslint");
-const angular = require("angular-eslint");
+// @ts-nocheck
+import { configs } from "@eslint/js";
+import { config, configs as tsConfigs } from "typescript-eslint";
+import { configs as ngConfigs, processInlineTemplates } from "angular-eslint";
 
-module.exports = tseslint.config(
+export default config(
   {
     files: ["**/*.ts"],
     extends: [
-      eslint.configs.recommended,
-      ...tseslint.configs.recommended,
-      ...tseslint.configs.stylistic,
-      ...angular.configs.tsRecommended,
+      configs.recommended,
+      ...tsConfigs.recommended,
+      ...tsConfigs.stylistic,
+      ...ngConfigs.tsRecommended,
     ],
-    processor: angular.processInlineTemplates,
+    processor: processInlineTemplates,
     rules: {
       "@angular-eslint/directive-selector": [
         "error",
@@ -42,13 +42,14 @@ module.exports = tseslint.config(
         },
       ],
       "no-multiple-empty-lines": ["error", { max: 1 }],
+      "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
     },
   },
   {
     files: ["**/*.html"],
     extends: [
-      ...angular.configs.templateRecommended,
-      ...angular.configs.templateAccessibility,
+      ...ngConfigs.templateRecommended,
+      ...ngConfigs.templateAccessibility,
     ],
     rules: {
     },

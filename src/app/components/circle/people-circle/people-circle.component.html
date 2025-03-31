@@ -1,0 +1,41 @@
+<svg viewBox="0 0 2000 2000" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;" class="max-w-svw max-h-dvh mx-auto">
+    <!-- Name background-color -->
+    <defs>
+        <filter x="-0.125" y="-0.125" width="1.25" height="1.25" id="solid">
+            <feFlood flood-color="oklch(.21 .006 285.885)" result="bg" />
+            <feMerge>
+                <feMergeNode in="bg" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+
+    @for (connectionEntry of Connections(); track $index) {
+    <path [attr.d]="GetConnectionPath($index)" style="fill:none;stroke-width:22.22px;" [style.stroke]="GetConnectionColor(connectionEntry.ConnectionType)" />
+    }
+
+    @for (person of People(); track $index) {
+    <!-- - Image -->
+    @if (person.Character) {
+    <clipPath [id]="'clip_'+person.Id" class="pointer-events-none" (click)="OnPersonClicked(person)">
+        <circle [attr.cx]="GetCoordinate($index).x" [attr.cy]="GetCoordinate($index).y" r="100" class="pointer-events-none" (click)="OnPersonClicked(person)" />
+    </clipPath>
+    <g [attr.clip-path]="'url(#clip_' + person.Id + ')'">
+        <image [attr.href]="'img/' + person.Character.Id + '.png'" [attr.x]="GetCoordinate($index).x - 110" [attr.y]="GetCoordinate($index).y - 110" width="220" height="220" />
+    </g>
+    }
+
+    <!-- - Name -->
+    <text class="fill-zinc-300" filter="url(#solid)" [attr.x]="GetTextCoordinate($index).x" [attr.y]="GetTextCoordinate($index).y">{{person.Name}}</text>
+
+    <!-- - Circle -->
+    <circle [attr.cx]="GetCoordinate($index).x" [attr.cy]="GetCoordinate($index).y" r="100" class="ring cursor-pointer" [class.!fill-zinc-700]="!person.Character" [style.stroke]="GetRingColor(person, 0)" (click)="OnPersonClicked(person)" />
+    <circle [attr.cx]="GetCoordinate($index).x" [attr.cy]="GetCoordinate($index).y" r="115" class="ring pointer-events-none" [style.stroke]="GetRingColor(person, 1)" />
+    <circle [attr.cx]="GetCoordinate($index).x" [attr.cy]="GetCoordinate($index).y" r="130" class="ring pointer-events-none" [style.stroke]="GetRingColor(person, 2)" />
+    <circle [attr.cx]="GetCoordinate($index).x" [attr.cy]="GetCoordinate($index).y" r="145" class="ring pointer-events-none" [style.stroke]="GetRingColor(person, 3)" />
+
+    <!-- - Dead -->
+    @if (person.IsDead) {
+    <path [attr.d]="GetCrossPath($index)" style="stroke-width:22.22px;" class="fill-none stroke-red-800 pointer-events-none" />
+    }}
+</svg>

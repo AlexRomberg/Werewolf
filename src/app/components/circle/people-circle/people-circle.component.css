@@ -1,0 +1,15 @@
+@reference "../../../../styles.css";
+
+:host {
+    @apply col-start-1 row-start-1;
+}
+
+.ring {
+    @apply fill-white/0;
+    stroke-width: 10px;
+}
+
+text {
+    font-family: 'ArialMT', 'Arial', sans-serif;
+    font-size: 66.667px;
+}

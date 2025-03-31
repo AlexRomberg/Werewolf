@@ -1,16 +1,19 @@
 import { DialogService } from "../../services/dialog.service";
-import { ActionButton, Character } from "../../types";
+import { StateService } from "../../services/state.service";
+import { ActionButton } from "../../types";
+import { Character } from "../characters/character";
 
 export const RequestAssignment = (thisContext: Character): ActionButton => {
     return {
-        Title: "Person zuweisen",
-        Action: async ({ Dialog }: { Dialog: DialogService }): Promise<void> => {
+        Title: $localize`:@@character-button-general-assing-person:Person zuweisen`,
+        Action: async ({ GameState, Dialog }: { GameState: StateService, Dialog: DialogService }): Promise<void> => {
             try {
-                const people = await Dialog.ShowPeopleDialog("Person auswählen", 1);
-                if (thisContext.AssignedPerson) {
-                    thisContext.AssignedPerson.Character = undefined;
+                const people = await Dialog.ShowPeopleSelectionDialog($localize`:@@dialog-title-select-person:Person auswählen`, 1);
+                console.log("closed", people);
+
+                for (const person of GameState.getPeopleForCharacter(thisContext) ?? []) {
+                    person.Character = undefined;
                 }
-                thisContext.AssignedPerson = people[0];
                 people[0].Character = thisContext;
             } catch {
                 // closed
@@ -21,17 +24,16 @@ export const RequestAssignment = (thisContext: Character): ActionButton => {
 
 export const RequestAssignments = (thisContext: Character, maximum?: number): ActionButton => {
     return {
-        Title: "Personen zuweisen",
-        Action: async ({ Dialog }: { Dialog: DialogService }): Promise<void> => {
+        Title: $localize`:@@character-button-general-assing-people:Personen zuweisen`,
+        Action: async ({ GameState, Dialog }: { GameState: StateService, Dialog: DialogService }): Promise<void> => {
             try {
-                const people = await Dialog.ShowPeopleDialog("Personen auswählen", maximum);
-                for (const person of thisContext.AssignedPeople ?? []) {
+                const people = await Dialog.ShowPeopleSelectionDialog($localize`:@@dialog-title-select-people:Personen auswählen`, maximum);
+                for (const person of GameState.getPeopleForCharacter(thisContext) ?? []) {
                     person.Character = undefined;
                 }
                 for (const person of people) {
                     person.Character = thisContext;
                 }
-                thisContext.AssignedPeople = people;
             } catch {
                 // closed
             }

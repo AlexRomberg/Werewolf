@@ -10,5 +10,6 @@ export const environment = {
             special: "45oHQwFkR2ylWUieL1SHoO",
             general: "4ye5jeTcpDzl59S7zPhzP0"
         }
-    }
+    },
+    isTesting: false,
 };
