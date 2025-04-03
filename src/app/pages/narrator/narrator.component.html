@@ -94,10 +94,10 @@
             </app-sidebar-group>
         </div>
         @if (!AreEventsMaximized) {
-        <div class="pb-6 inline-flex lg:w-[27rem] max-lg:w-svw-no-m">
+        <div class="pb-6 inline-flex">
             <app-sidebar-group title="Ereignisse" i18n-title="@@narrator-events" [collapsedOnStart]="false" [secondIcon]="AreEventsMaximized ? 'minimize-2' : 'maximize-2'" (secondIconPressedEvent)="setEventMaximized(!AreEventsMaximized)" [summary]="state.Actions[0].Id ? (state.Actions[0].Id | i18nSelect: NAME_TRANSLATIONS):undefined" class="mt-auto overflow-hidden row-start-6" [flipIcon]="true">
                 @if (state.Actions[0].Id) {
-                <div class="grid grid-cols-1 grid-rows-1 min-h-44 max-lg:w-svw-no-m">
+                <div class="grid grid-cols-1 grid-rows-1 min-h-44 lg:w-[27rem] max-lg:w-svw-no-m">
                     @if (state.Actions.length > 2) {
                     <div class="rounded-2xl col-start-1 row-start-1 bg-zinc-700 transform rotate-2 -translate-y-1 max-lg:rotate-[0.7deg]  z-0"></div>
                     }

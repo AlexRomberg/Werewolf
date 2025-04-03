@@ -29,7 +29,7 @@
         @if (!change.isApplied) {
         <button class="btn flex items-center bg-green-600 gap-2 justify-center max-md:mb-2" (click)="applyChange(change)">
             <lucide-icon name="check" size="20" class="text-zinc-200"></lucide-icon>
-            <p>Übernehmen</p>
+            <p i18n="@@changes-apply">Übernehmen</p>
         </button>
         } @else {<div></div>}
         }
