@@ -49,87 +49,91 @@
         </button>
         }
     </div>
-    <div class="lg:w-[30rem] w-full bg-zinc-800 grid h-dvh max-h-dvh overflow-y-auto z-20 p-6 max-lg:pt-27 gap-2" [class.max-lg:hidden]="!MobileShowSidebar">
-        @if (spotify.IsAuthenticated && spotify.CurrentDevice) {
-        <app-sidebar-group title="Spotify" [collapsedOnStart]="true" [summary]="spotifySummary">
-            <span class="flex justify-start items-center overflow-hidden">
-                @if (spotify.CurrentDevice) {
-                <p class="text-zinc-300 whitespace-nowrap overflow-hidden text-ellipsis mr-4" i18n="@@spotify-selected-device">Verbundenes Gerät:</p>
-                <span class="flex items-center py-2 px-4 rounded-full bg-zinc-700 text-zinc-200">
-                    <lucide-angular [name]="spotify.getIconOfDevice(spotify.CurrentDevice)" />
-                    <p class="ml-2">{{spotify.CurrentDevice.name}}</p>
-                </span>
-                } @else {
-                <p class="text-zinc-300 whitespace-nowrap overflow-hidden text-ellipsis" i18n="@@spotify-no-device-selected">Kein Gerät ausgewählt</p>
-                }
-            </span>
-            <div class="bg-zinc-700 grid grid-cols-[1fr_auto_auto] items-center gap-2 p-2 pr-0 pl-4 rounded-xl mt-2">
-                <p class="text-zinc-200 whitespace-nowrap overflow-hidden text-ellipsis">{{songTitle}}</p>
-                <button class="bg-zinc-600 rounded-md text-zinc-200 p-3 flex justify-center items-center" (click)="togglePlaybackState()">
-                    <lucide-angular [name]="spotify.PlaybackState?.is_playing ? 'pause':'play'" />
-                </button>
-                <button class="bg-zinc-600 rounded-md text-zinc-200 p-3 flex justify-center items-center mr-2" (click)="skipSong()">
-                    <lucide-angular name="skip-forward" />
-                </button>
-            </div>
-        </app-sidebar-group>
-        <hr class="border-zinc-700 my-4">
-        }
-        <app-sidebar-group title="Charaktere" i18n-title="@@setup-characters" [collapsedOnStart]="true">
-            <div class="grid grid-cols-2 gap-2 lg:max-h-50 lg:overflow-y-auto">
-                @for (character of state.SelectedCharacters; track $index) {
-                <button class="bg-zinc-700 p-2 rounded-md grid grid-cols-[4rem_1fr] gap-2 items-center text-zinc-200" (click)="openCharacterDetails(character)">
-                    @if (!character.IsSingle) {
-                    <div class="border-4 border-zinc-800 rounded md-shadow-md w-16 h-16 col-start-1 row-start-1 rotate-3"></div>
-                    <div class="border-4 border-zinc-900 rounded md-shadow-md w-16 h-16 col-start-1 row-start-1 -rotate-6"></div>
+    <div class="lg:w-[30rem] w-full bg-zinc-800 h-dvh grid justify-between max-h-dvh z-20 overflow-y-auto p-6 pb-0 max-lg:pt-27 gap-4" [class.max-lg:hidden]="!MobileShowSidebar">
+        <div class="block max-lg:w-svw-no-m">
+            @if (spotify.IsAuthenticated && spotify.CurrentDevice) {
+            <app-sidebar-group title="Spotify" [collapsedOnStart]="true" [summary]="spotifySummary">
+                <span class="flex justify-start items-center overflow-hidden">
+                    @if (spotify.CurrentDevice) {
+                    <p class="text-zinc-300 whitespace-nowrap overflow-hidden text-ellipsis mr-4" i18n="@@spotify-selected-device">Verbundenes Gerät:</p>
+                    <span class="flex items-center py-2 px-4 rounded-full bg-zinc-700 text-zinc-200">
+                        <lucide-angular [name]="spotify.getIconOfDevice(spotify.CurrentDevice)" />
+                        <p class="ml-2">{{spotify.CurrentDevice.name}}</p>
+                    </span>
+                    } @else {
+                    <p class="text-zinc-300 whitespace-nowrap overflow-hidden text-ellipsis" i18n="@@spotify-no-device-selected">Kein Gerät ausgewählt</p>
                     }
-                    <div class="border-4 border-black rounded md-shadow-md w-16 col-start-1 row-start-1 z-10">
-                        <img class="w-16" [src]="'img/' + character.Id + '.png'" [alt]="character.Id | i18nSelect: NAME_TRANSLATIONS">
-                    </div>
-                    <p class="text-center">{{character.Id | i18nSelect: NAME_TRANSLATIONS}}</p>
-                </button>
-                }
-            </div>
-        </app-sidebar-group>
-        @if (!AreEventsMaximized) {
-        <app-sidebar-group title="Ereignisse" i18n-title="@@narrator-events" [collapsedOnStart]="false" [secondIcon]="AreEventsMaximized ? 'minimize-2' : 'maximize-2'" (secondIconPressedEvent)="setEventMaximized(!AreEventsMaximized)" [summary]="state.Actions[0].Id ? (state.Actions[0].Id | i18nSelect: NAME_TRANSLATIONS):undefined" class="mt-auto overflow-hidden row-start-6" [flipIcon]="true">
-            @if (state.Actions[0].Id) {
-            <div class="grid grid-cols-1 grid-rows-1 min-h-44">
-                @if (state.Actions.length > 2) {
-                <div class="rounded-2xl col-start-1 row-start-1 bg-zinc-700 transform rotate-2 -translate-y-1 z-0"></div>
-                }
-                @if (state.Actions.length > 1) {
-                <div class="rounded-2xl col-start-1 row-start-1 bg-zinc-600 transform -rotate-2 z-0"></div>
-                }
-                <div class="p-4 rounded-2xl col-start-1 row-start-1 bg-zinc-500 z-10">
-                    <div class="grid grid-cols-[1fr_auto] gap-2">
-                        <div>
-                            <h1 class="text-xl text-zinc-100">{{state.Actions[0].Id | i18nSelect: NAME_TRANSLATIONS}}</h1>
-                            <ul>
-                                @for (point of GetFilteredPoints(state.Actions[0]); track $index) {
-                                <li class="list-disc ml-4 text-zinc-200">{{point}}</li>
-                                }
-                            </ul>
-                        </div>
-                        <img [src]="'img/' + state.Actions[0].Id + '.png'" class="w-16 h-16 rounded-md md-shadow-md" [alt]="state.Actions[0].Id | i18nSelect: NAME_TRANSLATIONS">
-                    </div>
-                    @if (GetFilteredButtons(state.Actions[0]).length > 0) {
-                    <div class="flex flex-col gap-2 mt-4">
-                        @for (button of GetFilteredButtons(state.Actions[0]); track $index) {
-                        <button class="btn bg-zinc-600 w-full" (click)="HandleAction(button.Action)">{{button.Title}}</button>
+                </span>
+                <div class="bg-zinc-700 grid grid-cols-[1fr_auto_auto] items-center gap-2 p-2 pr-0 pl-4 rounded-xl mt-2">
+                    <p class="text-zinc-200 whitespace-nowrap overflow-hidden text-ellipsis">{{songTitle}}</p>
+                    <button class="bg-zinc-600 rounded-md text-zinc-200 p-3 flex justify-center items-center" (click)="togglePlaybackState()">
+                        <lucide-angular [name]="spotify.PlaybackState?.is_playing ? 'pause':'play'" />
+                    </button>
+                    <button class="bg-zinc-600 rounded-md text-zinc-200 p-3 flex justify-center items-center mr-2" (click)="skipSong()">
+                        <lucide-angular name="skip-forward" />
+                    </button>
+                </div>
+            </app-sidebar-group>
+            <hr class="border-zinc-700 my-4">
+            }
+            <app-sidebar-group title="Charaktere" i18n-title="@@setup-characters" [collapsedOnStart]="true">
+                <div class="grid grid-cols-2 gap-2 overflow-y-auto max-h-auto">
+                    @for (character of state.SelectedCharacters; track $index) {
+                    <button class="bg-zinc-700 p-2 rounded-md grid grid-cols-[4rem_1fr] gap-2 items-center text-zinc-200" (click)="openCharacterDetails(character)">
+                        @if (!character.IsSingle) {
+                        <div class="border-4 border-zinc-800 rounded md-shadow-md w-16 h-16 col-start-1 row-start-1 rotate-3"></div>
+                        <div class="border-4 border-zinc-900 rounded md-shadow-md w-16 h-16 col-start-1 row-start-1 -rotate-6"></div>
                         }
-                    </div>
+                        <div class="border-4 border-black rounded md-shadow-md w-16 col-start-1 row-start-1 z-10">
+                            <img class="w-16" [src]="'img/' + character.Id + '.png'" [alt]="character.Id | i18nSelect: NAME_TRANSLATIONS">
+                        </div>
+                        <p class="text-center">{{character.Id | i18nSelect: NAME_TRANSLATIONS}}</p>
+                    </button>
                     }
                 </div>
-            </div>
-            }
-            <span class="grid grid-cols-3 gap-2 mt-4">
-                @if (state.ActionHistory.length > 0) {
-                <button class="btn bg-zinc-500 flex gap-2 justify-center" (click)="state.previousAction();" i18n="@@general-back-button"><lucide-angular name="arrow-left" /> Zurück</button>
+            </app-sidebar-group>
+        </div>
+        @if (!AreEventsMaximized) {
+        <div class="pb-6 inline-flex lg:w-[27rem] max-lg:w-svw-no-m">
+            <app-sidebar-group title="Ereignisse" i18n-title="@@narrator-events" [collapsedOnStart]="false" [secondIcon]="AreEventsMaximized ? 'minimize-2' : 'maximize-2'" (secondIconPressedEvent)="setEventMaximized(!AreEventsMaximized)" [summary]="state.Actions[0].Id ? (state.Actions[0].Id | i18nSelect: NAME_TRANSLATIONS):undefined" class="mt-auto overflow-hidden row-start-6" [flipIcon]="true">
+                @if (state.Actions[0].Id) {
+                <div class="grid grid-cols-1 grid-rows-1 min-h-44 max-lg:w-svw-no-m">
+                    @if (state.Actions.length > 2) {
+                    <div class="rounded-2xl col-start-1 row-start-1 bg-zinc-700 transform rotate-2 -translate-y-1 max-lg:rotate-[0.7deg]  z-0"></div>
+                    }
+                    @if (state.Actions.length > 1) {
+                    <div class="rounded-2xl col-start-1 row-start-1 bg-zinc-600 transform -rotate-2 max-lg:-rotate-[0.8deg] z-0"></div>
+                    }
+                    <div class="p-4 rounded-2xl col-start-1 row-start-1 bg-zinc-500 z-10">
+                        <div class="grid grid-cols-[1fr_auto] gap-2">
+                            <div>
+                                <h1 class="text-xl text-zinc-100">{{state.Actions[0].Id | i18nSelect: NAME_TRANSLATIONS}}</h1>
+                                <ul>
+                                    @for (point of GetFilteredPoints(state.Actions[0]); track $index) {
+                                    <li class="list-disc ml-4 text-zinc-200">{{point}}</li>
+                                    }
+                                </ul>
+                            </div>
+                            <img [src]="'img/' + state.Actions[0].Id + '.png'" class="w-16 h-16 rounded-md md-shadow-md" [alt]="state.Actions[0].Id | i18nSelect: NAME_TRANSLATIONS">
+                        </div>
+                        @if (GetFilteredButtons(state.Actions[0]).length > 0) {
+                        <div class="flex flex-col gap-2 mt-4">
+                            @for (button of GetFilteredButtons(state.Actions[0]); track $index) {
+                            <button class="btn bg-zinc-600 w-full" (click)="HandleAction(button.Action)">{{button.Title}}</button>
+                            }
+                        </div>
+                        }
+                    </div>
+                </div>
                 }
-                <button class="btn bg-zinc-500 flex gap-2 justify-center col-span-2" [class.col-span-3]="state.ActionHistory.length === 0" (click)="OnNext()" i18n="@@general-next-button">Weiter <lucide-angular name="arrow-right" /></button>
-            </span>
-        </app-sidebar-group>
+                <span class="grid grid-cols-3 gap-2 mt-4">
+                    @if (state.ActionHistory.length > 0) {
+                    <button class="btn bg-zinc-500 flex gap-2 justify-center" (click)="state.previousAction();" i18n="@@general-back-button"><lucide-angular name="arrow-left" /> Zurück</button>
+                    }
+                    <button class="btn bg-zinc-500 flex gap-2 justify-center col-span-2" [class.col-span-3]="state.ActionHistory.length === 0" (click)="OnNext()" i18n="@@general-next-button">Weiter <lucide-angular name="arrow-right" /></button>
+                </span>
+            </app-sidebar-group>
+        </div>
         }
     </div>
     @if (AreEventsMaximized) {

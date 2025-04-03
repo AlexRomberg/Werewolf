@@ -1,0 +1,5 @@
+@media (width < 64rem) {
+    .max-lg\:w-svw-no-m {
+       width: calc(100svw - 3rem)
+    }
+}
