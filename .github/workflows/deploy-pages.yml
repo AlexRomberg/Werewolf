@@ -18,16 +18,14 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-        working-directory: app
 
       - name: Build Angular project
         run: npm run build
-        working-directory: app
 
       - name: Deploy to GitHub Pages
         if: success()
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
-          folder: app/dist/wolf/browser
+          folder: dist/wolf/browser
           clean: true
