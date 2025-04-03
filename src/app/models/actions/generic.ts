@@ -1,6 +1,7 @@
-import { CHANGE_TRANSLATIONS, NAME_TRANSLATIONS } from "../../i18n/translations";
+import { NAME_TRANSLATIONS } from "../../i18n/translations";
+import { DialogService } from "../../services/dialog.service";
 import { StateService } from "../../services/state.service";
-import { ActionProvider, DaybreakChange as DaybreakChange } from "../../types";
+import { ActionProvider } from "../../types";
 import { BearGuide } from "../characters/implementations/bearGuide";
 import { WerewolfCharacter } from "../characters/werewolfCharacter";
 
@@ -32,8 +33,7 @@ export class DaybreakAction implements ActionProvider {
     Id = "day";
     GetActions = () => [
         $localize`:@@actions-day-1:Und das Dorf erwacht`,
-        this.gameState.Changes.length > 0 && $localize`:@@actions-day-2:Informiere über Tode:`,
-        ...this.gameState.Changes.map(change => this.getChangeDescription(change)),
+        this.gameState.Changes.length > 0 && $localize`:@@actions-day-2:Informiere über Tode (Änderungen anzeigen)`,
         this.gameState.Changes.length <= 0 && $localize`:@@actions-day-3:Keine Tode in der Nacht`,
         this.gameState.SelectedCharacters.some(c => c instanceof BearGuide) && $localize`:@@actions-day-4:Denke an den Bärenführer`,
         $localize`:@@actions-day-5:Leite Diskussion ein`
@@ -41,16 +41,9 @@ export class DaybreakAction implements ActionProvider {
     GetButtons = () =>
         this.gameState.Changes.length > 0 ? [
             {
-                Title: $localize`:@@actions-day-6:Änderungen bestätigen`,
-                Action: () => { this.gameState.Changes.forEach(change => change.apply()); }
-            }, {
-                Title: $localize`:@@actions-day-7:Änderungen verwerfen`,
-                Action: () => { this.gameState.Changes = []; }
+                Title: $localize`:@@actions-day-6:Änderungen anzeigen`,
+                Action: ({ Dialog }: { Dialog: DialogService }) => { Dialog.ShowChangesDialog(this.gameState.Changes); }
             }] : [];
 
     constructor(private gameState: StateService) { }
-
-    private getChangeDescription = (change: DaybreakChange) => {
-        return ` ${change.person.Name || "Unbenannter Spieler"}${change.person.Character?.Id ? `(${NAME_TRANSLATIONS[change.person.Character.Id as keyof typeof NAME_TRANSLATIONS]})` : ''} > ${CHANGE_TRANSLATIONS[change.reason]}`;
-    };
 };

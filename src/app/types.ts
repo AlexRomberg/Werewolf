@@ -63,6 +63,7 @@ export enum ChangeReason {
 export interface DaybreakChange {
     person: Person,
     reason: ChangeReason,
+    isApplied: boolean,
     apply: () => void
 }
 
@@ -99,7 +100,8 @@ export enum DialogTypes {
     PeopleSelection,
     PersonDetails,
     CharacterDetails,
-    Confirm
+    Confirm,
+    Changes
 }
 
 export interface PeopleSelectionDialogData {
@@ -139,5 +141,10 @@ export type DialogData = {
     type: DialogTypes.Confirm,
     data: ConfirmDialogData,
     res: (response: boolean) => void,
+    rej: () => void
+} | {
+    type: DialogTypes.Changes,
+    data: DaybreakChange[],
+    res: () => void,
     rej: () => void
 }

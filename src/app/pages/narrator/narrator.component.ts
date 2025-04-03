@@ -41,7 +41,7 @@ export class NarratorComponent {
         });
     }
 
-    public OnNext(): void {
+    public async OnNext() {
         if (this.firstNightfall && this.spotify.IsAuthenticated && this.state.MusicStarted) {
             this.spotify.Pause().then(() => {
                 this.spotify.QueueSongRandom(environment.spotify.playlists.special).then(() => {
@@ -52,6 +52,12 @@ export class NarratorComponent {
             });
         }
         this.firstNightfall = false;
+
+        if (this.state.Actions.length <= 1 && this.state.Changes.filter(c => !c.isApplied).length > 0) {
+            if (!await this.dialog.ShowConfirmDialog($localize`:@@narrator-changes-not-yet-applied:Es sind noch nicht alle Änderungen angewendet. Möchtest du trotzdem fortfahren?`)) {
+                return;
+            }
+        }
         this.state.nextAction();
     }
 

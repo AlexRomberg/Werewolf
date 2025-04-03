@@ -5,10 +5,11 @@ import { PersonDetailsComponent } from "./person-details/person-details.componen
 import { DialogTypes } from "../../types";
 import { ConfirmDialogComponent } from "./confirm-dialog/confirm-dialog.component";
 import { CharacterDetailsComponent } from "./character-details/character-details.component";
+import { ChangesComponent } from "./changes/changes.component";
 
 @Component({
     selector: "app-dialog",
-    imports: [PeopleSelectionComponent, PersonDetailsComponent, CharacterDetailsComponent, ConfirmDialogComponent],
+    imports: [PeopleSelectionComponent, PersonDetailsComponent, CharacterDetailsComponent, ConfirmDialogComponent, ChangesComponent],
     templateUrl: "./dialog.component.html"
 })
 export class DialogComponent {

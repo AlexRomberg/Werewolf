@@ -1,7 +1,7 @@
 import { inject, Injectable } from "@angular/core";
 import { StateService } from "./state.service";
 import { Person } from "../models/state/person";
-import { DialogData, DialogTypes } from "../types";
+import { DaybreakChange, DialogData, DialogTypes } from "../types";
 import { Character } from "../models/characters/character";
 
 @Injectable({
@@ -53,6 +53,17 @@ export class DialogService {
             this.DialogData = {
                 type: DialogTypes.Confirm,
                 data: { title },
+                res,
+                rej
+            }
+        });
+    }
+
+    public async ShowChangesDialog(changes: DaybreakChange[]) {
+        return await new Promise<void>((res, rej) => {
+            this.DialogData = {
+                type: DialogTypes.Changes,
+                data: changes,
                 res,
                 rej
             }

@@ -39,25 +39,25 @@
             <hr class="flex-grow border-zinc-600" />
         </span>
         <div class="grid grid-rows-5 px-4">
-            <span class="flex gap-4 p-2 bg-zinc-700 rounded-md">
-                <input type="checkbox" id="protected" class="w-6 h-6" style="accent-color: orange;" [(ngModel)]="Dialog.DialogData.data.person.IsProtected">
-                <label class="text-zinc-200" for="protected" i18n="@@dialog-is-protected">Geschützt</label>
+            <span class="grid grid-cols-[auto_1fr] bg-zinc-700 rounded-md">
+                <input type="checkbox" id="protected" class="m-2 w-6 h-6" style="accent-color: orange;" [(ngModel)]="Dialog.DialogData.data.person.IsProtected">
+                <label class="py-2 text-zinc-200" for="protected" i18n="@@dialog-is-protected">Geschützt</label>
             </span>
-            <span class="flex gap-4 p-2">
-                <input type="checkbox" id="victim" class="w-6 h-6" style="accent-color: red;" [(ngModel)]="Dialog.DialogData.data.person.IsVictim">
-                <label class="text-zinc-200" for="victim" i18n="@@dialog-is-victim">Wolfs- / Hexenopfer</label>
+            <span class="grid grid-cols-[auto_1fr]">
+                <input type="checkbox" id="victim" class="m-2 w-6 h-6" style="accent-color: red;" [(ngModel)]="Dialog.DialogData.data.person.IsVictim">
+                <label class="py-2 text-zinc-200" for="victim" i18n="@@dialog-is-victim">Wolfs- / Hexenopfer</label>
             </span>
-            <span class="flex gap-4 p-2 bg-zinc-700 rounded-md">
-                <input type="checkbox" id="enchanted" class="w-6 h-6" style="accent-color: deepPink;" [(ngModel)]="Dialog.DialogData.data.person.IsEnchanted">
-                <label class="text-zinc-200" for="enchanted" i18n="@@dialog-is-enchanted">Verzaubert</label>
+            <span class="grid grid-cols-[auto_1fr] bg-zinc-700 rounded-md">
+                <input type="checkbox" id="enchanted" class="m-2 w-6 h-6" style="accent-color: deepPink;" [(ngModel)]="Dialog.DialogData.data.person.IsEnchanted">
+                <label class="py-2 text-zinc-200" for="enchanted" i18n="@@dialog-is-enchanted">Verzaubert</label>
             </span>
-            <span class="flex gap-4 p-2">
-                <input type="checkbox" id="werewolf" class="w-6 h-6" style="accent-color: black;" [(ngModel)]="Dialog.DialogData.data.person.IsWerewolf">
-                <label class="text-zinc-200" for="werewolf" i18n="@@dialog-is-werewolf">Werwolf (Infiziert / Wildes Kind ohne Vorbild)</label>
+            <span class="grid grid-cols-[auto_1fr]">
+                <input type="checkbox" id="werewolf" class="m-2 w-6 h-6" style="accent-color: black;" [(ngModel)]="Dialog.DialogData.data.person.IsWerewolf">
+                <label class="py-2 text-zinc-200" for="werewolf" i18n="@@dialog-is-werewolf">Werwolf (Infiziert / Wildes Kind ohne Vorbild)</label>
             </span>
-            <span class="flex gap-4 p-2 bg-zinc-700 rounded-md">
-                <input type="checkbox" id="dead" class="w-6 h-6 accent-red-800" [(ngModel)]="Dialog.DialogData.data.person.IsDead">
-                <label class="text-zinc-200" for="dead" i18n="@@dialog-is-dead">Tot</label>
+            <span class="grid grid-cols-[auto_1fr] bg-zinc-700 rounded-md">
+                <input type="checkbox" id="dead" class="m-2 w-6 h-6 accent-red-800" [(ngModel)]="Dialog.DialogData.data.person.IsDead">
+                <label class="py-2 text-zinc-200" for="dead" i18n="@@dialog-is-dead">Tot</label>
             </span>
         </div>
     </div>

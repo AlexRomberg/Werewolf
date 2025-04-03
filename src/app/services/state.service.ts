@@ -135,9 +135,6 @@ export class StateService {
 
     public startNextRound() {
         this.gameState.Round++;
-        for (const changes of this.Changes) {
-            changes.apply();
-        }
 
         for (const character of this.gameState.SelectedCharacters) {
             character.resetAfterNight();
@@ -256,16 +253,20 @@ export class StateService {
         return changes;
     }
 
-    private handleConsequenceofDeath(person: Person, isFollowUpCheck = false): DaybreakChange[] {
+    private handleConsequenceofDeath(person: Person, isFollowUpCheck = false, isCoupleHandled = false): DaybreakChange[] {
         const changes: (DaybreakChange | undefined)[] = [];
 
-        changes.push(this.getLoveConnectionChanges(person));
+        if (!isCoupleHandled) {
+            const loveConnection = this.getLoveConnectionChanges(person);
+            isCoupleHandled = Boolean(loveConnection);
+            changes.push(loveConnection);
+        }
         changes.push(this.getTrustConnectionChanges(person));
 
         if (!isFollowUpCheck) {
             changes.push(this.getSleepoverConnectionChanges(person));
 
-            const followups = changes.filter(Boolean).map(c => this.handleConsequenceofDeath(c!.person, true)).flat();
+            const followups = changes.filter(Boolean).map(c => this.handleConsequenceofDeath(c!.person, true, isCoupleHandled)).flat();
             changes.push(...followups);
         }
 
@@ -279,6 +280,7 @@ export class StateService {
                 changes.push({
                     person,
                     reason: ChangeReason.DiedGotKilled,
+                    isApplied: false,
                     apply: () => {
                         person.IsVictim = false;
                         person.IsDead = true;
@@ -296,6 +298,7 @@ export class StateService {
             return {
                 person: sleepoverConnection.From,
                 reason: ChangeReason.DiedSleptWithVictim,
+                isApplied: false,
                 apply: () => {
                     sleepoverConnection.From.IsDead = true;
                 }
@@ -310,6 +313,7 @@ export class StateService {
             return {
                 person: trustConnection.From,
                 reason: ChangeReason.TurnedIntoWolf,
+                isApplied: false,
                 apply: () => {
                     trustConnection.From.IsWerewolf = true;
                 }
@@ -325,6 +329,7 @@ export class StateService {
             return {
                 person: affectedPerson,
                 reason: ChangeReason.DiedOfBrokenHeart,
+                isApplied: false,
                 apply: () => {
                     affectedPerson.IsDead = true;
                 }

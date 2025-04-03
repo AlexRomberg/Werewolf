@@ -53,6 +53,6 @@ export const GAME_SET_TRANSLATIONS = {
 export const CHANGE_TRANSLATIONS = {
     [ChangeReason.DiedGotKilled]: $localize`:@@change-died-got-killed:gestorben (Opfer von Werwolf/Hexe)`,
     [ChangeReason.DiedOfBrokenHeart]: $localize`:@@change-died-of-broken-heart:gestorben (Liebeskummer)`,
-    [ChangeReason.DiedSleptWithVictim]: $localize`:@@change-died-slept-with-victim:gestorben (War im haus des Ofers)`,
+    [ChangeReason.DiedSleptWithVictim]: $localize`:@@change-died-slept-with-victim:gestorben (War im Haus des Ofers)`,
     [ChangeReason.TurnedIntoWolf]: $localize`:@@change-turned-into-wolf:verwandelt in Werewolf (NICHT SAGEN)`,
 };

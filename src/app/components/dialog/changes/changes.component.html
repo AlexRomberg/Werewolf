@@ -1,0 +1,38 @@
+@if (Dialog.DialogData && Dialog.DialogData.type === DialogTypes.Changes) {
+<div class="bg-zinc-800 p-4 rounded-2xl grid grid-rows-[auto_1fr_auto] gap-2 max-h-[calc(100dvh_-_var(--spacing)_*_14)]">
+    <span class="grid grid-cols-[1fr_auto]">
+        <h1 class="text-zinc-200 text-2xl" i18n="@@changes">Änderungen</h1>
+        <button class="btn !px-3" (click)="Dialog.RejectDialog()">
+            <lucide-angular name="x"></lucide-angular>
+        </button>
+    </span>
+    <div class="grid max-md:grid-cols-[1fr] grid-cols-[1fr_auto] gap-2 items-center">
+        @for (change of Dialog.DialogData.data; track $index) {
+        <div class="text-zinc-200 grid grid-cols-[auto_auto_1fr] gap-2 items-center">
+            <div class="flex gap-4 p-2 pr-6 h-16 bg-zinc-700 rounded-full items-center">
+                <div class="w-12 h-12 rounded-full bg-zinc-600 grid grid-cols-1 grid-rows-1 justify-center items-center overflow-hidden">
+                    @if (change.person.Character) {
+                    <span class="text-zinc-200 mx-auto">
+                        <img [src]="'img/' + change.person.Character.Id + '.png'" class="w-12 h-12" />
+                    </span>
+                    } @else {
+                    <span class="text-zinc-200 mx-auto">
+                        <lucide-angular name="user-round" size="30"></lucide-angular>
+                    </span>
+                    }
+                </div>
+                <p>{{getChangeUser(change)}}</p>
+            </div>
+            <lucide-icon name="arrow-right" size="20" class="text-zinc-200"></lucide-icon>
+            <p>{{getChangeDescription(change)}}</p>
+        </div>
+        @if (!change.isApplied) {
+        <button class="btn flex items-center bg-green-600 gap-2 justify-center max-md:mb-2" (click)="applyChange(change)">
+            <lucide-icon name="check" size="20" class="text-zinc-200"></lucide-icon>
+            <p>Übernehmen</p>
+        </button>
+        } @else {<div></div>}
+        }
+    </div>
+</div>
+}
