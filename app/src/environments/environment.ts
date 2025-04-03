@@ -11,5 +11,6 @@ export const environment = {
             general: "4ye5jeTcpDzl59S7zPhzP0"
         }
     },
+    socketio: { url: 'https://wolf.aro-playground.ch/', options: {} },
     isTesting: false,
 };

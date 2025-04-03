@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "server"
+		},
+		{
+			"path": "app"
+		}
+	],
+	"settings": {
+		"deno.enable": true
+	}
+}

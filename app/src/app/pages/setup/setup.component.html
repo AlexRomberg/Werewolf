@@ -59,34 +59,6 @@
     </div>
     <hr class="w-full my-6 border-zinc-700" />
     <div class="grid grid-cols-1 sm:grid-cols-[auto_1fr] md:grid-cols-3 grid-rows-[auto_auto_1fr] gap-y-1 gap-x-4 items-center sm:items-end md:items-start w-full">
-        <h2 class="text-xl" i18n="@@setup-players">Spieler</h2>
-        <i class="md:row-start-2 text-zinc-500 text-sm" i18n="@@setup-add-players-can-change-later">Füge Spieler hinzu<br class="max-md:hidden"> (Die Namen und Reihenfolge kannst du auch später ändern)</i>
-        <div class="sm:col-span-2 md:row-span-3 max-md:mt-4 grid grid-cols-1 gap-4 p-4 bg-zinc-800 rounded-md">
-            <button class="py-2 flex justify-between pr-2" (click)="isPeopleEditorOpen.set(!isPeopleEditorOpen())">
-                <p class="text-lg" i18n="@@setup-nr-of-people">{{state.People.length}} Personen</p>
-                <lucide-angular [name]="isPeopleEditorOpen()?'chevron-up':'chevron-down'" />
-            </button>
-            @if (isPeopleEditorOpen()) {
-            <hr class="w-full border-zinc-500" />
-            @if (state.People.length < 20) { <button (click)="state.addPerson()" class="flex items-center gap-4 border-dashed border-zinc-500 border-2 p-1.5 rounded-md">
-                <lucide-angular name="plus" size="32px" />
-                <p class="whitespace-nowrap text-ellipsis" i18n="@@generic-add">Hinzufügen</p>
-                </button>
-                }
-                @for (person of state.People; track $index) {
-                <div class="flex items-center gap-4 p-2">
-                    <lucide-angular name="circle-user-round" size="32px" />
-                    <input type="text" [(ngModel)]="person.Name" placeholder="Unbenannt" i18n-placeholder="@@generic-unnamed" class="w-full">
-                    <button (click)="state.removePerson(person)" class="text-red-400">
-                        <lucide-angular name="trash-2" />
-                    </button>
-                </div>
-                }
-                }
-        </div>
-    </div>
-    <hr class="w-full my-6 border-zinc-700" />
-    <div class="grid grid-cols-1 sm:grid-cols-[auto_1fr] md:grid-cols-3 grid-rows-[auto_auto_1fr] gap-y-1 gap-x-4 items-center sm:items-end md:items-start w-full">
         <h2 class="text-xl" i18n="@@setup-characters">Charaktere</h2>
         <i class="md:row-start-2 text-zinc-500 text-sm" i18n="@@setup-select-characters">Wähle hier die Charaktere aus mit denen ihr spielt</i>
         <div class="sm:col-span-2 md:row-span-3 max-md:mt-4 grid grid-cols-1 p-4 bg-zinc-800 rounded-md">
@@ -130,6 +102,75 @@
             }
         </div>
     </div>
+    <hr class="w-full my-6 border-zinc-700" />
+    <div class="grid grid-cols-1 sm:grid-cols-[auto_1fr] md:grid-cols-3 grid-rows-[auto_auto_1fr] gap-y-1 gap-x-4 items-center sm:items-end md:items-start w-full">
+        <h2 class="text-xl" i18n="@@setup-digital-cards">Virtuelle Karten</h2>
+        <i class="md:row-start-2 text-zinc-500 text-sm" i18n="@@setup-show-cards-on-smartphone">Zeige die Karten digital direkt auf den Handies der Mitspieler an.</i>
+        <div class="sm:col-span-2 md:row-span-3 max-md:mt-4 grid grid-cols-1 p-4 bg-zinc-800 rounded-md">
+            <button class="grid grid-cols-[1fr_auto] grid-rows-[auto_auto] items-center pr-2 gap-y-2" (click)="toggleVirtualCards()">
+                <p class="text-left text-lg" i18n="@@setup-nr-of-characters">Virtuelle Karten aktiviert</p>
+                <div class="w-16 h-8 p-1 bg-zinc-600 rounded-full grid grid-cols-2 gap-2" [class.!bg-green-500]="virtualCardRoom()">
+                    <div class="w-6 h-6 rounded-full bg-zinc-400 col-start-1" [class.!col-start-2]="virtualCardRoom()" [class.!bg-zinc-200]="virtualCardRoom()"></div>
+                </div>
+            </button>
+            @if (virtualCardRoom()) {
+            <span class="grid grid-cols-[auto_1fr] grid-rows-1 items-center gap-2">
+                <p i18n="@@setup-grouped-by">Raum-Code:</p>
+                <p class="text-5xl text-center">{{getRoomCode()}}</p>
+            </span>
+            }
+        </div>
+    </div>
+    <hr class="w-full my-6 border-zinc-700" />
+    @if (virtualCardRoom()) {
+    <div class="grid grid-cols-1 sm:grid-cols-[auto_1fr] md:grid-cols-3 grid-rows-[auto_auto_1fr] gap-y-1 gap-x-4 items-center sm:items-end md:items-start w-full">
+        <h2 class="text-xl" i18n="@@setup-players">Verbundene Spieler</h2>
+        <i class="md:row-start-2 text-zinc-500 text-sm" i18n="@@setup-add-players-can-change-later">Sehe hier alle verbundenen Spieler</i>
+        <div class="sm:col-span-2 md:row-span-3 max-md:mt-4 grid grid-cols-1 gap-4 p-4 bg-zinc-800 rounded-md">
+            <button class="py-2 flex justify-between pr-2" (click)="isPeopleEditorOpen.set(!isPeopleEditorOpen())">
+                <p class="text-lg" i18n="@@setup-nr-of-people">{{state.People.length}} Personen</p>
+                <lucide-angular [name]="isPeopleEditorOpen()?'chevron-up':'chevron-down'" />
+            </button>
+            @if (isPeopleEditorOpen()) {
+            <hr class="w-full border-zinc-500" />
+            @for (person of socket.connectedPeople; track $index) {
+            <div class="flex items-center gap-4 p-2">
+                <lucide-angular name="circle-user-round" size="32px" />
+                <input type="text" [ngModel]="person" placeholder="Unbenannt" i18n-placeholder="@@generic-unnamed" class="w-full">
+            </div>
+            }
+            }
+        </div>
+    </div>
+    } @else {
+    <div class="grid grid-cols-1 sm:grid-cols-[auto_1fr] md:grid-cols-3 grid-rows-[auto_auto_1fr] gap-y-1 gap-x-4 items-center sm:items-end md:items-start w-full">
+        <h2 class="text-xl" i18n="@@setup-players">Spieler</h2>
+        <i class="md:row-start-2 text-zinc-500 text-sm" i18n="@@setup-add-players-can-change-later">Füge Spieler hinzu<br class="max-md:hidden"> (Die Namen und Reihenfolge kannst du auch später ändern)</i>
+        <div class="sm:col-span-2 md:row-span-3 max-md:mt-4 grid grid-cols-1 gap-4 p-4 bg-zinc-800 rounded-md">
+            <button class="py-2 flex justify-between pr-2" (click)="isPeopleEditorOpen.set(!isPeopleEditorOpen())">
+                <p class="text-lg" i18n="@@setup-nr-of-people">{{state.People.length}} Personen</p>
+                <lucide-angular [name]="isPeopleEditorOpen()?'chevron-up':'chevron-down'" />
+            </button>
+            @if (isPeopleEditorOpen()) {
+            <hr class="w-full border-zinc-500" />
+            @if (state.People.length < 20) { <button (click)="state.addPerson()" class="flex items-center gap-4 border-dashed border-zinc-500 border-2 p-1.5 rounded-md">
+                <lucide-angular name="plus" size="32px" />
+                <p class="whitespace-nowrap text-ellipsis" i18n="@@generic-add">Hinzufügen</p>
+                </button>
+                }
+                @for (person of state.People; track $index) {
+                <div class="flex items-center gap-4 p-2">
+                    <lucide-angular name="circle-user-round" size="32px" />
+                    <input type="text" [(ngModel)]="person.Name" placeholder="Unbenannt" i18n-placeholder="@@generic-unnamed" class="w-full">
+                    <button (click)="state.removePerson(person)" class="text-red-400">
+                        <lucide-angular name="trash-2" />
+                    </button>
+                </div>
+                }
+                }
+        </div>
+    </div>
+    }
     <hr class="w-full my-6 border-zinc-700" />
     <div class="flex mb-6">
         <button class="btn bg-zinc-700 text-zinc-200 w-full flex gap-2 justify-center" (click)="startGame()" i18n="@@setup-start-game">Spiel starten<lucide-angular name="arrow-right" /> </button>

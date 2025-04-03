@@ -10,6 +10,8 @@ import { LucideAngularModule } from "lucide-angular";
 import { Device } from "@spotify/web-api-ts-sdk/dist/mjs/types";
 import { I18nSelectPipe } from "@angular/common";
 import { Character } from "../../models/characters/character";
+import { SocketService } from "../../services/socket.service";
+import { DialogService } from "../../services/dialog.service";
 
 @Component({
     selector: "app-setup",
@@ -21,11 +23,14 @@ export class SetupComponent implements OnInit {
     private router = inject(Router);
     state = inject(StateService);
     spotify = inject(SpotifyService);
+    socket = inject(SocketService);
+    dialog = inject(DialogService);
 
     isLoadingDevices = signal(false);
     isSelectingDevice = signal(false);
     isPeopleEditorOpen = signal(false);
     isCharacterEditorOpen = signal(false);
+    virtualCardRoom = signal<string | undefined>(undefined);
     grouping = signal<"group" | "game">("group");
 
     NAME_TRANSLATIONS = NAME_TRANSLATIONS;
@@ -99,5 +104,27 @@ export class SetupComponent implements OnInit {
             this.state.MusicStarted = true;
         }
         this.router.navigateByUrl("/narrator");
+    }
+
+    public toggleVirtualCards() {
+        if (this.virtualCardRoom()) {
+            this.dialog.ShowConfirmDialog("Willst du diesen Raum wirklich löschen?").then(response => {
+                if (response) {
+                    this.virtualCardRoom.set(undefined);
+                }
+            })
+            return;
+        }
+
+        this.socket.createRoom().then((code) => {
+            this.virtualCardRoom.set(code);
+        });
+    }
+
+    public getRoomCode(): string {
+        if (this.virtualCardRoom()) {
+            return this.virtualCardRoom()?.substring(0, 3) + "-" + this.virtualCardRoom()?.substring(3, 6);
+        }
+        return "";
     }
 }
