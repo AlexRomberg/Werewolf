@@ -1,20 +1,20 @@
 {
   "name": "Werewolf",
   "short_name": "Werewolf",
-  "theme_color": "#191e35",
-  "background_color": "#191e35",
+  "theme_color": "#18181b",
+  "background_color": "#18181b",
   "display": "standalone",
-  "scope": "./",
-  "start_url": "./",
+  "scope": "/",
+  "start_url": "/",
   "icons": [
     {
-      "src": "/favicon/web-app-manifest-192x192.png",
+      "src": "./web-app-manifest-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "/favicon/web-app-manifest-512x512.png",
+      "src": "./web-app-manifest-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
