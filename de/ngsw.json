@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1743694755432,
+  "timestamp": 1748261453791,
   "index": "https://alexromberg.github.io/Werewolf/de/index.html",
   "assetGroups": [
     {
@@ -11,18 +11,18 @@
         "ignoreVary": true
       },
       "urls": [
+        "https://alexromberg.github.io/Werewolf/de/chunk-2LTX4TUO.js",
+        "https://alexromberg.github.io/Werewolf/de/chunk-5WFGWRYB.js",
         "https://alexromberg.github.io/Werewolf/de/chunk-BQCUAHHG.js",
         "https://alexromberg.github.io/Werewolf/de/chunk-BUA5GIRK.js",
-        "https://alexromberg.github.io/Werewolf/de/chunk-C2FAH6XM.js",
         "https://alexromberg.github.io/Werewolf/de/chunk-CAN53H2J.js",
-        "https://alexromberg.github.io/Werewolf/de/chunk-EYTPXN3B.js",
         "https://alexromberg.github.io/Werewolf/de/chunk-ICKMDJGT.js",
-        "https://alexromberg.github.io/Werewolf/de/chunk-JJ2FBDVU.js",
         "https://alexromberg.github.io/Werewolf/de/chunk-JPPPAUSL.js",
         "https://alexromberg.github.io/Werewolf/de/chunk-MBABEOSW.js",
         "https://alexromberg.github.io/Werewolf/de/chunk-NIRXDNRY.js",
-        "https://alexromberg.github.io/Werewolf/de/chunk-RQU36OCT.js",
         "https://alexromberg.github.io/Werewolf/de/chunk-S6VIYWOS.js",
+        "https://alexromberg.github.io/Werewolf/de/chunk-UF45OZPS.js",
+        "https://alexromberg.github.io/Werewolf/de/chunk-UHV2XUHV.js",
         "https://alexromberg.github.io/Werewolf/de/chunk-WBJZ5L5T.js",
         "https://alexromberg.github.io/Werewolf/de/chunk-ZQHVANQV.js",
         "https://alexromberg.github.io/Werewolf/de/favicon/site.webmanifest",
@@ -60,9 +60,9 @@
         "https://alexromberg.github.io/Werewolf/de/img/witch.png",
         "https://alexromberg.github.io/Werewolf/de/img/wolfdog.png",
         "https://alexromberg.github.io/Werewolf/de/index.html",
-        "https://alexromberg.github.io/Werewolf/de/main-MOWPATXF.js",
+        "https://alexromberg.github.io/Werewolf/de/main-6PT3GMJB.js",
         "https://alexromberg.github.io/Werewolf/de/polyfills-QOUMYCIC.js",
-        "https://alexromberg.github.io/Werewolf/de/styles-MQOR7E27.css"
+        "https://alexromberg.github.io/Werewolf/de/styles-QK6CUOWE.css"
       ],
       "patterns": []
     },
@@ -85,18 +85,18 @@
   ],
   "dataGroups": [],
   "hashTable": {
+    "https://alexromberg.github.io/Werewolf/de/chunk-2LTX4TUO.js": "a0bd6b569888b6ce2a42243692144eb554a536aa",
+    "https://alexromberg.github.io/Werewolf/de/chunk-5WFGWRYB.js": "ca9c97129da5699a2db8586a7756ac89801e9fda",
     "https://alexromberg.github.io/Werewolf/de/chunk-BQCUAHHG.js": "b97392e9b8e79815ec719cb7d890b79ecd968dd9",
     "https://alexromberg.github.io/Werewolf/de/chunk-BUA5GIRK.js": "4b8619e058bcfd2f53e56d4c1698d3c9f5d7f1ef",
-    "https://alexromberg.github.io/Werewolf/de/chunk-C2FAH6XM.js": "c3cbe103c82d16b2f5704c67c77727fc4b7c18ae",
     "https://alexromberg.github.io/Werewolf/de/chunk-CAN53H2J.js": "6a941efda6ad61cf74fe91aad77ae7d97bc8909e",
-    "https://alexromberg.github.io/Werewolf/de/chunk-EYTPXN3B.js": "d27f03441d53da4b4c19fcae27ae5e90eaad158c",
     "https://alexromberg.github.io/Werewolf/de/chunk-ICKMDJGT.js": "1acfcbc73939f107e87c90f9a63a05d00aa0c996",
-    "https://alexromberg.github.io/Werewolf/de/chunk-JJ2FBDVU.js": "4b23df8edef288bcf6213ca43e825ade255c96dd",
     "https://alexromberg.github.io/Werewolf/de/chunk-JPPPAUSL.js": "1ea8dab3576ef8b35450d830e8390b8222c5f966",
     "https://alexromberg.github.io/Werewolf/de/chunk-MBABEOSW.js": "9694833519c69b42057a9141a65ad20c7a52ff4e",
     "https://alexromberg.github.io/Werewolf/de/chunk-NIRXDNRY.js": "048f945b40b1735753e2de01cce275ca4d94c24a",
-    "https://alexromberg.github.io/Werewolf/de/chunk-RQU36OCT.js": "08c47b2a3a1d4d6f5a00b031e71c608f0d6b9dc9",
     "https://alexromberg.github.io/Werewolf/de/chunk-S6VIYWOS.js": "7f942d7bde7930f3b28547a6656b894dff83503b",
+    "https://alexromberg.github.io/Werewolf/de/chunk-UF45OZPS.js": "e2be3fb95fc6c83d364a315666f48392dd64320e",
+    "https://alexromberg.github.io/Werewolf/de/chunk-UHV2XUHV.js": "d16b91ea8b8a26cf098ab721fbab7ac84f9c01f1",
     "https://alexromberg.github.io/Werewolf/de/chunk-WBJZ5L5T.js": "4f2037be178142213c84ee79376763759efa4733",
     "https://alexromberg.github.io/Werewolf/de/chunk-ZQHVANQV.js": "6de8b907e40fe5fedba29302ab6d8c76053ff432",
     "https://alexromberg.github.io/Werewolf/de/favicon/apple-touch-icon.png": "7716840e6cdeb8439ac72763a073982777f939bc",
@@ -138,10 +138,10 @@
     "https://alexromberg.github.io/Werewolf/de/img/wild_child.png": "e479e6183f6684570ff9d9d5639685457fd50e42",
     "https://alexromberg.github.io/Werewolf/de/img/witch.png": "1383e8a3af437197d84e430f0caa8facfeb3c7b4",
     "https://alexromberg.github.io/Werewolf/de/img/wolfdog.png": "be846bae61268db87166b02cfee2a995fbb03bf4",
-    "https://alexromberg.github.io/Werewolf/de/index.html": "bfd5d0c6cda65c8ebf6b1d3dc0c5ecd99362fccc",
-    "https://alexromberg.github.io/Werewolf/de/main-MOWPATXF.js": "f1026355ff0b6a3e563559aef3396c54bacf04b7",
+    "https://alexromberg.github.io/Werewolf/de/index.html": "c88ab8f234e2916428fa023fd2038b079bfedf5e",
+    "https://alexromberg.github.io/Werewolf/de/main-6PT3GMJB.js": "e3855846986489155ae79b6c26f3309903f6455e",
     "https://alexromberg.github.io/Werewolf/de/polyfills-QOUMYCIC.js": "dde30a1184695cadbf6797a3863aff41e5a7d745",
-    "https://alexromberg.github.io/Werewolf/de/styles-MQOR7E27.css": "32510d7b7366b48894e59a33e0b62c7f2f9bda3b"
+    "https://alexromberg.github.io/Werewolf/de/styles-QK6CUOWE.css": "c15f60125dcd81e03569a4a87d474ab04968f508"
   },
   "navigationUrls": [
     {
