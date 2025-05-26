@@ -6,7 +6,7 @@
             <lucide-angular name="x"></lucide-angular>
         </button>
     </span>
-    <div class="self-center bg-zinc-900 grid h-full rounded-lg dialog-svg">
+    <div class="self-center bg-zinc-900 grid h-full rounded-lg dialog-svg overflow-hidden">
         <app-circle [People]="Dialog.DialogData.data.people" (PersonClick)="OnPersonSelected($event)"></app-circle>
     </div>
     <span class="grid grid-cols-2 gap-2">

@@ -33,14 +33,18 @@ export class DialogService {
         })
     }
 
-    public async ShowPeopleSelectionDialog(title: string, numberOfPeople?: number) {
+    public async ShowPeopleSelectionDialog(title: string, numberOfPeople?: number, selectedPeople?: Person[]) {
+        const peopleClone: Person[] = this.gameState.People.map(p => p.cloneWithoutEffectState());
+        const selectedIds = (selectedPeople ?? []).map(p => p.Id);
+        const selectedPeopleClone = peopleClone.map((p: Person) => { p.IsProtected = selectedIds.includes(p.Id); return p; });
+
         return await new Promise<Person[]>((res, rej) => {
             this.DialogData = {
                 type: DialogTypes.PeopleSelection,
                 data: {
                     title,
                     numberOfPeople,
-                    people: this.gameState.People.map(p => p.cloneWithoutEffectState())
+                    people: selectedPeopleClone
                 },
                 res,
                 rej

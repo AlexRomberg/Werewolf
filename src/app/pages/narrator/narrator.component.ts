@@ -2,7 +2,7 @@ import { Component, inject } from "@angular/core";
 import { CircleComponent } from "../../components/circle/circle.component";
 import { StateService } from "../../services/state.service";
 import { DialogService } from "../../services/dialog.service";
-import { ActionProvider, ActionCallback } from "../../types";
+import { ActionProvider, ActionCallback, ConnectionTypes } from "../../types";
 import { FormsModule } from "@angular/forms";
 import { SpotifyService } from "../../services/spotify.service";
 import { environment } from "../../../environments/environment";
@@ -25,6 +25,7 @@ export class NarratorComponent {
     dialog = inject(DialogService);
     spotify = inject(SpotifyService);
     NAME_TRANSLATIONS = NAME_TRANSLATIONS;
+    ConnectionTypes = ConnectionTypes;
     FallbackNotPlayingText = $localize`:@@spotify-fallback-not-playing:Nichts am abspielen`;
     IsEditingPlayers = false;
     AreEventsMaximized = false;
@@ -123,5 +124,23 @@ export class NarratorComponent {
     public setEventMaximized(maximized: boolean): void {
         this.MobileShowSidebar = !maximized;
         this.AreEventsMaximized = maximized;
+    }
+
+    async openConnectionUpdate(connectionType: ConnectionTypes) {
+        try {
+            const connection = this.state.Connections.find(c => c.ConnectionType === connectionType);
+            const selectedPeople = connection ? [connection.From, connection.To] : [];
+            console.log(connection, selectedPeople);
+
+
+            const people = await this.dialog.ShowPeopleSelectionDialog($localize`:@@dialog-title-select-people:Personen auswählen`, 2, selectedPeople);
+            this.state.addConnection(
+                connectionType,
+                people[0],
+                people[1]
+            );
+        } catch {
+            // closed
+        }
     }
 }

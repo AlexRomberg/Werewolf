@@ -23,30 +23,32 @@
             <lucide-angular [name]="IsEditingPlayers? 'check':'user-pen'" class="text-zinc-200" size="20px" i18n-title="@@narrator-change-seating" title="Sitzreihenfolge ändern" />
         </button>
         @if (!IsEditingPlayers && (isRoleInGame("cupid") || isRoleInGame("wild_child") || isRoleInGame("hoodrat"))) {
-        <button class="absolute bottom-6 left-6 z-0 bg-zinc-800 rounded-md p-4 text-left text-zinc-200">
+        <div class="absolute bottom-6 left-6 z-0 bg-zinc-800 rounded-md p-4 pb-2 text-left text-zinc-200">
             <span class="flex justify-between items-center pb-2">
                 <p i18n="@@general-connections">Verbindungen:</p>
-                <!-- <lucide-angular name="pen" size="16px" /> -->
             </span>
             @if (isRoleInGame("cupid")) {
-            <span class="flex gap-2 items-center">
+            <button class="w-full flex gap-2 items-center py-2" (click)="openConnectionUpdate(ConnectionTypes.Love)">
                 <div class="w-4 h-2 rounded-full" style="background-color: red;"></div>
-                <p i18n="@@general-connections-love">Liebe (Ehepaar)</p>
-            </span>
+                <p class="text-left w-full" i18n="@@general-connections-love">Liebe (Ehepaar)</p>
+                <lucide-angular name="pen" size="16px" />
+            </button>
             }
             @if (isRoleInGame("wild_child")) {
-            <span class="flex gap-2 items-center">
+            <button class="w-full flex gap-2 items-center py-2" (click)="openConnectionUpdate(ConnectionTypes.Trust)">
                 <div class="w-4 h-2 rounded-full" style="background-color: orange;"></div>
-                <p i18n="@@general-connections-trust">Vertrauen (Wildes Kind)</p>
-            </span>
+                <p class="text-left w-full" i18n="@@general-connections-trust">Vertrauen (Wildes Kind)</p>
+                <lucide-angular name="pen" size="16px" />
+            </button>
             }
             @if (isRoleInGame("hoodrat")) {
-            <span class="flex gap-2 items-center">
+            <button class="w-full flex gap-2 items-center py-2" (click)="openConnectionUpdate(ConnectionTypes.Sleepover)">
                 <div class="w-4 h-2 rounded-full" style="background-color: blue;"></div>
-                <p i18n="@@general-connections-sleepover">Beischlaf (Dorfmatratze)</p>
-            </span>
+                <p class="text-left w-full" i18n="@@general-connections-sleepover">Beischlaf (Dorfmatratze)</p>
+                <lucide-angular name="pen" size="16px" />
+            </button>
             }
-        </button>
+        </div>
         }
     </div>
     <div class="lg:w-[30rem] w-full bg-zinc-800 h-dvh grid justify-between max-h-dvh z-20 overflow-y-auto p-6 pb-0 max-lg:pt-27 gap-4" [class.max-lg:hidden]="!MobileShowSidebar">
