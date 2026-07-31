@@ -12,15 +12,13 @@
         "@schematics/angular:component": {
           "inlineStyle": true,
           "type": "component",
-          "addTypeToClassName": false
+          "skipTests": true
         },
         "@schematics/angular:directive": {
-          "type": "directive",
-          "addTypeToClassName": false
+          "type": "directive"
         },
         "@schematics/angular:service": {
-          "type": "service",
-          "addTypeToClassName": false
+          "type": "service"
         },
         "@schematics/angular:guard": {
           "typeSeparator": "."
@@ -55,7 +53,18 @@
             ],
             "styles": [
               "src/styles.css"
-            ]
+            ],
+            "server": "src/main.server.ts",
+            "outputMode": "static",
+            "security": {
+              "allowedHosts": [
+                "localhost",
+                "wolf.aro-playground.ch"
+              ]
+            },
+            "ssr": {
+              "entry": "src/server.ts"
+            }
           },
           "configurations": {
             "production": {
