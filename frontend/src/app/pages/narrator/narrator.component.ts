@@ -11,14 +11,14 @@ import { GameService } from '../../services/game.service';
 export class NarratorComponent {
   private game = inject(GameService);
 
-  protected people = this.game.people;
+  protected people = this.game.people.all;
   protected canStart = this.game.canStart;
 
   addPerson() {
-    this.game.addPerson();
+    this.game.people.add();
   }
 
   removePerson(id: string) {
-    this.game.removePerson(id);
+    this.game.people.remove(id);
   }
 }

@@ -1,7 +1,7 @@
 import { Component, computed, input, output } from '@angular/core';
-import type { Person } from '../../services/game.service';
 import { LucideUser, LucideX, LucidePlus } from '@lucide/angular';
 import { NgOptimizedImage } from '@angular/common';
+import { Person } from '../../services/state/types';
 
 const RADIUS = 40;
 export const MAX_SEATS = 20;
