@@ -5,9 +5,7 @@ import { serverRoutes } from './app.routes.server';
 import { withPreloading } from '@angular/router';
 
 const serverConfig: ApplicationConfig = {
-  providers: [
-    provideServerRendering(withRoutes(serverRoutes))
-  ]
+  providers: [provideServerRendering(withRoutes(serverRoutes))],
 };
 
 export const config = mergeApplicationConfig(appConfig, serverConfig);

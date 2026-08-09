@@ -1,0 +1,55 @@
+<div class="grid h-full w-full place-items-center">
+  <div class="relative aspect-square w-full max-w-[min(100%,calc(100svh))]" role="group">
+    @for (player of placedPlayers(); track player.person.id) {
+      @if (player.person.name) {
+        <span
+          class="text-xs absolute block truncate -translate-y-1/2 translate-x-9 max-w-32 px-2 py-0.5 bg-zinc-950 rounded-full"
+          [style.left.%]="player.x"
+          [style.top.%]="player.y"
+        >
+          {{ player.person.name }}
+        </span>
+      }
+      <div
+        class="absolute -translate-x-1/2 -translate-y-1/2"
+        [style.left.%]="player.x"
+        [style.top.%]="player.y"
+      >
+        <button
+          class="size-16 rounded-full overflow-hidden border-2 grid justify-center items-center bg-zinc-800 text-zinc-100 hover:border-zinc-400 border-zinc-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
+          (click)="personSelected.emit(player.person.id)"
+        >
+          @if (player.person.character) {
+            <img
+              width="60"
+              height="60"
+              [ngSrc]="'img/seer.png'"
+              [alt]="player.person.character.name"
+            />
+          } @else {
+            <svg class="text-zinc-400" lucideUser />
+          }
+        </button>
+
+        @if (editMode()) {
+          <button
+            class="absolute -right-1 -top-1 size-5 rounded-full bg-red-600 text-xs text-white"
+            (click)="personRemoved.emit(player.person.id)"
+          >
+            <svg class="size-3 self-center mx-auto" lucideX />
+          </button>
+        }
+      </div>
+    }
+
+    @if (editMode()) {
+      <button
+        class="absolute left-1/2 top-1/2 size-14 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-dashed border-zinc-600 text-2xl text-zinc-400 hover:border-zinc-400 disabled:opacity-30"
+        [disabled]="!canAdd()"
+        (click)="personAdded.emit()"
+      >
+        <svg class="size-8 self-center mx-auto" lucidePlus />
+      </button>
+    }
+  </div>
+</div>
