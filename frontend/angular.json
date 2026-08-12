@@ -51,11 +51,16 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/styles.css"],
+            "styles": [
+              "src/styles.css"
+            ],
             "server": "src/main.server.ts",
             "outputMode": "static",
             "security": {
-              "allowedHosts": ["localhost", "wolf.aro-playground.ch"]
+              "allowedHosts": [
+                "localhost",
+                "wolf.aro-playground.ch"
+              ]
             },
             "ssr": {
               "entry": "src/server.ts"
@@ -75,7 +80,15 @@
                   "maximumError": "8kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "optimization": {
+                "scripts": true,
+                "fonts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": false
+                }
+              }
             },
             "development": {
               "optimization": false,

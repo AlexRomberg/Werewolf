@@ -1,0 +1,67 @@
+@reference "../../../styles.css";
+
+@layer components {
+  .circle {
+    @apply size-16 rounded-full overflow-hidden border-4 grid justify-center items-center hover:border-zinc-500 border-zinc-700;
+
+    & svg {
+      @apply text-zinc-500;
+    }
+  }
+
+  .circle-stage {
+    container-type: inline-size;
+    --player-animation-duration: 0ms;
+  }
+
+  .circle-stage.animated {
+    --player-animation-duration: 330ms;
+  }
+
+  .player {
+    @apply absolute left-1/2 top-1/2 size-0;
+    --player-angle: 0deg;
+    rotate: var(--player-angle);
+    transform: translateX(40cqw);
+    transition: rotate var(--player-animation-duration) ease-out;
+  }
+
+  .player.dragging {
+    --player-animation-duration: 0ms;
+    z-index: 10;
+  }
+
+  .player-body {
+    @apply absolute size-0;
+    rotate: calc(-1 * var(--player-angle));
+    transition:
+      rotate var(--player-animation-duration) ease-out,
+      scale 150ms ease-out;
+  }
+
+  .player.dragging .player-body {
+    scale: 1.1;
+  }
+}
+
+@keyframes player-in {
+  from {
+    opacity: 0;
+    scale: 0.4;
+  }
+}
+
+@keyframes player-out {
+  to {
+    opacity: 0;
+    scale: 0.4;
+  }
+}
+
+.player-enter {
+  animation: player-in 250ms ease-out;
+}
+
+.player-leave {
+  animation: player-out 200ms ease-in;
+}

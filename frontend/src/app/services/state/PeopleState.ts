@@ -29,6 +29,20 @@ export class PeopleState {
     this.updatePerson(id, (person) => ({ ...person, name: name.trim() }));
   }
 
+  move(id: string, toIndex: number) {
+    this.state.update((state) => {
+      const from = state.people.findIndex((person) => person.id === id);
+      if (from === -1) {
+        return state;
+      }
+
+      const people = [...state.people];
+      const [person] = people.splice(from, 1);
+      people.splice(Math.min(Math.max(toIndex, 0), people.length), 0, person);
+      return { ...state, people };
+    });
+  }
+
   private updatePerson(id: string, fn: (person: Person) => Person) {
     this.state.update((state) => ({
       ...state,

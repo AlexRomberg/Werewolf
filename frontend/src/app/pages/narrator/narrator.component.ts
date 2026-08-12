@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { CircleComponent } from '../../components/circle/circle.component';
+import { CircleComponent, PersonMove } from '../../components/circle/circle.component';
 import { GameService } from '../../services/game.service';
 
 @Component({
@@ -20,5 +20,9 @@ export class NarratorComponent {
 
   removePerson(id: string) {
     this.game.people.remove(id);
+  }
+
+  movePerson(move: PersonMove) {
+    this.game.people.move(move.id, move.toIndex);
   }
 }
