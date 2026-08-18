@@ -15,7 +15,11 @@
   }
 
   .circle-stage.animated {
-    --player-animation-duration: 330ms;
+    --player-animation-duration: 250ms;
+  }
+
+  .shake {
+    animation: shaking 2.5s linear infinite;
   }
 
   .player {
@@ -36,7 +40,7 @@
     rotate: calc(-1 * var(--player-angle));
     transition:
       rotate var(--player-animation-duration) ease-out,
-      scale 150ms ease-out;
+      scale 250ms ease-out;
   }
 
   .player.dragging .player-body {
@@ -58,10 +62,76 @@
   }
 }
 
+@keyframes shaking {
+  0% {
+    transform: translate(-1.25px, 0.75px);
+  }
+  5% {
+    transform: translate(-1px, -0.75px);
+  }
+  10% {
+    transform: translate(-1px, 0.75px);
+  }
+  15% {
+    transform: translate(0px, 0px);
+  }
+  20% {
+    transform: translate(-0.5px, -0.5px);
+  }
+  25% {
+    transform: translate(0px, -0.25px);
+  }
+  30% {
+    transform: translate(0.25px, 0.75px);
+  }
+  35% {
+    transform: translate(-0.75px, 0.25px);
+  }
+  40% {
+    transform: translate(0.5px, -1px);
+  }
+  45% {
+    transform: translate(0.5px, -1px);
+  }
+  50% {
+    transform: translate(0.75px, 1px);
+  }
+  55% {
+    transform: translate(1px, 0px);
+  }
+  60% {
+    transform: translate(-0.75px, 0px);
+  }
+  65% {
+    transform: translate(1px, 1px);
+  }
+  70% {
+    transform: translate(0.75px, -1px);
+  }
+  75% {
+    transform: translate(-0.75px, -0.25px);
+  }
+  80% {
+    transform: translate(-0.75px, 0.25px);
+  }
+  85% {
+    transform: translate(-0.25px, -0.75px);
+  }
+  90% {
+    transform: translate(0.5px, -0.25px);
+  }
+  95% {
+    transform: translate(-0.75px, 0.5px);
+  }
+  100% {
+    transform: translate(-1.25px, 0.75px);
+  }
+}
+
 .player-enter {
   animation: player-in 250ms ease-out;
 }
 
 .player-leave {
-  animation: player-out 200ms ease-in;
+  animation: player-out 250ms ease-in;
 }

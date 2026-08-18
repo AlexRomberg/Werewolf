@@ -41,6 +41,8 @@
               class="circle bg-zinc-800 text-zinc-100 touch-none"
               [class.cursor-grab]="!player.dragging"
               [class.cursor-grabbing]="player.dragging"
+              [class.shake]="!player.dragging && editMode()"
+              [style.animationDelay]="-$index + 's'"
               (pointerdown)="onPointerDown($event, player.person.id)"
               (pointermove)="onPointerMove($event)"
               (pointerup)="onPointerUp()"
@@ -51,7 +53,7 @@
                 <img
                   width="60"
                   height="60"
-                  [ngSrc]="'img/seer.png'"
+                  [ngSrc]="`img/${player.person.character.id}.png`"
                   [alt]="player.person.character.name"
                 />
               } @else {
@@ -62,6 +64,8 @@
             @if (editMode()) {
               <button
                 class="absolute -right-1 -top-1 size-6 rounded-full bg-red-700 text-white"
+                [class.shake]="!player.dragging && editMode()"
+                [style.animationDelay]="-$index + 's'"
                 (click)="personRemoved.emit(player.person.id)"
               >
                 <svg class="size-4 mx-auto" lucideX />

@@ -13,8 +13,14 @@ export interface Person {
   states: Set<PlayerStatus>;
 }
 
+export interface CharacterSelection {
+  character: Character,
+  amount: number
+}
+
 export interface State {
   people: Person[];
+  characters: Map<string, CharacterSelection>;
 }
 
 export const MIN_PLAYERS = 5;

@@ -1,10 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { CircleComponent, PersonMove } from '../../components/circle/circle.component';
 import { GameService } from '../../services/game.service';
+import { SidebarComponent } from "../../components/sidebar/sidebar.component";
 
 @Component({
   selector: 'app-narrator',
-  imports: [CircleComponent],
+  imports: [CircleComponent, SidebarComponent],
   templateUrl: './narrator.component.html',
   styles: ``,
 })
