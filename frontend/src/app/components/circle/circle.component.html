@@ -58,9 +58,10 @@
                   height="60"
                   [ngSrc]="`img/${player.person.character.id}.png`"
                   [alt]="player.person.character.name"
+                  class="pointer-events-none"
                 />
               } @else {
-                <svg lucideUser></svg>
+                <svg lucideUser class="pointer-events-none"></svg>
               }
             </button>
 
