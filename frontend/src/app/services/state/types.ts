@@ -14,8 +14,8 @@ export interface Person {
 }
 
 export interface CharacterSelection {
-  character: Character,
-  amount: number
+  character: Character;
+  amount: number;
 }
 
 export interface State {

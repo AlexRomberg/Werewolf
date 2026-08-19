@@ -19,8 +19,9 @@ describe('GameService', () => {
     expect(service.people.all().length).toBe(MIN_PLAYERS);
   });
 
-  it('should be able to rename people', () => {
-    service.people.rename(service.people.all()[0].id, '  Test  ');
+  it('should be able to update a person', () => {
+    const person = service.people.all()[0];
+    service.people.update(person.id, { ...person, name: 'Test' });
     expect(service.people.all()[0].name).toBe('Test');
     expect(service.people.all()[1].name).toBe('');
   });

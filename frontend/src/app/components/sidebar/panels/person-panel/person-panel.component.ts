@@ -1,10 +1,9 @@
 import { Component, computed, input, output } from '@angular/core';
 import { Person } from '../../../../services/state/types';
-import { NgOptimizedImage } from "@angular/common";
-import { LucideUser } from "@lucide/angular";
-import { Characters } from '../../../../services/game.service';
+import { NgOptimizedImage } from '@angular/common';
+import { LucideUser } from '@lucide/angular';
+import { CHARACTERS, CHARACTERS_BY_ID } from '../../../../models/characters';
 import { FormsModule } from '@angular/forms';
-import { Character } from '../../../../models/character';
 
 @Component({
   selector: 'app-person-panel',
@@ -20,10 +19,13 @@ export class PersonPanelComponent {
 
   public personChanged = output<Person>();
 
-  protected options = computed(() => [{ value: undefined, label: 'Select a character' }, ...Characters.map((character) => ({
-    value: character.id,
-    label: character.name,
-  }))]);
+  protected options = computed(() => [
+    { value: undefined, label: 'Select a character' },
+    ...CHARACTERS.map((character) => ({
+      value: character.id,
+      label: character.name,
+    })),
+  ]);
 
   protected onNameInput(name: string) {
     this.personChanged.emit({ ...this.person(), name });
@@ -34,7 +36,7 @@ export class PersonPanelComponent {
   }
 
   protected onCharacterSelect(characterId: string | undefined) {
-    const character = Characters.find((c) => c.id === characterId);
+    const character = characterId ? CHARACTERS_BY_ID.get(characterId) : undefined;
     this.personChanged.emit({ ...this.person(), character });
   }
 }
