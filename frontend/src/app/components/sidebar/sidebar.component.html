@@ -1,39 +1,16 @@
-<div class="m-4 z-10 flex flex-col">
-  <h1 class="text-2xl font-bold text-zinc-300 mb-4">{{ title() }}</h1>
-  <div class="flex-1">
-    <div class="rounded-3xl p-4 flex flex-col gap-2 bg-zinc-900 shadow-zinc-950 shadow">
-      <h2 class="text-lg font-bold text-zinc-300">Cards</h2>
-      <button
-        class="rounded-lg bg-zinc-800 hover:bg-zinc-700 grid grid-rows-[auto_3rem] grid-cols-[1fr_auto] p-4 gap-2"
-      >
-        <p class="text-start">{{ cards().length }} Cards selected</p>
-        <svg lucideChevronRight class="row-span-2 self-center" />
-        <span
-          class="relative -mt-1 py-1 max-w-80 w-80 overflow-x-hidden mask-alpha mask-r-from-80% mask-r-to-100%"
-        >
-          @for (character of cards(); track $index) {
-            <div
-              class="absolute w-12 h-12 bg-zinc-950 p-1 rounded-sm shadow shadow-black/50"
-              [style.left.px]="$index * 20"
-              [style.top.px]="sin($index * 2.5) + 2"
-              [style.transform]="`rotate(${sin($index) * 2}deg)`"
-              [style.zIndex]="30 - $index"
-            >
-              <img
-                width="40"
-                height="40"
-                [ngSrc]="`img/${character.id}.png`"
-                [alt]="'card ' + character.name"
-              />
-            </div>
-          }
-        </span>
-      </button>
-    </div>
-  </div>
-  <div class="rounded-3xl p-4 flex flex-col gap-4 bg-zinc-900 shadow-zinc-950 shadow">
-    <button [disabled]="!canStart()" class="btn btn-primary">
-      Start <svg lucideArrowRight size="20" />
+<header class="z-10 mb-4 flex items-center gap-1">
+  @if (canGoBack()) {
+    <button
+      class="-ml-2 rounded-full p-2 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100"
+      aria-label="Back"
+      (click)="back.emit()"
+    >
+      <svg lucideChevronLeft size="20"></svg>
     </button>
-  </div>
+  }
+  <h1 class="truncate text-2xl font-bold text-zinc-300">{{ title() }}</h1>
+</header>
+
+<div class="z-10 grid min-h-0">
+  <ng-content />
 </div>

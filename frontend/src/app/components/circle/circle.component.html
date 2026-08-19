@@ -29,7 +29,9 @@
         <div class="player-body" [animate.enter]="enterAnimation()" animate.leave="player-leave">
           @if (player.person.name) {
             <span
-              class="text-xs absolute block truncate max-w-24 px-2 py-0.5 bg-zinc-950 rounded-full"
+              class="text-xs absolute block truncate max-w-24 px-2 py-0.5 bg-zinc-950 text-zinc-500 rounded-full"
+              [class.shake]="!player.dragging && editMode()"
+              [style.animationDelay]="-$index + 's'"
               [class.translate-x-9]="!player.nameTop"
               [class.-translate-y-14]="player.nameTop"
             >
@@ -42,6 +44,7 @@
               [class.cursor-grab]="!player.dragging"
               [class.cursor-grabbing]="player.dragging"
               [class.shake]="!player.dragging && editMode()"
+              [class.border-amber-400]="player.selected"
               [style.animationDelay]="-$index + 's'"
               (pointerdown)="onPointerDown($event, player.person.id)"
               (pointermove)="onPointerMove($event)"
@@ -57,7 +60,7 @@
                   [alt]="player.person.character.name"
                 />
               } @else {
-                <svg lucideUser />
+                <svg lucideUser></svg>
               }
             </button>
 
@@ -68,7 +71,7 @@
                 [style.animationDelay]="-$index + 's'"
                 (click)="personRemoved.emit(player.person.id)"
               >
-                <svg class="size-4 mx-auto" lucideX />
+                <svg class="size-4 mx-auto" lucideX></svg>
               </button>
             }
           </div>
@@ -82,7 +85,7 @@
         [disabled]="!canAdd()"
         (click)="personAdded.emit()"
       >
-        <svg class="self-center mx-auto" lucideUserRoundPlus />
+        <svg class="self-center mx-auto" lucideUserRoundPlus></svg>
       </button>
     }
   </div>

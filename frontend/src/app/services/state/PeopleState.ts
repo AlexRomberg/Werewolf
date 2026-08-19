@@ -25,8 +25,11 @@ export class PeopleState {
     }));
   }
 
-  rename(id: string, name: string) {
-    this.updatePerson(id, (person) => ({ ...person, name: name.trim() }));
+  update(id: string, person: Person) {
+    this.state.update((state) => ({
+      ...state,
+      people: state.people.map((p) => (p.id === id ? person : p)),
+    }));
   }
 
   move(id: string, toIndex: number) {
@@ -41,13 +44,6 @@ export class PeopleState {
       people.splice(Math.min(Math.max(toIndex, 0), people.length), 0, person);
       return { ...state, people };
     });
-  }
-
-  private updatePerson(id: string, fn: (person: Person) => Person) {
-    this.state.update((state) => ({
-      ...state,
-      people: state.people.map((person) => (person.id === id ? fn(person) : person)),
-    }));
   }
 }
 

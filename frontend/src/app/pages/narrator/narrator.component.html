@@ -1,12 +1,34 @@
-<div class="grid grid-cols-[1fr_28rem] min-h-svh h-svh max-h-svh">
+<div class="grid h-svh max-h-svh min-h-svh grid-cols-[1fr_28rem]">
   <div>
     <app-circle
       [people]="people()"
       [editMode]="true"
+      [selectedId]="selectedId()"
+      (personSelected)="selectPerson($event)"
       (personRemoved)="removePerson($event)"
       (personAdded)="addPerson()"
       (personMoved)="movePerson($event)"
     />
   </div>
-  <app-sidebar />
+
+  <app-sidebar [kind]="panel().kind" [canGoBack]="canGoBack()" (back)="closePanel()">
+    @switch (panel().kind) {
+      @case ('cards') {
+        <app-cards-panel />
+      }
+      @case ('person') {
+        @if (selectedPerson(); as person) {
+          <app-person-panel [person]="person" (personChanged)="updatePerson(person.id, $event)" />
+        }
+      }
+      @default {
+        <app-setup-panel
+          [cards]="cards()"
+          [canStart]="canStart()"
+          (cardSelectorPressed)="openCardSelector()"
+          (gameStartPressed)="startGame()"
+        />
+      }
+    }
+  </app-sidebar>
 </div>

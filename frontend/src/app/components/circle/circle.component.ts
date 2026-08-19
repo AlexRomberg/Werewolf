@@ -33,6 +33,7 @@ export interface PersonMove {
 export class CircleComponent {
   public people = input.required<readonly Person[]>();
   public editMode = input(false);
+  public selectedId = input<string | null>(null);
 
   public personSelected = output<string>();
   public personRemoved = output<string>();
@@ -52,6 +53,7 @@ export class CircleComponent {
   protected placedPlayers = computed(() => {
     const people = this.people();
     const drag = this.drag();
+    const selectedId = this.selectedId();
 
     const order = drag ? movedOrder(people, drag.id, drag.toIndex) : people.map(({ id }) => id);
     const angleStep = ARC_ANGLE / people.length;
@@ -64,6 +66,7 @@ export class CircleComponent {
         person,
         angle,
         dragging,
+        selected: person.id === selectedId,
         nameTop: people.length >= 12 && Math.abs(angle - TOP_ANGLE) < 22,
       };
     });

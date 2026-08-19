@@ -1,0 +1,42 @@
+<div class="flex min-h-0 flex-col gap-4 overflow-y-auto">
+  <div class="sidebar-container mt-15">
+    <div
+      class="size-32 rounded-full bg-zinc-800 border-zinc-950 border-8 -mt-20 mx-auto overflow-hidden grid place-items-center"
+    >
+      @if (person().character; as character) {
+        <img width="128" height="128" [ngSrc]="`img/${character.id}.png`" [alt]="character.name" />
+      } @else {
+        <svg lucideUser size="32" class="text-zinc-500"></svg>
+      }
+    </div>
+    <label class="input-label" for="person-name">Name</label>
+    <input
+      id="person-name"
+      class="input"
+      type="text"
+      autocomplete="off"
+      placeholder="Unnamed player"
+      [ngModel]="person().name"
+      (ngModelChange)="onNameInput($event)"
+      (blur)="cleanName()"
+    />
+    <label class="input-label" for="person-character">Character</label>
+    <select
+      id="person-character"
+      class="input"
+      type="text"
+      autocomplete="off"
+      [ngModel]="person().character?.id"
+      (ngModelChange)="onCharacterSelect($event)"
+    >
+      @for (option of options(); track option.value) {
+        <option [value]="option.value">{{ option.label }}</option>
+      }
+    </select>
+  </div>
+
+  <div class="sidebar-container">
+    <h2 class="text-lg font-bold text-zinc-300">Status</h2>
+    <!-- roles & statuses -->
+  </div>
+</div>

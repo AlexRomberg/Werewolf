@@ -1,0 +1,38 @@
+<div class="flex min-h-0 flex-col gap-4 overflow-y-auto">
+  <div class="flex flex-col gap-2 rounded-3xl bg-zinc-900 p-4 shadow shadow-zinc-950">
+    <h2 class="text-lg font-bold text-zinc-300">Cards</h2>
+    <button
+      class="grid grid-cols-[1fr_auto] grid-rows-[auto_3rem] gap-2 rounded-lg bg-zinc-800 p-4 hover:bg-zinc-700"
+      (click)="cardSelectorPressed.emit()"
+    >
+      <p class="text-start">{{ cards().length }} Cards selected</p>
+      <svg lucideChevronRight class="row-span-2 self-center"></svg>
+      <span
+        class="relative -mt-1 w-80 max-w-80 overflow-x-hidden py-1 mask-alpha mask-r-from-80% mask-r-to-100%"
+      >
+        @for (character of cards(); track $index) {
+          <div
+            class="absolute h-12 w-12 rounded-sm bg-zinc-950 p-1 shadow shadow-black/50"
+            [style.left.px]="cardTransform($index).left"
+            [style.top.px]="cardTransform($index).top"
+            [style.transform]="cardTransform($index).rotate"
+            [style.zIndex]="cardTransform($index).z"
+          >
+            <img
+              width="40"
+              height="40"
+              [ngSrc]="`img/${character.id}.png`"
+              [alt]="'card ' + character.name"
+            />
+          </div>
+        }
+      </span>
+    </button>
+  </div>
+</div>
+
+<div class="flex flex-col gap-4 rounded-3xl bg-zinc-900 p-4 shadow shadow-zinc-950">
+  <button [disabled]="!canStart()" class="btn btn-primary" (click)="gameStartPressed.emit()">
+    Start <svg lucideArrowRight size="20"></svg>
+  </button>
+</div>
