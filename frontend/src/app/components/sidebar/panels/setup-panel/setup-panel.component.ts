@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, model, output } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
 import { LucideArrowRight, LucideChevronRight } from '@lucide/angular';
 import { Character } from '../../../../models/character';
@@ -14,6 +14,7 @@ import { Character } from '../../../../models/character';
 })
 export class SetupPanelComponent {
   public cards = input.required<readonly Character[]>();
+  // public useVirtualCards = model(false);
 
   public cardSelectorPressed = output<void>();
   public gameStartPressed = output<void>();
