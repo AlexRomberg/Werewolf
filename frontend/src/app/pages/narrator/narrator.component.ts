@@ -24,7 +24,6 @@ export class NarratorComponent {
 
   protected people = this.game.people.all;
   protected cards = this.game.characters.cards;
-  protected canStart = this.game.canStart;
 
   private overlay = signal<SidebarPanel | null>(null);
   private basePanel = computed<SidebarPanel>(() => ({ kind: 'setup' }));
@@ -77,7 +76,7 @@ export class NarratorComponent {
     this.overlay.set(null);
   }
 
-  protected startGame() { }
+  protected startGame() {}
 
   private personById(id: string | null) {
     if (!id) {

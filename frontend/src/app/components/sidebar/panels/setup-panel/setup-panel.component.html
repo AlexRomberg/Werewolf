@@ -8,15 +8,13 @@
       <p class="text-start">{{ cards().length }} Cards selected</p>
       <svg lucideChevronRight class="row-span-2 self-center"></svg>
       <span
-        class="relative -mt-1 w-80 max-w-80 overflow-x-hidden py-1 mask-alpha mask-r-from-80% mask-r-to-100%"
+        class="relative w-80 max-w-80 mask-alpha overflow-x-clip mask-r-from-80% mask-r-to-100% rounded-sm"
       >
         @for (character of cards(); track $index) {
           <div
             class="absolute h-12 w-12 rounded-sm bg-zinc-950 p-1 shadow shadow-black/50"
-            [style.left.px]="cardTransform($index).left"
-            [style.top.px]="cardTransform($index).top"
-            [style.transform]="cardTransform($index).rotate"
-            [style.zIndex]="cardTransform($index).z"
+            [style.left.px]="20 * $index"
+            [style.zIndex]="30 - $index"
           >
             <img
               width="40"
@@ -32,7 +30,7 @@
 </div>
 
 <div class="flex flex-col gap-4 rounded-3xl bg-zinc-900 p-4 shadow shadow-zinc-950">
-  <button [disabled]="!canStart()" class="btn btn-primary" (click)="gameStartPressed.emit()">
+  <button class="btn btn-primary" (click)="gameStartPressed.emit()">
     Start <svg lucideArrowRight size="20"></svg>
   </button>
 </div>

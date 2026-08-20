@@ -32,6 +32,8 @@ import { Wolfdog } from './wolfdog';
 export const VILLAGER = new Villager();
 export const WEREWOLF = new Werewolf();
 
+export const BULK_CHARACTERS: readonly Character[] = [WEREWOLF, VILLAGER];
+
 export const CHARACTERS: readonly Character[] = [
   new Angel(),
   new BearTamer(),

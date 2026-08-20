@@ -1,16 +1,30 @@
 export enum GroupTypes {
-  Wolves,
-  Active,
-  Passive,
-  Loners,
+  Wolves = 'wolves',
+  Active = 'active',
+  Passive = 'passive',
+  Loners = 'loners',
 }
 
 export enum GameSets {
-  BaseGame,
-  NewMoon,
-  Characters,
-  Special,
+  BaseGame = 'base-game',
+  NewMoon = 'new-moon',
+  Characters = 'characters',
+  Special = 'special',
 }
+
+export const GROUP_LABELS: ReadonlyMap<GroupTypes, string> = new Map([
+  [GroupTypes.Wolves, 'Wolves'],
+  [GroupTypes.Active, 'Active'],
+  [GroupTypes.Passive, 'Passive'],
+  [GroupTypes.Loners, 'Loners'],
+]);
+
+export const GAME_SET_LABELS: ReadonlyMap<GameSets, string> = new Map([
+  [GameSets.BaseGame, 'Base Game'],
+  [GameSets.Characters, 'Characters'],
+  [GameSets.NewMoon, 'New Moon'],
+  [GameSets.Special, 'Special'],
+]);
 
 export enum BasePriority {
   Initial = 0,
@@ -24,14 +38,14 @@ export interface DescriptionSection {
 }
 
 export const SectionTitles = {
-  general: "General",
-  hintForTheNarrator: "Hint for the narrator",
-  attention: "Attention",
-  variantForTheBrave: "Variant for the brave",
-  hint: "Hint",
-  specialCase: "Special case",
-  explanations: "Explanations",
-}
+  general: 'General',
+  hintForTheNarrator: 'Hint for the narrator',
+  attention: 'Attention',
+  variantForTheBrave: 'Variant for the brave',
+  hint: 'Hint',
+  specialCase: 'Special case',
+  explanations: 'Explanations',
+};
 
 export abstract class Character {
   abstract readonly id: string;

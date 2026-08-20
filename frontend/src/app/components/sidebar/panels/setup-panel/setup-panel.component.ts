@@ -14,15 +14,7 @@ import { Character } from '../../../../models/character';
 })
 export class SetupPanelComponent {
   public cards = input.required<readonly Character[]>();
-  public canStart = input(false);
 
   public cardSelectorPressed = output<void>();
   public gameStartPressed = output<void>();
-
-  protected cardTransform = (index: number) => ({
-    left: index * 20,
-    top: (Math.sin(index) * 2.5) + 2,
-    rotate: `rotate(${Math.sin(index) * 2}deg)`,
-    z: 30 - index,
-  })
 }

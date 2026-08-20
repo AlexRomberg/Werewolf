@@ -1,25 +1,24 @@
-/* You can add global styles to this file, and also import other style files */
-
 @import 'tailwindcss';
 
-@layer base {
-  html,
-  body {
-    @apply bg-zinc-950 text-zinc-100;
-  }
-  .btn {
-    @apply p-3 rounded-lg text-base text-zinc-100 disabled:bg-zinc-700! disabled:text-zinc-400 disabled:cursor-not-allowed flex items-center gap-2 justify-center;
-  }
-  .btn-primary {
-    @apply bg-orange-900 hover:bg-orange-800;
-  }
-  .input {
-    @apply rounded-lg bg-zinc-800 px-3 py-2 text-zinc-100 placeholder:text-zinc-500;
-  }
-  .input-label {
-    @apply text-sm text-zinc-400;
-  }
-  .sidebar-container {
-    @apply flex flex-col gap-2 rounded-3xl bg-zinc-900 p-4 shadow shadow-zinc-950;
-  }
+html,
+body {
+  @apply bg-zinc-950 text-zinc-100;
+}
+.btn {
+  @apply p-3 rounded-lg text-base text-zinc-100 disabled:bg-zinc-700! disabled:text-zinc-400 disabled:cursor-not-allowed flex items-center gap-2 justify-center;
+}
+.btn-primary {
+  @apply bg-orange-900 hover:bg-orange-800;
+}
+.input {
+  @apply rounded-lg bg-zinc-800 px-3 py-2 text-zinc-100 placeholder:text-zinc-500;
+}
+.input-label {
+  @apply text-sm text-zinc-400;
+}
+.sidebar-container {
+  @apply flex flex-col gap-2 rounded-3xl bg-zinc-900 p-4 shadow shadow-zinc-950;
+}
+.card-tile {
+  @apply grid items-center gap-x-2 rounded-lg bg-zinc-800 p-2 text-left ring-amber-400;
 }

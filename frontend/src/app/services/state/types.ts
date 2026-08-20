@@ -23,4 +23,4 @@ export interface State {
   characters: Map<string, CharacterSelection>;
 }
 
-export const MIN_PLAYERS = 5;
+export const INITIAL_SEATS = 5;

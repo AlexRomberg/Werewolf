@@ -1,58 +1,56 @@
 import { computed, WritableSignal } from '@angular/core';
-import { State } from './types';
+import { CharacterSelection, State } from './types';
 import { VILLAGER } from '../../models/characters';
 import { Character } from '../../models/character';
 
 export class CharacterState {
-  constructor(private state: WritableSignal<State>) { }
+  constructor(private state: WritableSignal<State>) {}
 
-  readonly all = computed(() => [...this.state().characters.values()]);
-  readonly cards = computed(() => {
-    const { characters, people } = this.state();
+  readonly selection = computed<ReadonlyMap<string, CharacterSelection>>(
+    () => this.state().characters,
+  );
 
-    const deck = [...characters.values()].flatMap(({ character, amount }) =>
-      new Array<Character>(amount).fill(character),
-    );
-    const missing = Math.max(0, people.length - deck.length);
+  private chosenDeck = computed(() =>
+    [...this.state().characters.values()]
+      .filter(({ character }) => character.id !== VILLAGER.id)
+      .flatMap(({ character, amount }) => new Array<Character>(amount).fill(character)),
+  );
 
-    return [...deck, ...new Array<Character>(missing).fill(VILLAGER)];
-  });
+  readonly requiredVillagers = computed(() =>
+    Math.max(0, this.state().people.length - this.chosenDeck().length),
+  );
 
-  add(character: Character) {
-    this.state.update((state) => {
-      if (state.characters.has(character.id)) {
-        return state;
-      }
+  readonly villagerCount = computed(() =>
+    Math.max(this.requiredVillagers(), this.storedAmount(VILLAGER)),
+  );
 
-      const characters = new Map(state.characters);
-      characters.set(character.id, { character, amount: 1 });
-      return { ...state, characters };
-    });
+  readonly cards = computed(() => [
+    ...this.chosenDeck(),
+    ...new Array<Character>(this.villagerCount()).fill(VILLAGER),
+  ]);
+
+  amountOf(character: Character) {
+    return character.id === VILLAGER.id ? this.villagerCount() : this.storedAmount(character);
   }
 
-  remove(character: Character) {
-    this.state.update((state) => {
-      const characters = new Map(state.characters);
-      characters.delete(character.id);
-      return { ...state, characters };
-    });
+  toggle(character: Character) {
+    this.setAmount(character, this.storedAmount(character) > 0 ? 0 : 1);
   }
 
   setAmount(character: Character, amount: number) {
-    if (amount < 1) {
-      this.remove(character);
-      return;
-    }
-
-    if (!character.hasMultiple) {
-      this.add(character);
-      return;
-    }
-
+    const wanted = character.hasMultiple ? amount : Math.min(amount, 1);
     this.state.update((state) => {
       const characters = new Map(state.characters);
-      characters.set(character.id, { character, amount });
+      if (wanted > 0) {
+        characters.set(character.id, { character, amount: wanted });
+      } else {
+        characters.delete(character.id);
+      }
       return { ...state, characters };
     });
+  }
+
+  private storedAmount(character: Character) {
+    return this.state().characters.get(character.id)?.amount ?? 0;
   }
 }

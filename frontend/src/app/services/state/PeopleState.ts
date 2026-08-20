@@ -1,11 +1,11 @@
 import { computed, WritableSignal } from '@angular/core';
-import { Person, State } from './types';
+import { INITIAL_SEATS, Person, State } from './types';
 
 export class PeopleState {
   constructor(private state: WritableSignal<State>) {
     state.update((state) => ({
       ...state,
-      people: createSeats(5),
+      people: createSeats(INITIAL_SEATS),
     }));
   }
 

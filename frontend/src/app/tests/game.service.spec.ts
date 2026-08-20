@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { GameService } from '../services/game.service';
-import { MIN_PLAYERS } from '../services/state/types';
+import { INITIAL_SEATS } from '../services/state/types';
 
 describe('GameService', () => {
   let service: GameService;
@@ -16,7 +16,7 @@ describe('GameService', () => {
   });
 
   it('should start with five unnamed players', () => {
-    expect(service.people.all().length).toBe(MIN_PLAYERS);
+    expect(service.people.all().length).toBe(INITIAL_SEATS);
   });
 
   it('should be able to update a person', () => {
@@ -28,17 +28,12 @@ describe('GameService', () => {
 
   it('should add people', () => {
     service.people.add();
-    expect(service.people.all().length).toBe(MIN_PLAYERS + 1);
+    expect(service.people.all().length).toBe(INITIAL_SEATS + 1);
   });
 
   it('should remove people', () => {
     service.people.remove(service.people.all()[0].id);
-    expect(service.people.all().length).toBe(MIN_PLAYERS - 1);
-  });
-
-  it('should not be able to start below five players', () => {
-    service.people.remove(service.people.all()[0].id);
-    expect(service.canStart()).toBe(false);
+    expect(service.people.all().length).toBe(INITIAL_SEATS - 1);
   });
 
   describe('seating order', () => {
