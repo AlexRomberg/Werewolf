@@ -1,9 +1,10 @@
-import { Component, computed, input, output } from '@angular/core';
+import { Component, computed, inject, input, output } from '@angular/core';
 import { Person } from '../../../../services/state/types';
 import { NgOptimizedImage } from '@angular/common';
 import { LucideUser } from '@lucide/angular';
 import { CHARACTERS, CHARACTERS_BY_ID } from '../../../../models/characters';
 import { FormsModule } from '@angular/forms';
+import { GameService } from '../../../../services/game.service';
 
 @Component({
   selector: 'app-person-panel',
@@ -16,12 +17,13 @@ import { FormsModule } from '@angular/forms';
 })
 export class PersonPanelComponent {
   public person = input.required<Person>();
+  private game = inject(GameService);
 
   public personChanged = output<Person>();
 
   protected options = computed(() => [
     { value: undefined, label: 'Select a character' },
-    ...CHARACTERS.map((character) => ({
+    ...[...new Set(this.game.characters.cards())].map((character) => ({
       value: character.id,
       label: character.name,
     })),

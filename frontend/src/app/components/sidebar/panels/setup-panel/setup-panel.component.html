@@ -1,5 +1,5 @@
 <div class="flex min-h-0 flex-col gap-4 overflow-y-auto">
-  <div class="flex flex-col gap-2 rounded-3xl bg-zinc-900 p-4 shadow shadow-zinc-950">
+  <div class="sidebar-container">
     <h2 class="text-lg font-bold text-zinc-300">Cards</h2>
     <button
       class="grid grid-cols-[1fr_auto] grid-rows-[auto_3rem] gap-2 rounded-lg bg-zinc-800 p-4 hover:bg-zinc-700"
@@ -36,8 +36,14 @@
   </div>
 </div>
 
-<div class="flex flex-col gap-4 rounded-3xl bg-zinc-900 p-4 shadow shadow-zinc-950">
+<div class="sidebar-container">
+  @if (showCardMissmatch()) {
+    <p class="flex items-start gap-2 text-sm text-zinc-400" role="status">
+      <svg lucideTriangleAlert size="16" class="mt-0.5 shrink-0"></svg>
+      <span>There are more cards than players.</span>
+    </p>
+  }
   <button class="btn btn-primary" (click)="gameStartPressed.emit()">
-    Start <svg lucideArrowRight size="20"></svg>
+    Start <svg lucideChevronRight size="20"></svg>
   </button>
 </div>

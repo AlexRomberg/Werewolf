@@ -2,13 +2,7 @@ import { Component, computed, input, output } from '@angular/core';
 import { LucideChevronLeft } from '@lucide/angular';
 
 export type SidebarPanel =
-  { kind: 'setup' } | { kind: 'cards' } | { kind: 'person'; personId: string };
-
-const SidebarTitles: Record<SidebarPanel['kind'], string> = {
-  setup: 'Setup',
-  cards: 'Card selection',
-  person: 'Person details',
-};
+  { kind: 'setup' } | { kind: 'cards' } | { kind: 'person'; personId: string } | { kind: 'narration' };
 
 @Component({
   selector: 'app-sidebar',
@@ -20,8 +14,7 @@ const SidebarTitles: Record<SidebarPanel['kind'], string> = {
   },
 })
 export class SidebarComponent {
-  public kind = input.required<SidebarPanel['kind']>();
   public canGoBack = input(false);
   public back = output<void>();
-  protected title = computed(() => SidebarTitles[this.kind()]);
+  public title = input.required<string | undefined>();
 }

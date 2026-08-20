@@ -6,6 +6,14 @@ import { SetupPanelComponent } from '../../components/sidebar/panels/setup-panel
 import { CardsPanelComponent } from '../../components/sidebar/panels/cards-panel/cards-panel.component';
 import { PersonPanelComponent } from '../../components/sidebar/panels/person-panel/person-panel.component';
 import { Person } from '../../services/state/types';
+import { NarrationPanelComponent } from "../../components/sidebar/panels/narration-panel/narration-panel.component";
+
+const SidebarTitles: Record<SidebarPanel['kind'], string | undefined> = {
+  setup: 'Setup',
+  cards: 'Card selection',
+  person: 'Person details',
+  narration: undefined,
+};
 
 @Component({
   selector: 'app-narrator',
@@ -15,6 +23,7 @@ import { Person } from '../../services/state/types';
     SetupPanelComponent,
     CardsPanelComponent,
     PersonPanelComponent,
+    NarrationPanelComponent
   ],
   templateUrl: './narrator.component.html',
   styles: ``,
@@ -24,9 +33,10 @@ export class NarratorComponent {
 
   protected people = this.game.people.all;
   protected cards = this.game.characters.cards;
+  protected excessCards = this.game.characters.excessCards;
 
   private overlay = signal<SidebarPanel | null>(null);
-  private basePanel = computed<SidebarPanel>(() => ({ kind: 'setup' }));
+  private basePanel = computed<SidebarPanel>(() => (this.game.phase() === 'playing' ? { kind: 'narration' } : { kind: 'setup' }));
   protected panel = computed<SidebarPanel>(() => {
     const overlay = this.overlay();
     if (!overlay) {
@@ -39,6 +49,8 @@ export class NarratorComponent {
 
     return overlay;
   });
+  protected title = computed(() => SidebarTitles[this.panel().kind]);
+  protected editMode = computed(() => this.game.phase() === 'setup');
 
   protected canGoBack = computed(() => this.panel().kind !== this.basePanel().kind);
 
@@ -76,7 +88,9 @@ export class NarratorComponent {
     this.overlay.set(null);
   }
 
-  protected startGame() {}
+  protected startGame() {
+    this.game.setPhase('playing');
+  }
 
   private personById(id: string | null) {
     if (!id) {

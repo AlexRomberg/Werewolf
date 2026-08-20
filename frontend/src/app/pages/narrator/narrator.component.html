@@ -2,7 +2,7 @@
   <div>
     <app-circle
       [people]="people()"
-      [editMode]="true"
+      [editMode]="editMode()"
       [selectedId]="selectedId()"
       (personSelected)="selectPerson($event)"
       (personRemoved)="removePerson($event)"
@@ -11,7 +11,7 @@
     />
   </div>
 
-  <app-sidebar [kind]="panel().kind" [canGoBack]="canGoBack()" (back)="closePanel()">
+  <app-sidebar [title]="title()" [canGoBack]="canGoBack()" (back)="closePanel()">
     @switch (panel().kind) {
       @case ('cards') {
         <app-cards-panel />
@@ -20,6 +20,9 @@
         @if (selectedPerson(); as person) {
           <app-person-panel [person]="person" (personChanged)="updatePerson(person.id, $event)" />
         }
+      }
+      @case ('narration') {
+        <app-narration-panel />
       }
       @default {
         <app-setup-panel

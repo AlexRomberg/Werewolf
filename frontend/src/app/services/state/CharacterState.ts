@@ -4,7 +4,7 @@ import { VILLAGER } from '../../models/characters';
 import { Character } from '../../models/character';
 
 export class CharacterState {
-  constructor(private state: WritableSignal<State>) {}
+  constructor(private state: WritableSignal<State>) { }
 
   readonly selection = computed<ReadonlyMap<string, CharacterSelection>>(
     () => this.state().characters,
@@ -28,6 +28,10 @@ export class CharacterState {
     ...this.chosenDeck(),
     ...new Array<Character>(this.villagerCount()).fill(VILLAGER),
   ]);
+
+  readonly excessCards = computed(() =>
+    Math.max(0, this.cards().length - this.state().people.length),
+  );
 
   amountOf(character: Character) {
     return character.id === VILLAGER.id ? this.villagerCount() : this.storedAmount(character);

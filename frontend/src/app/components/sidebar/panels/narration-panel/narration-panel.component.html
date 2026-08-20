@@ -1,0 +1,41 @@
+<div class="flex min-h-0 flex-col gap-4 overflow-y-auto">
+  <div class="sidebar-container">
+    <h2 class="text-lg font-bold text-zinc-300">Cards</h2>
+  </div>
+</div>
+
+<div class="sidebar-container">
+  <!-- Cardstack -->
+  <div class="grid grid-cols-1 grid-rows-1 mt-24">
+    <div
+      class="col-start-1 row-start-1 bg-zinc-800 p-4 h-32 rounded-lg shadow shadow-black/50 z-30 grid-cols-[1fr_auto] grid-rows-2 gap-4 grid"
+    >
+      <h1 class="text-lg text-zinc-300">Villager</h1>
+      <img
+        width="60"
+        height="60"
+        [ngSrc]="`img/villager.png`"
+        [alt]="'card villager'"
+        class="rounded-sm"
+      />
+    </div>
+    <div
+      class="col-start-1 row-start-1 bg-zinc-800 brightness-90 p-4 h-32 rounded-lg shadow shadow-black/50 z-29 transform -translate-y-12 mx-2"
+    ></div>
+    <div
+      class="col-start-1 row-start-1 bg-zinc-800 brightness-80 p-4 h-32 rounded-lg shadow shadow-black/50 z-28 transform -translate-y-18 mx-4"
+    ></div>
+    <div
+      class="col-start-1 row-start-1 bg-zinc-800 brightness-70 p-4 h-32 rounded-lg shadow shadow-black/50 z-27 transform -translate-y-21 mx-5"
+    ></div>
+  </div>
+
+  <span class="grid grid-cols-3 gap-4 mt-2">
+    <button class="btn bg-zinc-800 hover:bg-zinc-700" disabled>
+      <svg lucideChevronLeft size="20"></svg> <span class="mr-2">Back</span>
+    </button>
+    <button class="btn btn-primary col-span-2">
+      <span class="ml-2">Next</span> <svg lucideChevronRight size="20"></svg>
+    </button>
+  </span>
+</div>

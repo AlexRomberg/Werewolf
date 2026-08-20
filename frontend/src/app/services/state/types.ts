@@ -19,6 +19,7 @@ export interface CharacterSelection {
 }
 
 export interface State {
+  phase: 'setup' | 'playing';
   people: Person[];
   characters: Map<string, CharacterSelection>;
 }

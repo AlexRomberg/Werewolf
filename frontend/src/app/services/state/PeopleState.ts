@@ -53,7 +53,7 @@ function createSeats(count: number) {
 
 function createPerson(): Person {
   return {
-    id: crypto.randomUUID(),
+    id: crypto.randomUUID?.() ?? Math.random().toString(36).substring(2, 15),
     name: '',
     states: new Set(),
     character: undefined,

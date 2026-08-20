@@ -1,11 +1,12 @@
-import { Component, input, model, output } from '@angular/core';
+import { Component, computed, inject, input, model, output } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
-import { LucideArrowRight, LucideChevronRight } from '@lucide/angular';
+import { LucideArrowRight, LucideChevronRight, LucideTriangleAlert } from '@lucide/angular';
 import { Character } from '../../../../models/character';
+import { GameService } from '../../../../services/game.service';
 
 @Component({
   selector: 'app-setup-panel',
-  imports: [NgOptimizedImage, LucideArrowRight, LucideChevronRight],
+  imports: [NgOptimizedImage, LucideChevronRight, LucideTriangleAlert],
   templateUrl: './setup-panel.component.html',
   styles: ``,
   host: {
@@ -14,8 +15,13 @@ import { Character } from '../../../../models/character';
 })
 export class SetupPanelComponent {
   public cards = input.required<readonly Character[]>();
+  public state = inject(GameService);
   // public useVirtualCards = model(false);
 
   public cardSelectorPressed = output<void>();
   public gameStartPressed = output<void>();
+
+  protected showCardMissmatch = computed(() => {
+    return this.state.characters.excessCards() > 0;
+  });
 }
