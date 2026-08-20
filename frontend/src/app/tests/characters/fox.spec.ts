@@ -15,7 +15,7 @@ describe('Fox', () => {
 
   it('should describe the card', () => {
     expect(character.description.length).toBe(3);
-    expect(character.description[0].title).toBe("General");
+    expect(character.description[0].title).toBe('General');
     for (const section of character.description) {
       expect(section.description.length).toBeGreaterThan(0);
     }
