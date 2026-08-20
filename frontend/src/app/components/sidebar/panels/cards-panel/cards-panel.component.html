@@ -84,4 +84,49 @@
 </div>
 <div class="sidebar-container">
   <h2 class="text-lg font-bold text-zinc-300">Presets</h2>
+
+  @for (view of presets(); track view.preset.name) {
+    <button
+      class="grid grid-cols-[1fr_auto] items-baseline gap-x-2 rounded-lg bg-zinc-800 p-2 text-left hover:bg-zinc-700"
+      (click)="applyPreset(view)"
+    >
+      <span class="flex items-baseline gap-2">
+        <span class="text-sm text-zinc-100">{{ view.preset.name }}</span>
+        @if ($first) {
+          <span class="rounded-full bg-amber-400/15 px-2 py-0.5 text-xs text-amber-300">
+            Recommended
+          </span>
+        }
+      </span>
+      <span class="text-xs text-zinc-400 flex items-center gap-1">
+        {{ view.deck.length }}
+        <svg lucideUsers size="16" alt="people"></svg>
+      </span>
+      <span
+        class="relative col-span-2 mt-2 h-12 mask-alpha overflow-x-clip mask-r-from-80% mask-r-to-100% rounded-sm"
+      >
+        @for (character of view.deck; track $index) {
+          <div
+            class="absolute h-12 w-12 rounded-sm bg-zinc-950 p-1 shadow shadow-black/50"
+            [style.left.px]="20 * $index"
+            [style.zIndex]="30 - $index"
+          >
+            <img
+              width="40"
+              height="40"
+              [ngSrc]="`img/${character.id}.png`"
+              [alt]="'card ' + character.name"
+            />
+          </div>
+        }
+      </span>
+    </button>
+  }
+
+  <button
+    class="input-label self-start hover:text-zinc-100"
+    (click)="presetsExpanded.set(!presetsExpanded())"
+  >
+    {{ presetsExpanded() ? 'Show fewer' : 'Show ' + hiddenPresetCount() + ' more presets' }}
+  </button>
 </div>

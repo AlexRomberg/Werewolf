@@ -33,6 +33,17 @@ export class CharacterState {
     return character.id === VILLAGER.id ? this.villagerCount() : this.storedAmount(character);
   }
 
+  replaceSelection(entries: [Character, number][]) {
+    this.state.update((state) => ({
+      ...state,
+      characters: new Map(
+        [...entries]
+          .filter(([, amount]) => amount > 0)
+          .map(([character, amount]) => [character.id, { character, amount }]),
+      ),
+    }));
+  }
+
   toggle(character: Character) {
     this.setAmount(character, this.storedAmount(character) > 0 ? 0 : 1);
   }

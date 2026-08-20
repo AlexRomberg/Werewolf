@@ -5,9 +5,9 @@ export type SidebarPanel =
   { kind: 'setup' } | { kind: 'cards' } | { kind: 'person'; personId: string };
 
 const SidebarTitles: Record<SidebarPanel['kind'], string> = {
-  setup: "Setup",
-  cards: "Card selection",
-  person: "Person details",
+  setup: 'Setup',
+  cards: 'Card selection',
+  person: 'Person details',
 };
 
 @Component({
