@@ -1,0 +1,43 @@
+<dialog
+  appModal
+  #modal="appModal"
+  class="m-auto w-[min(42rem,calc(100vw-2rem))] overflow-visible bg-transparent pt-24 text-zinc-200 backdrop:bg-zinc-950/60 backdrop:backdrop-blur-2xl backdrop:backdrop-saturate-0"
+  aria-labelledby="character-details-name"
+  (closed)="closed.emit()"
+>
+  <div
+    class="relative flex max-h-[calc(100svh-10rem)] flex-col rounded-2xl bg-zinc-800 shadow-2xl shadow-black/60"
+  >
+    <div
+      class="absolute -top-24 left-1/2 size-40 -translate-x-1/2 overflow-hidden rounded-full border-8 border-zinc-950 bg-zinc-950"
+    >
+      <img width="160" height="160" [ngSrc]="`img/${character().id}.png`" alt="" />
+    </div>
+
+    <div class="flex h-20 shrink-0 items-start justify-end p-3">
+      <button
+        class="rounded-full p-2 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-100"
+        aria-label="Close"
+        (click)="modal.close()"
+      >
+        <svg lucideX size="20"></svg>
+      </button>
+    </div>
+
+    <div class="flex min-h-0 flex-col gap-4 overflow-y-auto px-6 pb-6">
+      <span class="flex items-center gap-4">
+        <h1 id="character-details-name" class="text-xl font-bold text-zinc-100">
+          {{ character().name }}
+        </h1>
+        <hr class="grow border-zinc-600" />
+      </span>
+
+      @for (section of character().description; track section.title) {
+        <section class="grid grid-cols-1 gap-x-4 gap-y-1 sm:grid-cols-[11rem_1fr]">
+          <h2 class="font-bold text-zinc-300">{{ section.title }}</h2>
+          <p class="text-zinc-300">{{ section.description }}</p>
+        </section>
+      }
+    </div>
+  </div>
+</dialog>

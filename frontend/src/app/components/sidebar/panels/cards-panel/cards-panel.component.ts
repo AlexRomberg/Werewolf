@@ -1,13 +1,13 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
 import { LucideCircleMinus, LucideCirclePlus, LucideUsers } from '@lucide/angular';
-import { BULK_CHARACTERS, CHARACTERS, VILLAGER } from '../../../../models/characters';
-import { Character, GAME_SET_LABELS, GROUP_LABELS } from '../../../../models/character';
+import { BULK_CHARACTERS, VILLAGER } from '../../../../models/characters';
+import { CharacterGrouping, characterSections } from '../../../../models/characters/sections';
+import { Character } from '../../../../models/character';
+import { CharacterTileComponent } from '../../../character-tile/character-tile.component';
 import { GameService } from '../../../../services/game.service';
 import { MAX_SEATS } from '../../../circle/circle.component';
 import { Preset, PRESETS, presetDeck, presetEntries } from '../../../../models/presets';
-
-type Grouping = 'group' | 'game';
 
 interface PresetView {
   preset: Preset;
@@ -31,7 +31,13 @@ interface CardView {
 
 @Component({
   selector: 'app-cards-panel',
-  imports: [NgOptimizedImage, LucideCirclePlus, LucideCircleMinus, LucideUsers],
+  imports: [
+    NgOptimizedImage,
+    LucideCirclePlus,
+    LucideCircleMinus,
+    LucideUsers,
+    CharacterTileComponent,
+  ],
   templateUrl: './cards-panel.component.html',
   styles: ``,
   host: {
@@ -42,7 +48,7 @@ export class CardsPanelComponent {
   private game = inject(GameService);
   private characters = this.game.characters;
 
-  protected grouping = signal<Grouping>('game');
+  protected grouping = signal<CharacterGrouping>('game');
   protected presetsExpanded = signal(false);
 
   private recommended = computed(() => {
@@ -66,9 +72,10 @@ export class CardsPanelComponent {
   }
 
   protected sections = computed(() =>
-    this.grouping() === 'group'
-      ? this.groupBy(GROUP_LABELS, (character) => character.group)
-      : this.groupBy(GAME_SET_LABELS, (character) => character.game),
+    characterSections(this.grouping()).map(({ label, characters }) => ({
+      label,
+      cards: characters.map((character) => this.toCardView(character)),
+    })),
   );
 
   protected toggle(card: CardView) {
@@ -81,20 +88,6 @@ export class CardsPanelComponent {
 
   protected decrease(card: CardView) {
     this.characters.setAmount(card.character, card.amount - 1);
-  }
-
-  private groupBy<T>(labels: ReadonlyMap<T, string>, keyOf: (character: Character) => T) {
-    return [...labels].map(([key, label]) => {
-      const inSection = CHARACTERS.filter((c) => keyOf(c) === key);
-      const isBulk = (character: Character) => BULK_CHARACTERS.includes(character);
-
-      return {
-        label,
-        cards: [...inSection.filter(isBulk), ...inSection.filter((c) => !isBulk(c))].map((c) =>
-          this.toCardView(c),
-        ),
-      };
-    });
   }
 
   private toCardView(character: Character): CardView {

@@ -61,21 +61,11 @@
               </div>
             </div>
           } @else {
-            <button
-              class="card-tile grid-cols-[auto_1fr] hover:bg-zinc-700"
-              [class.ring-2]="card.selected"
-              (click)="toggle(card)"
-            >
-              <div class="size-12 bg-zinc-950 p-1 rounded-sm">
-                <img
-                  width="40"
-                  height="40"
-                  [ngSrc]="`img/${card.character.id}.png`"
-                  [alt]="card.character.name"
-                />
-              </div>
-              <span class="text-sm text-zinc-400">{{ card.character.name }}</span>
-            </button>
+            <app-character-tile
+              [character]="card.character"
+              [selected]="card.selected"
+              (pressed)="toggle(card)"
+            />
           }
         }
       }

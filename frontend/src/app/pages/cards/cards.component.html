@@ -1,1 +1,50 @@
-<p>cards works!</p>
+<main class="mx-auto flex min-h-svh max-w-3xl flex-col gap-4 px-4 py-6">
+  <header class="flex items-center gap-1">
+    <a
+      class="-ml-2 rounded-full p-2 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100"
+      routerLink="/"
+      aria-label="Back to the start page"
+    >
+      <svg lucideChevronLeft size="20"></svg>
+    </a>
+    <h1 class="flex-1 truncate text-2xl font-bold text-zinc-300">Characters</h1>
+
+    <span class="flex items-baseline gap-2">
+      <span class="input-label max-sm:hidden">Group by:</span>
+      <button
+        class="rounded-full bg-zinc-800 px-3 py-1 text-sm ring-amber-400 hover:bg-zinc-700"
+        [class.ring-2]="grouping() === 'game'"
+        [attr.aria-pressed]="grouping() === 'game'"
+        (click)="grouping.set('game')"
+      >
+        Game
+      </button>
+      <button
+        class="rounded-full bg-zinc-800 px-3 py-1 text-sm ring-amber-400 hover:bg-zinc-700"
+        [class.ring-2]="grouping() === 'group'"
+        [attr.aria-pressed]="grouping() === 'group'"
+        (click)="grouping.set('group')"
+      >
+        Group
+      </button>
+    </span>
+  </header>
+
+  @for (section of sections(); track section.label) {
+    <section class="sidebar-container">
+      <h2 class="text-lg font-bold text-zinc-300">{{ section.label }}</h2>
+      <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+        @for (character of section.characters; track character.id) {
+          <app-character-tile
+            [character]="character"
+            (pressed)="describedCharacter.set(character)"
+          />
+        }
+      </div>
+    </section>
+  }
+</main>
+
+@if (describedCharacter(); as character) {
+  <app-character-details [character]="character" (closed)="describedCharacter.set(null)" />
+}
