@@ -1,3 +1,5 @@
+import { ActionButton, assignCard, filterFalsy, pickButton } from '../actions/action';
+import { hasMarkedVictim, isAssigned, NightContext } from '../actions/context';
 import { BasePriority, GameSets, GroupTypes, SectionTitles } from '../character';
 import { WerewolfCharacter } from '../werewolf-character';
 
@@ -16,7 +18,21 @@ export class Werewolf extends WerewolfCharacter {
     },
   ];
 
-  override isAwakeThisNight(_round: number) {
+  override isAwakeThisNight(_context: NightContext) {
     return true;
+  }
+
+  override getActions(context: NightContext): (string | false)[] {
+    return [
+      !isAssigned(context) && 'Assign the wolves',
+      !hasMarkedVictim(context, this.id) && 'They have to settle on a victim',
+    ];
+  }
+
+  override getButtons(context: NightContext): ActionButton[] {
+    return filterFalsy<ActionButton>([
+      !isAssigned(context) && assignCard(context),
+      pickButton('mark-victim', 'Mark victim', 1, hasMarkedVictim(context, this.id)),
+    ]);
   }
 }

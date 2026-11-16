@@ -1,3 +1,5 @@
+import { ActionButton, assignCard } from '../actions/action';
+import { isAssigned, NightContext } from '../actions/context';
 import { BasePriority, Character, GameSets, GroupTypes, SectionTitles } from '../character';
 
 export class Scapegoat extends Character {
@@ -19,7 +21,19 @@ export class Scapegoat extends Character {
     },
   ];
 
-  override isAwakeThisNight(round: number) {
-    return round <= 0;
+  override isAwakeThisNight(context: NightContext) {
+    return context.round <= 0;
+  }
+
+  override getActions(context: NightContext): (string | false)[] {
+    return [
+      !isAssigned(context) && 'Assign person',
+      'Can go back to sleep right away',
+      'Is chosen whenever a vote ends in a tie',
+    ];
+  }
+
+  override getButtons(context: NightContext): ActionButton[] {
+    return isAssigned(context) ? [] : [assignCard(context)];
   }
 }

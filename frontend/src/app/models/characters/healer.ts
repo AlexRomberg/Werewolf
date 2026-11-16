@@ -1,3 +1,6 @@
+import { ActionButton, assignCard, filterFalsy, pickButton } from '../actions/action';
+import { isAssigned, NightContext, someoneHas } from '../actions/context';
+import { PlayerStatus } from '../../services/state/types';
 import { BasePriority, Character, GameSets, GroupTypes, SectionTitles } from '../character';
 
 export class Healer extends Character {
@@ -19,7 +22,26 @@ export class Healer extends Character {
     },
   ];
 
-  override isAwakeThisNight(_round: number) {
+  override isAwakeThisNight(_context: NightContext) {
     return true;
+  }
+
+  override getActions(context: NightContext): (string | false)[] {
+    return [
+      !isAssigned(context) && 'Assign person',
+      !this.hasProtected(context) && 'May make one player immortal for this night',
+      this.hasProtected(context) && 'Is finished for this night',
+    ];
+  }
+
+  override getButtons(context: NightContext): ActionButton[] {
+    return filterFalsy<ActionButton>([
+      !isAssigned(context) && assignCard(context),
+      pickButton('protect', 'Protect a player', 1, this.hasProtected(context)),
+    ]);
+  }
+
+  private hasProtected(context: NightContext) {
+    return someoneHas(context, PlayerStatus.Protected);
   }
 }

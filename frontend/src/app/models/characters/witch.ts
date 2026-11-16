@@ -1,3 +1,5 @@
+import { ActionButton, assignCard, filterFalsy, pickButton } from '../actions/action';
+import { hasMarkedVictim, isAssigned, isAbilityUsed, NightContext } from '../actions/context';
 import { BasePriority, Character, GameSets, GroupTypes, SectionTitles } from '../character';
 
 export class Witch extends Character {
@@ -14,8 +16,37 @@ export class Witch extends Character {
     },
   ];
 
-  override isAwakeThisNight(_round: number) {
-    // TODO (ARO): sleeps once both potions are spent
-    return true;
+  override isAwakeThisNight(context: NightContext) {
+    return this.hasHealingPotion(context) || this.hasPoison(context);
+  }
+
+  override getActions(context: NightContext): (string | false)[] {
+    return [
+      !isAssigned(context) && 'Assign person',
+      !this.hasHealingPotion(context) && !this.hasPoison(context) && 'Has no potion left',
+      this.hasHealingPotion(context) && 'May use the healing potion',
+      this.hasPoison(context) && 'May use the poison',
+    ];
+  }
+
+  override getButtons(context: NightContext): ActionButton[] {
+    const healed = context.roles.healedTonight !== undefined;
+    const poisoned = hasMarkedVictim(context, this.id);
+
+    // The potions never ask by themselves, and one used tonight can still be taken back.
+    return filterFalsy<ActionButton>([
+      !isAssigned(context) && assignCard(context),
+      (this.hasHealingPotion(context) || healed) && pickButton('heal', 'Heal', 1, healed, false),
+      (this.hasPoison(context) || poisoned) &&
+        pickButton('poison', 'Poison someone', 1, poisoned, false),
+    ]);
+  }
+
+  private hasHealingPotion(context: NightContext) {
+    return !isAbilityUsed(context, 'witch_heal');
+  }
+
+  private hasPoison(context: NightContext) {
+    return !isAbilityUsed(context, 'witch_poison');
   }
 }

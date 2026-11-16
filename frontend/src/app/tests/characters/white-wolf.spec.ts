@@ -1,6 +1,7 @@
 import { BasePriority, GameSets, GroupTypes } from '../../models/character';
 import { WhiteWolf } from '../../models/characters/white-wolf';
 import { WerewolfCharacter } from '../../models/werewolf-character';
+import { night, seated } from '../night';
 
 describe('WhiteWolf', () => {
   const character = new WhiteWolf();
@@ -27,8 +28,30 @@ describe('WhiteWolf', () => {
   });
 
   it('should know which nights it is awake', () => {
-    expect(character.isAwakeThisNight(0)).toBe(false);
-    expect(character.isAwakeThisNight(1)).toBe(true);
-    expect(character.isAwakeThisNight(2)).toBe(false);
+    expect(character.isAwakeThisNight(night(0))).toBe(false);
+    expect(character.isAwakeThisNight(night(1))).toBe(true);
+    expect(character.isAwakeThisNight(night(2))).toBe(false);
+  });
+
+  it('should ask for a player while nobody holds the card', () => {
+    expect(character.getActions(night(1))).toContain('Assign person');
+    expect(character.getButtons(night(1))[0].kind).toBe('assign-card');
+  });
+
+  it('should stop asking once the card is held', () => {
+    expect(character.getActions(seated(1, 1))).not.toContain('Assign person');
+    expect(character.getButtons(seated(1, 1)).map((button) => button.kind)).not.toContain(
+      'assign-card',
+    );
+  });
+
+  it('should offer its kill only once a night', () => {
+    const chosen = seated(1, 1, { victims: [{ personId: 'anyone', byCharacterId: 'white_wolf' }] });
+
+    expect(character.getActions(chosen)).not.toContain('May kill one werewolf');
+    // The button stays so the pick can be changed or undone, but it no longer asks by itself.
+    expect(character.getButtons(chosen)).toMatchObject([
+      { kind: 'mark-victim', done: true, auto: false },
+    ]);
   });
 });

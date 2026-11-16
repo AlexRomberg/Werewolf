@@ -1,3 +1,5 @@
+import { ActionButton, assignCard, filterFalsy } from '../actions/action';
+import { isAssigned, isAbilityUsed, NightContext } from '../actions/context';
 import { BasePriority, Character, GameSets, GroupTypes, SectionTitles } from '../character';
 
 export class Fox extends Character {
@@ -24,8 +26,28 @@ export class Fox extends Character {
     },
   ];
 
-  override isAwakeThisNight(_round: number) {
-    // TODO (ARO): sleeps once it has missed
-    return true;
+  override isAwakeThisNight(context: NightContext) {
+    return !this.hasMissed(context);
+  }
+
+  override getActions(context: NightContext): (string | false)[] {
+    return [
+      !isAssigned(context) && 'Assign person',
+      !this.hasMissed(context) &&
+        'May point at a player; confirm if they or one of their neighbours is a werewolf',
+      this.hasMissed(context) && 'Has missed and will not wake up again from tomorrow night',
+      'Never show the three cards',
+    ];
+  }
+
+  override getButtons(context: NightContext): ActionButton[] {
+    return filterFalsy<ActionButton>([
+      !isAssigned(context) && assignCard(context),
+      { kind: 'lose-fox-request', label: 'Has missed', done: this.hasMissed(context) },
+    ]);
+  }
+
+  private hasMissed(context: NightContext) {
+    return isAbilityUsed(context, 'fox_request');
   }
 }

@@ -1,3 +1,5 @@
+import { ActionButton, assignCard } from '../actions/action';
+import { isAssigned, NightContext } from '../actions/context';
 import { BasePriority, Character, GameSets, GroupTypes, SectionTitles } from '../character';
 
 export class Thief extends Character {
@@ -14,7 +16,15 @@ export class Thief extends Character {
     },
   ];
 
-  override isAwakeThisNight(round: number) {
-    return round === 0;
+  override isAwakeThisNight(context: NightContext) {
+    return context.round === 0;
+  }
+
+  override getActions(context: NightContext): (string | false)[] {
+    return ['Has to swap cards', !isAssigned(context) && 'Assign person'];
+  }
+
+  override getButtons(context: NightContext): ActionButton[] {
+    return isAssigned(context) ? [] : [assignCard(context)];
   }
 }

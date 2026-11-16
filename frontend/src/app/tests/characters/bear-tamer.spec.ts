@@ -1,5 +1,6 @@
 import { BasePriority, GameSets, GroupTypes } from '../../models/character';
 import { BearTamer } from '../../models/characters/bear-tamer';
+import { night, seated } from '../night';
 
 describe('BearTamer', () => {
   const character = new BearTamer();
@@ -22,8 +23,20 @@ describe('BearTamer', () => {
   });
 
   it('should know which nights it is awake', () => {
-    expect(character.isAwakeThisNight(0)).toBe(true);
-    expect(character.isAwakeThisNight(1)).toBe(false);
-    expect(character.isAwakeThisNight(2)).toBe(false);
+    expect(character.isAwakeThisNight(night(0))).toBe(true);
+    expect(character.isAwakeThisNight(night(1))).toBe(false);
+    expect(character.isAwakeThisNight(night(2))).toBe(false);
+  });
+
+  it('should ask for a player while nobody holds the card', () => {
+    expect(character.getActions(night(0))).toContain('Assign person');
+    expect(character.getButtons(night(0))[0].kind).toBe('assign-card');
+  });
+
+  it('should stop asking once the card is held', () => {
+    expect(character.getActions(seated(0, 1))).not.toContain('Assign person');
+    expect(character.getButtons(seated(0, 1)).map((button) => button.kind)).not.toContain(
+      'assign-card',
+    );
   });
 });

@@ -1,5 +1,6 @@
 import { GameSets, GroupTypes } from '../../models/character';
 import { VillageIdiot } from '../../models/characters/village-idiot';
+import { night } from '../night';
 
 describe('VillageIdiot', () => {
   const character = new VillageIdiot();
@@ -22,8 +23,8 @@ describe('VillageIdiot', () => {
   });
 
   it('should know which nights it is awake', () => {
-    expect(character.isAwakeThisNight(0)).toBe(false);
-    expect(character.isAwakeThisNight(1)).toBe(false);
-    expect(character.isAwakeThisNight(2)).toBe(false);
+    expect(character.isAwakeThisNight(night(0))).toBe(false);
+    expect(character.isAwakeThisNight(night(1))).toBe(false);
+    expect(character.isAwakeThisNight(night(2))).toBe(false);
   });
 });

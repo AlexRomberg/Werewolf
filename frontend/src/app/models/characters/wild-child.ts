@@ -1,3 +1,6 @@
+import { ActionButton, assignCard, pickButton } from '../actions/action';
+import { hasConnection, isAssigned, NightContext } from '../actions/context';
+import { ConnectionType } from '../../services/state/types';
 import { BasePriority, Character, GameSets, GroupTypes, SectionTitles } from '../character';
 
 export class WildChild extends Character {
@@ -19,7 +22,25 @@ export class WildChild extends Character {
     },
   ];
 
-  override isAwakeThisNight(round: number) {
-    return round === 0;
+  override isAwakeThisNight(context: NightContext) {
+    return context.round === 0;
+  }
+
+  override getActions(context: NightContext): (string | false)[] {
+    return [
+      !isAssigned(context) && 'Assign person',
+      !this.hasRoleModel(context) && 'Has to choose a role model',
+      'Turns into a werewolf if the role model dies',
+    ];
+  }
+
+  override getButtons(context: NightContext): ActionButton[] {
+    return isAssigned(context)
+      ? [pickButton('set-role-model', 'Assign the role model', 1, this.hasRoleModel(context))]
+      : [assignCard(context)];
+  }
+
+  private hasRoleModel(context: NightContext) {
+    return hasConnection(context, ConnectionType.Trust);
   }
 }

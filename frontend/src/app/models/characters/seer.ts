@@ -1,3 +1,5 @@
+import { ActionButton, assignCard } from '../actions/action';
+import { isAssigned, NightContext } from '../actions/context';
 import { BasePriority, Character, GameSets, GroupTypes, SectionTitles } from '../character';
 
 export class Seer extends Character {
@@ -14,7 +16,15 @@ export class Seer extends Character {
     },
   ];
 
-  override isAwakeThisNight(_round: number) {
+  override isAwakeThisNight(_context: NightContext) {
     return true;
+  }
+
+  override getActions(context: NightContext): (string | false)[] {
+    return [!isAssigned(context) && 'Assign person', 'May look at one card'];
+  }
+
+  override getButtons(context: NightContext): ActionButton[] {
+    return isAssigned(context) ? [] : [assignCard(context)];
   }
 }

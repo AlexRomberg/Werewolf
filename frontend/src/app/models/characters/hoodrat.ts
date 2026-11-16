@@ -1,3 +1,6 @@
+import { ActionButton, assignCard, pickButton } from '../actions/action';
+import { hasConnection, isAssigned, NightContext } from '../actions/context';
+import { ConnectionType } from '../../services/state/types';
 import { BasePriority, Character, GameSets, GroupTypes, SectionTitles } from '../character';
 
 export class Hoodrat extends Character {
@@ -19,7 +22,25 @@ export class Hoodrat extends Character {
     },
   ];
 
-  override isAwakeThisNight(_round: number) {
+  override isAwakeThisNight(_context: NightContext) {
     return true;
+  }
+
+  override getActions(context: NightContext): (string | false)[] {
+    return [
+      !isAssigned(context) && 'Assign person',
+      !this.hasHost(context) && 'May look for a new home for the night',
+      this.hasHost(context) && 'Is finished for this night',
+    ];
+  }
+
+  override getButtons(context: NightContext): ActionButton[] {
+    return isAssigned(context)
+      ? [pickButton('sleepover', 'Assign a host', 1, this.hasHost(context))]
+      : [assignCard(context)];
+  }
+
+  private hasHost(context: NightContext) {
+    return hasConnection(context, ConnectionType.Sleepover);
   }
 }

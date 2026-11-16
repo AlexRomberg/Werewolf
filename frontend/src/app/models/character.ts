@@ -1,3 +1,6 @@
+import { ActionButton } from './actions/action';
+import { NightContext } from './actions/context';
+
 export enum GroupTypes {
   Wolves = 'wolves',
   Active = 'active',
@@ -55,9 +58,18 @@ export abstract class Character {
   abstract readonly description: readonly DescriptionSection[];
 
   readonly hasMultiple: boolean = false;
+  readonly memberName?: string;
   readonly priority: number = -1;
 
-  isAwakeThisNight(_round: number): boolean {
+  isAwakeThisNight(_context: NightContext): boolean {
     return false;
+  }
+
+  getActions(_context: NightContext): (string | false)[] {
+    return [];
+  }
+
+  getButtons(_context: NightContext): ActionButton[] {
+    return [];
   }
 }

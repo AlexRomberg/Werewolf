@@ -1,3 +1,5 @@
+import { ActionButton, assignCard } from '../actions/action';
+import { isAssigned, NightContext } from '../actions/context';
 import { BasePriority, Character, GameSets, GroupTypes, SectionTitles } from '../character';
 
 export class Judge extends Character {
@@ -18,7 +20,19 @@ export class Judge extends Character {
     },
   ];
 
-  override isAwakeThisNight(round: number) {
-    return round <= 0;
+  override isAwakeThisNight(context: NightContext) {
+    return context.round <= 0;
+  }
+
+  override getActions(context: NightContext): (string | false)[] {
+    return [
+      !isAssigned(context) && 'Assign person',
+      'Has to agree a sign with the narrator',
+      'May call for a second vote by giving the sign',
+    ];
+  }
+
+  override getButtons(context: NightContext): ActionButton[] {
+    return isAssigned(context) ? [] : [assignCard(context)];
   }
 }

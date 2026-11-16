@@ -1,5 +1,6 @@
 import { GameSets, GroupTypes } from '../../models/character';
 import { Elder } from '../../models/characters/elder';
+import { night } from '../night';
 
 describe('Elder', () => {
   const character = new Elder();
@@ -22,8 +23,8 @@ describe('Elder', () => {
   });
 
   it('should know which nights it is awake', () => {
-    expect(character.isAwakeThisNight(0)).toBe(false);
-    expect(character.isAwakeThisNight(1)).toBe(false);
-    expect(character.isAwakeThisNight(2)).toBe(false);
+    expect(character.isAwakeThisNight(night(0))).toBe(false);
+    expect(character.isAwakeThisNight(night(1))).toBe(false);
+    expect(character.isAwakeThisNight(night(2))).toBe(false);
   });
 });

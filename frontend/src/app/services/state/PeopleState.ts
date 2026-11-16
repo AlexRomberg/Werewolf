@@ -1,5 +1,15 @@
 import { computed, WritableSignal } from '@angular/core';
-import { INITIAL_SEATS, Person, State } from './types';
+import { Character } from '../../models/character';
+import {
+  INITIAL_SEATS,
+  isAlive,
+  NightMark,
+  Person,
+  PersonView,
+  PlayerStatus,
+  SeatBadge,
+  State,
+} from './types';
 
 export class PeopleState {
   constructor(private state: WritableSignal<State>) {
@@ -10,6 +20,30 @@ export class PeopleState {
   }
 
   readonly all = computed(() => this.state().people);
+
+  readonly views = computed<readonly PersonView[]>(() => {
+    const { people, victims, roles } = this.state();
+
+    return people.map((person, index) => {
+      const lasting = person.statuses.filter(
+        (status): status is Exclude<PlayerStatus, PlayerStatus.Dead> =>
+          status !== PlayerStatus.Dead,
+      );
+      const tonight: (NightMark | false)[] = [
+        victims.some((mark) => mark.personId === person.id) && 'victim',
+        roles.healedTonight === person.id && 'healed',
+      ];
+      const badges: SeatBadge[] = [...lasting, ...tonight.filter((mark) => mark !== false)];
+
+      return {
+        ...person,
+        seat: index + 1,
+        displayName: person.name || `Seat ${index + 1}`,
+        isDead: !isAlive(person),
+        badges,
+      };
+    });
+  });
 
   add() {
     this.state.update((state) => ({
@@ -22,6 +56,8 @@ export class PeopleState {
     this.state.update((state) => ({
       ...state,
       people: state.people.filter((person) => person.id !== id),
+      connections: state.connections.filter(({ from, to }) => from !== id && to !== id),
+      victims: state.victims.filter((victim) => victim.personId !== id),
     }));
   }
 
@@ -29,6 +65,15 @@ export class PeopleState {
     this.state.update((state) => ({
       ...state,
       people: state.people.map((p) => (p.id === id ? person : p)),
+    }));
+  }
+
+  assign(ids: readonly string[], character: Character) {
+    this.state.update((state) => ({
+      ...state,
+      people: state.people.map((person) =>
+        ids.includes(person.id) ? { ...person, character } : person,
+      ),
     }));
   }
 
@@ -55,7 +100,7 @@ function createPerson(): Person {
   return {
     id: crypto.randomUUID?.() ?? Math.random().toString(36).substring(2, 15),
     name: '',
-    states: new Set(),
+    statuses: [],
     character: undefined,
   };
 }

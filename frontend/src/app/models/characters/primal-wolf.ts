@@ -1,3 +1,5 @@
+import { ActionButton, assignCard, filterFalsy } from '../actions/action';
+import { isAssigned, isAbilityUsed, NightContext } from '../actions/context';
 import { BasePriority, GameSets, GroupTypes, SectionTitles } from '../character';
 import { WerewolfCharacter } from '../werewolf-character';
 
@@ -15,8 +17,21 @@ export class PrimalWolf extends WerewolfCharacter {
     },
   ];
 
-  override isAwakeThisNight(_round: number) {
-    // TODO (ARO): sleeps once used or a werewolf has died
-    return true;
+  override isAwakeThisNight(context: NightContext) {
+    return !isAbilityUsed(context, 'primal_wolf_infection') && !this.hasLostAWolf(context);
+  }
+
+  override getActions(context: NightContext): (string | false)[] {
+    return [!isAssigned(context) && 'Assign person', 'May turn the victim into a werewolf'];
+  }
+
+  override getButtons(context: NightContext): ActionButton[] {
+    return filterFalsy<ActionButton>([
+      !isAssigned(context) && assignCard(context),
+      !isAbilityUsed(context, 'primal_wolf_infection') && {
+        kind: 'infect',
+        label: 'Turn the victim into a werewolf',
+      },
+    ]);
   }
 }

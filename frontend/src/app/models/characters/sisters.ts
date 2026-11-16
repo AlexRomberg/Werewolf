@@ -1,8 +1,11 @@
+import { ActionButton, assignCard } from '../actions/action';
+import { NightContext } from '../actions/context';
 import { BasePriority, Character, GameSets, GroupTypes, SectionTitles } from '../character';
 
 export class Sisters extends Character {
   readonly id = 'sisters';
   readonly name = 'The Two Sisters';
+  override readonly memberName = 'One of the Two Sisters';
   readonly group = GroupTypes.Active;
   readonly game = GameSets.Characters;
   override readonly hasMultiple = true;
@@ -20,7 +23,19 @@ export class Sisters extends Character {
     },
   ];
 
-  override isAwakeThisNight(round: number) {
-    return round % 2 === 0;
+  override isAwakeThisNight(context: NightContext) {
+    return context.round % 2 === 0;
+  }
+
+  override getActions(context: NightContext): (string | false)[] {
+    return [!this.isComplete(context) && 'Assign people', 'They may exchange with each other'];
+  }
+
+  override getButtons(context: NightContext): ActionButton[] {
+    return this.isComplete(context) ? [] : [assignCard(context, 2)];
+  }
+
+  private isComplete(context: NightContext) {
+    return context.assigned.length === 2;
   }
 }
