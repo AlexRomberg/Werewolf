@@ -86,7 +86,7 @@ function wording(change: DaybreakChange, name: string, cause: string) {
       return { headline: `${name} died of a broken heart`, note: `In love with ${cause}` };
     case ChangeReason.DiedSleptWithVictim:
       return {
-        headline: `${name} died, spent the night at the victim's`,
+        headline: `${name} died, spent the night at the victim's place`,
         note: `Guest of ${cause}`,
       };
     case ChangeReason.TurnedIntoWolf:

@@ -1,5 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { LucideArrowUpDown, LucideCheck, LucideLogOut } from '@lucide/angular';
+import { LucideArrowUpDown, LucideCheck, LucideLogOut, LucideArrowLeft } from '@lucide/angular';
 import {
   ChangesDialogComponent,
   DaybreakChangeView,
@@ -35,15 +35,14 @@ import {
   Person,
 } from '../../services/state/types';
 import { applyPick, clearPick } from './pick-actions';
+import { RouterLink } from '@angular/router';
 
-/** A pick that drew a warning and waits for the narrator to confirm or cancel it. */
 interface PendingPick {
   selectionKey: string;
   personId: string;
   warning: string;
 }
 
-/** The people picked so far for an ability that needs more than one. */
 interface PartialPick {
   selectionKey: string;
   personIds: readonly string[];
@@ -75,13 +74,14 @@ function nightTitle(round: number) {
     LucideArrowUpDown,
     LucideCheck,
     LucideLogOut,
+    LucideArrowLeft,
+    RouterLink
   ],
   templateUrl: './narrator.component.html',
 })
 export class NarratorComponent {
   private game = inject(GameService);
 
-  // The table
   private people = this.game.people.all;
   protected personViews = this.game.people.views;
   protected connections = this.game.night.connections;
@@ -90,7 +90,6 @@ export class NarratorComponent {
   protected isEditMode = computed(() => !this.isPlaying() || this.rearranging());
   protected confirmingEnd = signal(false);
 
-  // The sidebar: a panel opened on top of the phase's own one closes back to it.
   private overlayPanel = signal<SidebarPanel | null>(null);
   private basePanel = computed<SidebarPanel>(() =>
     this.isPlaying() ? { kind: 'narration' } : { kind: 'setup' },
@@ -113,11 +112,9 @@ export class NarratorComponent {
   });
   protected selectedPerson = computed(() => this.personById(this.selectedPersonId()));
 
-  // Setup
   protected cards = this.game.characters.cards;
   protected hasExcessCards = computed(() => this.game.characters.excessCards() > 0);
 
-  // The night's action cards
   protected actionCards = this.game.actions.queue;
   protected actionIndex = this.game.actions.index;
   protected canStepBack = this.game.actions.canGoBack;
@@ -139,7 +136,6 @@ export class NarratorComponent {
     return ability ? ABILITY_LABELS[ability] : '';
   });
 
-  // Picking people on the circle for the current card's button
   private selectionChoice = signal<SelectionChoice | null>(null);
   private partialPick = signal<PartialPick>({ selectionKey: '', personIds: [] });
   private pendingPick = signal<PendingPick | null>(null);
@@ -149,7 +145,7 @@ export class NarratorComponent {
       ? activeButton(this.currentCard(), this.selectionChoice())
       : undefined,
   );
-  /** Identifies one selection, so picks made for another card or button never leak into it. */
+
   private selectionKey = computed(() => {
     const button = this.activeButton();
     return button ? `${this.currentCard()?.key}:${button.kind}` : '';
@@ -183,8 +179,6 @@ export class NarratorComponent {
     };
   });
 
-  // Daybreak
-  /** Why the changes dialog is open: to look them over, or because the narrator moves on. */
   protected daybreakDialog = signal<'review' | 'leaving' | null>(null);
   protected daybreakChangeViews = computed<DaybreakChangeView[]>(() =>
     this.game.daybreak.changes().flatMap((change) => {
@@ -377,8 +371,6 @@ export class NarratorComponent {
       return;
     }
 
-    // A pick the narrator asked for by pressing its button ends there; one that started
-    // by itself hands over to the next ability that starts by itself.
     const wasPressed = this.selectionChoice()?.cardKey === card.key;
     this.setPickedIds([]);
     applyPick(this.game, card, button, ids);
