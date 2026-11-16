@@ -1,15 +1,13 @@
-import { Service, WritableSignal, computed, signal } from '@angular/core';
-import { Ability, INITIAL_ROLE_STATE, State } from './state/types';
-import { PeopleState } from './state/PeopleState';
-import { CharacterState } from './state/CharacterState';
-import { ActionState, beginNight } from './state/ActionState';
-import { DaybreakState } from './state/DaybreakState';
-import { NightState } from './state/NightState';
+import { Service, computed, signal } from '@angular/core';
+import { ActionState, beginNight } from './state/action-state';
+import { CharacterState } from './state/character-state';
+import { DaybreakState } from './state/daybreak-state';
+import { NightState } from './state/night-state';
+import { PeopleState, createSeats } from './state/people-state';
+import { Ability, INITIAL_ROLE_STATE, INITIAL_SEATS, State } from './state/types';
 
-const UNPLAYED: Pick<
-  State,
-  'round' | 'actionIndex' | 'awake' | 'connections' | 'victims' | 'roles' | 'appliedChanges'
-> = {
+/** Everything a game accumulates while it is played, as it is before the first night. */
+const UNPLAYED_GAME = {
   round: 0,
   actionIndex: 0,
   awake: [],
@@ -17,43 +15,39 @@ const UNPLAYED: Pick<
   connections: [],
   victims: [],
   roles: INITIAL_ROLE_STATE,
-};
+} satisfies Partial<State>;
 
 @Service()
 export class GameService {
-  private state: WritableSignal<State> = signal<State>({
-    ...UNPLAYED,
+  private readonly state = signal<State>({
+    ...UNPLAYED_GAME,
     phase: 'setup',
-    people: [],
+    people: createSeats(INITIAL_SEATS),
     characters: new Map(),
   });
 
-  public readonly people = new PeopleState(this.state);
-  public readonly characters = new CharacterState(this.state);
-  public readonly actions = new ActionState(this.state);
-  public readonly night = new NightState(this.state);
-  public readonly daybreak = new DaybreakState(this.state);
-  public readonly phase = computed(() => this.state().phase);
-
-  setPhase(phase: State['phase']) {
-    this.state.update((state) => ({ ...state, phase }));
-  }
+  readonly people = new PeopleState(this.state);
+  readonly characters = new CharacterState(this.state);
+  readonly actions = new ActionState(this.state);
+  readonly night = new NightState(this.state);
+  readonly daybreak = new DaybreakState(this.state);
+  readonly phase = computed(() => this.state().phase);
 
   startGame() {
-    this.state.update((state) => beginNight({ ...state, ...UNPLAYED, phase: 'playing' }));
-  }
-
-  resetAbility(ability: Ability) {
-    this.night.resetAbility(ability);
-    this.actions.wakeRestoredRoles();
+    this.state.update((state) => beginNight({ ...state, ...UNPLAYED_GAME, phase: 'playing' }));
   }
 
   endGame() {
     this.state.update((state) => ({
       ...state,
-      ...UNPLAYED,
+      ...UNPLAYED_GAME,
       phase: 'setup',
       people: state.people.map((person) => ({ ...person, character: undefined, statuses: [] })),
     }));
+  }
+
+  resetAbility(ability: Ability) {
+    this.night.resetAbility(ability);
+    this.actions.wakeRestoredRoles();
   }
 }

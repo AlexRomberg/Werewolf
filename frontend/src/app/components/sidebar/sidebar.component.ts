@@ -1,4 +1,4 @@
-import { Component, computed, input, output } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { LucideChevronLeft } from '@lucide/angular';
 
 export type SidebarPanel =
@@ -11,13 +11,13 @@ export type SidebarPanel =
   selector: 'app-sidebar',
   imports: [LucideChevronLeft],
   templateUrl: './sidebar.component.html',
-  styles: ``,
   host: {
     class: 'grid grid-rows-[auto_1fr] h-full min-h-0 p-4',
   },
 })
 export class SidebarComponent {
-  public canGoBack = input(false);
-  public back = output<void>();
   public title = input.required<string | undefined>();
+  public canGoBack = input(false);
+
+  public back = output<void>();
 }

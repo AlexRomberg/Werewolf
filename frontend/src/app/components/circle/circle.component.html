@@ -4,13 +4,13 @@
     [class.border-transparent]="!selection()"
     [class.border-tone]="!!selection()"
   >
-    @if (selection(); as request) {
+    @if (selection(); as activeSelection) {
       <div
         class="absolute -top-0.5 left-1/2 z-20 flex max-w-[calc(100%-3rem)] -translate-x-1/2 items-center gap-3 rounded-b-2xl bg-tone px-4 py-2 text-sm font-semibold text-zinc-950 shadow-lg shadow-black/40"
-        [attr.role]="request.pending ? 'alertdialog' : 'status'"
-        [attr.aria-label]="request.pending ? 'Confirm this pick' : null"
+        [attr.role]="activeSelection.pending ? 'alertdialog' : 'status'"
+        [attr.aria-label]="activeSelection.pending ? 'Confirm this pick' : null"
       >
-        @if (request.pending; as pending) {
+        @if (activeSelection.pending; as pending) {
           <span>{{ pending.warning }} Continue?</span>
           <button
             #cancelButton
@@ -26,9 +26,9 @@
             Continue
           </button>
         } @else {
-          <span class="truncate">{{ request.label }}</span>
+          <span class="truncate">{{ activeSelection.label }}</span>
           <span class="tabular-nums opacity-70"
-            >{{ request.picked.length }}/{{ request.needed }}</span
+            >{{ activeSelection.picked.length }}/{{ activeSelection.needed }}</span
           >
           <button
             class="-mr-1 rounded-full p-1 hover:bg-zinc-950/15"
@@ -75,49 +75,49 @@
         ></span>
       }
 
-      <!-- Player -->
-      @for (player of placedPlayers(); track player.person.id) {
+      <!-- People -->
+      @for (placed of placedPeople(); track placed.person.id) {
         <div
           class="player"
-          [class.dragging]="player.dragging"
-          [style.--player-angle]="player.angle + 'deg'"
+          [class.dragging]="placed.dragging"
+          [style.--player-angle]="placed.angle + 'deg'"
         >
           <div class="player-body" [animate.enter]="enterAnimation()" animate.leave="player-leave">
-            @if (player.person.name) {
+            @if (placed.person.name) {
               <span
                 class="text-xs absolute block truncate max-w-24 px-2 py-0.5 bg-zinc-950 text-zinc-500 rounded-full"
-                [class.shake]="!player.dragging && editMode()"
+                [class.shake]="!placed.dragging && editMode()"
                 [style.animationDelay]="-$index + 's'"
-                [class.translate-x-9]="!player.nameTop"
-                [class.-translate-y-14]="player.nameTop"
+                [class.translate-x-9]="!placed.nameAbove"
+                [class.-translate-y-14]="placed.nameAbove"
               >
-                {{ player.person.name }}
+                {{ placed.person.name }}
               </span>
             }
             <div class="absolute -translate-x-1/2 -translate-y-1/2">
               <button
                 class="circle bg-zinc-800 text-zinc-100 touch-none"
-                [class.cursor-grab]="editMode() && !player.dragging"
-                [class.cursor-grabbing]="player.dragging"
-                [class.shake]="!player.dragging && editMode()"
-                [class.border-amber-400]="player.selected"
-                [class.dead]="player.person.isDead"
-                [attr.aria-label]="player.label"
-                [attr.data-pick]="player.pick"
-                [attr.aria-pressed]="player.pick ? player.pick === 'picked' : null"
+                [class.cursor-grab]="editMode() && !placed.dragging"
+                [class.cursor-grabbing]="placed.dragging"
+                [class.shake]="!placed.dragging && editMode()"
+                [class.border-amber-400]="placed.selected"
+                [class.dead]="placed.person.isDead"
+                [attr.aria-label]="placed.label"
+                [attr.data-pick]="placed.pick"
+                [attr.aria-pressed]="placed.pick ? placed.pick === 'picked' : null"
                 [style.animationDelay]="-$index + 's'"
-                (pointerdown)="onPointerDown($event, player.person.id)"
+                (pointerdown)="onPointerDown($event, placed.person.id)"
                 (pointermove)="onPointerMove($event)"
                 (pointerup)="onPointerUp()"
                 (pointercancel)="onPointerCancel()"
-                (click)="onSelect(player.person.id)"
+                (click)="onSelect(placed.person.id)"
               >
-                @if (player.person.character) {
+                @if (placed.person.character) {
                   <img
                     width="60"
                     height="60"
-                    [ngSrc]="`img/${player.person.character.id}.png`"
-                    [alt]="player.person.character.name"
+                    [ngSrc]="placed.person.character.image"
+                    [alt]="placed.person.character.name"
                     class="pointer-events-none"
                   />
                 } @else {
@@ -125,7 +125,7 @@
                 }
               </button>
 
-              @if (player.person.isDead) {
+              @if (placed.person.isDead) {
                 <svg
                   lucideX
                   class="pointer-events-none absolute inset-0 m-auto size-12 text-red-800"
@@ -133,12 +133,12 @@
                 ></svg>
               }
 
-              @if (player.badges.length) {
+              @if (placed.badges.length) {
                 <ul
                   class="pointer-events-none absolute -bottom-2 left-1/2 flex -translate-x-1/2 gap-0.5"
                   aria-hidden="true"
                 >
-                  @for (badge of player.badges; track badge.kind) {
+                  @for (badge of placed.badges; track badge.kind) {
                     <li
                       class="grid size-6 place-items-center rounded-full bg-zinc-950 text-tone"
                       [attr.data-tone]="badge.tone"
@@ -167,7 +167,7 @@
                 </ul>
               }
 
-              @if (player.pick === 'picked') {
+              @if (placed.pick === 'picked') {
                 <span
                   class="pointer-events-none absolute -right-1 -top-1 grid size-6 place-items-center rounded-full bg-tone text-zinc-950"
                 >
@@ -178,9 +178,9 @@
               @if (editMode()) {
                 <button
                   class="absolute -right-1 -top-1 size-6 rounded-full bg-red-700 text-white"
-                  [class.shake]="!player.dragging && editMode()"
+                  [class.shake]="!placed.dragging && editMode()"
                   [style.animationDelay]="-$index + 's'"
-                  (click)="personRemoved.emit(player.person.id)"
+                  (click)="personRemoved.emit(placed.person.id)"
                 >
                   <svg class="size-4 mx-auto" lucideX></svg>
                 </button>

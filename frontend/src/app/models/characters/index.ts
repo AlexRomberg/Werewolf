@@ -29,22 +29,28 @@ import { WildChild } from './wild-child';
 import { Witch } from './witch';
 import { Wolfdog } from './wolfdog';
 
+// The cards that other modules refer to by name.
+export const BEAR_TAMER = new BearTamer();
+export const HEALER = new Healer();
+export const HOODRAT = new Hoodrat();
 export const VILLAGER = new Villager();
 export const WEREWOLF = new Werewolf();
+export const WHITE_WOLF = new WhiteWolf();
+export const WITCH = new Witch();
 
 export const BULK_CHARACTERS: readonly Character[] = [WEREWOLF, VILLAGER];
 
 export const CHARACTERS: readonly Character[] = [
   new Angel(),
-  new BearTamer(),
+  BEAR_TAMER,
   new BigWolf(),
   new BitterOldMan(),
   new Brothers(),
   new Cupid(),
   new Elder(),
   new Fox(),
-  new Healer(),
-  new Hoodrat(),
+  HEALER,
+  HOODRAT,
   new Hunter(),
   new Judge(),
   new Juggler(),
@@ -60,10 +66,10 @@ export const CHARACTERS: readonly Character[] = [
   new VillageIdiot(),
   VILLAGER,
   WEREWOLF,
-  new WhiteWolf(),
+  WHITE_WOLF,
   new WildChild(),
-  new Witch(),
+  WITCH,
   new Wolfdog(),
 ];
 
-export const CHARACTERS_BY_ID = new Map(CHARACTERS.map((c) => [c.id, c]));
+export const CHARACTERS_BY_ID = new Map(CHARACTERS.map((character) => [character.id, character]));

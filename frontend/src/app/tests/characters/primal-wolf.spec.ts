@@ -1,8 +1,8 @@
-import { BasePriority, GameSets, GroupTypes } from '../../models/character';
+import { BasePriority, GameSet, GroupType } from '../../models/character';
 import { PrimalWolf } from '../../models/characters/primal-wolf';
 import { WerewolfCharacter } from '../../models/werewolf-character';
 import { WEREWOLF } from '../../models/characters';
-import { PlayerStatus } from '../../services/state/types';
+import { PersonStatus } from '../../services/state/types';
 import { night, person, seated } from '../night';
 
 describe('PrimalWolf', () => {
@@ -11,8 +11,8 @@ describe('PrimalWolf', () => {
   it("should have the card's identity", () => {
     expect(character.id).toBe('primal_wolf');
     expect(character.name).toBe('The Primal Wolf');
-    expect(character.group).toBe(GroupTypes.Wolves);
-    expect(character.game).toBe(GameSets.Characters);
+    expect(character.group).toBe(GroupType.Wolves);
+    expect(character.game).toBe(GameSet.Characters);
     expect(character.hasMultiple).toBe(false);
     expect(character.priority).toBe(BasePriority.Wolf + 3);
   });
@@ -56,7 +56,7 @@ describe('PrimalWolf', () => {
   });
 
   it('should go back to sleep once a wolf has been eliminated', () => {
-    const wolfDown = person({ statuses: [PlayerStatus.Dead], character: WEREWOLF });
+    const wolfDown = person({ statuses: [PersonStatus.Dead], character: WEREWOLF });
 
     expect(character.isAwakeThisNight(night(1, { people: [wolfDown] }))).toBe(false);
   });

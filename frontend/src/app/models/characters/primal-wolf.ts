@@ -1,13 +1,13 @@
-import { ActionButton, assignCard, filterFalsy } from '../actions/action';
-import { isAssigned, isAbilityUsed, NightContext } from '../actions/context';
-import { BasePriority, GameSets, GroupTypes, SectionTitles } from '../character';
+import { ActionButton, assignButton, filterFalsy } from '../actions/action';
+import { isAbilityUsed, isAssigned, NightContext } from '../actions/context';
+import { BasePriority, GameSet, GroupType, SectionTitles } from '../character';
 import { WerewolfCharacter } from '../werewolf-character';
 
 export class PrimalWolf extends WerewolfCharacter {
   readonly id = 'primal_wolf';
   readonly name = 'The Primal Wolf';
-  readonly group = GroupTypes.Wolves;
-  readonly game = GameSets.Characters;
+  readonly group = GroupType.Wolves;
+  readonly game = GameSet.Characters;
   override readonly priority = BasePriority.Wolf + 3;
   readonly description = [
     {
@@ -27,7 +27,7 @@ export class PrimalWolf extends WerewolfCharacter {
 
   override getButtons(context: NightContext): ActionButton[] {
     return filterFalsy<ActionButton>([
-      !isAssigned(context) && assignCard(context),
+      assignButton(context),
       !isAbilityUsed(context, 'primal_wolf_infection') && {
         kind: 'infect',
         label: 'Turn the victim into a werewolf',

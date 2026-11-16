@@ -8,7 +8,6 @@ import { ModalDirective } from '../modal/modal.directive';
   selector: 'app-character-details',
   imports: [NgOptimizedImage, LucideX, ModalDirective],
   templateUrl: './character-details.component.html',
-  styles: ``,
 })
 export class CharacterDetailsComponent {
   public character = input.required<Character>();

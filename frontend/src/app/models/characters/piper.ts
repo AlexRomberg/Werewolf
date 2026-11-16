@@ -1,12 +1,12 @@
-import { ActionButton, assignCard, filterFalsy, pickButton } from '../actions/action';
+import { ActionButton, assignButton, filterFalsy, pickButton } from '../actions/action';
 import { isAssigned, NightContext } from '../actions/context';
-import { BasePriority, Character, GameSets, GroupTypes, SectionTitles } from '../character';
+import { BasePriority, Character, GameSet, GroupType, SectionTitles } from '../character';
 
 export class Piper extends Character {
   readonly id = 'piper';
   readonly name = 'The Piper';
-  readonly group = GroupTypes.Loners;
-  readonly game = GameSets.NewMoon;
+  readonly group = GroupType.Loners;
+  readonly game = GameSet.NewMoon;
   override readonly priority = BasePriority.PostWolf + 2;
   readonly description = [
     {
@@ -31,7 +31,7 @@ export class Piper extends Character {
 
   override getButtons(context: NightContext): ActionButton[] {
     return filterFalsy<ActionButton>([
-      !isAssigned(context) && assignCard(context),
+      assignButton(context),
       pickButton('enchant', 'Enchant two players', 2, context.roles.enchantedTonight.length > 0),
     ]);
   }

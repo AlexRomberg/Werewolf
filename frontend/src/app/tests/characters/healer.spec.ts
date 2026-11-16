@@ -1,6 +1,6 @@
-import { BasePriority, GameSets, GroupTypes } from '../../models/character';
+import { BasePriority, GameSet, GroupType } from '../../models/character';
 import { Healer } from '../../models/characters/healer';
-import { PlayerStatus } from '../../services/state/types';
+import { PersonStatus } from '../../services/state/types';
 import { night, person, seated } from '../night';
 
 describe('Healer', () => {
@@ -9,8 +9,8 @@ describe('Healer', () => {
   it("should have the card's identity", () => {
     expect(character.id).toBe('healer');
     expect(character.name).toBe('The Healer');
-    expect(character.group).toBe(GroupTypes.Active);
-    expect(character.game).toBe(GameSets.NewMoon);
+    expect(character.group).toBe(GroupType.Active);
+    expect(character.game).toBe(GameSet.NewMoon);
     expect(character.hasMultiple).toBe(false);
     expect(character.priority).toBe(BasePriority.Initial + 10);
   });
@@ -42,7 +42,7 @@ describe('Healer', () => {
   });
 
   it('should report being finished once someone is protected', () => {
-    const done = seated(1, 1, { people: [person({ statuses: [PlayerStatus.Protected] })] });
+    const done = seated(1, 1, { people: [person({ statuses: [PersonStatus.Protected] })] });
 
     expect(character.getActions(done)).toContain('Is finished for this night');
     expect(character.getActions(done)).not.toContain('May make one player immortal for this night');

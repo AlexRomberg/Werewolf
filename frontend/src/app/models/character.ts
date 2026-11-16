@@ -1,32 +1,32 @@
 import { ActionButton } from './actions/action';
 import { NightContext } from './actions/context';
 
-export enum GroupTypes {
+export enum GroupType {
   Wolves = 'wolves',
   Active = 'active',
   Passive = 'passive',
   Loners = 'loners',
 }
 
-export enum GameSets {
+export enum GameSet {
   BaseGame = 'base-game',
   NewMoon = 'new-moon',
   Characters = 'characters',
   Special = 'special',
 }
 
-export const GROUP_LABELS: ReadonlyMap<GroupTypes, string> = new Map([
-  [GroupTypes.Wolves, 'Wolves'],
-  [GroupTypes.Active, 'Active'],
-  [GroupTypes.Passive, 'Passive'],
-  [GroupTypes.Loners, 'Loners'],
+export const GROUP_LABELS: ReadonlyMap<GroupType, string> = new Map([
+  [GroupType.Wolves, 'Wolves'],
+  [GroupType.Active, 'Active'],
+  [GroupType.Passive, 'Passive'],
+  [GroupType.Loners, 'Loners'],
 ]);
 
-export const GAME_SET_LABELS: ReadonlyMap<GameSets, string> = new Map([
-  [GameSets.BaseGame, 'Base Game'],
-  [GameSets.Characters, 'Characters'],
-  [GameSets.NewMoon, 'New Moon'],
-  [GameSets.Special, 'Special'],
+export const GAME_SET_LABELS: ReadonlyMap<GameSet, string> = new Map([
+  [GameSet.BaseGame, 'Base Game'],
+  [GameSet.Characters, 'Characters'],
+  [GameSet.NewMoon, 'New Moon'],
+  [GameSet.Special, 'Special'],
 ]);
 
 export enum BasePriority {
@@ -53,13 +53,17 @@ export const SectionTitles = {
 export abstract class Character {
   abstract readonly id: string;
   abstract readonly name: string;
-  abstract readonly group: GroupTypes;
-  abstract readonly game: GameSets;
+  abstract readonly group: GroupType;
+  abstract readonly game: GameSet;
   abstract readonly description: readonly DescriptionSection[];
 
   readonly hasMultiple: boolean = false;
   readonly memberName?: string;
   readonly priority: number = -1;
+
+  get image() {
+    return `img/${this.id}.png`;
+  }
 
   isAwakeThisNight(_context: NightContext): boolean {
     return false;
@@ -72,4 +76,8 @@ export abstract class Character {
   getButtons(_context: NightContext): ActionButton[] {
     return [];
   }
+}
+
+export function copiesOf(character: Character, amount: number): Character[] {
+  return new Array<Character>(amount).fill(character);
 }

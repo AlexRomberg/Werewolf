@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { GameService } from '../services/game.service';
-import { ConnectionType, PlayerStatus } from '../services/state/types';
+import { ConnectionType, PersonStatus } from '../services/state/types';
 import { CHARACTERS_BY_ID } from '../models/characters';
 import { Character } from '../models/character';
 
@@ -80,25 +80,25 @@ describe('NightState', () => {
 
   describe('statuses', () => {
     it('should add and remove a status', () => {
-      service.night.addStatus(ids()[0], PlayerStatus.Protected);
-      expect(statusesOf(0)).toEqual([PlayerStatus.Protected]);
+      service.night.addStatus(ids()[0], PersonStatus.Protected);
+      expect(statusesOf(0)).toEqual([PersonStatus.Protected]);
 
-      service.night.removeStatus(ids()[0], PlayerStatus.Protected);
+      service.night.removeStatus(ids()[0], PersonStatus.Protected);
       expect(statusesOf(0)).toEqual([]);
     });
 
     it('should not add the same status twice', () => {
-      service.night.addStatus(ids()[0], PlayerStatus.Dead);
-      service.night.addStatus(ids()[0], PlayerStatus.Dead);
+      service.night.addStatus(ids()[0], PersonStatus.Dead);
+      service.night.addStatus(ids()[0], PersonStatus.Dead);
 
-      expect(statusesOf(0)).toEqual([PlayerStatus.Dead]);
+      expect(statusesOf(0)).toEqual([PersonStatus.Dead]);
     });
 
     it('should enchant people for good but count them for tonight', () => {
       service.night.enchant([ids()[0], ids()[1]]);
 
-      expect(statusesOf(0)).toContain(PlayerStatus.Enchanted);
-      expect(statusesOf(1)).toContain(PlayerStatus.Enchanted);
+      expect(statusesOf(0)).toContain(PersonStatus.Enchanted);
+      expect(statusesOf(1)).toContain(PersonStatus.Enchanted);
       expect(service.night.roles().enchantedTonight).toEqual([ids()[0], ids()[1]]);
     });
   });
@@ -109,7 +109,7 @@ describe('NightState', () => {
       service.night.infectWolfVictim();
 
       expect(service.night.victims()).toEqual([]);
-      expect(statusesOf(0)).toContain(PlayerStatus.TurnedWolf);
+      expect(statusesOf(0)).toContain(PersonStatus.TurnedWolf);
       expect(service.night.roles().usedAbilities).toEqual(['primal_wolf_infection']);
     });
 
@@ -166,7 +166,7 @@ describe('NightState', () => {
       service.night.protect(ids()[1]);
 
       expect(statusesOf(0)).toEqual([]);
-      expect(statusesOf(1)).toEqual([PlayerStatus.Protected]);
+      expect(statusesOf(1)).toEqual([PersonStatus.Protected]);
     });
 
     it('should lift the protection altogether', () => {
@@ -177,13 +177,13 @@ describe('NightState', () => {
     });
 
     it("should replace tonight's enchantment and keep the ones of earlier nights", () => {
-      service.night.addStatus(ids()[0], PlayerStatus.Enchanted);
+      service.night.addStatus(ids()[0], PersonStatus.Enchanted);
       service.night.enchant([ids()[1], ids()[2]]);
       service.night.enchant([ids()[3], ids()[4]]);
 
-      expect(statusesOf(0)).toEqual([PlayerStatus.Enchanted]);
+      expect(statusesOf(0)).toEqual([PersonStatus.Enchanted]);
       expect(statusesOf(1)).toEqual([]);
-      expect(statusesOf(3)).toEqual([PlayerStatus.Enchanted]);
+      expect(statusesOf(3)).toEqual([PersonStatus.Enchanted]);
       expect(service.night.roles().enchantedTonight).toEqual([ids()[3], ids()[4]]);
     });
 

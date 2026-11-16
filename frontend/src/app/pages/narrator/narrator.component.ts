@@ -2,29 +2,20 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { LucideArrowUpDown, LucideCheck, LucideLogOut } from '@lucide/angular';
 import {
   ChangesDialogComponent,
-  MorningChange,
+  DaybreakChangeView,
 } from '../../components/changes-dialog/changes-dialog.component';
-import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
+import { CharacterDetailsComponent } from '../../components/character-details/character-details.component';
 import {
   CircleComponent,
   CircleSelection,
   PersonMove,
 } from '../../components/circle/circle.component';
-import { GameService } from '../../services/game.service';
-import { SidebarComponent, SidebarPanel } from '../../components/sidebar/sidebar.component';
-import { SetupPanelComponent } from '../../components/sidebar/panels/setup-panel/setup-panel.component';
+import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
 import { CardsPanelComponent } from '../../components/sidebar/panels/cards-panel/cards-panel.component';
-import { PersonPanelComponent } from '../../components/sidebar/panels/person-panel/person-panel.component';
-import {
-  Ability,
-  ABILITY_LABELS,
-  ConnectionType,
-  DaybreakChange,
-  Person,
-} from '../../services/state/types';
-import { CHARACTERS_BY_ID } from '../../models/characters';
 import { NarrationPanelComponent } from '../../components/sidebar/panels/narration-panel/narration-panel.component';
-import { CharacterDetailsComponent } from '../../components/character-details/character-details.component';
+import { PersonPanelComponent } from '../../components/sidebar/panels/person-panel/person-panel.component';
+import { SetupPanelComponent } from '../../components/sidebar/panels/setup-panel/setup-panel.component';
+import { SidebarComponent, SidebarPanel } from '../../components/sidebar/sidebar.component';
 import { ActionButton, TONE_BY_KIND } from '../../models/actions/action';
 import {
   activeButton,
@@ -33,23 +24,39 @@ import {
   SelectionChoice,
 } from '../../models/actions/selection';
 import { Character } from '../../models/character';
+import { CHARACTERS_BY_ID } from '../../models/characters';
+import { GameService } from '../../services/game.service';
+import { isAppliable } from '../../services/state/daybreak-state';
+import {
+  Ability,
+  ABILITY_LABELS,
+  ConnectionType,
+  DaybreakChange,
+  Person,
+} from '../../services/state/types';
 import { applyPick, clearPick } from './pick-actions';
-import { isAppliable } from '../../services/state/DaybreakState';
 
+/** A pick that drew a warning and waits for the narrator to confirm or cancel it. */
 interface PendingPick {
   selectionKey: string;
   personId: string;
   warning: string;
 }
 
-const SidebarTitles: Record<SidebarPanel['kind'], string | undefined> = {
+/** The people picked so far for an ability that needs more than one. */
+interface PartialPick {
+  selectionKey: string;
+  personIds: readonly string[];
+}
+
+const SIDEBAR_TITLES: Record<SidebarPanel['kind'], string | undefined> = {
   setup: 'Setup',
   cards: 'Card selection',
   person: 'Person details',
   narration: undefined,
 };
 
-function getNightTitle(round: number) {
+function nightTitle(round: number) {
   return round === 0 ? 'First night' : `Night ${round + 1}`;
 }
 
@@ -63,60 +70,59 @@ function getNightTitle(round: number) {
     PersonPanelComponent,
     NarrationPanelComponent,
     CharacterDetailsComponent,
+    ConfirmDialogComponent,
+    ChangesDialogComponent,
     LucideArrowUpDown,
     LucideCheck,
     LucideLogOut,
-    ConfirmDialogComponent,
-    ChangesDialogComponent,
   ],
   templateUrl: './narrator.component.html',
-  styles: ``,
 })
 export class NarratorComponent {
   private game = inject(GameService);
 
+  // The table
   private people = this.game.people.all;
-  protected seats = this.game.people.views;
-  protected cards = this.game.characters.cards;
-  protected excessCards = this.game.characters.excessCards;
-
-  private overlay = signal<SidebarPanel | null>(null);
-  private basePanel = computed<SidebarPanel>(() =>
-    this.game.phase() === 'playing' ? { kind: 'narration' } : { kind: 'setup' },
-  );
-  protected panel = computed<SidebarPanel>(() => {
-    const overlay = this.overlay();
-    if (!overlay) {
-      return this.basePanel();
-    }
-
-    if (overlay.kind === 'person' && !this.personById(overlay.personId)) {
-      return this.basePanel();
-    }
-
-    return overlay;
-  });
-  protected title = computed(() =>
-    this.panel().kind === 'narration'
-      ? getNightTitle(this.game.actions.round())
-      : SidebarTitles[this.panel().kind],
-  );
+  protected personViews = this.game.people.views;
+  protected connections = this.game.night.connections;
   protected isPlaying = computed(() => this.game.phase() === 'playing');
   protected rearranging = signal(false);
-  protected confirmingEnd = signal(false);
   protected isEditMode = computed(() => !this.isPlaying() || this.rearranging());
-  protected connections = this.game.night.connections;
-  protected actionCards = this.game.actions.queue;
-  protected actionIndex = this.game.actions.index;
-  protected canStepBack = this.game.actions.canGoBack;
+  protected confirmingEnd = signal(false);
 
-  protected canGoBack = computed(() => this.panel().kind !== this.basePanel().kind);
+  // The sidebar: a panel opened on top of the phase's own one closes back to it.
+  private overlayPanel = signal<SidebarPanel | null>(null);
+  private basePanel = computed<SidebarPanel>(() =>
+    this.isPlaying() ? { kind: 'narration' } : { kind: 'setup' },
+  );
+  protected panel = computed<SidebarPanel>(() => {
+    const overlay = this.overlayPanel();
+    const isOfRemovedPerson = overlay?.kind === 'person' && !this.personById(overlay.personId);
+    return overlay && !isOfRemovedPerson ? overlay : this.basePanel();
+  });
+  protected panelTitle = computed(() =>
+    this.panel().kind === 'narration'
+      ? nightTitle(this.game.actions.round())
+      : SIDEBAR_TITLES[this.panel().kind],
+  );
+  protected canClosePanel = computed(() => this.panel().kind !== this.basePanel().kind);
 
-  protected selectedId = computed(() => {
+  protected selectedPersonId = computed(() => {
     const panel = this.panel();
     return panel.kind === 'person' ? panel.personId : null;
   });
-  protected selectedPerson = computed(() => this.personById(this.selectedId()));
+  protected selectedPerson = computed(() => this.personById(this.selectedPersonId()));
+
+  // Setup
+  protected cards = this.game.characters.cards;
+  protected hasExcessCards = computed(() => this.game.characters.excessCards() > 0);
+
+  // The night's action cards
+  protected actionCards = this.game.actions.queue;
+  protected actionIndex = this.game.actions.index;
+  protected canStepBack = this.game.actions.canGoBack;
+  private currentCard = this.game.actions.current;
+  private currentContext = this.game.actions.currentContext;
 
   protected charactersInPlay = this.game.characters.inPlay;
   protected describedCharacter = signal<Character | null>(null);
@@ -128,40 +134,14 @@ export class NarratorComponent {
     })),
   );
   protected resettingAbility = signal<Ability | null>(null);
-  protected resettingLabel = computed(() => {
+  protected resettingAbilityLabel = computed(() => {
     const ability = this.resettingAbility();
     return ability ? ABILITY_LABELS[ability] : '';
   });
 
-  protected morning = signal<'review' | 'leaving' | null>(null);
-  protected morningChanges = computed<MorningChange[]>(() =>
-    this.game.daybreak.changes().flatMap((change) => {
-      const person = this.seatOf(change.personId);
-      return person
-        ? [
-            {
-              change,
-              person,
-              causedBy:
-                'role' in change.causedBy
-                  ? CHARACTERS_BY_ID.get(change.causedBy.role)
-                  : this.seatOf(change.causedBy.person),
-              appliable: isAppliable(change),
-              applied: this.game.daybreak.isApplied(change),
-            },
-          ]
-        : [];
-    }),
-  );
-
-  private currentCard = this.game.actions.current;
-  private currentContext = this.game.actions.currentContext;
-
+  // Picking people on the circle for the current card's button
   private selectionChoice = signal<SelectionChoice | null>(null);
-  private partialPick = signal<{ selectionKey: string; ids: readonly string[] }>({
-    selectionKey: '',
-    ids: [],
-  });
+  private partialPick = signal<PartialPick>({ selectionKey: '', personIds: [] });
   private pendingPick = signal<PendingPick | null>(null);
 
   protected activeButton = computed(() =>
@@ -169,16 +149,17 @@ export class NarratorComponent {
       ? activeButton(this.currentCard(), this.selectionChoice())
       : undefined,
   );
+  /** Identifies one selection, so picks made for another card or button never leak into it. */
   private selectionKey = computed(() => {
     const button = this.activeButton();
     return button ? `${this.currentCard()?.key}:${button.kind}` : '';
   });
-  private picked = computed(() => {
+  private pickedIds = computed(() => {
     const partial = this.partialPick();
-    return partial.selectionKey === this.selectionKey() ? partial.ids : [];
+    return partial.selectionKey === this.selectionKey() ? partial.personIds : [];
   });
   protected pickProgress = computed(
-    () => `${this.picked().length}/${this.activeButton()?.picks ?? 0}`,
+    () => `${this.pickedIds().length}/${this.activeButton()?.picks ?? 0}`,
   );
 
   protected circleSelection = computed<CircleSelection | null>(() => {
@@ -194,13 +175,36 @@ export class NarratorComponent {
       tone: TONE_BY_KIND[button.kind],
       label: button.kind === 'assign-card' ? `Select ${card.title}` : button.label,
       needed: button.picks ?? 0,
-      picked: this.picked(),
+      picked: this.pickedIds(),
       cautioned: this.people()
         .filter((person) => pickWarning(button, card.id, person, context))
         .map((person) => person.id),
       pending: pending?.selectionKey === this.selectionKey() ? pending : undefined,
     };
   });
+
+  // Daybreak
+  /** Why the changes dialog is open: to look them over, or because the narrator moves on. */
+  protected daybreakDialog = signal<'review' | 'leaving' | null>(null);
+  protected daybreakChangeViews = computed<DaybreakChangeView[]>(() =>
+    this.game.daybreak.changes().flatMap((change) => {
+      const person = this.personViewById(change.personId);
+      if (!person) {
+        return [];
+      }
+
+      return {
+        change,
+        person,
+        causedBy:
+          'role' in change.causedBy
+            ? CHARACTERS_BY_ID.get(change.causedBy.role)
+            : this.personViewById(change.causedBy.person),
+        appliable: isAppliable(change),
+        applied: this.game.daybreak.isApplied(change),
+      };
+    }),
+  );
 
   protected addPerson() {
     this.game.people.add();
@@ -222,7 +226,7 @@ export class NarratorComponent {
     if (this.activeButton()) {
       this.pickPerson(id);
     } else {
-      this.overlay.set({ kind: 'person', personId: id });
+      this.overlayPanel.set({ kind: 'person', personId: id });
     }
   }
 
@@ -244,11 +248,11 @@ export class NarratorComponent {
   }
 
   protected openCardSelector() {
-    this.overlay.set({ kind: 'cards' });
+    this.overlayPanel.set({ kind: 'cards' });
   }
 
   protected closePanel() {
-    this.overlay.set(null);
+    this.overlayPanel.set(null);
   }
 
   protected startGame() {
@@ -260,9 +264,9 @@ export class NarratorComponent {
     this.rearranging.set(false);
     this.confirmingEnd.set(false);
     this.resettingAbility.set(null);
-    this.overlay.set(null);
+    this.overlayPanel.set(null);
     this.selectionChoice.set(null);
-    this.morning.set(null);
+    this.daybreakDialog.set(null);
     this.discardPicks();
   }
 
@@ -277,7 +281,7 @@ export class NarratorComponent {
   protected nextAction() {
     this.discardPicks();
     if (this.game.actions.isLastCard() && this.game.daybreak.pending().length > 0) {
-      this.morning.set('leaving');
+      this.daybreakDialog.set('leaving');
     } else {
       this.game.actions.next();
     }
@@ -291,8 +295,8 @@ export class NarratorComponent {
     this.game.daybreak.applyAll();
   }
 
-  protected leaveMorning() {
-    this.morning.set(null);
+  protected proceedToNextNight() {
+    this.daybreakDialog.set(null);
     this.game.actions.next();
   }
 
@@ -315,7 +319,7 @@ export class NarratorComponent {
         this.game.night.infectWolfVictim();
         break;
       case 'show-daybreak-changes':
-        this.morning.set('review');
+        this.daybreakDialog.set('review');
         break;
       default:
         if (button.picks !== undefined) {
@@ -341,8 +345,8 @@ export class NarratorComponent {
       return;
     }
 
-    if (this.picked().includes(id)) {
-      this.setPicked(this.picked().filter((picked) => picked !== id));
+    if (this.pickedIds().includes(id)) {
+      this.setPickedIds(this.pickedIds().filter((pickedId) => pickedId !== id));
       return;
     }
 
@@ -367,16 +371,16 @@ export class NarratorComponent {
       return;
     }
 
-    const ids = [...this.picked(), id];
+    const ids = [...this.pickedIds(), id];
     if (ids.length < (button.picks ?? 0)) {
-      this.setPicked(ids);
+      this.setPickedIds(ids);
       return;
     }
 
     // A pick the narrator asked for by pressing its button ends there; one that started
     // by itself hands over to the next ability that starts by itself.
     const wasPressed = this.selectionChoice()?.cardKey === card.key;
-    this.setPicked([]);
+    this.setPickedIds([]);
     applyPick(this.game, card, button, ids);
     if (wasPressed) {
       this.closeSelection();
@@ -384,22 +388,19 @@ export class NarratorComponent {
   }
 
   private discardPicks() {
-    this.setPicked([]);
+    this.setPickedIds([]);
     this.pendingPick.set(null);
   }
 
-  private setPicked(ids: readonly string[]) {
-    this.partialPick.set({ selectionKey: this.selectionKey(), ids });
-  }
-
-  private seatOf(personId: string) {
-    return this.seats().find((seat) => seat.id === personId);
+  private setPickedIds(personIds: readonly string[]) {
+    this.partialPick.set({ selectionKey: this.selectionKey(), personIds });
   }
 
   private personById(id: string | null) {
-    if (!id) {
-      return undefined;
-    }
     return this.people().find((person) => person.id === id);
+  }
+
+  private personViewById(id: string) {
+    return this.personViews().find((view) => view.id === id);
   }
 }

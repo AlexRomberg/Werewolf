@@ -1,12 +1,12 @@
-import { ActionButton, assignCard } from '../actions/action';
+import { ActionButton, assignButton, filterFalsy } from '../actions/action';
 import { isAssigned, NightContext } from '../actions/context';
-import { BasePriority, Character, GameSets, GroupTypes, SectionTitles } from '../character';
+import { BasePriority, Character, GameSet, GroupType, SectionTitles } from '../character';
 
 export class Seer extends Character {
   readonly id = 'seer';
   readonly name = 'The Seer';
-  readonly group = GroupTypes.Active;
-  readonly game = GameSets.BaseGame;
+  readonly group = GroupType.Active;
+  readonly game = GameSet.BaseGame;
   override readonly priority = BasePriority.Initial + 4;
   readonly description = [
     {
@@ -25,6 +25,6 @@ export class Seer extends Character {
   }
 
   override getButtons(context: NightContext): ActionButton[] {
-    return isAssigned(context) ? [] : [assignCard(context)];
+    return filterFalsy([assignButton(context)]);
   }
 }

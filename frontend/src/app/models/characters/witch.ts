@@ -1,12 +1,12 @@
-import { ActionButton, assignCard, filterFalsy, pickButton } from '../actions/action';
-import { hasMarkedVictim, isAssigned, isAbilityUsed, NightContext } from '../actions/context';
-import { BasePriority, Character, GameSets, GroupTypes, SectionTitles } from '../character';
+import { ActionButton, assignButton, filterFalsy, pickButton } from '../actions/action';
+import { hasMarkedVictim, isAbilityUsed, isAssigned, NightContext } from '../actions/context';
+import { BasePriority, Character, GameSet, GroupType, SectionTitles } from '../character';
 
 export class Witch extends Character {
   readonly id = 'witch';
   readonly name = 'The Witch';
-  readonly group = GroupTypes.Active;
-  readonly game = GameSets.BaseGame;
+  readonly group = GroupType.Active;
+  readonly game = GameSet.BaseGame;
   override readonly priority = BasePriority.PostWolf + 1;
   readonly description = [
     {
@@ -35,7 +35,7 @@ export class Witch extends Character {
 
     // The potions never ask by themselves, and one used tonight can still be taken back.
     return filterFalsy<ActionButton>([
-      !isAssigned(context) && assignCard(context),
+      assignButton(context),
       (this.hasHealingPotion(context) || healed) && pickButton('heal', 'Heal', 1, healed, false),
       (this.hasPoison(context) || poisoned) &&
         pickButton('poison', 'Poison someone', 1, poisoned, false),

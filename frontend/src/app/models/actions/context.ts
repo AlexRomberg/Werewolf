@@ -1,9 +1,11 @@
 import {
+  Ability,
   Connection,
   ConnectionType,
-  Ability,
+  findConnection,
+  hasStatus,
   Person,
-  PlayerStatus,
+  PersonStatus,
   RoleStates,
   VictimMark,
 } from '../../services/state/types';
@@ -18,22 +20,26 @@ export interface NightContext {
   readonly roles: RoleStates;
 }
 
+export function isFirstNight(context: NightContext) {
+  return context.round === 0;
+}
+
 export function isAssigned(context: NightContext) {
   return context.assigned.length >= context.cardCount;
 }
 
 export function hasConnection(context: NightContext, type: ConnectionType) {
-  return context.connections.some((connection) => connection.type === type);
+  return findConnection(context.connections, type) !== undefined;
 }
 
 export function hasMarkedVictim(context: NightContext, characterId: string) {
-  return context.victims.some((victim) => victim.byCharacterId === characterId);
+  return context.victims.some((mark) => mark.byCharacterId === characterId);
 }
 
 export function isAbilityUsed(context: NightContext, ability: Ability) {
   return context.roles.usedAbilities.includes(ability);
 }
 
-export function someoneHas(context: NightContext, status: PlayerStatus) {
-  return context.people.some((person) => person.statuses.includes(status));
+export function someoneHas(context: NightContext, status: PersonStatus) {
+  return context.people.some((person) => hasStatus(person, status));
 }

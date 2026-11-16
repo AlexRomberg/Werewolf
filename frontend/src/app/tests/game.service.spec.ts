@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { GameService } from '../services/game.service';
-import { ConnectionType, INITIAL_SEATS, PlayerStatus } from '../services/state/types';
+import { ConnectionType, INITIAL_SEATS, PersonStatus } from '../services/state/types';
 import { WEREWOLF } from '../models/characters';
 
 describe('GameService', () => {
@@ -67,8 +67,8 @@ describe('GameService', () => {
 
     it('should tell death apart from what shows as a badge', () => {
       const [first] = service.people.all();
-      service.night.addStatus(first.id, PlayerStatus.Dead);
-      service.night.addStatus(first.id, PlayerStatus.Enchanted);
+      service.night.addStatus(first.id, PersonStatus.Dead);
+      service.night.addStatus(first.id, PersonStatus.Enchanted);
 
       expect(service.people.views()[0]).toMatchObject({ isDead: true, badges: ['enchanted'] });
     });
@@ -104,7 +104,7 @@ describe('GameService', () => {
       const [first, second] = service.people.all();
       service.startGame();
       service.people.assign([first.id], WEREWOLF);
-      service.night.addStatus(second.id, PlayerStatus.Dead);
+      service.night.addStatus(second.id, PersonStatus.Dead);
       service.night.connect(ConnectionType.Love, first.id, second.id);
       service.night.markVictim(second.id, 'werewolf');
       service.night.useAbility('witch_heal');

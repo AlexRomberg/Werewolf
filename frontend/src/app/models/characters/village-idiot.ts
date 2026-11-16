@@ -1,10 +1,10 @@
-import { Character, GameSets, GroupTypes, SectionTitles } from '../character';
+import { Character, GameSet, GroupType, SectionTitles } from '../character';
 
 export class VillageIdiot extends Character {
   readonly id = 'village_idiot';
   readonly name = 'The Village Idiot';
-  readonly group = GroupTypes.Passive;
-  readonly game = GameSets.NewMoon;
+  readonly group = GroupType.Passive;
+  readonly game = GameSet.NewMoon;
   readonly description = [
     {
       title: SectionTitles.general,

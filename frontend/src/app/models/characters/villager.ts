@@ -1,10 +1,10 @@
-import { Character, GameSets, GroupTypes, SectionTitles } from '../character';
+import { Character, GameSet, GroupType, SectionTitles } from '../character';
 
 export class Villager extends Character {
   readonly id = 'villager';
   readonly name = 'The Simple Villager';
-  readonly group = GroupTypes.Passive;
-  readonly game = GameSets.BaseGame;
+  readonly group = GroupType.Passive;
+  readonly game = GameSet.BaseGame;
   override readonly hasMultiple = true;
   readonly description = [
     {

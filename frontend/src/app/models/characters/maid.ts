@@ -1,10 +1,10 @@
-import { Character, GameSets, GroupTypes, SectionTitles } from '../character';
+import { Character, GameSet, GroupType, SectionTitles } from '../character';
 
 export class Maid extends Character {
   readonly id = 'maid';
   readonly name = 'The Devoted Maid';
-  readonly group = GroupTypes.Passive;
-  readonly game = GameSets.Characters;
+  readonly group = GroupType.Passive;
+  readonly game = GameSet.Characters;
   readonly description = [
     {
       title: SectionTitles.general,

@@ -5,7 +5,6 @@ import { ModalDirective } from '../modal/modal.directive';
   selector: 'app-confirm-dialog',
   imports: [ModalDirective],
   templateUrl: './confirm-dialog.component.html',
-  styles: ``,
 })
 export class ConfirmDialogComponent {
   public title = input.required<string>();

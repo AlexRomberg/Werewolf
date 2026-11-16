@@ -1,10 +1,10 @@
-import { Character, GameSets, GroupTypes, SectionTitles } from '../character';
+import { Character, GameSet, GroupType, SectionTitles } from '../character';
 
 export class SmallChild extends Character {
   readonly id = 'small_child';
   readonly name = 'The Little Girl';
-  readonly group = GroupTypes.Active;
-  readonly game = GameSets.BaseGame;
+  readonly group = GroupType.Active;
+  readonly game = GameSet.BaseGame;
   readonly description = [
     {
       title: SectionTitles.general,

@@ -1,4 +1,4 @@
-import { BasePriority, GameSets, GroupTypes } from '../../models/character';
+import { BasePriority, GameSet, GroupType } from '../../models/character';
 import { BitterOldMan } from '../../models/characters/bitter-old-man';
 import { night, seated } from '../night';
 
@@ -8,8 +8,8 @@ describe('BitterOldMan', () => {
   it("should have the card's identity", () => {
     expect(character.id).toBe('bitter_old_man');
     expect(character.name).toBe('The Bitter Old Man');
-    expect(character.group).toBe(GroupTypes.Loners);
-    expect(character.game).toBe(GameSets.NewMoon);
+    expect(character.group).toBe(GroupType.Loners);
+    expect(character.game).toBe(GameSet.NewMoon);
     expect(character.hasMultiple).toBe(false);
     expect(character.priority).toBe(BasePriority.Initial + 13);
   });

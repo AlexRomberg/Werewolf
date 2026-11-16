@@ -1,13 +1,13 @@
-import { ActionButton, assignCard, filterFalsy, pickButton } from '../actions/action';
+import { ActionButton, assignButton, filterFalsy, pickButton } from '../actions/action';
 import { isAssigned, NightContext, someoneHas } from '../actions/context';
-import { PlayerStatus } from '../../services/state/types';
-import { BasePriority, Character, GameSets, GroupTypes, SectionTitles } from '../character';
+import { PersonStatus } from '../../services/state/types';
+import { BasePriority, Character, GameSet, GroupType, SectionTitles } from '../character';
 
 export class Healer extends Character {
   readonly id = 'healer';
   readonly name = 'The Healer';
-  readonly group = GroupTypes.Active;
-  readonly game = GameSets.NewMoon;
+  readonly group = GroupType.Active;
+  readonly game = GameSet.NewMoon;
   override readonly priority = BasePriority.Initial + 10;
   readonly description = [
     {
@@ -36,12 +36,12 @@ export class Healer extends Character {
 
   override getButtons(context: NightContext): ActionButton[] {
     return filterFalsy<ActionButton>([
-      !isAssigned(context) && assignCard(context),
+      assignButton(context),
       pickButton('protect', 'Protect a player', 1, this.hasProtected(context)),
     ]);
   }
 
   private hasProtected(context: NightContext) {
-    return someoneHas(context, PlayerStatus.Protected);
+    return someoneHas(context, PersonStatus.Protected);
   }
 }

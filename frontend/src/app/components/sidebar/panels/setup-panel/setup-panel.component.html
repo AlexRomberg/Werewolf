@@ -7,37 +7,13 @@
     >
       <p class="text-start">{{ cards().length }} Cards selected</p>
       <svg lucideChevronRight class="row-span-2 self-center"></svg>
-      <span
-        class="relative w-80 max-w-80 mask-alpha overflow-x-clip mask-r-from-80% mask-r-to-100% rounded-sm"
-      >
-        @for (character of cards(); track $index) {
-          <div
-            class="absolute h-12 w-12 rounded-sm bg-zinc-950 p-1 shadow shadow-black/50"
-            [style.left.px]="20 * $index"
-            [style.zIndex]="30 - $index"
-          >
-            <img
-              width="40"
-              height="40"
-              [ngSrc]="`img/${character.id}.png`"
-              [alt]="'card ' + character.name"
-            />
-          </div>
-        }
-      </span>
+      <app-deck-preview class="w-80 max-w-80" [cards]="cards()" />
     </button>
-    <!-- <span class="flex items-center gap-2 mt-2">
-      <app-toggle-switch [(checked)]="useVirtualCards" [id]="'use-virtual-cards'" />
-      <label class="input-label" for="use-virtual-cards">Use virtual cards</label>
-      <button class="ml-auto">
-        <svg lucideHelpCircle size="20" class="text-zinc-400"></svg>
-      </button>
-    </span> -->
   </div>
 </div>
 
 <div class="sidebar-container">
-  @if (showCardMissmatch()) {
+  @if (hasExcessCards()) {
     <p class="flex items-start gap-2 text-sm text-zinc-400" role="status">
       <svg lucideTriangleAlert size="16" class="mt-0.5 shrink-0"></svg>
       <span>There are more cards than players.</span>

@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { GameService } from '../services/game.service';
-import { ChangeReason, ConnectionType, PlayerStatus } from '../services/state/types';
+import { ChangeReason, ConnectionType, PersonStatus } from '../services/state/types';
 
 const {
   DiedGotKilled,
@@ -28,7 +28,7 @@ describe('DaybreakState', () => {
   const causes = () => service.daybreak.changes().map((change) => change.causedBy);
   const statusesOf = (id: string) =>
     service.people.all().find((person) => person.id === id)?.statuses ?? [];
-  const kill = (id: string) => service.night.addStatus(id, PlayerStatus.Dead);
+  const kill = (id: string) => service.night.addStatus(id, PersonStatus.Dead);
 
   describe('a night without victims', () => {
     it('should bring no changes', () => {
@@ -353,7 +353,7 @@ describe('DaybreakState', () => {
     it('should let a single change take effect and leave the others open', () => {
       service.daybreak.apply(change(0));
 
-      expect(statusesOf(anna)).toEqual([PlayerStatus.Dead]);
+      expect(statusesOf(anna)).toEqual([PersonStatus.Dead]);
       expect(statusesOf(ben)).toEqual([]);
       expect(service.daybreak.isApplied(change(0))).toBe(true);
       expect(service.daybreak.isApplied(change(1))).toBe(false);
@@ -366,23 +366,23 @@ describe('DaybreakState', () => {
       service.daybreak.apply(change(2));
 
       expect(changes()).toEqual(before);
-      expect(statusesOf(cleo)).toEqual([PlayerStatus.TurnedWolf]);
+      expect(statusesOf(cleo)).toEqual([PersonStatus.TurnedWolf]);
     });
 
     it('should apply a change only once', () => {
       service.daybreak.apply(change(0));
       service.daybreak.apply(change(0));
 
-      expect(statusesOf(anna)).toEqual([PlayerStatus.Dead]);
+      expect(statusesOf(anna)).toEqual([PersonStatus.Dead]);
     });
 
     it('should apply whatever is still open in one go', () => {
       service.daybreak.apply(change(1));
       service.daybreak.applyAll();
 
-      expect(statusesOf(anna)).toEqual([PlayerStatus.Dead]);
-      expect(statusesOf(ben)).toEqual([PlayerStatus.Dead]);
-      expect(statusesOf(cleo)).toEqual([PlayerStatus.TurnedWolf]);
+      expect(statusesOf(anna)).toEqual([PersonStatus.Dead]);
+      expect(statusesOf(ben)).toEqual([PersonStatus.Dead]);
+      expect(statusesOf(cleo)).toEqual([PersonStatus.TurnedWolf]);
       expect(service.daybreak.pending()).toEqual([]);
     });
 
@@ -393,7 +393,7 @@ describe('DaybreakState', () => {
 
       service.daybreak.apply(survived!);
 
-      expect(statusesOf(dan)).toEqual([PlayerStatus.Protected]);
+      expect(statusesOf(dan)).toEqual([PersonStatus.Protected]);
       expect(service.daybreak.isApplied(survived!)).toBe(true);
     });
 
@@ -406,7 +406,7 @@ describe('DaybreakState', () => {
 
       expect(changes()).toEqual([]);
       expect(service.daybreak.pending()).toEqual([]);
-      expect(statusesOf(anna)).toEqual([PlayerStatus.Dead]);
+      expect(statusesOf(anna)).toEqual([PersonStatus.Dead]);
     });
   });
 });

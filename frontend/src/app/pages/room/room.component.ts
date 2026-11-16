@@ -4,6 +4,5 @@ import { Component } from '@angular/core';
   selector: 'app-room',
   imports: [],
   templateUrl: './room.component.html',
-  styles: ``,
 })
 export class RoomComponent {}

@@ -1,4 +1,4 @@
-import { Character } from './character';
+import { Character, copiesOf } from './character';
 import { CHARACTERS_BY_ID } from './characters';
 
 export interface Preset {
@@ -95,7 +95,5 @@ export function presetEntries(preset: Preset): [Character, number][] {
 }
 
 export function presetDeck(preset: Preset): Character[] {
-  return presetEntries(preset).flatMap(([character, amount]) =>
-    new Array<Character>(amount).fill(character),
-  );
+  return presetEntries(preset).flatMap(([character, amount]) => copiesOf(character, amount));
 }

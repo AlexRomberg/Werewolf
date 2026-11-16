@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { GameService } from '../services/game.service';
-import { ConnectionType, PlayerStatus } from '../services/state/types';
+import { ConnectionType, PersonStatus } from '../services/state/types';
 import { CHARACTERS_BY_ID } from '../models/characters';
 import { Character } from '../models/character';
 
@@ -22,7 +22,7 @@ describe('ActionState', () => {
     service.startGame();
   };
 
-  const assign = (index: number, characterId: string, statuses: PlayerStatus[] = []) => {
+  const assign = (index: number, characterId: string, statuses: PersonStatus[] = []) => {
     const person = service.people.all()[index];
     service.people.update(person.id, {
       ...person,
@@ -96,7 +96,7 @@ describe('ActionState', () => {
       expect(healer()?.actions).toContain('May make one player immortal for this night');
       expect(healer()?.actions).not.toContain('Is finished for this night');
 
-      service.night.addStatus(service.people.all()[0].id, PlayerStatus.Protected);
+      service.night.addStatus(service.people.all()[0].id, PersonStatus.Protected);
 
       expect(healer()?.actions).toContain('Is finished for this night');
       expect(healer()?.actions).not.toContain('May make one player immortal for this night');
@@ -112,14 +112,14 @@ describe('ActionState', () => {
 
   describe('roles whose players have died', () => {
     it('should stop calling a role once everyone holding it is dead', () => {
-      assign(0, 'seer', [PlayerStatus.Dead]);
+      assign(0, 'seer', [PersonStatus.Dead]);
       select('seer');
 
       expect(ids()).not.toContain('seer');
     });
 
     it('should keep calling a role while one of its players lives', () => {
-      assign(0, 'sisters', [PlayerStatus.Dead]);
+      assign(0, 'sisters', [PersonStatus.Dead]);
       assign(1, 'sisters');
       select('sisters');
 
@@ -127,7 +127,7 @@ describe('ActionState', () => {
     });
 
     it('should keep calling the pack even when the seated wolf is dead', () => {
-      assign(0, 'werewolf', [PlayerStatus.Dead]);
+      assign(0, 'werewolf', [PersonStatus.Dead]);
       select('werewolf');
 
       expect(ids()).toContain('werewolf');
@@ -240,15 +240,15 @@ describe('ActionState', () => {
     });
 
     it("should lift the healer's protection", () => {
-      service.night.addStatus(service.people.all()[0].id, PlayerStatus.Protected);
+      service.night.addStatus(service.people.all()[0].id, PersonStatus.Protected);
       nextNight();
 
-      expect(service.people.all()[0].statuses).not.toContain(PlayerStatus.Protected);
+      expect(service.people.all()[0].statuses).not.toContain(PersonStatus.Protected);
     });
 
     it('should remember who was protected, so it cannot be repeated', () => {
       const protectedId = service.people.all()[0].id;
-      service.night.addStatus(protectedId, PlayerStatus.Protected);
+      service.night.addStatus(protectedId, PersonStatus.Protected);
       nextNight();
 
       expect(service.night.roles().healerLastProtected).toBe(protectedId);
@@ -279,7 +279,7 @@ describe('ActionState', () => {
       nextNight();
 
       expect(service.night.roles().enchantedTonight).toEqual([]);
-      expect(service.people.all()[0].statuses).toContain(PlayerStatus.Enchanted);
+      expect(service.people.all()[0].statuses).toContain(PersonStatus.Enchanted);
     });
 
     it('should keep a spent potion spent', () => {
@@ -328,7 +328,7 @@ describe('ActionState', () => {
 
     it('should send the big wolf to sleep the night after a wolf has died', () => {
       select('big_wolf', 'werewolf');
-      assign(0, 'werewolf', [PlayerStatus.Dead]);
+      assign(0, 'werewolf', [PersonStatus.Dead]);
       expect(ids()).toContain('big_wolf');
 
       nextNight();

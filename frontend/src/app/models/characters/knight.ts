@@ -1,10 +1,10 @@
-import { Character, GameSets, GroupTypes, SectionTitles } from '../character';
+import { Character, GameSet, GroupType, SectionTitles } from '../character';
 
 export class Knight extends Character {
   readonly id = 'knight';
   readonly name = 'The Knight of the Rusty Blade';
-  readonly group = GroupTypes.Passive;
-  readonly game = GameSets.Characters;
+  readonly group = GroupType.Passive;
+  readonly game = GameSet.Characters;
   readonly description = [
     {
       title: SectionTitles.general,

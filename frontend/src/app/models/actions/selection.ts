@@ -1,9 +1,8 @@
-import { isAlive, Person, PlayerStatus } from '../../services/state/types';
+import { hasStatus, isAlive, Person, PersonStatus } from '../../services/state/types';
+import { WHITE_WOLF } from '../characters';
+import { isWerewolf } from '../werewolf-character';
 import { ActionButton, ActionButtonKind, ActionCard } from './action';
 import { NightContext } from './context';
-import { WerewolfCharacter } from '../werewolf-character';
-
-const WHITE_WOLF_ID = 'white_wolf';
 
 export interface SelectionChoice {
   readonly cardKey: string;
@@ -48,7 +47,7 @@ export function pickWarning(
     case 'assign-card':
       return assignWarning(cardId, person);
     case 'mark-victim':
-      return cardId === WHITE_WOLF_ID && !isWerewolf(person)
+      return cardId === WHITE_WOLF.id && !isWerewolf(person)
         ? 'This player is not a werewolf.'
         : undefined;
     case 'protect':
@@ -89,16 +88,9 @@ function enchantWarning(person: Person, context: NightContext) {
     return 'The Piper cannot enchant themself.';
   }
 
-  return person.statuses.includes(PlayerStatus.Enchanted)
+  return hasStatus(person, PersonStatus.Enchanted)
     ? 'This player is already enchanted.'
     : undefined;
-}
-
-function isWerewolf(person: Person) {
-  return (
-    person.character instanceof WerewolfCharacter ||
-    person.statuses.includes(PlayerStatus.TurnedWolf)
-  );
 }
 
 function holdsCard(person: Person, context: NightContext) {
@@ -107,6 +99,6 @@ function holdsCard(person: Person, context: NightContext) {
 
 function isWolfVictim(witchId: string, person: Person, context: NightContext) {
   return context.victims.some(
-    (victim) => victim.personId === person.id && victim.byCharacterId !== witchId,
+    (mark) => mark.personId === person.id && mark.byCharacterId !== witchId,
   );
 }

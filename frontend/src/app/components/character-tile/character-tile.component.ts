@@ -12,12 +12,11 @@ import { Character } from '../../models/character';
       (click)="pressed.emit()"
     >
       <span class="size-12 rounded-sm bg-zinc-950 p-1">
-        <img width="40" height="40" [ngSrc]="'img/' + character().id + '.png'" alt="" />
+        <img width="40" height="40" [ngSrc]="character().image" alt="" />
       </span>
       <span class="text-sm text-zinc-400">{{ character().name }}</span>
     </button>
   `,
-  styles: ``,
   host: {
     class: 'grid',
   },

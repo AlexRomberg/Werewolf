@@ -30,7 +30,7 @@
       @for (spent of spentAbilities(); track spent.ability) {
         <li>
           <button
-            class="flex items-center gap-2 rounded-full bg-zinc-800 px-3 py-1 text-sm text-zinc-200 hover:bg-zinc-700"
+            class="chip flex items-center gap-2 text-zinc-200"
             [attr.aria-label]="'Give back: ' + spent.label"
             title="Give back"
             (click)="abilityReset.emit(spent.ability)"
@@ -119,7 +119,7 @@
                       <button
                         class="grid w-12 shrink-0 place-items-center rounded-xl border border-tone/30 bg-tone/10 text-zinc-400 hover:bg-tone/20 hover:text-zinc-100"
                         [attr.aria-label]="'Undo: ' + view.button.label"
-                        [attr.title]="'Undo'"
+                        title="Undo"
                         (click)="buttonCleared.emit(view.button)"
                       >
                         <svg lucideUndo2 size="16"></svg>

@@ -7,6 +7,5 @@ import { LucideChevronRight } from '@lucide/angular';
   selector: 'app-home',
   imports: [RouterLink, NgOptimizedImage, LucideChevronRight],
   templateUrl: './home.component.html',
-  styles: ``,
 })
 export class HomeComponent {}

@@ -1,13 +1,15 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
 import { LucideCircleMinus, LucideCirclePlus, LucideUsers } from '@lucide/angular';
+import { Character } from '../../../../models/character';
 import { BULK_CHARACTERS, VILLAGER } from '../../../../models/characters';
 import { CharacterGrouping, characterSections } from '../../../../models/characters/sections';
-import { Character } from '../../../../models/character';
-import { CharacterTileComponent } from '../../../character-tile/character-tile.component';
-import { GameService } from '../../../../services/game.service';
-import { MAX_SEATS } from '../../../circle/circle.component';
 import { Preset, PRESETS, presetDeck, presetEntries } from '../../../../models/presets';
+import { GameService } from '../../../../services/game.service';
+import { CharacterTileComponent } from '../../../character-tile/character-tile.component';
+import { MAX_SEATS } from '../../../circle/circle.component';
+import { DeckPreviewComponent } from '../../../deck-preview/deck-preview.component';
+import { GroupingToggleComponent } from '../../../grouping-toggle/grouping-toggle.component';
 
 interface PresetView {
   preset: Preset;
@@ -37,9 +39,10 @@ interface CardView {
     LucideCircleMinus,
     LucideUsers,
     CharacterTileComponent,
+    DeckPreviewComponent,
+    GroupingToggleComponent,
   ],
   templateUrl: './cards-panel.component.html',
-  styles: ``,
   host: {
     class: 'grid grid-rows-[1fr_auto] min-h-0 gap-4',
   },
@@ -51,32 +54,33 @@ export class CardsPanelComponent {
   protected grouping = signal<CharacterGrouping>('game');
   protected presetsExpanded = signal(false);
 
-  private recommended = computed(() => {
-    const seats = this.game.people.all().length;
-    return PRESET_VIEWS.filter((p) => p.deck.length <= seats).sort(
-      (a, b) => b.deck.length - a.deck.length,
-    )[0];
-  });
-
-  protected presets = computed(() => {
-    const recommended = this.recommended();
-    return this.presetsExpanded()
-      ? [recommended, ...PRESET_VIEWS.filter((view) => view !== recommended)]
-      : [recommended];
-  });
-
-  protected hiddenPresetCount = computed(() => PRESET_VIEWS.length - 1);
-
-  protected applyPreset(view: PresetView) {
-    this.characters.replaceSelection(presetEntries(view.preset));
-  }
-
   protected sections = computed(() =>
     characterSections(this.grouping()).map(({ label, characters }) => ({
       label,
       cards: characters.map((character) => this.toCardView(character)),
     })),
   );
+
+  /** The biggest preset that still fits the table. */
+  private recommendedPreset = computed(() => {
+    const seatCount = this.game.people.all().length;
+    return PRESET_VIEWS.filter((view) => view.deck.length <= seatCount).sort(
+      (a, b) => b.deck.length - a.deck.length,
+    )[0];
+  });
+
+  protected presets = computed(() => {
+    const recommended = this.recommendedPreset();
+    return this.presetsExpanded()
+      ? [recommended, ...PRESET_VIEWS.filter((view) => view !== recommended)]
+      : [recommended];
+  });
+
+  protected readonly hiddenPresetCount = PRESET_VIEWS.length - 1;
+
+  protected applyPreset(view: PresetView) {
+    this.characters.replaceSelection(presetEntries(view.preset));
+  }
 
   protected toggle(card: CardView) {
     this.characters.toggle(card.character);
@@ -101,7 +105,7 @@ export class CardsPanelComponent {
       isBulk: BULK_CHARACTERS.includes(character),
       canDecrease: amount > minimum,
       canIncrease: amount < MAX_SEATS,
-      hint: character === VILLAGER && minimum > 0 ? `Fills the remaining seats.` : undefined,
+      hint: character === VILLAGER && minimum > 0 ? 'Fills the remaining seats.' : undefined,
     };
   }
 }

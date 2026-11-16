@@ -1,13 +1,13 @@
-import { ActionButton, assignCard, pickButton } from '../actions/action';
+import { ActionButton, assignButton, filterFalsy, pickButton } from '../actions/action';
 import { hasConnection, isAssigned, NightContext } from '../actions/context';
 import { ConnectionType } from '../../services/state/types';
-import { BasePriority, Character, GameSets, GroupTypes, SectionTitles } from '../character';
+import { BasePriority, Character, GameSet, GroupType, SectionTitles } from '../character';
 
 export class Hoodrat extends Character {
   readonly id = 'hoodrat';
   readonly name = 'The Hoodrat';
-  readonly group = GroupTypes.Active;
-  readonly game = GameSets.Special;
+  readonly group = GroupType.Active;
+  readonly game = GameSet.Special;
   override readonly priority = BasePriority.Initial + 11;
   readonly description = [
     {
@@ -35,9 +35,10 @@ export class Hoodrat extends Character {
   }
 
   override getButtons(context: NightContext): ActionButton[] {
-    return isAssigned(context)
-      ? [pickButton('sleepover', 'Assign a host', 1, this.hasHost(context))]
-      : [assignCard(context)];
+    return filterFalsy([
+      assignButton(context),
+      isAssigned(context) && pickButton('sleepover', 'Assign a host', 1, this.hasHost(context)),
+    ]);
   }
 
   private hasHost(context: NightContext) {

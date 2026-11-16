@@ -1,11 +1,11 @@
 import { computed, WritableSignal } from '@angular/core';
 import { ActionCard, filterFalsy } from '../../models/actions/action';
 import { NightContext } from '../../models/actions/context';
-import { daybreakCard, nightfallCard, rulesCard } from '../../models/actions/generic';
+import { daybreakCard, nightfallCard, rulesCard } from '../../models/actions/generic-cards';
 import { Character } from '../../models/character';
 import { WEREWOLF } from '../../models/characters';
-import { ConnectionType, isAlive, PlayerStatus, State } from './types';
-import { pendingChanges } from './DaybreakState';
+import { pendingChanges } from './daybreak-state';
+import { ConnectionType, findConnection, hasStatus, isAlive, PersonStatus, State } from './types';
 
 export class ActionState {
   constructor(private state: WritableSignal<State>) {}
@@ -18,9 +18,9 @@ export class ActionState {
     const awake = state.awake.flatMap((id) => state.characters.get(id)?.character ?? []);
 
     return [
-      ...(state.round === 0 ? [rulesCard(state.round, selected)] : []),
+      ...(hasRulesCard(state) ? [rulesCard(state.round, selected)] : []),
       nightfallCard(state.round),
-      ...awake.map((character) => toCard(state, character)),
+      ...awake.map((character) => characterCard(state, character)),
       daybreakCard(state.round, selected, pendingChanges(state).length),
     ];
   });
@@ -41,34 +41,35 @@ export class ActionState {
     );
   }
 
-  wakeRestoredRoles() {
-    this.state.update(wakeRestoredRoles);
-  }
-
   back() {
     this.state.update((state) =>
       state.actionIndex > 0 ? { ...state, actionIndex: state.actionIndex - 1 } : state,
     );
+  }
+
+  wakeRestoredRoles() {
+    this.state.update(wakeRestoredRoles);
   }
 }
 
 export function beginNight(state: State): State {
   return {
     ...state,
-    awake: selectedCharacters(state)
-      .filter((character) => isAwakeTonight(state, character))
-      .sort((a, b) => a.priority - b.priority)
-      .map((character) => character.id),
+    awake: charactersInNightOrder(state, (character) => isAwakeTonight(state, character)),
   };
 }
 
+/**
+ * Calls the roles that an ability given back mid-night has woken again, without sending
+ * anyone already called back to sleep, and keeps the narrator on the card they are on.
+ */
 function wakeRestoredRoles(state: State): State {
-  const awake = selectedCharacters(state)
-    .filter((character) => state.awake.includes(character.id) || isAwakeTonight(state, character))
-    .sort((a, b) => a.priority - b.priority)
-    .map((character) => character.id);
+  const awake = charactersInNightOrder(
+    state,
+    (character) => state.awake.includes(character.id) || isAwakeTonight(state, character),
+  );
 
-  const cardsBeforeRoles = state.round === 0 ? 2 : 1;
+  const cardsBeforeRoles = hasRulesCard(state) ? 2 : 1;
   const position = state.actionIndex - cardsBeforeRoles;
   if (position < 0) {
     return { ...state, awake };
@@ -79,8 +80,60 @@ function wakeRestoredRoles(state: State): State {
   return { ...state, awake, actionIndex: cardsBeforeRoles + newPosition };
 }
 
+function startNextNight(state: State): State {
+  const protectedPerson = state.people.find((person) => hasStatus(person, PersonStatus.Protected));
+  const sleepover = findConnection(state.connections, ConnectionType.Sleepover);
+
+  return beginNight({
+    ...state,
+    round: state.round + 1,
+    actionIndex: 0,
+    victims: [],
+    appliedChanges: [],
+    people: state.people.map((person) => ({
+      ...person,
+      statuses: person.statuses.filter((status) => status !== PersonStatus.Protected),
+    })),
+    connections: state.connections.filter(
+      (connection) => connection.type !== ConnectionType.Sleepover,
+    ),
+    roles: {
+      ...state.roles,
+      enchantedTonight: [],
+      healedTonight: undefined,
+      healerLastProtected: protectedPerson?.id,
+      hoodratLastHost: sleepover?.to,
+    },
+  });
+}
+
+function hasRulesCard(state: State) {
+  return state.round === 0;
+}
+
 function selectedCharacters(state: State) {
   return [...state.characters.values()].map(({ character }) => character);
+}
+
+function charactersInNightOrder(state: State, isCalled: (character: Character) => boolean) {
+  return selectedCharacters(state)
+    .filter(isCalled)
+    .sort((a, b) => a.priority - b.priority)
+    .map((character) => character.id);
+}
+
+function isAwakeTonight(state: State, character: Character) {
+  const context = contextFor(state, character);
+  if (!character.isAwakeThisNight(context)) {
+    return false;
+  }
+
+  // The pack is called even when every known wolf is dead: without wolves the game would be over.
+  if (character.id === WEREWOLF.id) {
+    return true;
+  }
+
+  return context.assigned.length === 0 || context.assigned.some(isAlive);
 }
 
 function contextFor(state: State, character: Character): NightContext {
@@ -95,60 +148,15 @@ function contextFor(state: State, character: Character): NightContext {
   };
 }
 
-function toCard(state: State, character: Character): ActionCard {
+function characterCard(state: State, character: Character): ActionCard {
   const context = contextFor(state, character);
 
   return {
     key: `${context.round}:${character.id}`,
     id: character.id,
     title: character.name,
-    image: `img/${character.id}.png`,
+    image: character.image,
     actions: filterFalsy(character.getActions(context)),
     buttons: character.getButtons(context),
   };
-}
-
-function isAwakeTonight(state: State, character: Character) {
-  const context = contextFor(state, character);
-  if (!character.isAwakeThisNight(context)) {
-    return false;
-  }
-
-  // NOTE (ARO): Without werewolfs the game would be over
-  if (character.id === WEREWOLF.id) {
-    return true;
-  }
-
-  return context.assigned.length === 0 || context.assigned.some(isAlive);
-}
-
-function startNextNight(state: State): State {
-  const protectedPerson = state.people.find((person) =>
-    person.statuses.includes(PlayerStatus.Protected),
-  )?.id;
-  const sleepoverHost = state.connections.find(
-    (connection) => connection.type === ConnectionType.Sleepover,
-  )?.to;
-
-  return beginNight({
-    ...state,
-    round: state.round + 1,
-    actionIndex: 0,
-    victims: [],
-    appliedChanges: [],
-    people: state.people.map((person) => ({
-      ...person,
-      statuses: person.statuses.filter((status) => status !== PlayerStatus.Protected),
-    })),
-    connections: state.connections.filter(
-      (connection) => connection.type !== ConnectionType.Sleepover,
-    ),
-    roles: {
-      ...state.roles,
-      enchantedTonight: [],
-      healedTonight: undefined,
-      healerLastProtected: protectedPerson,
-      hoodratLastHost: sleepoverHost,
-    },
-  });
 }

@@ -1,13 +1,13 @@
-import { ActionButton, assignCard, filterFalsy, pickButton } from '../actions/action';
-import { hasConnection, isAssigned, NightContext } from '../actions/context';
+import { ActionButton, assignButton, filterFalsy, pickButton } from '../actions/action';
+import { hasConnection, isAssigned, isFirstNight, NightContext } from '../actions/context';
 import { ConnectionType } from '../../services/state/types';
-import { BasePriority, Character, GameSets, GroupTypes, SectionTitles } from '../character';
+import { BasePriority, Character, GameSet, GroupType, SectionTitles } from '../character';
 
 export class Cupid extends Character {
   readonly id = 'cupid';
   readonly name = 'The Cupid';
-  readonly group = GroupTypes.Active;
-  readonly game = GameSets.BaseGame;
+  readonly group = GroupType.Active;
+  readonly game = GameSet.BaseGame;
   override readonly priority = BasePriority.Initial + 3;
   readonly description = [
     {
@@ -23,7 +23,7 @@ export class Cupid extends Character {
   ];
 
   override isAwakeThisNight(context: NightContext) {
-    return context.round === 0;
+    return isFirstNight(context);
   }
 
   override getActions(context: NightContext): (string | false)[] {
@@ -36,7 +36,7 @@ export class Cupid extends Character {
 
   override getButtons(context: NightContext): ActionButton[] {
     return filterFalsy<ActionButton>([
-      !isAssigned(context) && assignCard(context),
+      assignButton(context),
       pickButton('pair-lovers', 'Assign the couple', 2, this.hasCouple(context)),
     ]);
   }

@@ -1,13 +1,13 @@
-import { ActionButton, assignCard, filterFalsy, pickButton } from '../actions/action';
+import { ActionButton, assignButton, filterFalsy, pickButton } from '../actions/action';
 import { hasMarkedVictim, isAssigned, NightContext } from '../actions/context';
-import { BasePriority, GameSets, GroupTypes, SectionTitles } from '../character';
+import { BasePriority, GameSet, GroupType, SectionTitles } from '../character';
 import { WerewolfCharacter } from '../werewolf-character';
 
 export class Werewolf extends WerewolfCharacter {
   readonly id = 'werewolf';
   readonly name = 'The Simple Werewolf';
-  readonly group = GroupTypes.Wolves;
-  readonly game = GameSets.BaseGame;
+  readonly group = GroupType.Wolves;
+  readonly game = GameSet.BaseGame;
   override readonly hasMultiple = true;
   override readonly priority = BasePriority.Wolf + 1;
   readonly description = [
@@ -31,7 +31,7 @@ export class Werewolf extends WerewolfCharacter {
 
   override getButtons(context: NightContext): ActionButton[] {
     return filterFalsy<ActionButton>([
-      !isAssigned(context) && assignCard(context),
+      assignButton(context),
       pickButton('mark-victim', 'Mark victim', 1, hasMarkedVictim(context, this.id)),
     ]);
   }

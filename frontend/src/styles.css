@@ -61,3 +61,6 @@ body {
 .card-tile {
   @apply grid items-center gap-x-2 rounded-lg bg-zinc-800 p-2 text-left ring-amber-400;
 }
+.chip {
+  @apply rounded-full bg-zinc-800 px-3 py-1 text-sm ring-amber-400 hover:bg-zinc-700;
+}

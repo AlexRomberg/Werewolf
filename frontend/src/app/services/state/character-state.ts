@@ -1,7 +1,7 @@
 import { computed, WritableSignal } from '@angular/core';
-import { CharacterSelection, State } from './types';
+import { Character, copiesOf } from '../../models/character';
 import { VILLAGER } from '../../models/characters';
-import { Character } from '../../models/character';
+import { CharacterSelection, State } from './types';
 
 export class CharacterState {
   constructor(private state: WritableSignal<State>) {}
@@ -13,7 +13,7 @@ export class CharacterState {
   private chosenDeck = computed(() =>
     [...this.state().characters.values()]
       .filter(({ character }) => character.id !== VILLAGER.id)
-      .flatMap(({ character, amount }) => new Array<Character>(amount).fill(character)),
+      .flatMap(({ character, amount }) => copiesOf(character, amount)),
   );
 
   readonly requiredVillagers = computed(() =>
@@ -26,7 +26,7 @@ export class CharacterState {
 
   readonly cards = computed(() => [
     ...this.chosenDeck(),
-    ...new Array<Character>(this.villagerCount()).fill(VILLAGER),
+    ...copiesOf(VILLAGER, this.villagerCount()),
   ]);
 
   readonly inPlay = computed<readonly Character[]>(() => [...new Set(this.cards())]);
@@ -43,7 +43,7 @@ export class CharacterState {
     this.state.update((state) => ({
       ...state,
       characters: new Map(
-        [...entries]
+        entries
           .filter(([, amount]) => amount > 0)
           .map(([character, amount]) => [character.id, { character, amount }]),
       ),

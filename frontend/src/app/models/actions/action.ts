@@ -34,8 +34,11 @@ export const TONE_BY_KIND: Record<ActionButtonKind, ActionTone> = {
 export interface ActionButton {
   readonly kind: ActionButtonKind;
   readonly label: string;
+  /** How many people the narrator picks on the circle; absent for a button that acts at once. */
   readonly picks?: number;
+  /** Whether the picking starts by itself when the card comes up, without a press. */
   readonly auto?: boolean;
+  /** Whether the ability was already used tonight, so it can be changed or undone. */
   readonly done?: boolean;
 }
 
@@ -48,8 +51,15 @@ export interface ActionCard {
   readonly buttons: readonly ActionButton[];
 }
 
-export function assignCard(context: NightContext, total = context.cardCount): ActionButton {
+/** The button that seats the card's holders, or `false` once nobody is missing. */
+export function assignButton(
+  context: NightContext,
+  total = context.cardCount,
+): ActionButton | false {
   const picks = total - context.assigned.length;
+  if (picks <= 0) {
+    return false;
+  }
 
   return {
     kind: 'assign-card',

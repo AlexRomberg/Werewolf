@@ -11,22 +11,7 @@
 
     <span class="flex items-baseline gap-2">
       <span class="input-label max-sm:hidden">Group by:</span>
-      <button
-        class="rounded-full bg-zinc-800 px-3 py-1 text-sm ring-amber-400 hover:bg-zinc-700"
-        [class.ring-2]="grouping() === 'game'"
-        [attr.aria-pressed]="grouping() === 'game'"
-        (click)="grouping.set('game')"
-      >
-        Game
-      </button>
-      <button
-        class="rounded-full bg-zinc-800 px-3 py-1 text-sm ring-amber-400 hover:bg-zinc-700"
-        [class.ring-2]="grouping() === 'group'"
-        [attr.aria-pressed]="grouping() === 'group'"
-        (click)="grouping.set('group')"
-      >
-        Group
-      </button>
+      <app-grouping-toggle [(grouping)]="grouping" />
     </span>
   </header>
 

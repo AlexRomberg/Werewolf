@@ -1,13 +1,13 @@
-import { ActionButton, assignCard, pickButton } from '../actions/action';
-import { hasConnection, isAssigned, NightContext } from '../actions/context';
+import { ActionButton, assignButton, filterFalsy, pickButton } from '../actions/action';
+import { hasConnection, isAssigned, isFirstNight, NightContext } from '../actions/context';
 import { ConnectionType } from '../../services/state/types';
-import { BasePriority, Character, GameSets, GroupTypes, SectionTitles } from '../character';
+import { BasePriority, Character, GameSet, GroupType, SectionTitles } from '../character';
 
 export class WildChild extends Character {
   readonly id = 'wild_child';
   readonly name = 'The Wild Child';
-  readonly group = GroupTypes.Wolves;
-  readonly game = GameSets.Characters;
+  readonly group = GroupType.Wolves;
+  readonly game = GameSet.Characters;
   override readonly priority = BasePriority.Initial + 8;
   readonly description = [
     {
@@ -23,7 +23,7 @@ export class WildChild extends Character {
   ];
 
   override isAwakeThisNight(context: NightContext) {
-    return context.round === 0;
+    return isFirstNight(context);
   }
 
   override getActions(context: NightContext): (string | false)[] {
@@ -35,9 +35,11 @@ export class WildChild extends Character {
   }
 
   override getButtons(context: NightContext): ActionButton[] {
-    return isAssigned(context)
-      ? [pickButton('set-role-model', 'Assign the role model', 1, this.hasRoleModel(context))]
-      : [assignCard(context)];
+    return filterFalsy([
+      assignButton(context),
+      isAssigned(context) &&
+        pickButton('set-role-model', 'Assign the role model', 1, this.hasRoleModel(context)),
+    ]);
   }
 
   private hasRoleModel(context: NightContext) {

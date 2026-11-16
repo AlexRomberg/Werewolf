@@ -1,4 +1,4 @@
-import { BasePriority, GameSets, GroupTypes } from '../../models/character';
+import { BasePriority, GameSet, GroupType } from '../../models/character';
 import { Cupid } from '../../models/characters/cupid';
 import { ConnectionType } from '../../services/state/types';
 import { night, seated } from '../night';
@@ -9,8 +9,8 @@ describe('Cupid', () => {
   it("should have the card's identity", () => {
     expect(character.id).toBe('cupid');
     expect(character.name).toBe('The Cupid');
-    expect(character.group).toBe(GroupTypes.Active);
-    expect(character.game).toBe(GameSets.BaseGame);
+    expect(character.group).toBe(GroupType.Active);
+    expect(character.game).toBe(GameSet.BaseGame);
     expect(character.hasMultiple).toBe(false);
     expect(character.priority).toBe(BasePriority.Initial + 3);
   });

@@ -1,10 +1,10 @@
-import { Character, GameSets, GroupTypes, SectionTitles } from '../character';
+import { Character, GameSet, GroupType, SectionTitles } from '../character';
 
 export class Wolfdog extends Character {
   readonly id = 'wolfdog';
   readonly name = 'The Wolfdog';
-  readonly group = GroupTypes.Wolves;
-  readonly game = GameSets.Characters;
+  readonly group = GroupType.Wolves;
+  readonly game = GameSet.Characters;
   readonly description = [
     {
       title: SectionTitles.general,

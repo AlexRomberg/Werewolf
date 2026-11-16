@@ -1,6 +1,6 @@
 import { Character } from '../../models/character';
 
-export enum PlayerStatus {
+export enum PersonStatus {
   Dead = 'dead',
   Protected = 'protected',
   Enchanted = 'enchanted',
@@ -62,17 +62,17 @@ export interface Person {
   id: string;
   name: string;
   character?: Character;
-  statuses: PlayerStatus[];
+  statuses: PersonStatus[];
 }
 
-export type NightMark = 'victim' | 'healed';
-export type SeatBadge = Exclude<PlayerStatus, PlayerStatus.Dead> | NightMark;
+export type NightBadge = 'victim' | 'healed';
+export type PersonBadge = Exclude<PersonStatus, PersonStatus.Dead> | NightBadge;
 
-export const STATUS_LABELS: Record<PlayerStatus | NightMark, string> = {
-  [PlayerStatus.Dead]: 'Dead',
-  [PlayerStatus.Protected]: 'Protected',
-  [PlayerStatus.Enchanted]: 'Enchanted',
-  [PlayerStatus.TurnedWolf]: 'Turned wolf',
+export const STATUS_LABELS: Record<PersonStatus | NightBadge, string> = {
+  [PersonStatus.Dead]: 'Dead',
+  [PersonStatus.Protected]: 'Protected',
+  [PersonStatus.Enchanted]: 'Enchanted',
+  [PersonStatus.TurnedWolf]: 'Turned wolf',
   victim: 'Marked as a victim',
   healed: 'Healed',
 };
@@ -81,7 +81,7 @@ export interface PersonView extends Person {
   seat: number;
   displayName: string;
   isDead: boolean;
-  badges: readonly SeatBadge[];
+  badges: readonly PersonBadge[];
 }
 
 export interface CharacterSelection {
@@ -109,6 +109,14 @@ export const INITIAL_ROLE_STATE: RoleStates = {
 
 export const INITIAL_SEATS = 5;
 
+export function hasStatus(person: Person, status: PersonStatus) {
+  return person.statuses.includes(status);
+}
+
 export function isAlive(person: Person) {
-  return !person.statuses.includes(PlayerStatus.Dead);
+  return !hasStatus(person, PersonStatus.Dead);
+}
+
+export function findConnection(connections: readonly Connection[], type: ConnectionType) {
+  return connections.find((connection) => connection.type === type);
 }

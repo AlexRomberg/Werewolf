@@ -10,8 +10,8 @@ import {
   LucideTombstone,
   LucideUndo2,
   LucideUserPlus,
-  LucideZap,
   LucideWandSparkles,
+  LucideZap,
 } from '@lucide/angular';
 import { NgOptimizedImage } from '@angular/common';
 import {
@@ -25,9 +25,10 @@ import { Character } from '../../../../models/character';
 import { Ability } from '../../../../services/state/types';
 import { CharacterTileComponent } from '../../../character-tile/character-tile.component';
 
+/** How many upcoming cards peek out behind the current one. */
 const VISIBLE_DEPTH = 3;
-
-const LIFT = [0, 3.5, 5, 5.75];
+/** How far, in rem, a card at each depth is raised above the current one. */
+const LIFT_BY_DEPTH = [0, 3.5, 5, 5.75];
 
 export interface SpentAbility {
   ability: Ability;
@@ -69,7 +70,6 @@ interface StackedCard {
     LucideZap,
   ],
   templateUrl: './narration-panel.component.html',
-  styles: ``,
   host: {
     class: 'flex min-h-0 flex-col gap-4',
   },
@@ -103,10 +103,9 @@ export class NarrationPanelComponent {
   });
 
   protected isLastCard = computed(() => this.index() >= this.cards().length - 1);
-  protected progress = computed(() => ((this.index() + 1) / this.cards().length) * 100);
 
   private toStackedCard(card: ActionCard, depth: number): StackedCard {
-    const lift = LIFT[Math.min(depth, VISIBLE_DEPTH)];
+    const lift = LIFT_BY_DEPTH[Math.min(depth, VISIBLE_DEPTH)];
     const isCurrent = depth === 0;
 
     return {

@@ -17,8 +17,8 @@ import {
   LucideTombstone,
   LucideUser,
   LucideUserRoundPlus,
-  LucideX,
   LucideWandSparkles,
+  LucideX,
 } from '@lucide/angular';
 import { NgOptimizedImage } from '@angular/common';
 import { ActionTone } from '../../models/actions/action';
@@ -27,19 +27,29 @@ import {
   ConnectionType,
   Person,
   PersonView,
-  SeatBadge,
+  PersonBadge,
   STATUS_LABELS,
 } from '../../services/state/types';
 
+/** Beyond this the seats overlap and stop being readable. */
+export const MAX_SEATS = 20;
+
+// Angles in degrees, clockwise from the positive x axis. The seats fill an arc that
+// leaves a gap at the bottom of the table, where the narrator sits.
 const GAP_ANGLE = 30;
 const TOP_ANGLE = -90;
 const ARC_ANGLE = 360 - GAP_ANGLE;
 const START_ANGLE = TOP_ANGLE - ARC_ANGLE / 2;
-const DRAG_THRESHOLD = 8;
+// Positions in the stage's 100 x 100 coordinate space.
 const CENTER = 50;
 const RADIUS = 40;
+/** How far, in px, a pointer has to travel before a press becomes a drag. */
+const DRAG_THRESHOLD = 8;
+/** The distance, in px, between two links that join the same two people. */
 const LANE_GAP = 6;
-export const MAX_SEATS = 20;
+/** A crowded circle moves the names near the top above their seats, out of each other's way. */
+const CROWDED_SEAT_COUNT = 12;
+const NAME_ABOVE_SPREAD = 22;
 
 const CONNECTION_LABELS: Record<ConnectionType, string> = {
   [ConnectionType.Love]: 'In love',
@@ -47,7 +57,7 @@ const CONNECTION_LABELS: Record<ConnectionType, string> = {
   [ConnectionType.Sleepover]: 'Sleepover',
 };
 
-const BADGE_TONES: Record<SeatBadge, ActionTone> = {
+const BADGE_TONES: Record<PersonBadge, ActionTone> = {
   protected: 'protect',
   healed: 'protect',
   victim: 'kill',
@@ -89,7 +99,7 @@ export interface CircleSelection {
 export class CircleComponent {
   public people = input.required<readonly PersonView[]>();
   public editMode = input(false);
-  public selectedId = input<string | null>(null);
+  public selectedPersonId = input<string | null>(null);
   public selection = input<CircleSelection | null>(null);
   public connections = input<readonly Connection[]>([]);
 
@@ -112,10 +122,10 @@ export class CircleComponent {
   private drag = signal<{ id: string; angle: number; toIndex: number } | null>(null);
 
   protected canAdd = computed(() => this.people().length < MAX_SEATS);
-  protected placedPlayers = computed(() => {
+  protected placedPeople = computed(() => {
     const people = this.people();
     const drag = this.drag();
-    const selectedId = this.selectedId();
+    const selectedPersonId = this.selectedPersonId();
     const selection = this.selection();
 
     const order = drag ? movedOrder(people, drag.id, drag.toIndex) : people.map(({ id }) => id);
@@ -129,22 +139,23 @@ export class CircleComponent {
         person,
         angle,
         dragging,
-        selected: !selection && person.id === selectedId,
+        selected: !selection && person.id === selectedPersonId,
         pick: selection ? pickStateOf(person.id, selection) : null,
-        label: describe(person),
+        label: ariaLabelOf(person),
         badges: person.badges.map((badge) => ({
           kind: badge,
           tone: BADGE_TONES[badge],
           label: STATUS_LABELS[badge],
         })),
-        nameTop: people.length >= 12 && Math.abs(angle - TOP_ANGLE) < 22,
+        nameAbove:
+          people.length >= CROWDED_SEAT_COUNT && Math.abs(angle - TOP_ANGLE) < NAME_ABOVE_SPREAD,
       };
     });
   });
 
   protected connectionLines = computed(() => {
     const connections = this.connections();
-    const angles = new Map(this.placedPlayers().map(({ person, angle }) => [person.id, angle]));
+    const angles = new Map(this.placedPeople().map(({ person, angle }) => [person.id, angle]));
 
     return connections.flatMap((connection) => {
       const [first, second] = [connection.from, connection.to].sort();
@@ -169,7 +180,7 @@ export class CircleComponent {
           x: (start.x + end.x) / 2,
           y: (start.y + end.y) / 2,
           length: Math.hypot(end.x - start.x, end.y - start.y),
-          angle: (Math.atan2(end.y - start.y, end.x - start.x) * 180) / Math.PI,
+          angle: toDegrees(Math.atan2(end.y - start.y, end.x - start.x)),
           shift: lane * LANE_GAP,
         },
       ];
@@ -245,7 +256,8 @@ export class CircleComponent {
     const stage = this.stage().nativeElement.getBoundingClientRect();
     const x = event.clientX - (stage.left + stage.width / 2);
     const y = event.clientY - (stage.top + stage.height / 2);
-    const angle = (Math.atan2(y, x) * 180) / Math.PI;
+    const angle = toDegrees(Math.atan2(y, x));
+    // Normalised to one turn starting at the first seat, so the gap is not crossed twice.
     return START_ANGLE + ((((angle - START_ANGLE) % 360) + 360) % 360);
   }
 
@@ -261,12 +273,16 @@ interface Point {
   y: number;
 }
 
+function toDegrees(radians: number) {
+  return (radians * 180) / Math.PI;
+}
+
 function seatPoint(angle: number): Point {
   const radians = (angle * Math.PI) / 180;
   return { x: CENTER + RADIUS * Math.cos(radians), y: CENTER + RADIUS * Math.sin(radians) };
 }
 
-function describe(person: PersonView) {
+function ariaLabelOf(person: PersonView) {
   return [
     person.displayName,
     person.character?.name,

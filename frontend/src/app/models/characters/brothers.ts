@@ -1,13 +1,15 @@
-import { ActionButton, assignCard } from '../actions/action';
+import { ActionButton, assignButton, filterFalsy } from '../actions/action';
 import { NightContext } from '../actions/context';
-import { BasePriority, Character, GameSets, GroupTypes, SectionTitles } from '../character';
+import { BasePriority, Character, GameSet, GroupType, SectionTitles } from '../character';
+
+const BROTHER_COUNT = 3;
 
 export class Brothers extends Character {
   readonly id = 'brothers';
   readonly name = 'The Three Brothers';
   override readonly memberName = 'One of the Three Brothers';
-  readonly group = GroupTypes.Active;
-  readonly game = GameSets.Characters;
+  readonly group = GroupType.Active;
+  readonly game = GameSet.Characters;
   override readonly hasMultiple = true;
   override readonly priority = BasePriority.Initial + 7;
   readonly description = [
@@ -32,10 +34,10 @@ export class Brothers extends Character {
   }
 
   override getButtons(context: NightContext): ActionButton[] {
-    return this.isComplete(context) ? [] : [assignCard(context, 3)];
+    return filterFalsy([assignButton(context, BROTHER_COUNT)]);
   }
 
   private isComplete(context: NightContext) {
-    return context.assigned.length === 3;
+    return context.assigned.length >= BROTHER_COUNT;
   }
 }

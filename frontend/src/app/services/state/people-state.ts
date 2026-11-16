@@ -1,23 +1,9 @@
 import { computed, WritableSignal } from '@angular/core';
 import { Character } from '../../models/character';
-import {
-  INITIAL_SEATS,
-  isAlive,
-  NightMark,
-  Person,
-  PersonView,
-  PlayerStatus,
-  SeatBadge,
-  State,
-} from './types';
+import { isAlive, NightBadge, Person, PersonView, PersonStatus, PersonBadge, State } from './types';
 
 export class PeopleState {
-  constructor(private state: WritableSignal<State>) {
-    state.update((state) => ({
-      ...state,
-      people: createSeats(INITIAL_SEATS),
-    }));
-  }
+  constructor(private state: WritableSignal<State>) {}
 
   readonly all = computed(() => this.state().people);
 
@@ -25,15 +11,18 @@ export class PeopleState {
     const { people, victims, roles } = this.state();
 
     return people.map((person, index) => {
-      const lasting = person.statuses.filter(
-        (status): status is Exclude<PlayerStatus, PlayerStatus.Dead> =>
-          status !== PlayerStatus.Dead,
+      const statusBadges = person.statuses.filter(
+        (status): status is Exclude<PersonStatus, PersonStatus.Dead> =>
+          status !== PersonStatus.Dead,
       );
-      const tonight: (NightMark | false)[] = [
+      const nightBadges: (NightBadge | false)[] = [
         victims.some((mark) => mark.personId === person.id) && 'victim',
         roles.healedTonight === person.id && 'healed',
       ];
-      const badges: SeatBadge[] = [...lasting, ...tonight.filter((mark) => mark !== false)];
+      const badges: PersonBadge[] = [
+        ...statusBadges,
+        ...nightBadges.filter((badge) => badge !== false),
+      ];
 
       return {
         ...person,
@@ -57,14 +46,14 @@ export class PeopleState {
       ...state,
       people: state.people.filter((person) => person.id !== id),
       connections: state.connections.filter(({ from, to }) => from !== id && to !== id),
-      victims: state.victims.filter((victim) => victim.personId !== id),
+      victims: state.victims.filter((mark) => mark.personId !== id),
     }));
   }
 
   update(id: string, person: Person) {
     this.state.update((state) => ({
       ...state,
-      people: state.people.map((p) => (p.id === id ? person : p)),
+      people: state.people.map((existing) => (existing.id === id ? person : existing)),
     }));
   }
 
@@ -92,8 +81,8 @@ export class PeopleState {
   }
 }
 
-function createSeats(count: number) {
-  return Array.from({ length: count }, () => createPerson());
+export function createSeats(count: number): Person[] {
+  return Array.from({ length: count }, createPerson);
 }
 
 function createPerson(): Person {

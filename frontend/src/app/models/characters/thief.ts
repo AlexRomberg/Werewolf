@@ -1,12 +1,12 @@
-import { ActionButton, assignCard } from '../actions/action';
-import { isAssigned, NightContext } from '../actions/context';
-import { BasePriority, Character, GameSets, GroupTypes, SectionTitles } from '../character';
+import { ActionButton, assignButton, filterFalsy } from '../actions/action';
+import { isAssigned, isFirstNight, NightContext } from '../actions/context';
+import { BasePriority, Character, GameSet, GroupType, SectionTitles } from '../character';
 
 export class Thief extends Character {
   readonly id = 'thief';
   readonly name = 'The Thief';
-  readonly group = GroupTypes.Active;
-  readonly game = GameSets.BaseGame;
+  readonly group = GroupType.Active;
+  readonly game = GameSet.BaseGame;
   override readonly priority = BasePriority.Initial + 1;
   readonly description = [
     {
@@ -17,7 +17,7 @@ export class Thief extends Character {
   ];
 
   override isAwakeThisNight(context: NightContext) {
-    return context.round === 0;
+    return isFirstNight(context);
   }
 
   override getActions(context: NightContext): (string | false)[] {
@@ -25,6 +25,6 @@ export class Thief extends Character {
   }
 
   override getButtons(context: NightContext): ActionButton[] {
-    return isAssigned(context) ? [] : [assignCard(context)];
+    return filterFalsy([assignButton(context)]);
   }
 }

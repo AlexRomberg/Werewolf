@@ -4,7 +4,6 @@ import { Component, input, output } from '@angular/core';
   selector: 'app-toggle-switch',
   imports: [],
   templateUrl: './toggle-switch.component.html',
-  styles: ``,
 })
 export class ToggleSwitchComponent {
   public checked = input(false);

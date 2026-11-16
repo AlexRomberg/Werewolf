@@ -1,4 +1,4 @@
-import { GameSets, GroupTypes } from '../../models/character';
+import { GameSet, GroupType } from '../../models/character';
 import { Maid } from '../../models/characters/maid';
 import { night } from '../night';
 
@@ -8,8 +8,8 @@ describe('Maid', () => {
   it("should have the card's identity", () => {
     expect(character.id).toBe('maid');
     expect(character.name).toBe('The Devoted Maid');
-    expect(character.group).toBe(GroupTypes.Passive);
-    expect(character.game).toBe(GameSets.Characters);
+    expect(character.group).toBe(GroupType.Passive);
+    expect(character.game).toBe(GameSet.Characters);
     expect(character.hasMultiple).toBe(false);
     expect(character.priority).toBe(-1);
   });

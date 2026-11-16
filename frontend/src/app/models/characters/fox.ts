@@ -1,12 +1,12 @@
-import { ActionButton, assignCard, filterFalsy } from '../actions/action';
-import { isAssigned, isAbilityUsed, NightContext } from '../actions/context';
-import { BasePriority, Character, GameSets, GroupTypes, SectionTitles } from '../character';
+import { ActionButton, assignButton, filterFalsy } from '../actions/action';
+import { isAbilityUsed, isAssigned, NightContext } from '../actions/context';
+import { BasePriority, Character, GameSet, GroupType, SectionTitles } from '../character';
 
 export class Fox extends Character {
   readonly id = 'fox';
   readonly name = 'The Fox';
-  readonly group = GroupTypes.Active;
-  readonly game = GameSets.Characters;
+  readonly group = GroupType.Active;
+  readonly game = GameSet.Characters;
   override readonly priority = BasePriority.Initial + 5;
   readonly description = [
     {
@@ -42,7 +42,7 @@ export class Fox extends Character {
 
   override getButtons(context: NightContext): ActionButton[] {
     return filterFalsy<ActionButton>([
-      !isAssigned(context) && assignCard(context),
+      assignButton(context),
       { kind: 'lose-fox-request', label: 'Has missed', done: this.hasMissed(context) },
     ]);
   }

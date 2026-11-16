@@ -21,7 +21,10 @@ function sectionsBy<T>(labels: ReadonlyMap<T, string>, keyOf: (character: Charac
     const inSection = CHARACTERS.filter((character) => keyOf(character) === key);
     return {
       label,
-      characters: [...inSection.filter(isBulk), ...inSection.filter((c) => !isBulk(c))],
+      characters: [
+        ...inSection.filter(isBulk),
+        ...inSection.filter((character) => !isBulk(character)),
+      ],
     };
   });
 }

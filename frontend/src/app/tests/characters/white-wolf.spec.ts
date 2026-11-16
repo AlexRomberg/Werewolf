@@ -1,4 +1,4 @@
-import { BasePriority, GameSets, GroupTypes } from '../../models/character';
+import { BasePriority, GameSet, GroupType } from '../../models/character';
 import { WhiteWolf } from '../../models/characters/white-wolf';
 import { WerewolfCharacter } from '../../models/werewolf-character';
 import { night, seated } from '../night';
@@ -9,8 +9,8 @@ describe('WhiteWolf', () => {
   it("should have the card's identity", () => {
     expect(character.id).toBe('white_wolf');
     expect(character.name).toBe('The White Wolf');
-    expect(character.group).toBe(GroupTypes.Wolves);
-    expect(character.game).toBe(GameSets.Characters);
+    expect(character.group).toBe(GroupType.Wolves);
+    expect(character.game).toBe(GameSet.Characters);
     expect(character.hasMultiple).toBe(false);
     expect(character.priority).toBe(BasePriority.Wolf + 2);
   });

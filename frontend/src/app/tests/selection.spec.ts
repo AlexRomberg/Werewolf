@@ -4,7 +4,7 @@ import { Cupid } from '../models/characters/cupid';
 import { Seer } from '../models/characters/seer';
 import { Werewolf } from '../models/characters/werewolf';
 import { Witch } from '../models/characters/witch';
-import { PlayerStatus } from '../services/state/types';
+import { PersonStatus } from '../services/state/types';
 import { night, person, seated } from './night';
 
 const card = (buttons: ActionButton[]): ActionCard => ({
@@ -70,7 +70,7 @@ describe('pickWarning', () => {
   });
 
   it('should question a dead player, whatever the ability', () => {
-    const dead = person({ statuses: [PlayerStatus.Dead] });
+    const dead = person({ statuses: [PersonStatus.Dead] });
 
     expect(pickWarning(button('mark-victim'), 'werewolf', dead, night())).toContain('dead');
   });
@@ -106,7 +106,7 @@ describe('pickWarning', () => {
   });
 
   it('should question enchanting someone who already is', () => {
-    const enchanted = person({ statuses: [PlayerStatus.Enchanted] });
+    const enchanted = person({ statuses: [PersonStatus.Enchanted] });
 
     expect(pickWarning(button('enchant'), 'piper', enchanted, night())).toContain('enchanted');
   });
@@ -128,7 +128,7 @@ describe('pickWarning', () => {
 
   it('should ask before the White Wolf kills someone who is no werewolf', () => {
     const wolf = person({ character: new Werewolf() });
-    const turned = person({ statuses: [PlayerStatus.TurnedWolf] });
+    const turned = person({ statuses: [PersonStatus.TurnedWolf] });
     const villager = person({ character: new Seer() });
     const warningFor = (target: ReturnType<typeof person>) =>
       pickWarning(button('mark-victim'), 'white_wolf', target, night(1));

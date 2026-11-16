@@ -1,4 +1,4 @@
-import { GameSets, GroupTypes } from '../../models/character';
+import { GameSet, GroupType } from '../../models/character';
 import { SmallChild } from '../../models/characters/small-child';
 import { night } from '../night';
 
@@ -8,8 +8,8 @@ describe('SmallChild', () => {
   it("should have the card's identity", () => {
     expect(character.id).toBe('small_child');
     expect(character.name).toBe('The Little Girl');
-    expect(character.group).toBe(GroupTypes.Active);
-    expect(character.game).toBe(GameSets.BaseGame);
+    expect(character.group).toBe(GroupType.Active);
+    expect(character.game).toBe(GameSet.BaseGame);
     expect(character.hasMultiple).toBe(false);
     expect(character.priority).toBe(-1);
   });

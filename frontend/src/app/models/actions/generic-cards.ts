@@ -1,8 +1,7 @@
 import { Character } from '../character';
+import { BEAR_TAMER } from '../characters';
 import { WerewolfCharacter } from '../werewolf-character';
 import { ActionCard, filterFalsy } from './action';
-
-const BEAR_TAMER_ID = 'bear_tamer';
 
 export function rulesCard(round: number, selected: readonly Character[]): ActionCard {
   const wolves = selected.filter((character) => character instanceof WerewolfCharacter);
@@ -14,7 +13,7 @@ export function rulesCard(round: number, selected: readonly Character[]): Action
     image: 'img/rules.png',
     actions: filterFalsy([
       'Explain the rules',
-      wolves.length > 0 && `Name the wolves in play: ${wolves.map((w) => w.name).join(', ')}`,
+      wolves.length > 0 && `Name the wolves in play: ${wolves.map((wolf) => wolf.name).join(', ')}`,
       'Tell the opening story',
     ]),
     buttons: [],
@@ -35,9 +34,9 @@ export function nightfallCard(round: number): ActionCard {
 export function daybreakCard(
   round: number,
   selected: readonly Character[],
-  pendingChanges = 0,
+  pendingChangeCount = 0,
 ): ActionCard {
-  const hasBearTamer = selected.some((character) => character.id === BEAR_TAMER_ID);
+  const hasBearTamer = selected.some((character) => character.id === BEAR_TAMER.id);
 
   return {
     key: `${round}:day`,
@@ -53,7 +52,8 @@ export function daybreakCard(
     buttons: [
       {
         kind: 'show-daybreak-changes',
-        label: pendingChanges > 0 ? `Show changes (${pendingChanges} open)` : 'Show changes',
+        label:
+          pendingChangeCount > 0 ? `Show changes (${pendingChangeCount} open)` : 'Show changes',
       },
     ],
   };

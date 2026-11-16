@@ -1,12 +1,12 @@
-import { ActionButton, assignCard } from '../actions/action';
-import { isAssigned, NightContext } from '../actions/context';
-import { BasePriority, Character, GameSets, GroupTypes, SectionTitles } from '../character';
+import { ActionButton, assignButton, filterFalsy } from '../actions/action';
+import { isAssigned, isFirstNight, NightContext } from '../actions/context';
+import { BasePriority, Character, GameSet, GroupType, SectionTitles } from '../character';
 
 export class Judge extends Character {
   readonly id = 'judge';
   readonly name = 'The Stuttering Judge';
-  readonly group = GroupTypes.Passive;
-  readonly game = GameSets.Characters;
+  readonly group = GroupType.Passive;
+  readonly game = GameSet.Characters;
   override readonly priority = BasePriority.Initial + 14;
   readonly description = [
     {
@@ -21,7 +21,7 @@ export class Judge extends Character {
   ];
 
   override isAwakeThisNight(context: NightContext) {
-    return context.round <= 0;
+    return isFirstNight(context);
   }
 
   override getActions(context: NightContext): (string | false)[] {
@@ -33,6 +33,6 @@ export class Judge extends Character {
   }
 
   override getButtons(context: NightContext): ActionButton[] {
-    return isAssigned(context) ? [] : [assignCard(context)];
+    return filterFalsy([assignButton(context)]);
   }
 }

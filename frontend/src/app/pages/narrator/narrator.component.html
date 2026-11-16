@@ -1,9 +1,9 @@
 <div class="grid h-svh max-h-svh min-h-svh grid-cols-[1fr_28rem]">
   <div class="relative">
     <app-circle
-      [people]="seats()"
+      [people]="personViews()"
       [editMode]="isEditMode()"
-      [selectedId]="selectedId()"
+      [selectedPersonId]="selectedPersonId()"
       [selection]="circleSelection()"
       [connections]="connections()"
       (personSelected)="selectPerson($event)"
@@ -42,14 +42,18 @@
     }
   </div>
 
-  <app-sidebar [title]="title()" [canGoBack]="canGoBack()" (back)="closePanel()">
+  <app-sidebar [title]="panelTitle()" [canGoBack]="canClosePanel()" (back)="closePanel()">
     @switch (panel().kind) {
       @case ('cards') {
         <app-cards-panel />
       }
       @case ('person') {
         @if (selectedPerson(); as person) {
-          <app-person-panel [person]="person" (personChanged)="updatePerson(person.id, $event)" />
+          <app-person-panel
+            [person]="person"
+            [characters]="charactersInPlay()"
+            (personChanged)="updatePerson(person.id, $event)"
+          />
         }
       }
       @case ('narration') {
@@ -60,11 +64,11 @@
           [characters]="charactersInPlay()"
           [activeKind]="activeButton()?.kind ?? null"
           [activeProgress]="pickProgress()"
+          [spentAbilities]="spentAbilities()"
           (next)="nextAction()"
           (previous)="previousAction()"
           (buttonPressed)="pressButton($event)"
           (buttonCleared)="clearButton($event)"
-          [spentAbilities]="spentAbilities()"
           (characterPressed)="describedCharacter.set($event)"
           (abilityReset)="resettingAbility.set($event)"
         />
@@ -72,6 +76,7 @@
       @default {
         <app-setup-panel
           [cards]="cards()"
+          [hasExcessCards]="hasExcessCards()"
           (cardSelectorPressed)="openCardSelector()"
           (gameStartPressed)="startGame()"
         />
@@ -98,20 +103,22 @@
 @if (resettingAbility()) {
   <app-confirm-dialog
     title="Give this back?"
-    [message]="resettingLabel() + ' counts as unused again, and the role is called again tonight.'"
+    [message]="
+      resettingAbilityLabel() + ' counts as unused again, and the role is called again tonight.'
+    "
     confirmLabel="Give back"
     (confirmed)="resetAbility()"
     (cancelled)="resettingAbility.set(null)"
   />
 }
 
-@if (morning(); as reason) {
+@if (daybreakDialog(); as reason) {
   <app-changes-dialog
-    [changes]="morningChanges()"
+    [changes]="daybreakChangeViews()"
     [leaving]="reason === 'leaving'"
     (applied)="applyChange($event)"
     (appliedAll)="applyAllChanges()"
-    (proceeded)="leaveMorning()"
-    (closed)="morning.set(null)"
+    (proceeded)="proceedToNextNight()"
+    (closed)="daybreakDialog.set(null)"
   />
 }
