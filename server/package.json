@@ -1,0 +1,23 @@
+{
+  "name": "werewolf-server",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Socket.io relay between the narrator's device and the players who join its room.",
+  "engines": {
+    "node": ">=26"
+  },
+  "scripts": {
+    "start": "node dist/main.js",
+    "dev": "node --watch src/main.ts",
+    "build": "tsc",
+    "test": "node --test 'src/**/*.test.ts'"
+  },
+  "dependencies": {
+    "socket.io": "^4.8.4"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "typescript": "^7.0.2"
+  }
+}

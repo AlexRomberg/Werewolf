@@ -61,6 +61,11 @@
         />
       </svg>
 
+      <!-- Whatever the page puts in the middle of the table -->
+      <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+        <ng-content select="[circleCenter]" />
+      </div>
+
       <!-- Links between players -->
       @for (line of connectionLines(); track line.type) {
         <span

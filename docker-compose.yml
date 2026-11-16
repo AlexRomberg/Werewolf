@@ -1,0 +1,15 @@
+services:
+  server:
+    build: ./server
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    ports:
+      - '8080:80'
+    depends_on:
+      server:
+        condition: service_healthy
+    restart: unless-stopped

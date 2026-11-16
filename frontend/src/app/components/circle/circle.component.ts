@@ -25,14 +25,12 @@ import { ActionTone } from '../../models/actions/action';
 import {
   Connection,
   ConnectionType,
+  MAX_SEATS,
   Person,
   PersonView,
   PersonBadge,
   STATUS_LABELS,
 } from '../../services/state/types';
-
-/** Beyond this the seats overlap and stop being readable. */
-export const MAX_SEATS = 20;
 
 // Angles in degrees, clockwise from the positive x axis. The seats fill an arc that
 // leaves a gap at the bottom of the table, where the narrator sits.

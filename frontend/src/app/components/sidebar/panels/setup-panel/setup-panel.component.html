@@ -10,6 +10,20 @@
       <app-deck-preview class="w-80 max-w-80" [cards]="cards()" />
     </button>
   </div>
+
+  <div class="sidebar-container">
+    <h2 class="text-lg font-bold text-zinc-300">Players' devices</h2>
+    <app-toggle-switch
+      id="virtual-cards"
+      [checked]="virtualCards()"
+      (checkedChange)="virtualCardsToggled.emit($event)"
+    >
+      Enable virtual cards
+    </app-toggle-switch>
+    <p class="text-sm text-zinc-400">
+      Players join with the code in the middle of the table and take the next unnamed seat.
+    </p>
+  </div>
 </div>
 
 <div class="sidebar-container">

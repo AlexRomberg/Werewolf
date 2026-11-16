@@ -5,18 +5,7 @@ import { Character } from '../../models/character';
 @Component({
   selector: 'app-character-tile',
   imports: [NgOptimizedImage],
-  template: `
-    <button
-      class="card-tile grid-cols-[auto_1fr] hover:bg-zinc-700"
-      [class.ring-2]="selected()"
-      (click)="pressed.emit()"
-    >
-      <span class="size-12 rounded-sm bg-zinc-950 p-1">
-        <img width="40" height="40" [ngSrc]="character().image" alt="" />
-      </span>
-      <span class="text-sm text-zinc-400">{{ character().name }}</span>
-    </button>
-  `,
+  templateUrl: './character-tile.component.html',
   host: {
     class: 'grid',
   },

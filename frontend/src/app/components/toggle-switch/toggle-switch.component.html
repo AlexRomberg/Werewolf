@@ -2,7 +2,7 @@
   type="button"
   role="switch"
   [id]="id()"
-  class="group flex items-center gap-2 text-sm text-zinc-900 disabled:cursor-not-allowed disabled:opacity-40"
+  class="group flex items-center gap-2 text-sm text-zinc-100 disabled:cursor-not-allowed disabled:opacity-40"
   [attr.aria-checked]="checked()"
   [disabled]="disabled()"
   (click)="checkedChange.emit(!checked())"

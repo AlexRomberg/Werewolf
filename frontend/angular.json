@@ -51,9 +51,14 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/styles.css"],
+            "styles": [
+              "src/styles.css"
+            ],
             "security": {
-              "allowedHosts": ["localhost", "wolf.aro-playground.ch"]
+              "allowedHosts": [
+                "localhost",
+                "wolf.aro-playground.ch"
+              ]
             }
           },
           "configurations": {
@@ -95,7 +100,8 @@
               "buildTarget": "frontend:build:production"
             },
             "development": {
-              "buildTarget": "frontend:build:development"
+              "buildTarget": "frontend:build:development",
+              "proxyConfig": "./proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"

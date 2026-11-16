@@ -1,0 +1,7 @@
+@if (code(); as code) {
+  <app-qr-code class="block size-36" [value]="joinUrl()" label="QR code to join the room" />
+  <p class="mt-2 text-xs uppercase tracking-widest text-zinc-500">Room code</p>
+  <p class="font-mono text-3xl tabular-nums tracking-[0.2em] text-zinc-100">{{ code }}</p>
+} @else {
+  <p class="text-sm text-zinc-500" role="status">Opening the room…</p>
+}

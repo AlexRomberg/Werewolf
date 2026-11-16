@@ -1,6 +1,30 @@
 import { computed, WritableSignal } from '@angular/core';
 import { Character } from '../../models/character';
-import { isAlive, NightBadge, Person, PersonView, PersonStatus, PersonBadge, State } from './types';
+import type { LinkType, PlayerCard, PlayerLink } from '@protocol';
+import { isWerewolf } from '../../models/werewolf-character';
+import {
+  Connection,
+  ConnectionType,
+  hasStatus,
+  isAlive,
+  MAX_SEATS,
+  NightBadge,
+  Person,
+  PersonBadge,
+  PersonStatus,
+  PersonView,
+  State,
+} from './types';
+
+/**
+ * The links each end knows about. Lovers know each other; the role model and the hoodrat's
+ * host are never told, so only the wild child and the hoodrat learn of theirs.
+ */
+const KNOWN_BY: Record<ConnectionType, readonly ('from' | 'to')[]> = {
+  [ConnectionType.Love]: ['from', 'to'],
+  [ConnectionType.Trust]: ['from'],
+  [ConnectionType.Sleepover]: ['from'],
+};
 
 export class PeopleState {
   constructor(private state: WritableSignal<State>) {}
@@ -34,11 +58,57 @@ export class PeopleState {
     });
   });
 
+  /** What each person's own device may show them, by person id. */
+  readonly cards = computed<ReadonlyMap<string, PlayerCard>>(() => {
+    const { connections } = this.state();
+    const views = this.views();
+    const nameById = new Map(views.map((view) => [view.id, view.displayName]));
+
+    return new Map(
+      views.map((person) => [
+        person.id,
+        {
+          characterId: person.character?.id ?? null,
+          isDead: person.isDead,
+          isWerewolf: isWerewolf(person),
+          isEnchanted: hasStatus(person, PersonStatus.Enchanted),
+          links: linksKnownBy(person.id, connections, nameById),
+        },
+      ]),
+    );
+  });
+
   add() {
-    this.state.update((state) => ({
-      ...state,
-      people: [...state.people, createPerson()],
-    }));
+    this.append(createPerson());
+  }
+
+  /**
+   * Gives a name to the first unnamed seat, or to a new seat when every seat has a name, and
+   * returns that person's id. Returns `null` when the table is full.
+   */
+  takeSeat(name: string): string | null {
+    const { people } = this.state();
+    const unnamed = people.find((person) => !person.name);
+    if (unnamed) {
+      this.update(unnamed.id, { ...unnamed, name });
+      return unnamed.id;
+    }
+    if (people.length >= MAX_SEATS) {
+      return null;
+    }
+
+    const person = { ...createPerson(), name };
+    this.append(person);
+    return person.id;
+  }
+
+  /** The id of a seat with the given name that `isTaken` says nobody occupies, for a player coming back. */
+  findFreeSeat(name: string, isTaken: (personId: string) => boolean): string | null {
+    const wanted = normalizedName(name);
+    const seat = this.state().people.find(
+      (person) => normalizedName(person.name) === wanted && !isTaken(person.id),
+    );
+    return seat?.id ?? null;
   }
 
   remove(id: string) {
@@ -79,6 +149,10 @@ export class PeopleState {
       return { ...state, people };
     });
   }
+
+  private append(person: Person) {
+    this.state.update((state) => ({ ...state, people: [...state.people, person] }));
+  }
 }
 
 export function createSeats(count: number): Person[] {
@@ -92,4 +166,22 @@ function createPerson(): Person {
     statuses: [],
     character: undefined,
   };
+}
+
+function normalizedName(name: string) {
+  return name.trim().toLocaleLowerCase();
+}
+
+function linksKnownBy(
+  personId: string,
+  connections: readonly Connection[],
+  nameById: ReadonlyMap<string, string>,
+): PlayerLink[] {
+  return connections.flatMap(({ type, from, to }) => {
+    const end = from === personId ? 'from' : to === personId ? 'to' : null;
+    const otherId = end === 'from' ? to : from;
+    return end && KNOWN_BY[type].includes(end)
+      ? [{ type: type as LinkType, name: nameById.get(otherId) ?? '' }]
+      : [];
+  });
 }

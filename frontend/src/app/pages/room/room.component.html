@@ -1,1 +1,156 @@
-<p>room works!</p>
+<main class="mx-auto flex min-h-svh w-full max-w-md flex-col px-6">
+  @switch (status()) {
+    @case ('joined') {
+      <header class="flex items-center justify-between pt-4 text-xs text-zinc-500">
+        <span class="truncate uppercase tracking-[0.3em]">{{ playerName() }}</span>
+        <button
+          class="flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 hover:bg-zinc-900 hover:text-zinc-300"
+          (click)="leaveRoom()"
+        >
+          <svg lucideLogOut size="14"></svg> Leave
+        </button>
+      </header>
+
+      <section
+        class="flex min-h-[calc(100svh-3rem)] flex-col items-center justify-center gap-6 py-6"
+      >
+        <div class="flex h-20 flex-col items-center justify-end text-center" aria-live="polite">
+          @if (isFaceUp() && character(); as character) {
+            <p class="text-xs uppercase tracking-[0.3em] text-amber-200/60">{{ groupLabel() }}</p>
+            <h1
+              class="text-4xl font-bold tracking-tight text-zinc-100"
+              [class.text-zinc-400]="card().isDead"
+            >
+              {{ character.name }}
+            </h1>
+          } @else {
+            <p class="text-xs uppercase tracking-[0.3em] text-zinc-500">Your card</p>
+            <h1 class="text-4xl font-bold tracking-tight text-zinc-700">Face down</h1>
+          }
+        </div>
+
+        <div class="relative w-[min(20rem,calc(100vw-3rem))]">
+          <div
+            class="pointer-events-none absolute inset-x-0 top-0 aspect-square scale-110 rounded-full blur-3xl transition-opacity duration-700"
+            [class]="card().isDead ? 'bg-red-950/40' : 'bg-amber-500/15'"
+            [class.opacity-0]="!isFaceUp() && !hasUnseenCard()"
+            aria-hidden="true"
+          ></div>
+          <app-player-card
+            [card]="card()"
+            [character]="character()"
+            [faceUp]="isFaceUp()"
+            (flipPressed)="flipCard()"
+          />
+        </div>
+
+        <p class="flex h-6 items-center gap-2 text-sm text-zinc-400" aria-live="polite">
+          @if (!character()) {
+            <svg lucideHourglass size="16" class="text-zinc-500"></svg>
+            Waiting for the narrator to deal the cards…
+          } @else if (!isFaceUp() && hasUnseenCard()) {
+            <svg lucideRotate3d size="16" class="animate-pulse text-amber-300"></svg>
+            Tap your card to turn it around
+          }
+        </p>
+
+        <!-- Always takes its space, so the card does not move when it is turned. -->
+        <button
+          class="flex flex-col items-center text-xs uppercase tracking-[0.3em] text-zinc-500 transition-opacity duration-500 hover:text-zinc-300"
+          [class.invisible]="!hasDescription()"
+          [class.opacity-0]="!hasDescription()"
+          [attr.aria-hidden]="!hasDescription()"
+          (click)="description.scrollIntoView({ behavior: 'smooth' })"
+        >
+          About your role
+          <svg lucideChevronDown size="18"></svg>
+        </button>
+      </section>
+
+      <section
+        #description
+        class="flex flex-col gap-6 pb-16"
+        [class.hidden]="!isFaceUp()"
+        aria-label="About your role"
+      >
+        @if (isFaceUp()) {
+          <div class="flex items-center gap-4">
+            <hr class="grow border-zinc-800" />
+            <h2 class="text-xs uppercase tracking-[0.3em] text-zinc-500">About your role</h2>
+            <hr class="grow border-zinc-800" />
+          </div>
+          @for (section of descriptionSections(); track section.title) {
+            <article class="flex flex-col gap-1">
+              <h3 class="font-semibold text-zinc-200">{{ section.title }}</h3>
+              <p class="leading-relaxed text-zinc-400">{{ section.description }}</p>
+            </article>
+          }
+        }
+      </section>
+    }
+
+    @case ('joining') {
+      <div class="flex min-h-svh flex-col items-center justify-center gap-4" role="status">
+        <img
+          class="size-20 animate-pulse rounded-2xl opacity-60"
+          ngSrc="img/night.png"
+          width="80"
+          height="80"
+          alt=""
+        />
+        <p class="text-zinc-400">Taking a seat…</p>
+      </div>
+    }
+
+    @case ('kicked') {
+      <div
+        class="flex min-h-svh flex-col items-center justify-center gap-6 text-center"
+        role="status"
+      >
+        <h1 class="text-2xl font-bold">The narrator took you off the table.</h1>
+        <a class="btn bg-zinc-800 hover:bg-zinc-700" routerLink="/">Back to the start</a>
+      </div>
+    }
+
+    @case ('room_closed') {
+      <div
+        class="flex min-h-svh flex-col items-center justify-center gap-6 text-center"
+        role="status"
+      >
+        <h1 class="text-2xl font-bold">The narrator closed the room.</h1>
+        <a class="btn bg-zinc-800 hover:bg-zinc-700" routerLink="/">Back to the start</a>
+      </div>
+    }
+
+    @default {
+      <div class="flex min-h-svh flex-col justify-center gap-8 py-12">
+        <a
+          class="flex items-center gap-2 text-sm text-zinc-400 hover:text-zinc-100"
+          routerLink="/join"
+        >
+          <svg lucideArrowLeft size="16"></svg> Other room
+        </a>
+        <header class="flex flex-col gap-2">
+          <h1 class="text-3xl font-bold">Take your seat</h1>
+          <p class="text-zinc-400">Enter the name the others at the table know you by.</p>
+        </header>
+        <form class="flex flex-col gap-3" (submit)="joinRoom($event)">
+          @if (refusal(); as message) {
+            <p class="text-sm text-red-400" role="alert">{{ message }}</p>
+          }
+          <label class="input-label" for="player-name">Your name</label>
+          <input
+            id="player-name"
+            class="input"
+            type="text"
+            autocomplete="given-name"
+            [formField]="nameForm.name"
+          />
+          <button class="btn btn-primary" type="submit" [disabled]="nameForm().invalid()">
+            Take a seat <svg lucideChevronRight size="20"></svg>
+          </button>
+        </form>
+      </div>
+    }
+  }
+</main>

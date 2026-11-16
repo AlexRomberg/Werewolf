@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 
 import { Character } from '../models/character';
 import { CHARACTERS_BY_ID } from '../models/characters';
@@ -52,7 +53,7 @@ describe('NarratorComponent, picking players on the circle', () => {
   });
 
   beforeEach(async () => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({ providers: [provideRouter([])] });
     fixture = TestBed.createComponent(NarratorComponent);
     game = TestBed.inject(GameService);
     await fixture.whenStable();

@@ -14,6 +14,9 @@
       (personAdded)="addPerson()"
       (personMoved)="movePerson($event)"
     >
+      @if (isHostingRoom() && !isPlaying()) {
+        <app-room-invite circleCenter [code]="roomCode()" />
+      }
       @if (isPlaying()) {
         <button
           class="flex items-center gap-2 rounded-xl bg-zinc-800 px-4 py-2 text-sm ring-amber-400 hover:bg-zinc-700"
@@ -86,8 +89,10 @@
         <app-setup-panel
           [cards]="cards()"
           [hasExcessCards]="hasExcessCards()"
+          [virtualCards]="isHostingRoom()"
           (cardSelectorPressed)="openCardSelector()"
           (gameStartPressed)="startGame()"
+          (virtualCardsToggled)="toggleVirtualCards($event)"
         />
       }
     }

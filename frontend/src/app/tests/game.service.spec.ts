@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { GameService } from '../services/game.service';
-import { ConnectionType, INITIAL_SEATS, PersonStatus } from '../services/state/types';
+import { ConnectionType, INITIAL_SEATS, MAX_SEATS, PersonStatus } from '../services/state/types';
 import { WEREWOLF } from '../models/characters';
 
 describe('GameService', () => {
@@ -153,6 +153,85 @@ describe('GameService', () => {
     it('should ignore a move of someone who left the game', () => {
       service.people.move('gone', 0);
       expect(order()).toEqual(ids);
+    });
+  });
+
+  describe('players joining from their devices', () => {
+    const names = () => service.people.all().map((person) => person.name);
+
+    it('should seat a player in the first unnamed seat', () => {
+      const first = service.people.all()[0];
+      service.people.update(first.id, { ...first, name: 'Anna' });
+
+      const id = service.people.takeSeat('Ben');
+
+      expect(id).toBe(service.people.all()[1].id);
+      expect(names()).toEqual(['Anna', 'Ben', '', '', '']);
+    });
+
+    it('should add a seat when every seat has a name', () => {
+      Array.from({ length: INITIAL_SEATS }, (_, index) => service.people.takeSeat(`P${index}`));
+
+      const id = service.people.takeSeat('Late');
+
+      expect(service.people.all().length).toBe(INITIAL_SEATS + 1);
+      expect(service.people.all().at(-1)).toMatchObject({ id, name: 'Late' });
+    });
+
+    it('should turn a player away from a full table', () => {
+      Array.from({ length: MAX_SEATS }, (_, index) => service.people.takeSeat(`P${index}`));
+
+      expect(service.people.takeSeat('One too many')).toBeNull();
+      expect(service.people.all().length).toBe(MAX_SEATS);
+    });
+
+    it('should find the free seat of a player coming back under the same name', () => {
+      const annaId = service.people.takeSeat('Anna')!;
+
+      expect(service.people.findFreeSeat(' anna ', () => false)).toBe(annaId);
+      expect(service.people.findFreeSeat('Anna', (id) => id === annaId)).toBeNull();
+      expect(service.people.findFreeSeat('Zoe', () => false)).toBeNull();
+    });
+  });
+
+  describe('player cards', () => {
+    const cardOf = (id: string) => service.people.cards().get(id)!;
+
+    it('should show the role and what the player is', () => {
+      const [anna] = service.people.all();
+      service.people.assign([anna.id], WEREWOLF);
+      service.people.update(anna.id, {
+        ...service.people.all()[0],
+        statuses: [PersonStatus.Enchanted, PersonStatus.Dead],
+      });
+
+      expect(cardOf(anna.id)).toEqual({
+        characterId: WEREWOLF.id,
+        isDead: true,
+        isWerewolf: true,
+        isEnchanted: true,
+        links: [],
+      });
+    });
+
+    it('should tell both lovers of each other', () => {
+      const [anna, ben] = service.people.all();
+      service.people.update(anna.id, { ...anna, name: 'Anna' });
+      service.night.connect(ConnectionType.Love, anna.id, ben.id);
+
+      expect(cardOf(anna.id).links).toEqual([{ type: 'love', name: 'Seat 2' }]);
+      expect(cardOf(ben.id).links).toEqual([{ type: 'love', name: 'Anna' }]);
+    });
+
+    it('should tell only the wild child and the hoodrat of their link', () => {
+      const [child, model, hoodrat, host] = service.people.all();
+      service.night.connect(ConnectionType.Trust, child.id, model.id);
+      service.night.connect(ConnectionType.Sleepover, hoodrat.id, host.id);
+
+      expect(cardOf(child.id).links).toEqual([{ type: 'trust', name: 'Seat 2' }]);
+      expect(cardOf(model.id).links).toEqual([]);
+      expect(cardOf(hoodrat.id).links).toEqual([{ type: 'sleepover', name: 'Seat 4' }]);
+      expect(cardOf(host.id).links).toEqual([]);
     });
   });
 });

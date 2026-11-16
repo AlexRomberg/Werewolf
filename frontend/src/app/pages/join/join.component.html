@@ -1,1 +1,26 @@
-<p>join works!</p>
+<main class="mx-auto flex min-h-svh max-w-md flex-col justify-center gap-8 px-6 py-12">
+  <a class="flex items-center gap-2 text-sm text-zinc-400 hover:text-zinc-100" routerLink="/">
+    <svg lucideArrowLeft size="16"></svg> Back
+  </a>
+
+  <header class="flex flex-col gap-2">
+    <h1 class="text-3xl font-bold">Join a room</h1>
+    <p class="text-zinc-400">Enter the code shown in the middle of the narrator's table.</p>
+  </header>
+
+  <form class="flex flex-col gap-3" (submit)="enterRoom($event)">
+    <label class="input-label" for="room-code">Room code</label>
+    <input
+      id="room-code"
+      class="input text-center font-mono text-3xl tracking-[0.3em]"
+      type="text"
+      inputmode="numeric"
+      autocomplete="off"
+      [placeholder]="'0'.repeat(codeLength)"
+      [formField]="joinForm.code"
+    />
+    <button class="btn btn-primary" type="submit" [disabled]="joinForm().invalid()">
+      Join <svg lucideChevronRight size="20"></svg>
+    </button>
+  </form>
+</main>

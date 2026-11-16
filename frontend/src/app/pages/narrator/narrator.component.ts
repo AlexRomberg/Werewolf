@@ -1,10 +1,11 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { LucideArrowUpDown, LucideCheck, LucideLogOut, LucideArrowLeft } from '@lucide/angular';
 import {
   ChangesDialogComponent,
   DaybreakChangeView,
 } from '../../components/changes-dialog/changes-dialog.component';
 import { CharacterDetailsComponent } from '../../components/character-details/character-details.component';
+import { RoomInviteComponent } from '../../components/room-invite/room-invite.component';
 import {
   CircleComponent,
   CircleSelection,
@@ -26,6 +27,7 @@ import {
 import { Character } from '../../models/character';
 import { CHARACTERS_BY_ID } from '../../models/characters';
 import { GameService } from '../../services/game.service';
+import { RoomHostService, SeatResult } from '../../services/room-host.service';
 import { isAppliable } from '../../services/state/daybreak-state';
 import {
   Ability,
@@ -71,16 +73,18 @@ function nightTitle(round: number) {
     CharacterDetailsComponent,
     ConfirmDialogComponent,
     ChangesDialogComponent,
+    RoomInviteComponent,
     LucideArrowUpDown,
     LucideCheck,
     LucideLogOut,
     LucideArrowLeft,
-    RouterLink
+    RouterLink,
   ],
   templateUrl: './narrator.component.html',
 })
 export class NarratorComponent {
   private game = inject(GameService);
+  private roomHost = inject(RoomHostService);
 
   private people = this.game.people.all;
   protected personViews = this.game.people.views;
@@ -114,6 +118,9 @@ export class NarratorComponent {
 
   protected cards = this.game.characters.cards;
   protected hasExcessCards = computed(() => this.game.characters.excessCards() > 0);
+
+  protected isHostingRoom = this.roomHost.isHosting;
+  protected roomCode = this.roomHost.code;
 
   protected actionCards = this.game.actions.queue;
   protected actionIndex = this.game.actions.index;
@@ -200,11 +207,17 @@ export class NarratorComponent {
     }),
   );
 
+  constructor() {
+    // Every change to the game reaches the players' devices: roles, deaths, links and statuses.
+    effect(() => this.roomHost.deal(this.game.people.cards()));
+  }
+
   protected addPerson() {
     this.game.people.add();
   }
 
   protected removePerson(id: string) {
+    this.roomHost.kick(id);
     this.game.people.remove(id);
   }
 
@@ -247,6 +260,38 @@ export class NarratorComponent {
 
   protected closePanel() {
     this.overlayPanel.set(null);
+  }
+
+  protected toggleVirtualCards(enabled: boolean) {
+    if (enabled) {
+      this.roomHost.open({
+        seat: (name) => this.seatPlayer(name),
+        vacate: (personId) => this.vacateSeat(personId),
+      });
+    } else {
+      this.roomHost.close();
+    }
+  }
+
+  /**
+   * Before the game, a player takes the next unnamed seat. Once it runs the table is locked: only
+   * a player whose device dropped out can come back, to the seat that still has their name.
+   */
+  private seatPlayer(name: string): SeatResult {
+    const personId = this.isPlaying()
+      ? this.game.people.findFreeSeat(name, (id) => this.roomHost.isOccupied(id))
+      : this.game.people.takeSeat(name);
+    if (personId) {
+      return { personId };
+    }
+    return { refused: this.isPlaying() ? 'room_locked' : 'room_full' };
+  }
+
+  /** A player who disconnects before the game leaves the table; during it, their seat and role wait for them. */
+  private vacateSeat(personId: string) {
+    if (!this.isPlaying()) {
+      this.game.people.remove(personId);
+    }
   }
 
   protected startGame() {
