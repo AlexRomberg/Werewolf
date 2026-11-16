@@ -2,7 +2,10 @@ import { Component, computed, input, output } from '@angular/core';
 import { LucideChevronLeft } from '@lucide/angular';
 
 export type SidebarPanel =
-  { kind: 'setup' } | { kind: 'cards' } | { kind: 'person'; personId: string } | { kind: 'narration' };
+  | { kind: 'setup' }
+  | { kind: 'cards' }
+  | { kind: 'person'; personId: string }
+  | { kind: 'narration' };
 
 @Component({
   selector: 'app-sidebar',

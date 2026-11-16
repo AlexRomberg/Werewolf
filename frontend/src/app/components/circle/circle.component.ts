@@ -2,45 +2,107 @@ import {
   afterNextRender,
   Component,
   computed,
+  effect,
   ElementRef,
   input,
   output,
   signal,
   viewChild,
 } from '@angular/core';
-import { LucideUser, LucideX, LucideUserRoundPlus } from '@lucide/angular';
+import {
+  LucideCheck,
+  LucideHeartPulse,
+  LucidePawPrint,
+  LucideShield,
+  LucideTombstone,
+  LucideUser,
+  LucideUserRoundPlus,
+  LucideX,
+  LucideWandSparkles,
+} from '@lucide/angular';
 import { NgOptimizedImage } from '@angular/common';
-import { Person } from '../../services/state/types';
+import { ActionTone } from '../../models/actions/action';
+import {
+  Connection,
+  ConnectionType,
+  Person,
+  PersonView,
+  SeatBadge,
+  STATUS_LABELS,
+} from '../../services/state/types';
 
 const GAP_ANGLE = 30;
 const TOP_ANGLE = -90;
 const ARC_ANGLE = 360 - GAP_ANGLE;
 const START_ANGLE = TOP_ANGLE - ARC_ANGLE / 2;
 const DRAG_THRESHOLD = 8;
+const CENTER = 50;
+const RADIUS = 40;
+const LANE_GAP = 6;
 export const MAX_SEATS = 20;
+
+const CONNECTION_LABELS: Record<ConnectionType, string> = {
+  [ConnectionType.Love]: 'In love',
+  [ConnectionType.Trust]: 'Role model',
+  [ConnectionType.Sleepover]: 'Sleepover',
+};
+
+const BADGE_TONES: Record<SeatBadge, ActionTone> = {
+  protected: 'protect',
+  healed: 'protect',
+  victim: 'kill',
+  enchanted: 'enchant',
+  turned_wolf: 'neutral',
+};
 
 export interface PersonMove {
   id: string;
   toIndex: number;
 }
 
+export interface CircleSelection {
+  tone: ActionTone;
+  label: string;
+  needed: number;
+  picked: readonly string[];
+  cautioned: readonly string[];
+  pending?: { personId: string; warning: string };
+}
+
 @Component({
   selector: 'app-circle',
-  imports: [LucideUser, NgOptimizedImage, LucideX, LucideUserRoundPlus],
+  imports: [
+    NgOptimizedImage,
+    LucideCheck,
+    LucideHeartPulse,
+    LucidePawPrint,
+    LucideShield,
+    LucideTombstone,
+    LucideWandSparkles,
+    LucideUser,
+    LucideUserRoundPlus,
+    LucideX,
+  ],
   templateUrl: './circle.component.html',
   styleUrl: './circle.component.css',
 })
 export class CircleComponent {
-  public people = input.required<readonly Person[]>();
+  public people = input.required<readonly PersonView[]>();
   public editMode = input(false);
   public selectedId = input<string | null>(null);
+  public selection = input<CircleSelection | null>(null);
+  public connections = input<readonly Connection[]>([]);
 
   public personSelected = output<string>();
   public personRemoved = output<string>();
   public personAdded = output<void>();
   public personMoved = output<PersonMove>();
+  public selectionClosed = output<void>();
+  public pickConfirmed = output<void>();
+  public pickCancelled = output<void>();
 
   private stage = viewChild.required<ElementRef<HTMLElement>>('stage');
+  private cancelButton = viewChild<ElementRef<HTMLButtonElement>>('cancelButton');
 
   protected animated = signal(false);
   protected enterAnimation = computed(() => (this.animated() ? 'player-enter' : ''));
@@ -54,6 +116,7 @@ export class CircleComponent {
     const people = this.people();
     const drag = this.drag();
     const selectedId = this.selectedId();
+    const selection = this.selection();
 
     const order = drag ? movedOrder(people, drag.id, drag.toIndex) : people.map(({ id }) => id);
     const angleStep = ARC_ANGLE / people.length;
@@ -66,18 +129,73 @@ export class CircleComponent {
         person,
         angle,
         dragging,
-        selected: person.id === selectedId,
+        selected: !selection && person.id === selectedId,
+        pick: selection ? pickStateOf(person.id, selection) : null,
+        label: describe(person),
+        badges: person.badges.map((badge) => ({
+          kind: badge,
+          tone: BADGE_TONES[badge],
+          label: STATUS_LABELS[badge],
+        })),
         nameTop: people.length >= 12 && Math.abs(angle - TOP_ANGLE) < 22,
       };
     });
   });
 
+  protected connectionLines = computed(() => {
+    const connections = this.connections();
+    const angles = new Map(this.placedPlayers().map(({ person, angle }) => [person.id, angle]));
+
+    return connections.flatMap((connection) => {
+      const [first, second] = [connection.from, connection.to].sort();
+      const from = angles.get(first);
+      const to = angles.get(second);
+      if (from === undefined || to === undefined) {
+        return [];
+      }
+
+      // Links between the same two players run side by side instead of covering each other.
+      const siblings = connections.filter(
+        (other) => [other.from, other.to].sort().join() === [first, second].join(),
+      );
+      const lane = siblings.indexOf(connection) - (siblings.length - 1) / 2;
+
+      const start = seatPoint(from);
+      const end = seatPoint(to);
+      return [
+        {
+          type: connection.type,
+          label: CONNECTION_LABELS[connection.type],
+          x: (start.x + end.x) / 2,
+          y: (start.y + end.y) / 2,
+          length: Math.hypot(end.x - start.x, end.y - start.y),
+          angle: (Math.atan2(end.y - start.y, end.x - start.x) * 180) / Math.PI,
+          shift: lane * LANE_GAP,
+        },
+      ];
+    });
+  });
+
   constructor() {
     afterNextRender(() => this.animated.set(true));
+    // A question should be answered before anything else is tapped, and the safe answer is "no".
+    effect(() => this.cancelButton()?.nativeElement.focus());
+  }
+
+  protected onEscape() {
+    if (this.selection()?.pending) {
+      this.pickCancelled.emit();
+    } else if (this.selection()) {
+      this.selectionClosed.emit();
+    }
   }
 
   protected onPointerDown(event: PointerEvent, id: string) {
     this.wasDragged = false;
+    if (!this.editMode()) {
+      return;
+    }
+
     this.pressed = { id, pointerId: event.pointerId, x: event.clientX, y: event.clientY };
     (event.currentTarget as Element).setPointerCapture(event.pointerId);
   }
@@ -136,6 +254,39 @@ export class CircleComponent {
     const slot = Math.round((angle - START_ANGLE) / (ARC_ANGLE / count) - 0.5);
     return Math.min(Math.max(slot, 0), count - 1);
   }
+}
+
+interface Point {
+  x: number;
+  y: number;
+}
+
+function seatPoint(angle: number): Point {
+  const radians = (angle * Math.PI) / 180;
+  return { x: CENTER + RADIUS * Math.cos(radians), y: CENTER + RADIUS * Math.sin(radians) };
+}
+
+function describe(person: PersonView) {
+  return [
+    person.displayName,
+    person.character?.name,
+    person.isDead && STATUS_LABELS.dead,
+    ...person.badges.map((badge) => STATUS_LABELS[badge]),
+  ]
+    .filter(Boolean)
+    .join(', ');
+}
+
+type PickState = 'pending' | 'picked' | 'cautioned' | 'open';
+
+function pickStateOf(id: string, selection: CircleSelection): PickState {
+  if (selection.pending?.personId === id) {
+    return 'pending';
+  }
+  if (selection.picked.includes(id)) {
+    return 'picked';
+  }
+  return selection.cautioned.includes(id) ? 'cautioned' : 'open';
 }
 
 function movedOrder(people: readonly Person[], id: string, toIndex: number) {

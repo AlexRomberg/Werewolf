@@ -1,8 +1,8 @@
 import { Component, computed, inject, input, output } from '@angular/core';
-import { Person } from '../../../../services/state/types';
+import { Person, PlayerStatus, STATUS_LABELS } from '../../../../services/state/types';
 import { NgOptimizedImage } from '@angular/common';
 import { LucideUser } from '@lucide/angular';
-import { CHARACTERS, CHARACTERS_BY_ID } from '../../../../models/characters';
+import { CHARACTERS_BY_ID } from '../../../../models/characters';
 import { FormsModule } from '@angular/forms';
 import { GameService } from '../../../../services/game.service';
 
@@ -23,11 +23,29 @@ export class PersonPanelComponent {
 
   protected options = computed(() => [
     { value: undefined, label: 'Select a character' },
-    ...[...new Set(this.game.characters.cards())].map((character) => ({
+    ...this.game.characters.inPlay().map((character) => ({
       value: character.id,
       label: character.name,
     })),
   ]);
+
+  protected statusOptions = computed(() =>
+    Object.values(PlayerStatus).map((status) => ({
+      status,
+      label: STATUS_LABELS[status],
+      active: this.person().statuses.includes(status),
+    })),
+  );
+
+  protected toggleStatus(status: PlayerStatus) {
+    const { statuses } = this.person();
+    this.personChanged.emit({
+      ...this.person(),
+      statuses: statuses.includes(status)
+        ? statuses.filter((entry) => entry !== status)
+        : [...statuses, status],
+    });
+  }
 
   protected onNameInput(name: string) {
     this.personChanged.emit({ ...this.person(), name });

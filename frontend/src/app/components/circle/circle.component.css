@@ -9,6 +9,46 @@
     }
   }
 
+  .circle[data-pick='open'] {
+    border-color: color-mix(in oklab, var(--tone) 50%, transparent);
+  }
+
+  .circle[data-pick='open']:hover,
+  .circle[data-pick='picked'],
+  .circle[data-pick='pending'] {
+    border-color: var(--tone);
+  }
+
+  .circle[data-pick='picked'] {
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--tone) 35%, transparent);
+  }
+
+  .circle[data-pick='cautioned'] {
+    @apply border-dashed opacity-60 hover:opacity-100;
+  }
+
+  .circle[data-pick='pending'] {
+    @apply animate-pulse border-dashed;
+  }
+
+  /* A link runs from seat to seat but stops half a rem short of either one. */
+  .connection {
+    @apply pointer-events-none absolute h-0.5 rounded-full;
+    background: var(--connection);
+    width: calc(var(--length) * 1cqw - 5rem);
+    translate: -50% -50%;
+    rotate: var(--angle);
+    transform: translateY(var(--shift));
+  }
+
+  .connection-swatch {
+    background: var(--connection);
+  }
+
+  .circle.dead > * {
+    @apply opacity-30 grayscale;
+  }
+
   .circle-stage {
     container-type: inline-size;
     --player-animation-duration: 0ms;

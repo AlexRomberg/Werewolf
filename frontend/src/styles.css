@@ -1,5 +1,44 @@
 @import 'tailwindcss';
 
+/*
+ * An ability's tone is its colour everywhere it shows up: set `data-tone` on an
+ * element and use `border-tone`, `bg-tone/15`, `text-tone` inside it.
+ */
+@theme inline {
+  --color-tone: var(--tone);
+}
+
+:root,
+[data-tone='neutral'] {
+  --tone: var(--color-zinc-400);
+}
+[data-tone='assign'] {
+  --tone: var(--color-sky-400);
+}
+[data-tone='kill'] {
+  --tone: var(--color-red-500);
+}
+[data-tone='protect'] {
+  --tone: var(--color-emerald-400);
+}
+[data-tone='bond'] {
+  --tone: var(--color-pink-400);
+}
+[data-tone='enchant'] {
+  --tone: var(--color-violet-400);
+}
+
+/* The colour of a link between two players, for its line on the circle and its legend entry. */
+[data-connection='love'] {
+  --connection: var(--color-rose-800);
+}
+[data-connection='trust'] {
+  --connection: var(--color-amber-700);
+}
+[data-connection='sleepover'] {
+  --connection: var(--color-blue-800);
+}
+
 html,
 body {
   @apply bg-zinc-950 text-zinc-100;

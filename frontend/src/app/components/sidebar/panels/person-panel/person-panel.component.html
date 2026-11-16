@@ -37,6 +37,17 @@
 
   <div class="sidebar-container">
     <h2 class="text-lg font-bold text-zinc-300">Status</h2>
-    <!-- roles & statuses -->
+    <div class="flex flex-wrap gap-2">
+      @for (option of statusOptions(); track option.status) {
+        <button
+          class="rounded-full bg-zinc-800 px-3 py-1 text-sm ring-amber-400 hover:bg-zinc-700"
+          [class.ring-2]="option.active"
+          [attr.aria-pressed]="option.active"
+          (click)="toggleStatus(option.status)"
+        >
+          {{ option.label }}
+        </button>
+      }
+    </div>
   </div>
 </div>

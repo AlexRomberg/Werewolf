@@ -1,99 +1,224 @@
-<div class="grid h-full w-full place-items-center">
+<div class="h-full w-full p-3" [attr.data-tone]="selection()?.tone" (keydown.escape)="onEscape()">
   <div
-    #stage
-    class="circle-stage relative aspect-square w-full max-w-[min(100%,calc(100svh))] select-none"
-    [class.animated]="animated()"
-    role="group"
+    class="relative grid h-full w-full place-items-center rounded-3xl border-2 transition-colors duration-300"
+    [class.border-transparent]="!selection()"
+    [class.border-tone]="!!selection()"
   >
-    <!-- Background -->
-    <svg
-      class="pointer-events-none absolute size-full stroke-zinc-800 fill-none"
-      viewBox="0 0 100 100"
-    >
-      <path
-        d="M 39.647 88.637 A 40 40 0 1 1 60.353 88.637"
-        pathLength="100"
-        stroke-width="0.5"
-        stroke-linecap="round"
-        stroke-dasharray="0.5 1.5 0.5 0"
-      />
-    </svg>
-
-    <!-- Player -->
-    @for (player of placedPlayers(); track player.person.id) {
+    @if (selection(); as request) {
       <div
-        class="player"
-        [class.dragging]="player.dragging"
-        [style.--player-angle]="player.angle + 'deg'"
+        class="absolute -top-0.5 left-1/2 z-20 flex max-w-[calc(100%-3rem)] -translate-x-1/2 items-center gap-3 rounded-b-2xl bg-tone px-4 py-2 text-sm font-semibold text-zinc-950 shadow-lg shadow-black/40"
+        [attr.role]="request.pending ? 'alertdialog' : 'status'"
+        [attr.aria-label]="request.pending ? 'Confirm this pick' : null"
       >
-        <div class="player-body" [animate.enter]="enterAnimation()" animate.leave="player-leave">
-          @if (player.person.name) {
-            <span
-              class="text-xs absolute block truncate max-w-24 px-2 py-0.5 bg-zinc-950 text-zinc-500 rounded-full"
-              [class.shake]="!player.dragging && editMode()"
-              [style.animationDelay]="-$index + 's'"
-              [class.translate-x-9]="!player.nameTop"
-              [class.-translate-y-14]="player.nameTop"
-            >
-              {{ player.person.name }}
-            </span>
-          }
-          <div class="absolute -translate-x-1/2 -translate-y-1/2">
-            <button
-              class="circle bg-zinc-800 text-zinc-100 touch-none"
-              [class.cursor-grab]="!player.dragging"
-              [class.cursor-grabbing]="player.dragging"
-              [class.shake]="!player.dragging && editMode()"
-              [class.border-amber-400]="player.selected"
-              [style.animationDelay]="-$index + 's'"
-              (pointerdown)="onPointerDown($event, player.person.id)"
-              (pointermove)="onPointerMove($event)"
-              (pointerup)="onPointerUp()"
-              (pointercancel)="onPointerCancel()"
-              (click)="onSelect(player.person.id)"
-            >
-              @if (player.person.character) {
-                <img
-                  width="60"
-                  height="60"
-                  [ngSrc]="`img/${player.person.character.id}.png`"
-                  [alt]="player.person.character.name"
-                  class="pointer-events-none"
-                />
-              } @else {
-                <svg lucideUser class="pointer-events-none"></svg>
-              }
-            </button>
-
-            @if (editMode()) {
-              <button
-                class="absolute -right-1 -top-1 size-6 rounded-full bg-red-700 text-white"
-                [class.shake]="!player.dragging && editMode()"
-                [style.animationDelay]="-$index + 's'"
-                (click)="personRemoved.emit(player.person.id)"
-              >
-                <svg class="size-4 mx-auto" lucideX></svg>
-              </button>
-            }
-          </div>
-        </div>
+        @if (request.pending; as pending) {
+          <span>{{ pending.warning }} Continue?</span>
+          <button
+            #cancelButton
+            class="rounded-full bg-zinc-950/15 px-3 py-1 hover:bg-zinc-950/25"
+            (click)="pickCancelled.emit()"
+          >
+            Cancel
+          </button>
+          <button
+            class="rounded-full bg-zinc-950 px-3 py-1 text-zinc-100 hover:bg-zinc-800"
+            (click)="pickConfirmed.emit()"
+          >
+            Continue
+          </button>
+        } @else {
+          <span class="truncate">{{ request.label }}</span>
+          <span class="tabular-nums opacity-70"
+            >{{ request.picked.length }}/{{ request.needed }}</span
+          >
+          <button
+            class="-mr-1 rounded-full p-1 hover:bg-zinc-950/15"
+            aria-label="Stop selecting"
+            (click)="selectionClosed.emit()"
+          >
+            <svg lucideX size="16"></svg>
+          </button>
+        }
       </div>
     }
 
-    @if (editMode()) {
-      <button
-        class="circle absolute left-1/2 top-9/10 -translate-x-1/2 -translate-y-1/2 border-dashed disabled:opacity-30"
-        [disabled]="!canAdd()"
-        (click)="personAdded.emit()"
+    <div
+      #stage
+      class="circle-stage relative aspect-square w-full max-w-[min(100%,calc(100svh-2rem))] select-none"
+      [class.animated]="animated()"
+      role="group"
+    >
+      <!-- Background -->
+      <svg
+        class="pointer-events-none absolute size-full stroke-zinc-800 fill-none"
+        viewBox="0 0 100 100"
       >
-        <svg class="self-center mx-auto" lucideUserRoundPlus></svg>
-      </button>
-    } @else {
-      <p
-        class="absolute left-1/2 top-9/10 -translate-x-1/2 -translate-y-1/2 text-2xl text-zinc-600"
-      >
-        You
-      </p>
-    }
+        <path
+          d="M 39.647 88.637 A 40 40 0 1 1 60.353 88.637"
+          pathLength="100"
+          stroke-width="0.5"
+          stroke-linecap="round"
+          stroke-dasharray="0.5 1.5 0.5 0"
+        />
+      </svg>
+
+      <!-- Links between players -->
+      @for (line of connectionLines(); track line.type) {
+        <span
+          class="connection"
+          aria-hidden="true"
+          [attr.data-connection]="line.type"
+          [style.left]="line.x + 'cqw'"
+          [style.top]="line.y + 'cqw'"
+          [style.--length]="line.length"
+          [style.--angle]="line.angle + 'deg'"
+          [style.--shift]="line.shift + 'px'"
+        ></span>
+      }
+
+      <!-- Player -->
+      @for (player of placedPlayers(); track player.person.id) {
+        <div
+          class="player"
+          [class.dragging]="player.dragging"
+          [style.--player-angle]="player.angle + 'deg'"
+        >
+          <div class="player-body" [animate.enter]="enterAnimation()" animate.leave="player-leave">
+            @if (player.person.name) {
+              <span
+                class="text-xs absolute block truncate max-w-24 px-2 py-0.5 bg-zinc-950 text-zinc-500 rounded-full"
+                [class.shake]="!player.dragging && editMode()"
+                [style.animationDelay]="-$index + 's'"
+                [class.translate-x-9]="!player.nameTop"
+                [class.-translate-y-14]="player.nameTop"
+              >
+                {{ player.person.name }}
+              </span>
+            }
+            <div class="absolute -translate-x-1/2 -translate-y-1/2">
+              <button
+                class="circle bg-zinc-800 text-zinc-100 touch-none"
+                [class.cursor-grab]="editMode() && !player.dragging"
+                [class.cursor-grabbing]="player.dragging"
+                [class.shake]="!player.dragging && editMode()"
+                [class.border-amber-400]="player.selected"
+                [class.dead]="player.person.isDead"
+                [attr.aria-label]="player.label"
+                [attr.data-pick]="player.pick"
+                [attr.aria-pressed]="player.pick ? player.pick === 'picked' : null"
+                [style.animationDelay]="-$index + 's'"
+                (pointerdown)="onPointerDown($event, player.person.id)"
+                (pointermove)="onPointerMove($event)"
+                (pointerup)="onPointerUp()"
+                (pointercancel)="onPointerCancel()"
+                (click)="onSelect(player.person.id)"
+              >
+                @if (player.person.character) {
+                  <img
+                    width="60"
+                    height="60"
+                    [ngSrc]="`img/${player.person.character.id}.png`"
+                    [alt]="player.person.character.name"
+                    class="pointer-events-none"
+                  />
+                } @else {
+                  <svg lucideUser class="pointer-events-none"></svg>
+                }
+              </button>
+
+              @if (player.person.isDead) {
+                <svg
+                  lucideX
+                  class="pointer-events-none absolute inset-0 m-auto size-12 text-red-800"
+                  aria-hidden="true"
+                ></svg>
+              }
+
+              @if (player.badges.length) {
+                <ul
+                  class="pointer-events-none absolute -bottom-2 left-1/2 flex -translate-x-1/2 gap-0.5"
+                  aria-hidden="true"
+                >
+                  @for (badge of player.badges; track badge.kind) {
+                    <li
+                      class="grid size-6 place-items-center rounded-full bg-zinc-950 text-tone"
+                      [attr.data-tone]="badge.tone"
+                      [attr.data-badge]="badge.kind"
+                      [attr.title]="badge.label"
+                    >
+                      @switch (badge.kind) {
+                        @case ('protected') {
+                          <svg lucideShield size="16"></svg>
+                        }
+                        @case ('healed') {
+                          <svg lucideHeartPulse size="16"></svg>
+                        }
+                        @case ('victim') {
+                          <svg lucideTombstone size="16"></svg>
+                        }
+                        @case ('enchanted') {
+                          <svg lucideWandSparkles size="16"></svg>
+                        }
+                        @case ('turned_wolf') {
+                          <svg lucidePawPrint size="16"></svg>
+                        }
+                      }
+                    </li>
+                  }
+                </ul>
+              }
+
+              @if (player.pick === 'picked') {
+                <span
+                  class="pointer-events-none absolute -right-1 -top-1 grid size-6 place-items-center rounded-full bg-tone text-zinc-950"
+                >
+                  <svg class="size-4" lucideCheck></svg>
+                </span>
+              }
+
+              @if (editMode()) {
+                <button
+                  class="absolute -right-1 -top-1 size-6 rounded-full bg-red-700 text-white"
+                  [class.shake]="!player.dragging && editMode()"
+                  [style.animationDelay]="-$index + 's'"
+                  (click)="personRemoved.emit(player.person.id)"
+                >
+                  <svg class="size-4 mx-auto" lucideX></svg>
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+      @if (editMode()) {
+        <button
+          class="circle absolute left-1/2 top-9/10 -translate-x-1/2 -translate-y-1/2 border-dashed disabled:opacity-30"
+          [disabled]="!canAdd()"
+          (click)="personAdded.emit()"
+        >
+          <svg class="self-center mx-auto" lucideUserRoundPlus></svg>
+        </button>
+      } @else {
+        <p
+          class="absolute left-1/2 top-9/10 -translate-x-1/2 -translate-y-1/2 text-2xl text-zinc-600"
+        >
+          You
+        </p>
+      }
+    </div>
+
+    <div class="absolute bottom-3 left-3 flex flex-col items-start gap-3">
+      @if (connectionLines().length) {
+        <ul class="flex flex-col gap-1 text-xs text-zinc-400">
+          @for (line of connectionLines(); track line.type) {
+            <li class="flex items-center gap-2" [attr.data-connection]="line.type">
+              <span class="connection-swatch h-0.5 w-5 rounded-full"></span>
+              {{ line.label }}
+            </li>
+          }
+        </ul>
+      }
+      <ng-content />
+    </div>
   </div>
 </div>
