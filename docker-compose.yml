@@ -5,9 +5,6 @@ x-hardened: &hardened
   security_opt: [no-new-privileges:true]
   pids_limit: 100
 
-# Images are built by GitHub CI and pushed to GHCR, so the deploy server only
-# pulls them. To build locally instead:
-#   docker compose -f docker-compose.yml -f docker-compose.build.yml up --build
 services:
   server:
     <<: *hardened
@@ -23,8 +20,6 @@ services:
     pull_policy: always
     mem_limit: 128m
     tmpfs: [/tmp]
-    ports:
-      - '127.0.0.1:8080:8080'
     depends_on:
       server:
         condition: service_healthy
