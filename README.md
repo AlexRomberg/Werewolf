@@ -1,6 +1,6 @@
 # Werewolf Companion App 🐺
 
-This Project is a try to assist the narrator of the game werewolf ("Die Werwölfe von Düsterwald"). So they can fully focus on storry telling.
+This Project is a try to assist the narrator of the game werewolf ("Die Werwölfe von Düsterwald"). So they can fully focus on story telling.
 
 ## How it works
 As the narrator of a werewolf session you need the physical game. Have your group sitting in a circle.
@@ -18,8 +18,7 @@ It also lists you the roles that are active this night, with a small description
   - When you need to correct something or want to put a name on someone in the visualization press on the person in the circle.
 
 ## Current state
-Work in progress:
-- The game does not fully save your state.
+In general all features requred to play/narrate are there. I will have to do further playtesting to see if it holds up.
 
 ## Disclamer
 This app is an unofficial companion for the game Die Werwölfe von Düsterwald and is not affiliated with or endorsed by Asmodée or the original creators of the game. All images, characters, and intellectual property used within this app remain the full copyright of Asmodée. The images and assets are provided solely for non-commercial, fan-based use.
