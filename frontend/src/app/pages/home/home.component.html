@@ -1,0 +1,38 @@
+<main
+  class="mx-auto flex min-h-svh max-w-md flex-col items-center justify-center gap-10 px-6 py-12"
+>
+  <header class="flex flex-col items-center gap-4 text-center">
+    <img
+      class="rounded-3xl shadow-lg shadow-black/50"
+      ngSrc="img/night.png"
+      width="112"
+      height="112"
+      priority
+      alt="Moon icon"
+    />
+    <h1 class="text-3xl font-bold text-zinc-100">Werewolf</h1>
+    <p class="text-zinc-400">
+      A companion app for narrating the game<br />"The Werewolves of Miller's Hollow".
+    </p>
+  </header>
+
+  <nav class="flex w-full flex-col gap-3" aria-label="Main">
+    <a class="btn btn-primary" routerLink="/narrator">
+      Start new game <svg lucideChevronRight size="20"></svg>
+    </a>
+    <div class="grid grid-cols-2 gap-3">
+      <a class="btn bg-zinc-800 hover:bg-zinc-700" routerLink="/join">Join a room</a>
+      <a class="btn bg-zinc-800 hover:bg-zinc-700" routerLink="/cards">Characters</a>
+    </div>
+  </nav>
+</main>
+<footer
+  class="flex flex-col items-center justify-center gap-4 text-center text-xs text-zinc-500 h-16 bg-zinc-900"
+>
+  <p>An ARO-Project</p>
+  <p>
+    An unofficial companion for "The Werewolves of Miller's Hollow". It is not affiliated with or
+    endorsed by lui-même, Asmodee or the game's creators. All images and characters remain their
+    property and are used here for non-commercial fan use only.
+  </p>
+</footer>

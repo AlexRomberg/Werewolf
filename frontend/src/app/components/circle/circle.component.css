@@ -1,0 +1,176 @@
+@reference "../../../styles.css";
+
+@layer components {
+  .circle {
+    @apply size-16 rounded-full overflow-hidden border-4 grid justify-center items-center hover:border-zinc-500 border-zinc-700;
+
+    & svg {
+      @apply text-zinc-500;
+    }
+  }
+
+  .circle[data-pick='open'] {
+    border-color: color-mix(in oklab, var(--tone) 50%, transparent);
+  }
+
+  .circle[data-pick='open']:hover,
+  .circle[data-pick='picked'],
+  .circle[data-pick='pending'] {
+    border-color: var(--tone);
+  }
+
+  .circle[data-pick='picked'] {
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--tone) 35%, transparent);
+  }
+
+  .circle[data-pick='cautioned'] {
+    @apply border-dashed opacity-60 hover:opacity-100;
+  }
+
+  .circle[data-pick='pending'] {
+    @apply animate-pulse border-dashed;
+  }
+
+  .connection {
+    @apply pointer-events-none absolute h-0.5 rounded-full;
+    background: var(--connection);
+    width: calc(var(--length) * 1cqw - 5rem);
+    translate: -50% -50%;
+    rotate: var(--angle);
+    transform: translateY(var(--shift));
+  }
+
+  .connection-swatch {
+    background: var(--connection);
+  }
+
+  .circle.dead > * {
+    @apply opacity-30 grayscale;
+  }
+
+  .circle-stage {
+    container-type: inline-size;
+    --player-animation-duration: 0ms;
+  }
+
+  .circle-stage.animated {
+    --player-animation-duration: 250ms;
+  }
+
+  .shake {
+    animation: shaking 2.5s linear infinite;
+  }
+
+  .player {
+    @apply absolute left-1/2 top-1/2 size-0;
+    --player-angle: 0deg;
+    rotate: var(--player-angle);
+    transform: translateX(40cqw);
+    transition: rotate var(--player-animation-duration) ease-out;
+  }
+
+  .player.dragging {
+    --player-animation-duration: 0ms;
+    z-index: 10;
+  }
+
+  .player-body {
+    @apply absolute size-0;
+    rotate: calc(-1 * var(--player-angle));
+    transition:
+      rotate var(--player-animation-duration) ease-out,
+      scale 250ms ease-out;
+  }
+
+  .player.dragging .player-body {
+    scale: 1.1;
+  }
+}
+
+@keyframes player-in {
+  from {
+    opacity: 0;
+    scale: 0.4;
+  }
+}
+
+@keyframes player-out {
+  to {
+    opacity: 0;
+    scale: 0.4;
+  }
+}
+
+@keyframes shaking {
+  0% {
+    transform: translate(-1.25px, 0.75px);
+  }
+  5% {
+    transform: translate(-1px, -0.75px);
+  }
+  10% {
+    transform: translate(-1px, 0.75px);
+  }
+  15% {
+    transform: translate(0px, 0px);
+  }
+  20% {
+    transform: translate(-0.5px, -0.5px);
+  }
+  25% {
+    transform: translate(0px, -0.25px);
+  }
+  30% {
+    transform: translate(0.25px, 0.75px);
+  }
+  35% {
+    transform: translate(-0.75px, 0.25px);
+  }
+  40% {
+    transform: translate(0.5px, -1px);
+  }
+  45% {
+    transform: translate(0.5px, -1px);
+  }
+  50% {
+    transform: translate(0.75px, 1px);
+  }
+  55% {
+    transform: translate(1px, 0px);
+  }
+  60% {
+    transform: translate(-0.75px, 0px);
+  }
+  65% {
+    transform: translate(1px, 1px);
+  }
+  70% {
+    transform: translate(0.75px, -1px);
+  }
+  75% {
+    transform: translate(-0.75px, -0.25px);
+  }
+  80% {
+    transform: translate(-0.75px, 0.25px);
+  }
+  85% {
+    transform: translate(-0.25px, -0.75px);
+  }
+  90% {
+    transform: translate(0.5px, -0.25px);
+  }
+  95% {
+    transform: translate(-0.75px, 0.5px);
+  }
+  100% {
+    transform: translate(-1.25px, 0.75px);
+  }
+}
+
+.player-enter {
+  animation: player-in 250ms ease-out;
+}
+
+.player-leave {
+  animation: player-out 250ms ease-in;
+}

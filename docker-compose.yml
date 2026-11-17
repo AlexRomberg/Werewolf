@@ -1,0 +1,27 @@
+x-hardened: &hardened
+  restart: unless-stopped
+  read_only: true
+  cap_drop: [ALL]
+  security_opt: [no-new-privileges:true]
+  pids_limit: 100
+
+services:
+  server:
+    <<: *hardened
+    build: ./server
+    mem_limit: 256m
+    tmpfs: [/tmp]
+    expose: ['3000']
+
+  web:
+    <<: *hardened
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    mem_limit: 128m
+    tmpfs: [/tmp]
+    ports:
+      - '127.0.0.1:8080:8080'
+    depends_on:
+      server:
+        condition: service_healthy

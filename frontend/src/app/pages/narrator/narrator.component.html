@@ -1,0 +1,148 @@
+<div class="grid h-svh max-h-svh min-h-svh grid-cols-[1fr_28rem]">
+  <div class="relative">
+    <app-circle
+      [people]="personViews()"
+      [editMode]="isEditMode()"
+      [selectedPersonId]="selectedPersonId()"
+      [selection]="circleSelection()"
+      [connections]="connections()"
+      (personSelected)="selectPerson($event)"
+      (selectionClosed)="closeSelection()"
+      (pickConfirmed)="confirmPick()"
+      (pickCancelled)="cancelPick()"
+      (personRemoved)="removePerson($event)"
+      (personAdded)="addPerson()"
+      (personMoved)="movePerson($event)"
+    >
+      @if (isHostingRoom() && !isPlaying()) {
+        <app-room-invite circleCenter [code]="roomCode()" [connected]="isRoomConnected()" />
+      }
+      @if (isPlaying()) {
+        <button
+          class="flex items-center gap-2 rounded-xl bg-zinc-800 px-4 py-2 text-sm ring-amber-400 hover:bg-zinc-700"
+          [class.ring-2]="rearranging()"
+          [attr.aria-pressed]="rearranging()"
+          (click)="rearranging.set(!rearranging())"
+        >
+          @if (rearranging()) {
+            <svg lucideCheck size="16"></svg> Done
+          } @else {
+            <svg lucideArrowUpDown size="16"></svg> Rearrange
+          }
+        </button>
+      }
+    </app-circle>
+
+    @if (isPlaying()) {
+      <button
+        class="absolute left-6 top-6 rounded-xl bg-zinc-800 p-3 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-100"
+        aria-label="End game"
+        title="End game"
+        (click)="confirmingEnd.set(true)"
+      >
+        <svg lucideLogOut size="20"></svg>
+      </button>
+    } @else {
+      <a
+        class="absolute block left-6 top-6 rounded-xl bg-zinc-800 p-3 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-100"
+        aria-label="Back"
+        title="Back"
+        routerLink="/"
+      >
+        <svg lucideArrowLeft size="20"></svg>
+      </a>
+    }
+  </div>
+
+  <app-sidebar [title]="panelTitle()" [canGoBack]="canClosePanel()" (back)="closePanel()">
+    @switch (panel().kind) {
+      @case ('cards') {
+        <app-cards-panel />
+      }
+      @case ('person') {
+        @if (selectedPerson(); as person) {
+          <app-person-panel
+            [person]="person"
+            [characters]="charactersInPlay()"
+            (personChanged)="updatePerson(person.id, $event)"
+          />
+        }
+      }
+      @case ('narration') {
+        <app-narration-panel
+          [cards]="actionCards()"
+          [index]="actionIndex()"
+          [canGoBack]="canStepBack()"
+          [characters]="charactersInPlay()"
+          [activeKind]="activeButton()?.kind ?? null"
+          [activeProgress]="pickProgress()"
+          [spentAbilities]="spentAbilities()"
+          (next)="nextAction()"
+          (previous)="previousAction()"
+          (buttonPressed)="pressButton($event)"
+          (buttonCleared)="clearButton($event)"
+          (characterPressed)="describedCharacter.set($event)"
+          (abilityReset)="resettingAbility.set($event)"
+        />
+      }
+      @default {
+        <app-setup-panel
+          [cards]="cards()"
+          [hasExcessCards]="hasExcessCards()"
+          [virtualCards]="isHostingRoom()"
+          (cardSelectorPressed)="openCardSelector()"
+          (gameStartPressed)="startGame()"
+          (virtualCardsToggled)="toggleVirtualCards($event)"
+        />
+      }
+    }
+  </app-sidebar>
+</div>
+
+@if (describedCharacter(); as character) {
+  <app-character-details [character]="character" (closed)="describedCharacter.set(null)" />
+}
+
+@if (confirmingDeal()) {
+  <app-confirm-dialog
+    title="Assign new cards?"
+    message="Every seat gets a random card from the deck, and the roles assigned so far are replaced."
+    confirmLabel="Assign cards"
+    (confirmed)="dealShuffled()"
+    (cancelled)="confirmingDeal.set(false)"
+  />
+}
+
+@if (confirmingEnd()) {
+  <app-confirm-dialog
+    title="End this game?"
+    message="Roles, links and everything that happened so far are cleared. The seats, the names and the chosen cards stay."
+    confirmLabel="End game"
+    cancelLabel="Keep playing"
+    (confirmed)="endGame()"
+    (cancelled)="confirmingEnd.set(false)"
+  />
+}
+
+@if (resettingAbility()) {
+  <app-confirm-dialog
+    title="Give this back?"
+    [message]="
+      resettingAbilityLabel() + ' counts as unused again, and the role is called again tonight.'
+    "
+    confirmLabel="Give back"
+    (confirmed)="resetAbility()"
+    (cancelled)="resettingAbility.set(null)"
+  />
+}
+
+@if (daybreakDialog(); as reason) {
+  <app-changes-dialog
+    [changes]="daybreakChangeViews()"
+    [leaving]="reason === 'leaving'"
+    (applied)="applyChange($event)"
+    (appliedAll)="applyAllChanges()"
+    (proceeded)="proceedToNextNight()"
+    (closed)="daybreakDialog.set(null)"
+  />
+}

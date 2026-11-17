@@ -1,0 +1,109 @@
+<dialog
+  appModal
+  #modal="appModal"
+  class="m-auto w-[min(34rem,calc(100vw-2rem))] rounded-2xl bg-zinc-800 p-6 text-zinc-200 shadow-2xl shadow-black/60 backdrop:bg-zinc-950/60 backdrop:backdrop-blur-sm"
+  aria-labelledby="changes-dialog-title"
+  (closed)="closed.emit()"
+>
+  <h1 id="changes-dialog-title" class="text-xl font-bold text-zinc-100">This morning</h1>
+
+  <div class="mt-4 flex max-h-[60svh] flex-col gap-3 overflow-y-auto">
+    @if (deaths().length) {
+      <ul class="flex flex-col gap-3" data-deaths>
+        @for (entry of deaths(); track entry.key) {
+          <ng-container [ngTemplateOutlet]="row" [ngTemplateOutletContext]="{ $implicit: entry }" />
+        }
+      </ul>
+    } @else {
+      <p class="text-zinc-100" data-headline>Nobody died</p>
+    }
+
+    @if (informational().length) {
+      <h2 class="mt-2 text-sm font-bold text-zinc-400">Informational</h2>
+      <ul class="flex flex-col gap-3" data-informational>
+        @for (entry of informational(); track entry.key) {
+          <ng-container [ngTemplateOutlet]="row" [ngTemplateOutletContext]="{ $implicit: entry }" />
+        }
+      </ul>
+    }
+  </div>
+
+  <ng-template #row let-entry>
+    <li
+      class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 rounded-xl bg-zinc-900 p-3"
+      [class.opacity-60]="entry.applied"
+      [attr.data-change]="entry.key"
+    >
+      <span class="relative row-span-2 h-12 w-17 self-start">
+        @if (entry.causePortrait; as cause) {
+          <span
+            class="absolute left-0 top-0 grid size-10 place-items-center overflow-hidden rounded-full bg-zinc-800"
+            data-cause
+            [attr.title]="cause.name"
+          >
+            @if (cause.image) {
+              <img width="40" height="40" [ngSrc]="cause.image" [alt]="cause.name" />
+            } @else {
+              <svg lucideUser size="16" class="text-zinc-500"></svg>
+            }
+          </span>
+        }
+        <span
+          class="absolute right-0 top-0 grid size-12 place-items-center overflow-hidden rounded-full border-2 border-zinc-900 bg-zinc-800"
+        >
+          @if (entry.portrait.image) {
+            <img
+              width="48"
+              height="48"
+              [ngSrc]="entry.portrait.image"
+              [alt]="entry.portrait.name"
+            />
+          } @else {
+            <svg lucideUser size="20" class="text-zinc-500"></svg>
+          }
+        </span>
+      </span>
+
+      <p class="self-center font-medium text-zinc-100" data-headline>{{ entry.headline }}</p>
+
+      <div class="flex items-center gap-3">
+        <p class="flex flex-1 items-start gap-2 text-sm text-zinc-400" data-note>
+          <svg lucideInfo size="14" class="mt-0.5 shrink-0" aria-hidden="true"></svg>
+          <span>{{ entry.note }}</span>
+        </p>
+        @if (entry.appliable) {
+          @if (entry.applied) {
+            <span class="flex items-center gap-1 text-xs text-zinc-400">
+              <svg lucideCheck size="14"></svg> Applied
+            </span>
+          } @else {
+            <button
+              class="rounded-full bg-orange-900 px-3 py-1 text-sm hover:bg-orange-800"
+              (click)="applied.emit(entry.change)"
+            >
+              Apply
+            </button>
+          }
+        }
+      </div>
+    </li>
+  </ng-template>
+
+  <div class="mt-6 grid grid-cols-2 gap-3">
+    @if (leaving()) {
+      <button class="btn bg-zinc-700 hover:bg-zinc-600" (click)="proceeded.emit()">
+        Skip the rest
+      </button>
+      <button class="btn btn-primary" (click)="appliedAll.emit(); proceeded.emit()">
+        Apply all and go on
+      </button>
+    } @else if (hasPending()) {
+      <button class="btn bg-zinc-700 hover:bg-zinc-600" (click)="modal.close()">Close</button>
+      <button class="btn btn-primary" (click)="appliedAll.emit()">Apply all</button>
+    } @else {
+      <button class="btn col-span-2 bg-zinc-700 hover:bg-zinc-600" (click)="modal.close()">
+        Close
+      </button>
+    }
+  </div>
+</dialog>

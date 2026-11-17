@@ -1,0 +1,61 @@
+@import 'tailwindcss';
+
+@theme inline {
+  --color-tone: var(--tone);
+}
+
+:root,
+[data-tone='neutral'] {
+  --tone: var(--color-zinc-400);
+}
+[data-tone='assign'] {
+  --tone: var(--color-sky-400);
+}
+[data-tone='kill'] {
+  --tone: var(--color-red-500);
+}
+[data-tone='protect'] {
+  --tone: var(--color-emerald-400);
+}
+[data-tone='bond'] {
+  --tone: var(--color-pink-400);
+}
+[data-tone='enchant'] {
+  --tone: var(--color-violet-400);
+}
+
+[data-connection='love'] {
+  --connection: var(--color-rose-800);
+}
+[data-connection='trust'] {
+  --connection: var(--color-amber-700);
+}
+[data-connection='sleepover'] {
+  --connection: var(--color-blue-800);
+}
+
+html,
+body {
+  @apply bg-zinc-950 text-zinc-100;
+}
+.btn {
+  @apply p-3 rounded-lg text-base text-zinc-100 disabled:bg-zinc-700! disabled:text-zinc-400 disabled:cursor-not-allowed flex items-center gap-2 justify-center;
+}
+.btn-primary {
+  @apply bg-orange-900 hover:bg-orange-800;
+}
+.input {
+  @apply rounded-lg bg-zinc-800 px-3 py-2 text-zinc-100 placeholder:text-zinc-500;
+}
+.input-label {
+  @apply text-sm text-zinc-400;
+}
+.sidebar-container {
+  @apply flex flex-col gap-2 rounded-3xl bg-zinc-900 p-4 shadow shadow-zinc-950;
+}
+.card-tile {
+  @apply grid items-center gap-x-2 rounded-lg bg-zinc-800 p-2 text-left ring-amber-400;
+}
+.chip {
+  @apply rounded-full bg-zinc-800 px-3 py-1 text-sm ring-amber-400 hover:bg-zinc-700;
+}

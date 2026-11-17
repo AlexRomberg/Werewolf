@@ -1,0 +1,30 @@
+import { ActionButton, assignButton, filterFalsy } from '../actions/action';
+import { isAssigned, isFirstNight, NightContext } from '../actions/context';
+import { BasePriority, Character, GameSet, GroupType, SectionTitles } from '../character';
+
+export class Thief extends Character {
+  readonly id = 'thief';
+  readonly name = 'The Thief';
+  readonly group = GroupType.Active;
+  readonly game = GameSet.BaseGame;
+  override readonly priority = BasePriority.Initial + 1;
+  readonly description = [
+    {
+      title: SectionTitles.general,
+      description:
+        'To play with the Thief, add two extra Simple Villager cards to the deck before the game begins. Once the roles are dealt, the two cards left over go face down in the middle of the table. On the first night the Thief looks at both and may swap their own card for one of them. If both are werewolves, the Thief must take one of them. Whatever they end up with is theirs for the rest of the game.',
+    },
+  ];
+
+  override isAwakeThisNight(context: NightContext) {
+    return isFirstNight(context);
+  }
+
+  override getActions(context: NightContext): (string | false)[] {
+    return ['Has to swap cards', !isAssigned(context) && 'Assign person'];
+  }
+
+  override getButtons(context: NightContext): ActionButton[] {
+    return filterFalsy([assignButton(context)]);
+  }
+}

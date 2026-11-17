@@ -1,0 +1,20 @@
+@if (title()) {
+  <header class="z-10 mb-4 flex items-center gap-1">
+    @if (canGoBack()) {
+      <button
+        class="-ml-2 rounded-full p-2 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100"
+        aria-label="Back"
+        (click)="back.emit()"
+      >
+        <svg lucideChevronLeft size="20"></svg>
+      </button>
+    }
+    <h1 class="truncate text-2xl font-bold text-zinc-300">{{ title() }}</h1>
+  </header>
+} @else {
+  <div></div>
+}
+
+<div class="z-10 grid min-h-0">
+  <ng-content />
+</div>
