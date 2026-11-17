@@ -28,6 +28,14 @@ export class MemoryStorage implements Storage {
 
 export function useMemoryLocalStorage() {
   const storage = new MemoryStorage();
+  const original = Object.getOwnPropertyDescriptor(window, 'localStorage');
   Object.defineProperty(window, 'localStorage', { value: storage, configurable: true });
+  onTestFinished(() => {
+    if (original) {
+      Object.defineProperty(window, 'localStorage', original);
+    } else {
+      delete (window as { localStorage?: Storage }).localStorage;
+    }
+  });
   return storage;
 }

@@ -1,9 +1,11 @@
-import { Service, computed, signal } from '@angular/core';
+import { DOCUMENT, Service, computed, effect, inject, signal } from '@angular/core';
+import { StoredValue } from './room-storage';
 import { ActionState, beginNight } from './state/action-state';
 import { CharacterState } from './state/character-state';
 import { DaybreakState } from './state/daybreak-state';
 import { NightState } from './state/night-state';
 import { PeopleState, createSeats } from './state/people-state';
+import { fromSavedGame, isSavedGame, toSavedGame } from './state/saved-game';
 import { Ability, INITIAL_ROLE_STATE, INITIAL_SEATS, State } from './state/types';
 
 const UNPLAYED_GAME = {
@@ -18,12 +20,14 @@ const UNPLAYED_GAME = {
 
 @Service()
 export class GameService {
-  private readonly state = signal<State>({
-    ...UNPLAYED_GAME,
-    phase: 'setup',
-    people: createSeats(INITIAL_SEATS),
-    characters: new Map(),
-  });
+  private readonly savedGame = new StoredValue(
+    inject(DOCUMENT).defaultView?.localStorage,
+    'werewolf:game',
+    isSavedGame,
+  );
+
+  private readonly state = signal<State>(this.restoreGame());
+
 
   readonly people = new PeopleState(this.state);
   readonly characters = new CharacterState(this.state);
@@ -31,6 +35,10 @@ export class GameService {
   readonly night = new NightState(this.state);
   readonly daybreak = new DaybreakState(this.state);
   readonly phase = computed(() => this.state().phase);
+
+  constructor() {
+    effect(() => this.savedGame.write(toSavedGame(this.state())));
+  }
 
   startGame() {
     this.state.update((state) => beginNight({ ...state, ...UNPLAYED_GAME, phase: 'playing' }));
@@ -52,6 +60,19 @@ export class GameService {
 
   dealShuffled(random: () => number = Math.random) {
     this.people.dealOut(shuffled(this.characters.cards(), random));
+  }
+
+  private restoreGame(): State {
+    const saved = this.savedGame.read();
+    if (saved) {
+      return fromSavedGame(saved);
+    }
+    return {
+      ...UNPLAYED_GAME,
+      phase: 'setup',
+      people: createSeats(INITIAL_SEATS),
+      characters: new Map(),
+    };
   }
 }
 
