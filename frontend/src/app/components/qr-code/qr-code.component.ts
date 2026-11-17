@@ -1,7 +1,6 @@
 import { Component, computed, input } from '@angular/core';
 import { encode } from 'uqr';
 
-/** Light modules around the code, which scanners need to find its edges. */
 const QUIET_ZONE = 2;
 
 @Component({

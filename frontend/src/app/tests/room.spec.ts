@@ -8,6 +8,7 @@ import { RoomComponent } from '../pages/room/room.component';
 import { RoomPlayerService, RoomStatus } from '../services/room-player.service';
 
 const WEREWOLF_CARD: PlayerCard = {
+  name: 'Anna',
   characterId: WEREWOLF.id,
   isDead: false,
   isWerewolf: true,
@@ -19,6 +20,8 @@ describe('RoomComponent, a joined player', () => {
   let fixture: ComponentFixture<RoomComponent>;
   const status = signal<RoomStatus>('joined');
   const card = signal<PlayerCard | null>(null);
+  const name = signal('Anna');
+  let renamedTo: string[];
 
   const element = () => fixture.nativeElement as HTMLElement;
   const cardButton = () => element().querySelector<HTMLButtonElement>('app-player-card button')!;
@@ -28,12 +31,22 @@ describe('RoomComponent, a joined player', () => {
   beforeEach(async () => {
     status.set('joined');
     card.set(null);
+    name.set('Anna');
+    renamedTo = [];
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
         {
           provide: RoomPlayerService,
-          useValue: { status, card, join: () => undefined, leave: () => undefined },
+          useValue: {
+            status,
+            card,
+            name,
+            join: () => undefined,
+            rejoin: () => true,
+            rename: (newName: string) => renamedTo.push(newName),
+            leave: () => undefined,
+          },
         },
       ],
     });
@@ -98,5 +111,38 @@ describe('RoomComponent, a joined player', () => {
 
     expect(title()).toBe(WEREWOLF.name);
     expect(cardButton().getAttribute('aria-pressed')).toBe('true');
+  });
+
+  it('should let the player change their name', async () => {
+    element().querySelector<HTMLButtonElement>('[aria-label="Change your name"]')!.click();
+    await fixture.whenStable();
+    const input = element().querySelector<HTMLInputElement>('header input')!;
+    expect(input.value).toBe('Anna');
+
+    input.value = 'Annie';
+    input.dispatchEvent(new Event('input'));
+    element().querySelector<HTMLFormElement>('header form')!.requestSubmit();
+    await fixture.whenStable();
+
+    expect(renamedTo).toEqual(['Annie']);
+    expect(element().querySelector('header input')).toBeNull();
+  });
+
+  it("should show the narrator's name for the player once the card brings it", async () => {
+    card.set({ ...WEREWOLF_CARD, name: 'Anna B.' });
+    await fixture.whenStable();
+
+    expect(element().querySelector('header')?.textContent).toContain('Anna B.');
+  });
+
+  it('should keep the card on the table while a connection is down', async () => {
+    card.set(WEREWOLF_CARD);
+    status.set('host_away');
+    await fixture.whenStable();
+
+    expect(cardButton()).not.toBeNull();
+    expect(element().querySelector('[role="status"]')?.textContent).toContain(
+      "narrator's connection dropped",
+    );
   });
 });

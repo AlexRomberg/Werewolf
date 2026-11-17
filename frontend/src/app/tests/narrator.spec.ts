@@ -5,7 +5,10 @@ import { Character } from '../models/character';
 import { CHARACTERS_BY_ID } from '../models/characters';
 import { NarratorComponent } from '../pages/narrator/narrator.component';
 import { GameService } from '../services/game.service';
+import { RoomHostService } from '../services/room-host.service';
+import { CONNECT_TO_ROOM_SERVER } from '../services/room-socket';
 import { ConnectionType } from '../services/state/types';
+import { FakeRoomSocket } from './fake-room-socket';
 
 const character = (id: string) => CHARACTERS_BY_ID.get(id) as Character;
 
@@ -41,7 +44,6 @@ describe('NarratorComponent, picking players on the circle', () => {
     await fixture.whenStable();
   };
 
-  // jsdom has the <dialog> element but not its modal behaviour.
   beforeAll(() => {
     HTMLDialogElement.prototype.showModal ??= function (this: HTMLDialogElement) {
       this.open = true;
@@ -53,7 +55,13 @@ describe('NarratorComponent, picking players on the circle', () => {
   });
 
   beforeEach(async () => {
-    TestBed.configureTestingModule({ providers: [provideRouter([])] });
+    sessionStorage.clear();
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter([]),
+        { provide: CONNECT_TO_ROOM_SERVER, useValue: () => new FakeRoomSocket().asRoomSocket() },
+      ],
+    });
     fixture = TestBed.createComponent(NarratorComponent);
     game = TestBed.inject(GameService);
     await fixture.whenStable();
@@ -118,6 +126,13 @@ describe('NarratorComponent, picking players on the circle', () => {
 
     await click(seats()[0]);
     expect(roleOf(0)).toBeUndefined();
+  });
+
+  it('should stop picking when the table beside the players is clicked', async () => {
+    await playUntil('cupid', 'cupid');
+    await click(page().querySelector<HTMLElement>('.circle-stage') ?? undefined);
+
+    expect(notch()).toBeNull();
   });
 
   it('should pick again when the button on the card is pressed', async () => {
@@ -222,7 +237,6 @@ describe('NarratorComponent, picking players on the circle', () => {
 
     const line = page().querySelector<HTMLElement>('.connection');
     expect(line?.getAttribute('data-connection')).toBe('love');
-    // Seats two and three of five sit 66 degrees apart on a circle of radius 40.
     expect(Number(line?.style.getPropertyValue('--length'))).toBeCloseTo(43.57, 1);
     expect(page().textContent).toContain('In love');
   });
@@ -553,6 +567,48 @@ describe('NarratorComponent, picking players on the circle', () => {
       await click(buttonNamed('Dead'));
 
       expect(game.people.views()[2].isDead).toBe(false);
+    });
+  });
+
+  describe('shuffling and dealing with virtual cards', () => {
+    const openRoom = async () => {
+      TestBed.inject(RoomHostService).open({
+        seat: () => ({ refused: 'room_locked' }),
+        hasSeat: () => false,
+        rename: () => undefined,
+        vacate: () => undefined,
+      });
+      await fixture.whenStable();
+    };
+
+    it('should be offered on the Rules card only when virtual cards are on', async () => {
+      await playUntil('rules', 'cupid');
+      expect(buttonNamed('Assign cards')).toBeUndefined();
+
+      await openRoom();
+      const cardTitle = buttonNamed('Assign cards')?.closest('article')?.querySelector('h2');
+      expect(cardTitle?.textContent?.trim()).toBe('Rules');
+    });
+
+    it('should deal every seat a card straight away when nobody has one yet', async () => {
+      await playUntil('rules', 'cupid');
+      await openRoom();
+      await click(buttonNamed('Assign cards'));
+
+      expect(game.people.all().every((person) => person.character)).toBe(true);
+      expect(buttonNamed('Assign cards again')).toBeDefined();
+    });
+
+    it('should ask before replacing roles that were already assigned', async () => {
+      await playUntil('rules', 'cupid');
+      game.people.assign([game.people.all()[0].id], character('cupid'));
+      await openRoom();
+      await click(buttonNamed('Assign cards again'));
+
+      expect(game.people.all().filter((person) => person.character)).toHaveLength(1);
+
+      await click(dialogButton('Assign cards'));
+      expect(game.people.all().every((person) => person.character)).toBe(true);
     });
   });
 });

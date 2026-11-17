@@ -63,7 +63,6 @@ describe('BigWolf', () => {
     const chosen = seated(0, 1, { victims: [{ personId: 'anyone', byCharacterId: 'big_wolf' }] });
 
     expect(character.getActions(chosen)).not.toContain('May pick a second victim');
-    // The button stays so the pick can be changed or undone, but it no longer asks by itself.
     expect(character.getButtons(chosen)).toMatchObject([
       { kind: 'mark-victim', done: true, auto: false },
     ]);

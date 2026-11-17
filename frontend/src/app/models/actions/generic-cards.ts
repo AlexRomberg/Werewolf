@@ -20,6 +20,16 @@ export function rulesCard(round: number, selected: readonly Character[]): Action
   };
 }
 
+export function withDealShuffledButton(card: ActionCard, hasDealt: boolean): ActionCard {
+  return {
+    ...card,
+    buttons: [
+      ...card.buttons,
+      { kind: 'deal-shuffled', label: hasDealt ? 'Assign cards again' : 'Assign cards' },
+    ],
+  };
+}
+
 export function nightfallCard(round: number): ActionCard {
   return {
     key: `${round}:night`,

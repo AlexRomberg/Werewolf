@@ -1,7 +1,3 @@
-# Built from the repository root (see docker-compose.yml): the app imports the socket protocol
-# from server/src/protocol.ts.
-
-# Build stage: the Angular app as static files.
 FROM node:26-alpine AS build
 WORKDIR /app/frontend
 COPY frontend/package.json frontend/package-lock.json ./
@@ -10,8 +6,9 @@ COPY server/src/protocol.ts /app/server/src/protocol.ts
 COPY frontend/ ./
 RUN npx ng build
 
-# Run stage: nginx serves the app and proxies the room server.
-FROM nginx:1.29-alpine
+FROM nginxinc/nginx-unprivileged:1.29-alpine
 COPY frontend/nginx.conf /etc/nginx/conf.d/default.conf
+COPY frontend/nginx-security-headers.conf /etc/nginx/snippets/security-headers.conf
 COPY --from=build /app/frontend/dist/frontend/browser /usr/share/nginx/html
-EXPOSE 80
+EXPOSE 8080
+HEALTHCHECK --interval=10s --timeout=3s CMD wget -qO- http://127.0.0.1:8080/ >/dev/null || exit 1

@@ -85,6 +85,8 @@
                       >
                         @if (view.button.done) {
                           <svg lucideCheck size="18"></svg>
+                        } @else if (view.button.kind === 'deal-shuffled') {
+                          <svg lucidePlayingCardsFan size="18"></svg>
                         } @else {
                           @switch (view.tone) {
                             @case ('assign') {

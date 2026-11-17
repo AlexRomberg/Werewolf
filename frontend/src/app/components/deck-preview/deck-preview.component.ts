@@ -2,7 +2,6 @@ import { Component, input } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
 import { Character } from '../../models/character';
 
-/** A hand of cards fanned out in a row, fading out where it runs past its box. */
 @Component({
   selector: 'app-deck-preview',
   imports: [NgOptimizedImage],

@@ -15,7 +15,7 @@
       (personMoved)="movePerson($event)"
     >
       @if (isHostingRoom() && !isPlaying()) {
-        <app-room-invite circleCenter [code]="roomCode()" />
+        <app-room-invite circleCenter [code]="roomCode()" [connected]="isRoomConnected()" />
       }
       @if (isPlaying()) {
         <button
@@ -101,6 +101,16 @@
 
 @if (describedCharacter(); as character) {
   <app-character-details [character]="character" (closed)="describedCharacter.set(null)" />
+}
+
+@if (confirmingDeal()) {
+  <app-confirm-dialog
+    title="Assign new cards?"
+    message="Every seat gets a random card from the deck, and the roles assigned so far are replaced."
+    confirmLabel="Assign cards"
+    (confirmed)="dealShuffled()"
+    (cancelled)="confirmingDeal.set(false)"
+  />
 }
 
 @if (confirmingEnd()) {

@@ -45,7 +45,6 @@ export class DaybreakState {
   }
 }
 
-/** Whether the change alters the game; the rest are only announced. */
 export function isAppliable(change: DaybreakChange) {
   return STATUS_BY_REASON[change.reason] !== undefined;
 }
@@ -128,7 +127,6 @@ export function resolveDaybreak(state: State): DaybreakChange[] {
     });
   }
 
-  // Surviving the wolves is no news about someone who then dies of something else.
   return changes.filter(
     (change) => change.reason !== ChangeReason.SurvivedAttack || !dying.has(change.personId),
   );
@@ -169,7 +167,6 @@ function isByWolves(mark: VictimMark) {
   return CHARACTERS_BY_ID.get(mark.byCharacterId) instanceof WerewolfCharacter;
 }
 
-/** The role that keeps a wolf attack from killing, if any. */
 function blockerOf(state: State, mark: VictimMark, sleepover: Connection | undefined) {
   const victim = state.people.find((person) => person.id === mark.personId);
   if (state.roles.healedTonight === mark.personId) {

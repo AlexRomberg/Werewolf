@@ -1,38 +1,43 @@
-import { Service, inject, signal } from '@angular/core';
-import type { JoinResult, PlayerCard, RoomPlayer } from '@protocol';
+import { DOCUMENT, Service, computed, inject, signal } from '@angular/core';
+import type { HostSession, JoinResult, PlayerCard, RoomPlayer } from '@protocol';
 import { CONNECT_TO_ROOM_SERVER, RoomSocket } from './room-socket';
+import { StoredValue } from './room-storage';
 
 export type SeatResult = { personId: string } | { refused: 'room_full' | 'room_locked' };
 
-/** Where the players who join the room sit; the narrator page decides that, not the room. */
 export interface RoomSeating {
   seat(name: string): SeatResult;
-  /** The device of the player in this seat disconnected. */
+  hasSeat(personId: string): boolean;
+  rename(personId: string, name: string): void;
   vacate(personId: string): void;
 }
 
-/**
- * The narrator's side of a room: opens it on the room server, seats the players who join it,
- * and deals each of them their card. Which socket sits in which seat is per-device bookkeeping,
- * so it lives here and never in the game state.
- */
 @Service()
 export class RoomHostService {
   private readonly connectToRoomServer = inject(CONNECT_TO_ROOM_SERVER);
+  private readonly storedSession = new StoredValue<HostSession>(
+    inject(DOCUMENT).defaultView?.sessionStorage,
+    'werewolf:host-session',
+    isHostSession,
+  );
 
   private socket: RoomSocket | null = null;
   private seating: RoomSeating | null = null;
   private readonly personIdByPlayerId = new Map<string, string>();
   private cards: ReadonlyMap<string, PlayerCard> = new Map();
-  /** The last card each player was sent, serialized, so an unchanged card is not sent again. */
   private readonly dealtCardByPlayerId = new Map<string, string>();
 
   private readonly hosting = signal(false);
-  private readonly openCode = signal<string | null>(null);
+  private readonly connected = signal(false);
+  private readonly session = signal<HostSession | null>(this.storedSession.read());
 
   readonly isHosting = this.hosting.asReadonly();
-  /** The code players join with, or `null` while the room is still being opened. */
-  readonly code = this.openCode.asReadonly();
+  readonly isConnected = this.connected.asReadonly();
+  readonly code = computed(() => this.session()?.code ?? null);
+
+  hasRoomToResume() {
+    return this.session() !== null;
+  }
 
   open(seating: RoomSeating) {
     if (this.socket) {
@@ -40,16 +45,16 @@ export class RoomHostService {
     }
 
     const socket = this.connectToRoomServer();
-    // Runs again after every reconnect: the server closed the old room when the host dropped.
-    socket.on('connect', async () => {
-      const code = await socket.emitWithAck('room:create');
-      if (socket.connected) {
-        this.openCode.set(code);
-      }
-    });
-    socket.on('disconnect', () => this.forgetRoom());
+    socket.on('connect', () => this.claimRoom(socket));
+    socket.on('disconnect', () => this.connected.set(false));
     socket.on('player:joined', (player, answer) => answer(this.seat(player)));
     socket.on('player:left', (playerId) => this.vacate(playerId));
+    socket.on('player:renamed', (playerId, name) => {
+      const personId = this.personIdByPlayerId.get(playerId);
+      if (personId) {
+        this.seating?.rename(personId, name);
+      }
+    });
 
     this.socket = socket;
     this.seating = seating;
@@ -57,20 +62,21 @@ export class RoomHostService {
   }
 
   close() {
+    this.socket?.emit('room:close');
     this.socket?.disconnect();
-    this.forgetRoom();
     this.socket = null;
+    this.setSession(null);
+    this.vacateAll();
     this.seating = null;
     this.hosting.set(false);
+    this.connected.set(false);
   }
 
-  /** Sends every seated player their card, if it changed since they last got it. */
   deal(cardsByPersonId: ReadonlyMap<string, PlayerCard>) {
     this.cards = cardsByPersonId;
     this.personIdByPlayerId.forEach((_, playerId) => this.dealTo(playerId));
   }
 
-  /** Sends away the player sitting in this seat, if a device sits there. */
   kick(personId: string) {
     const playerId = this.playerIn(personId);
     if (playerId) {
@@ -79,12 +85,39 @@ export class RoomHostService {
     }
   }
 
-  isOccupied(personId: string) {
-    return this.playerIn(personId) !== undefined;
+  private async claimRoom(socket: RoomSocket) {
+    try {
+      const session = this.session();
+      if (session) {
+        const resumed = await socket.emitWithAck('room:resume', session);
+        if (resumed.ok) {
+          this.letGoOfPlayersOtherThan(resumed.playerIds);
+          this.connected.set(true);
+          return;
+        }
+        this.vacateAll();
+      }
+
+      const created = await socket.emitWithAck('room:create');
+      this.setSession(created);
+      this.connected.set(created !== null);
+    } catch {}
   }
 
   private seat({ id, name }: RoomPlayer): JoinResult {
-    const result = this.seating?.seat(name) ?? { refused: 'room_locked' };
+    const seating = this.seating;
+    if (!seating) {
+      return { ok: false, reason: 'room_locked' };
+    }
+
+    const knownSeat = this.personIdByPlayerId.get(id);
+    if (knownSeat && seating.hasSeat(knownSeat)) {
+      this.dealtCardByPlayerId.delete(id);
+      this.dealTo(id);
+      return { ok: true };
+    }
+
+    const result = seating.seat(name);
     if ('refused' in result) {
       return { ok: false, reason: result.refused };
     }
@@ -105,9 +138,13 @@ export class RoomHostService {
     this.socket?.emit('player:deal', playerId, card);
   }
 
-  /** The players of a closed room are gone, so every seat it filled is vacated. */
-  private forgetRoom() {
-    this.openCode.set(null);
+  private letGoOfPlayersOtherThan(playerIds: readonly string[]) {
+    [...this.personIdByPlayerId.keys()]
+      .filter((playerId) => !playerIds.includes(playerId))
+      .forEach((playerId) => this.vacate(playerId));
+  }
+
+  private vacateAll() {
     [...this.personIdByPlayerId.keys()].forEach((playerId) => this.vacate(playerId));
   }
 
@@ -127,4 +164,18 @@ export class RoomHostService {
   private playerIn(personId: string) {
     return [...this.personIdByPlayerId].find(([, seatedId]) => seatedId === personId)?.[0];
   }
+
+  private setSession(session: HostSession | null) {
+    this.session.set(session);
+    if (session) {
+      this.storedSession.write(session);
+    } else {
+      this.storedSession.remove();
+    }
+  }
+}
+
+function isHostSession(value: unknown): value is HostSession {
+  const { code, hostKey } = (value ?? {}) as Partial<Record<keyof HostSession, unknown>>;
+  return typeof code === 'string' && typeof hostKey === 'string';
 }

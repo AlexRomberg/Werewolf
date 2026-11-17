@@ -29,7 +29,6 @@ import { WildChild } from './wild-child';
 import { Witch } from './witch';
 import { Wolfdog } from './wolfdog';
 
-// The cards that other modules refer to by name.
 export const BEAR_TAMER = new BearTamer();
 export const HEALER = new Healer();
 export const HOODRAT = new Hoodrat();

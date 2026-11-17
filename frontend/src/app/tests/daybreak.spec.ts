@@ -287,7 +287,6 @@ describe('DaybreakState', () => {
 
   describe('a chain through every link', () => {
     it('should follow the wolves through host, guest, lover and role model', () => {
-      // The wolves kill Dan. Eve slept at Dan's and loves Anna, who is Cleo's role model.
       service.night.connect(ConnectionType.Sleepover, eve, dan);
       service.night.connect(ConnectionType.Love, eve, anna);
       service.night.connect(ConnectionType.Trust, cleo, anna);

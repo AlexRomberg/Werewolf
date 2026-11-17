@@ -1,6 +1,14 @@
 import { Component, computed, input, output } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
-import { LucideHandshake, LucideHeart, LucideHouse, LucidePawPrint, LucideSkull, LucideWandSparkles, LucideTombstone } from '@lucide/angular';
+import {
+  LucideHandshake,
+  LucideHeart,
+  LucideHouse,
+  LucidePawPrint,
+  LucideSkull,
+  LucideWandSparkles,
+  LucideTombstone,
+} from '@lucide/angular';
 import type { LinkType, PlayerCard } from '@protocol';
 import { ActionTone } from '../../models/actions/action';
 import { Character } from '../../models/character';
@@ -28,7 +36,7 @@ const LINK_TEXT: Record<LinkType, (name: string) => string> = {
     LucideHouse,
     LucidePawPrint,
     LucideWandSparkles,
-    LucideTombstone
+    LucideTombstone,
   ],
   templateUrl: './player-card.component.html',
   host: {

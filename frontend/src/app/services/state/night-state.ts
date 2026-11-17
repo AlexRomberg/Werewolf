@@ -116,7 +116,6 @@ export class NightState {
     }
   }
 
-  /** Gives an ability back, together with whatever it did tonight. */
   resetAbility(ability: Ability) {
     switch (ability) {
       case 'witch_heal':

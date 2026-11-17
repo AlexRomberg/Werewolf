@@ -184,14 +184,6 @@ describe('GameService', () => {
       expect(service.people.takeSeat('One too many')).toBeNull();
       expect(service.people.all().length).toBe(MAX_SEATS);
     });
-
-    it('should find the free seat of a player coming back under the same name', () => {
-      const annaId = service.people.takeSeat('Anna')!;
-
-      expect(service.people.findFreeSeat(' anna ', () => false)).toBe(annaId);
-      expect(service.people.findFreeSeat('Anna', (id) => id === annaId)).toBeNull();
-      expect(service.people.findFreeSeat('Zoe', () => false)).toBeNull();
-    });
   });
 
   describe('player cards', () => {
@@ -206,6 +198,7 @@ describe('GameService', () => {
       });
 
       expect(cardOf(anna.id)).toEqual({
+        name: 'Seat 1',
         characterId: WEREWOLF.id,
         isDead: true,
         isWerewolf: true,
@@ -232,6 +225,28 @@ describe('GameService', () => {
       expect(cardOf(model.id).links).toEqual([]);
       expect(cardOf(hoodrat.id).links).toEqual([{ type: 'sleepover', name: 'Seat 4' }]);
       expect(cardOf(host.id).links).toEqual([]);
+    });
+  });
+
+  describe('dealing shuffled cards', () => {
+    it('should give every seat one card of the deck, in a random order', () => {
+      service.characters.setAmount(WEREWOLF, 2);
+      const deck = service.characters.cards().map((character) => character.id);
+
+      service.dealShuffled(() => 0);
+
+      const dealt = service.people.all().map((person) => person.character?.id);
+      expect([...dealt].sort()).toEqual(deck.slice(0, dealt.length).sort());
+      expect(dealt).not.toEqual(deck.slice(0, dealt.length));
+    });
+
+    it('should replace the roles assigned so far', () => {
+      const [anna] = service.people.all();
+      service.people.assign([anna.id], WEREWOLF);
+
+      service.dealShuffled(() => 0.5);
+
+      expect(service.people.all().every((person) => person.character)).toBe(true);
     });
   });
 });

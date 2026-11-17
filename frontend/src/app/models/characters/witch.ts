@@ -33,7 +33,6 @@ export class Witch extends Character {
     const healed = context.roles.healedTonight !== undefined;
     const poisoned = hasMarkedVictim(context, this.id);
 
-    // The potions never ask by themselves, and one used tonight can still be taken back.
     return filterFalsy<ActionButton>([
       assignButton(context),
       (this.hasHealingPotion(context) || healed) && pickButton('heal', 'Heal', 1, healed, false),

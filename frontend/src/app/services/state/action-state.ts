@@ -59,10 +59,6 @@ export function beginNight(state: State): State {
   };
 }
 
-/**
- * Calls the roles that an ability given back mid-night has woken again, without sending
- * anyone already called back to sleep, and keeps the narrator on the card they are on.
- */
 function wakeRestoredRoles(state: State): State {
   const awake = charactersInNightOrder(
     state,
@@ -128,7 +124,6 @@ function isAwakeTonight(state: State, character: Character) {
     return false;
   }
 
-  // The pack is called even when every known wolf is dead: without wolves the game would be over.
   if (character.id === WEREWOLF.id) {
     return true;
   }

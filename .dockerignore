@@ -3,3 +3,6 @@
 **/dist
 **/.angular
 **/.DS_Store
+**/.claude
+**/.vscode
+**/.env*

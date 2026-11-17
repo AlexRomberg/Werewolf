@@ -105,7 +105,6 @@ function savedNote(savedByRole: string, cause: string) {
   return savedByRole === HOODRAT.id ? 'Not at home' : `Protected by ${cause}`;
 }
 
-/** What the narrator calls a player out loud: their name, else their card, else their seat. */
 function callName(person: PersonView) {
   const character = person.character;
   return person.name || character?.memberName || character?.name || person.displayName;

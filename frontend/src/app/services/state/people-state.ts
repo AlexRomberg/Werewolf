@@ -16,10 +16,6 @@ import {
   State,
 } from './types';
 
-/**
- * The links each end knows about. Lovers know each other; the role model and the hoodrat's
- * host are never told, so only the wild child and the hoodrat learn of theirs.
- */
 const KNOWN_BY: Record<ConnectionType, readonly ('from' | 'to')[]> = {
   [ConnectionType.Love]: ['from', 'to'],
   [ConnectionType.Trust]: ['from'],
@@ -58,7 +54,6 @@ export class PeopleState {
     });
   });
 
-  /** What each person's own device may show them, by person id. */
   readonly cards = computed<ReadonlyMap<string, PlayerCard>>(() => {
     const { connections } = this.state();
     const views = this.views();
@@ -68,6 +63,7 @@ export class PeopleState {
       views.map((person) => [
         person.id,
         {
+          name: person.displayName,
           characterId: person.character?.id ?? null,
           isDead: person.isDead,
           isWerewolf: isWerewolf(person),
@@ -82,10 +78,6 @@ export class PeopleState {
     this.append(createPerson());
   }
 
-  /**
-   * Gives a name to the first unnamed seat, or to a new seat when every seat has a name, and
-   * returns that person's id. Returns `null` when the table is full.
-   */
   takeSeat(name: string): string | null {
     const { people } = this.state();
     const unnamed = people.find((person) => !person.name);
@@ -100,15 +92,6 @@ export class PeopleState {
     const person = { ...createPerson(), name };
     this.append(person);
     return person.id;
-  }
-
-  /** The id of a seat with the given name that `isTaken` says nobody occupies, for a player coming back. */
-  findFreeSeat(name: string, isTaken: (personId: string) => boolean): string | null {
-    const wanted = normalizedName(name);
-    const seat = this.state().people.find(
-      (person) => normalizedName(person.name) === wanted && !isTaken(person.id),
-    );
-    return seat?.id ?? null;
   }
 
   remove(id: string) {
@@ -133,6 +116,13 @@ export class PeopleState {
       people: state.people.map((person) =>
         ids.includes(person.id) ? { ...person, character } : person,
       ),
+    }));
+  }
+
+  dealOut(deck: readonly Character[]) {
+    this.state.update((state) => ({
+      ...state,
+      people: state.people.map((person, index) => ({ ...person, character: deck[index] })),
     }));
   }
 
@@ -166,10 +156,6 @@ function createPerson(): Person {
     statuses: [],
     character: undefined,
   };
-}
-
-function normalizedName(name: string) {
-  return name.trim().toLocaleLowerCase();
 }
 
 function linksKnownBy(

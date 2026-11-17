@@ -16,7 +16,7 @@
       type="text"
       inputmode="numeric"
       autocomplete="off"
-      [placeholder]="'0'.repeat(codeLength)"
+      [placeholder]="placeholder"
       [formField]="joinForm.code"
     />
     <button class="btn btn-primary" type="submit" [disabled]="joinForm().invalid()">

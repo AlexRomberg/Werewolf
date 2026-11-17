@@ -48,7 +48,6 @@ describe('Cupid', () => {
 
     expect(character.getActions(paired)).not.toContain('Has to pick a couple');
     expect(character.getActions(paired)).toContain('The couple has to wake up');
-    // The button stays so the pick can be changed or undone, but it no longer asks by itself.
     expect(character.getButtons(paired)).toMatchObject([
       { kind: 'pair-lovers', done: true, auto: false },
     ]);

@@ -43,7 +43,6 @@ describe('Piper', () => {
   it('should enchant only one pair a night', () => {
     const done = seated(1, 1, { roles: { usedAbilities: [], enchantedTonight: ['a', 'b'] } });
 
-    // The button stays so the pick can be changed or undone, but it no longer asks by itself.
     expect(character.getButtons(done)).toMatchObject([
       { kind: 'enchant', done: true, auto: false },
     ]);

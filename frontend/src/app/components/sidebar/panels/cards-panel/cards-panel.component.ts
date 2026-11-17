@@ -61,7 +61,6 @@ export class CardsPanelComponent {
     })),
   );
 
-  /** The biggest preset that still fits the table, or the smallest one when none does. */
   private recommendedPreset = computed(() => {
     const seatCount = this.game.people.all().length;
     return (

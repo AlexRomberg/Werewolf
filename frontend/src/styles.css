@@ -1,9 +1,5 @@
 @import 'tailwindcss';
 
-/*
- * An ability's tone is its colour everywhere it shows up: set `data-tone` on an
- * element and use `border-tone`, `bg-tone/15`, `text-tone` inside it.
- */
 @theme inline {
   --color-tone: var(--tone);
 }
@@ -28,7 +24,6 @@
   --tone: var(--color-violet-400);
 }
 
-/* The colour of a link between two players, for its line on the circle and its legend entry. */
 [data-connection='love'] {
   --connection: var(--color-rose-800);
 }

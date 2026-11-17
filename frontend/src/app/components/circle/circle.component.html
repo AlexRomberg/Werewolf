@@ -1,4 +1,9 @@
-<div class="h-full w-full p-3" [attr.data-tone]="selection()?.tone" (keydown.escape)="onEscape()">
+<div
+  class="h-full w-full p-3"
+  [attr.data-tone]="selection()?.tone"
+  (keydown.escape)="onEscape()"
+  (click)="onBackgroundClick($event)"
+>
   <div
     class="relative grid h-full w-full place-items-center rounded-3xl border-2 transition-colors duration-300"
     [class.border-transparent]="!selection()"
@@ -47,7 +52,6 @@
       [class.animated]="animated()"
       role="group"
     >
-      <!-- Background -->
       <svg
         class="pointer-events-none absolute size-full stroke-zinc-800 fill-none"
         viewBox="0 0 100 100"
@@ -61,12 +65,10 @@
         />
       </svg>
 
-      <!-- Whatever the page puts in the middle of the table -->
       <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
         <ng-content select="[circleCenter]" />
       </div>
 
-      <!-- Links between players -->
       @for (line of connectionLines(); track line.type) {
         <span
           class="connection"
@@ -80,7 +82,6 @@
         ></span>
       }
 
-      <!-- People -->
       @for (placed of placedPeople(); track placed.person.id) {
         <div
           class="player"
@@ -88,108 +89,108 @@
           [style.--player-angle]="placed.angle + 'deg'"
         >
           <div class="player-body" [animate.enter]="enterAnimation()" animate.leave="player-leave">
-            @if (placed.person.name) {
-              <span
-                class="text-xs absolute block truncate max-w-24 px-2 py-0.5 bg-zinc-950 text-zinc-500 rounded-full"
-                [class.shake]="!placed.dragging && editMode()"
-                [style.animationDelay]="-$index + 's'"
-                [class.translate-x-9]="!placed.nameAbove"
-                [class.-translate-y-14]="placed.nameAbove"
-              >
-                {{ placed.person.name }}
-              </span>
-            }
-            <div class="absolute -translate-x-1/2 -translate-y-1/2">
-              <button
-                class="circle bg-zinc-800 text-zinc-100 touch-none"
-                [class.cursor-grab]="editMode() && !placed.dragging"
-                [class.cursor-grabbing]="placed.dragging"
-                [class.shake]="!placed.dragging && editMode()"
-                [class.border-amber-400]="placed.selected"
-                [class.dead]="placed.person.isDead"
-                [attr.aria-label]="placed.label"
-                [attr.data-pick]="placed.pick"
-                [attr.aria-pressed]="placed.pick ? placed.pick === 'picked' : null"
-                [style.animationDelay]="-$index + 's'"
-                (pointerdown)="onPointerDown($event, placed.person.id)"
-                (pointermove)="onPointerMove($event)"
-                (pointerup)="onPointerUp()"
-                (pointercancel)="onPointerCancel()"
-                (click)="onSelect(placed.person.id)"
-              >
-                @if (placed.person.character) {
-                  <img
-                    width="60"
-                    height="60"
-                    [ngSrc]="placed.person.character.image"
-                    [alt]="placed.person.character.name"
-                    class="pointer-events-none"
-                  />
-                } @else {
-                  <svg lucideUser class="pointer-events-none"></svg>
-                }
-              </button>
-
-              @if (placed.person.isDead) {
-                <svg
-                  lucideX
-                  class="pointer-events-none absolute inset-0 m-auto size-12 text-red-800"
-                  aria-hidden="true"
-                ></svg>
-              }
-
-              @if (placed.badges.length) {
-                <ul
-                  class="pointer-events-none absolute -bottom-2 left-1/2 flex -translate-x-1/2 gap-0.5"
-                  aria-hidden="true"
-                >
-                  @for (badge of placed.badges; track badge.kind) {
-                    <li
-                      class="grid size-6 place-items-center rounded-full bg-zinc-950 text-tone"
-                      [attr.data-tone]="badge.tone"
-                      [attr.data-badge]="badge.kind"
-                      [attr.title]="badge.label"
-                    >
-                      @switch (badge.kind) {
-                        @case ('protected') {
-                          <svg lucideShield size="16"></svg>
-                        }
-                        @case ('healed') {
-                          <svg lucideHeartPulse size="16"></svg>
-                        }
-                        @case ('victim') {
-                          <svg lucideTombstone size="16"></svg>
-                        }
-                        @case ('enchanted') {
-                          <svg lucideWandSparkles size="16"></svg>
-                        }
-                        @case ('turned_wolf') {
-                          <svg lucidePawPrint size="16"></svg>
-                        }
-                      }
-                    </li>
-                  }
-                </ul>
-              }
-
-              @if (placed.pick === 'picked') {
+            <div
+              class="absolute size-0"
+              [class.shake]="!placed.dragging && editMode()"
+              [style.animationDelay]="-$index + 's'"
+            >
+              @if (placed.person.name) {
                 <span
-                  class="pointer-events-none absolute -right-1 -top-1 grid size-6 place-items-center rounded-full bg-tone text-zinc-950"
+                  class="text-xs absolute block truncate max-w-24 px-2 py-0.5 bg-zinc-950 text-zinc-500 rounded-full"
+                  [class.translate-x-9]="!placed.nameAbove"
+                  [class.-translate-y-14]="placed.nameAbove"
                 >
-                  <svg class="size-4" lucideCheck></svg>
+                  {{ placed.person.name }}
                 </span>
               }
-
-              @if (editMode()) {
+              <div class="absolute -translate-x-1/2 -translate-y-1/2">
                 <button
-                  class="absolute -right-1 -top-1 size-6 rounded-full bg-red-700 text-white"
-                  [class.shake]="!placed.dragging && editMode()"
-                  [style.animationDelay]="-$index + 's'"
-                  (click)="personRemoved.emit(placed.person.id)"
+                  class="circle bg-zinc-800 text-zinc-100 touch-none"
+                  [class.cursor-grab]="editMode() && !placed.dragging"
+                  [class.cursor-grabbing]="placed.dragging"
+                  [class.border-amber-400]="placed.selected"
+                  [class.dead]="placed.person.isDead"
+                  [attr.aria-label]="placed.label"
+                  [attr.data-pick]="placed.pick"
+                  [attr.aria-pressed]="placed.pick ? placed.pick === 'picked' : null"
+                  (pointerdown)="onPointerDown($event, placed.person.id)"
+                  (pointermove)="onPointerMove($event)"
+                  (pointerup)="onPointerUp()"
+                  (pointercancel)="onPointerCancel()"
+                  (click)="onSelect(placed.person.id)"
                 >
-                  <svg class="size-4 mx-auto" lucideX></svg>
+                  @if (placed.person.character) {
+                    <img
+                      width="60"
+                      height="60"
+                      [ngSrc]="placed.person.character.image"
+                      [alt]="placed.person.character.name"
+                      class="pointer-events-none"
+                    />
+                  } @else {
+                    <svg lucideUser class="pointer-events-none"></svg>
+                  }
                 </button>
-              }
+
+                @if (placed.person.isDead) {
+                  <svg
+                    lucideX
+                    class="pointer-events-none absolute inset-0 m-auto size-12 text-red-800"
+                    aria-hidden="true"
+                  ></svg>
+                }
+
+                @if (placed.badges.length) {
+                  <ul
+                    class="pointer-events-none absolute -bottom-2 left-1/2 flex -translate-x-1/2 gap-0.5"
+                    aria-hidden="true"
+                  >
+                    @for (badge of placed.badges; track badge.kind) {
+                      <li
+                        class="grid size-6 place-items-center rounded-full bg-zinc-950 text-tone"
+                        [attr.data-tone]="badge.tone"
+                        [attr.data-badge]="badge.kind"
+                        [attr.title]="badge.label"
+                      >
+                        @switch (badge.kind) {
+                          @case ('protected') {
+                            <svg lucideShield size="16"></svg>
+                          }
+                          @case ('healed') {
+                            <svg lucideHeartPulse size="16"></svg>
+                          }
+                          @case ('victim') {
+                            <svg lucideTombstone size="16"></svg>
+                          }
+                          @case ('enchanted') {
+                            <svg lucideWandSparkles size="16"></svg>
+                          }
+                          @case ('turned_wolf') {
+                            <svg lucidePawPrint size="16"></svg>
+                          }
+                        }
+                      </li>
+                    }
+                  </ul>
+                }
+
+                @if (placed.pick === 'picked') {
+                  <span
+                    class="pointer-events-none absolute -right-1 -top-1 grid size-6 place-items-center rounded-full bg-tone text-zinc-950"
+                  >
+                    <svg class="size-4" lucideCheck></svg>
+                  </span>
+                }
+
+                @if (editMode()) {
+                  <button
+                    class="absolute -right-1 -top-1 size-6 rounded-full bg-red-700 text-white"
+                    (click)="personRemoved.emit(placed.person.id)"
+                  >
+                    <svg class="size-4 mx-auto" lucideX></svg>
+                  </button>
+                }
+              </div>
             </div>
           </div>
         </div>

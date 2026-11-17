@@ -5,6 +5,7 @@ import {
   LucideChevronLeft,
   LucideChevronRight,
   LucideHeart,
+  LucidePlayingCardsFan,
   LucideRotateCcw,
   LucideShield,
   LucideTombstone,
@@ -25,9 +26,7 @@ import { Character } from '../../../../models/character';
 import { Ability } from '../../../../services/state/types';
 import { CharacterTileComponent } from '../../../character-tile/character-tile.component';
 
-/** How many upcoming cards peek out behind the current one. */
 const VISIBLE_DEPTH = 3;
-/** How far, in rem, a card at each depth is raised above the current one. */
 const LIFT_BY_DEPTH = [0, 3.5, 5, 5.75];
 
 export interface SpentAbility {
@@ -61,9 +60,10 @@ interface StackedCard {
     LucideChevronLeft,
     LucideChevronRight,
     LucideHeart,
+    LucidePlayingCardsFan,
     LucideRotateCcw,
     LucideShield,
-    LucideTombstone,
+      LucideTombstone,
     LucideWandSparkles,
     LucideUndo2,
     LucideUserPlus,

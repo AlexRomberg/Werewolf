@@ -46,7 +46,6 @@ describe('Healer', () => {
 
     expect(character.getActions(done)).toContain('Is finished for this night');
     expect(character.getActions(done)).not.toContain('May make one player immortal for this night');
-    // The button stays so the pick can be changed or undone, but it no longer asks by itself.
     expect(character.getButtons(done)).toMatchObject([
       { kind: 'protect', done: true, auto: false },
     ]);

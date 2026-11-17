@@ -1,7 +1,24 @@
 @if (code(); as code) {
-  <app-qr-code class="block size-36" [value]="joinUrl()" label="QR code to join the room" />
+  <div class="relative">
+    <app-qr-code
+      class="block size-36 transition-opacity"
+      [class.opacity-30]="!connected()"
+      [value]="joinUrl()"
+      label="QR code to join the room"
+    />
+    @if (!connected()) {
+      <p
+        class="absolute inset-0 grid place-items-center text-sm font-semibold text-zinc-100"
+        role="status"
+      >
+        Reconnecting…
+      </p>
+    }
+  </div>
   <p class="mt-2 text-xs uppercase tracking-widest text-zinc-500">Room code</p>
-  <p class="font-mono text-3xl tabular-nums tracking-[0.2em] text-zinc-100">{{ code }}</p>
+  <p class="font-mono text-3xl tabular-nums tracking-[0.2em] text-zinc-100">
+    {{ formattedCode() }}
+  </p>
 } @else {
   <p class="text-sm text-zinc-500" role="status">Opening the room…</p>
 }

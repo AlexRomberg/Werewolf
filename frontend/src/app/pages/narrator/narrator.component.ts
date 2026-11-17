@@ -1,5 +1,5 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
-import { LucideArrowUpDown, LucideCheck, LucideLogOut, LucideArrowLeft } from '@lucide/angular';
+import { LucideArrowLeft, LucideArrowUpDown, LucideCheck, LucideLogOut } from '@lucide/angular';
 import {
   ChangesDialogComponent,
   DaybreakChangeView,
@@ -18,6 +18,7 @@ import { PersonPanelComponent } from '../../components/sidebar/panels/person-pan
 import { SetupPanelComponent } from '../../components/sidebar/panels/setup-panel/setup-panel.component';
 import { SidebarComponent, SidebarPanel } from '../../components/sidebar/sidebar.component';
 import { ActionButton, TONE_BY_KIND } from '../../models/actions/action';
+import { withDealShuffledButton } from '../../models/actions/generic-cards';
 import {
   activeButton,
   isStayingHome,
@@ -27,7 +28,7 @@ import {
 import { Character } from '../../models/character';
 import { CHARACTERS_BY_ID } from '../../models/characters';
 import { GameService } from '../../services/game.service';
-import { RoomHostService, SeatResult } from '../../services/room-host.service';
+import { RoomHostService, RoomSeating } from '../../services/room-host.service';
 import { isAppliable } from '../../services/state/daybreak-state';
 import {
   Ability,
@@ -120,9 +121,43 @@ export class NarratorComponent {
   protected hasExcessCards = computed(() => this.game.characters.excessCards() > 0);
 
   protected isHostingRoom = this.roomHost.isHosting;
+  protected isRoomConnected = this.roomHost.isConnected;
   protected roomCode = this.roomHost.code;
+  protected confirmingDeal = signal(false);
 
-  protected actionCards = this.game.actions.queue;
+  private readonly seating: RoomSeating = {
+    seat: (name) => {
+      if (this.isPlaying()) {
+        return { refused: 'room_locked' };
+      }
+      const personId = this.game.people.takeSeat(name);
+      return personId ? { personId } : { refused: 'room_full' };
+    },
+    hasSeat: (personId) => !!this.personById(personId),
+    rename: (personId, name) => {
+      const person = this.personById(personId);
+      if (person) {
+        this.game.people.update(personId, { ...person, name });
+      }
+    },
+    vacate: (personId) => {
+      if (!this.isPlaying()) {
+        this.game.people.remove(personId);
+      }
+    },
+  };
+
+  protected actionCards = computed(() => {
+    const cards = this.game.actions.queue();
+    if (!this.isHostingRoom()) {
+      return cards;
+    }
+
+    const hasDealt = this.people().some((person) => person.character);
+    return cards.map((card) =>
+      card.id === 'rules' ? withDealShuffledButton(card, hasDealt) : card,
+    );
+  });
   protected actionIndex = this.game.actions.index;
   protected canStepBack = this.game.actions.canGoBack;
   private currentCard = this.game.actions.current;
@@ -208,8 +243,10 @@ export class NarratorComponent {
   );
 
   constructor() {
-    // Every change to the game reaches the players' devices: roles, deaths, links and statuses.
     effect(() => this.roomHost.deal(this.game.people.cards()));
+    if (this.roomHost.hasRoomToResume()) {
+      this.roomHost.open(this.seating);
+    }
   }
 
   protected addPerson() {
@@ -264,34 +301,20 @@ export class NarratorComponent {
 
   protected toggleVirtualCards(enabled: boolean) {
     if (enabled) {
-      this.roomHost.open({
-        seat: (name) => this.seatPlayer(name),
-        vacate: (personId) => this.vacateSeat(personId),
-      });
+      this.roomHost.open(this.seating);
     } else {
       this.roomHost.close();
     }
   }
 
-  /**
-   * Before the game, a player takes the next unnamed seat. Once it runs the table is locked: only
-   * a player whose device dropped out can come back, to the seat that still has their name.
-   */
-  private seatPlayer(name: string): SeatResult {
-    const personId = this.isPlaying()
-      ? this.game.people.findFreeSeat(name, (id) => this.roomHost.isOccupied(id))
-      : this.game.people.takeSeat(name);
-    if (personId) {
-      return { personId };
+  protected dealShuffled() {
+    if (this.people().some((person) => person.character) && !this.confirmingDeal()) {
+      this.confirmingDeal.set(true);
+      return;
     }
-    return { refused: this.isPlaying() ? 'room_locked' : 'room_full' };
-  }
 
-  /** A player who disconnects before the game leaves the table; during it, their seat and role wait for them. */
-  private vacateSeat(personId: string) {
-    if (!this.isPlaying()) {
-      this.game.people.remove(personId);
-    }
+    this.confirmingDeal.set(false);
+    this.game.dealShuffled();
   }
 
   protected startGame() {
@@ -359,6 +382,9 @@ export class NarratorComponent {
         break;
       case 'show-daybreak-changes':
         this.daybreakDialog.set('review');
+        break;
+      case 'deal-shuffled':
+        this.dealShuffled();
         break;
       default:
         if (button.picks !== undefined) {

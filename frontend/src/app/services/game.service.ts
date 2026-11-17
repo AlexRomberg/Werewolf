@@ -6,7 +6,6 @@ import { NightState } from './state/night-state';
 import { PeopleState, createSeats } from './state/people-state';
 import { Ability, INITIAL_ROLE_STATE, INITIAL_SEATS, State } from './state/types';
 
-/** Everything a game accumulates while it is played, as it is before the first night. */
 const UNPLAYED_GAME = {
   round: 0,
   actionIndex: 0,
@@ -50,4 +49,17 @@ export class GameService {
     this.night.resetAbility(ability);
     this.actions.wakeRestoredRoles();
   }
+
+  dealShuffled(random: () => number = Math.random) {
+    this.people.dealOut(shuffled(this.characters.cards(), random));
+  }
+}
+
+function shuffled<T>(items: readonly T[], random: () => number): T[] {
+  const result = [...items];
+  for (let index = result.length - 1; index > 0; index--) {
+    const other = Math.floor(random() * (index + 1));
+    [result[index], result[other]] = [result[other], result[index]];
+  }
+  return result;
 }

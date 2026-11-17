@@ -32,22 +32,18 @@ import {
   STATUS_LABELS,
 } from '../../services/state/types';
 
-// Angles in degrees, clockwise from the positive x axis. The seats fill an arc that
-// leaves a gap at the bottom of the table, where the narrator sits.
 const GAP_ANGLE = 30;
 const TOP_ANGLE = -90;
 const ARC_ANGLE = 360 - GAP_ANGLE;
 const START_ANGLE = TOP_ANGLE - ARC_ANGLE / 2;
-// Positions in the stage's 100 x 100 coordinate space.
 const CENTER = 50;
 const RADIUS = 40;
-/** How far, in px, a pointer has to travel before a press becomes a drag. */
 const DRAG_THRESHOLD = 8;
-/** The distance, in px, between two links that join the same two people. */
 const LANE_GAP = 6;
-/** A crowded circle moves the names near the top above their seats, out of each other's way. */
 const CROWDED_SEAT_COUNT = 12;
 const NAME_ABOVE_SPREAD = 22;
+
+const NOT_BACKGROUND = '.player, button, a, [role="status"], [role="alertdialog"]';
 
 const CONNECTION_LABELS: Record<ConnectionType, string> = {
   [ConnectionType.Love]: 'In love',
@@ -163,7 +159,6 @@ export class CircleComponent {
         return [];
       }
 
-      // Links between the same two players run side by side instead of covering each other.
       const siblings = connections.filter(
         (other) => [other.from, other.to].sort().join() === [first, second].join(),
       );
@@ -187,7 +182,6 @@ export class CircleComponent {
 
   constructor() {
     afterNextRender(() => this.animated.set(true));
-    // A question should be answered before anything else is tapped, and the safe answer is "no".
     effect(() => this.cancelButton()?.nativeElement.focus());
   }
 
@@ -195,6 +189,14 @@ export class CircleComponent {
     if (this.selection()?.pending) {
       this.pickCancelled.emit();
     } else if (this.selection()) {
+      this.selectionClosed.emit();
+    }
+  }
+
+  protected onBackgroundClick(event: MouseEvent) {
+    const selection = this.selection();
+    const target = event.target as Element | null;
+    if (selection && !selection.pending && !target?.closest(NOT_BACKGROUND)) {
       this.selectionClosed.emit();
     }
   }
@@ -255,7 +257,6 @@ export class CircleComponent {
     const x = event.clientX - (stage.left + stage.width / 2);
     const y = event.clientY - (stage.top + stage.height / 2);
     const angle = toDegrees(Math.atan2(y, x));
-    // Normalised to one turn starting at the first seat, so the gap is not crossed twice.
     return START_ANGLE + ((((angle - START_ANGLE) % 360) + 360) % 360);
   }
 

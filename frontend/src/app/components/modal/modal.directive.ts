@@ -22,7 +22,6 @@ export class ModalDirective {
   }
 
   protected onClick(event: MouseEvent) {
-    // The dialog element itself is only hit outside its content: on the backdrop.
     if (event.target === this.dialog) {
       this.close();
     }

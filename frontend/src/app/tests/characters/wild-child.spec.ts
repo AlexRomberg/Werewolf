@@ -48,7 +48,6 @@ describe('WildChild', () => {
 
     expect(character.getActions(chosen)).not.toContain('Has to choose a role model');
     expect(character.getActions(chosen)).toContain('Turns into a werewolf if the role model dies');
-    // The button stays so the pick can be changed or undone, but it no longer asks by itself.
     expect(character.getButtons(chosen)).toMatchObject([
       { kind: 'set-role-model', done: true, auto: false },
     ]);

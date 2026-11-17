@@ -48,7 +48,6 @@ describe('Hoodrat', () => {
 
     expect(character.getActions(away)).toContain('Is finished for this night');
     expect(character.getActions(away)).not.toContain('May look for a new home for the night');
-    // The button stays so the pick can be changed or undone, but it no longer asks by itself.
     expect(character.getButtons(away)).toMatchObject([
       { kind: 'sleepover', done: true, auto: false },
     ]);

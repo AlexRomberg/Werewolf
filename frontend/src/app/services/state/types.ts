@@ -108,7 +108,6 @@ export const INITIAL_ROLE_STATE: RoleStates = {
 };
 
 export const INITIAL_SEATS = 5;
-/** Beyond this the seats on the circle overlap and stop being readable. */
 export const MAX_SEATS = 20;
 
 export function hasStatus(person: Person, status: PersonStatus) {

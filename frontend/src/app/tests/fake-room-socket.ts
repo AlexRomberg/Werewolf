@@ -2,10 +2,8 @@ import { RoomSocket } from '../services/room-socket';
 
 type Listener = (...args: unknown[]) => unknown;
 
-/** Stands in for a socket.io connection: tests play the server by triggering its events. */
 export class FakeRoomSocket {
   connected = false;
-  /** What the server answers to an acknowledged event, by event name. */
   readonly answers = new Map<string, unknown>();
   readonly emitted: { event: string; args: unknown[] }[] = [];
   private readonly listeners = new Map<string, Listener[]>();
@@ -22,7 +20,8 @@ export class FakeRoomSocket {
 
   async emitWithAck(event: string, ...args: unknown[]) {
     this.emitted.push({ event, args });
-    return this.answers.get(event);
+    const answer = this.answers.get(event);
+    return typeof answer === 'function' ? answer(...args) : answer;
   }
 
   disconnect() {
@@ -33,14 +32,17 @@ export class FakeRoomSocket {
     return this;
   }
 
-  /** Connects, and waits for whatever the socket's `connect` listeners ask the server. */
   async connect() {
     this.connected = true;
     this.trigger('connect');
     await settle();
   }
 
-  /** Delivers a server event, returning what each listener answered. */
+  drop() {
+    this.connected = false;
+    this.trigger('disconnect', 'transport close');
+  }
+
   trigger(event: string, ...args: unknown[]) {
     return (this.listeners.get(event) ?? []).map((listener) => listener(...args));
   }
