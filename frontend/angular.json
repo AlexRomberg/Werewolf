@@ -63,7 +63,8 @@
             "security": {
               "allowedHosts": ["localhost", "wolf.aro-playground.ch"]
             },
-            "polyfills": ["@angular/localize/init"]
+            "polyfills": ["@angular/localize/init"],
+            "serviceWorker": "ngsw-config.json"
           },
           "configurations": {
             "production": {
