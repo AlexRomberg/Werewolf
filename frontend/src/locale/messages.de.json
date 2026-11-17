@@ -1,0 +1,17 @@
+{
+  "locale": "de",
+  "translations": {
+    "home.logoAlt": "Mond-Symbol",
+    "home.title": "Werwolf",
+    "home.tagline": "Eine Begleit-App für Erzähler des Spiels{$LINE_BREAK}\"Die Werwölfe von Düsterwald\"",
+    "home.languageLink": "/en",
+    "home.languageLinkLang": "en",
+    "home.switchLanguage": "Switch to English",
+    "home.navLabel": "Hauptmenü",
+    "home.startGame": "Neues Spiel starten",
+    "home.joinRoom": "Raum beitreten",
+    "home.characters": "Charaktere",
+    "home.footer.project": "Ein ARO-Projekt",
+    "home.footer.disclaimer": "Eine inoffizielle Begleit-App für \"Die Werwölfe von Düsterwald\". Sie steht in keiner Verbindung zu lui-même, Asmodee oder den Urhebern des Spiels und wird nicht von ihnen unterstützt. Alle Bilder und Charaktere bleiben deren Eigentum und werden hier ausschließlich für nicht-kommerzielle Fan-Zwecke verwendet."
+  }
+}

@@ -9,28 +9,46 @@
       height="112"
       priority
       alt="Moon icon"
+      i18n-alt="@@home.logoAlt"
     />
-    <h1 class="text-3xl font-bold text-zinc-100">Werewolf</h1>
-    <p class="text-zinc-400">
+    <h1 class="text-3xl font-bold text-zinc-100" i18n="@@home.title">Werewolf</h1>
+    <p class="text-zinc-400" i18n="@@home.tagline">
       A companion app for narrating the game<br />"The Werewolves of Miller's Hollow".
     </p>
   </header>
 
-  <nav class="flex w-full flex-col gap-3" aria-label="Main">
+  <nav class="flex w-full flex-col gap-3" aria-label="Main" i18n-aria-label="@@home.navLabel">
     <a class="btn btn-primary" routerLink="/narrator">
-      Start new game <svg lucideChevronRight size="20"></svg>
+      <ng-container i18n="@@home.startGame">Start new game</ng-container>
+      <svg lucideChevronRight size="20"></svg>
     </a>
     <div class="grid grid-cols-2 gap-3">
-      <a class="btn bg-zinc-800 hover:bg-zinc-700" routerLink="/join">Join a room</a>
-      <a class="btn bg-zinc-800 hover:bg-zinc-700" routerLink="/cards">Characters</a>
+      <a class="btn bg-zinc-800 hover:bg-zinc-700" routerLink="/join" i18n="@@home.joinRoom"
+        >Join a room</a
+      >
+      <a class="btn bg-zinc-800 hover:bg-zinc-700" routerLink="/cards" i18n="@@home.characters"
+        >Characters</a
+      >
     </div>
+    <a
+      class="flex items-center gap-1 text-sm text-zinc-300 underline hover:text-zinc-100 justify-center"
+      href="/de"
+      i18n-href="@@home.languageLink"
+      lang="de"
+      i18n-lang="@@home.languageLinkLang"
+      hreflang="de"
+      i18n-hreflang="@@home.languageLinkLang"
+    >
+      <svg lucideGlobe size="16" aria-hidden="true"></svg>
+      <ng-container i18n="@@home.switchLanguage">Wechsel zu Deutsch</ng-container>
+    </a>
   </nav>
 </main>
 <footer
   class="flex flex-col items-center justify-center gap-4 text-center text-xs text-zinc-500 h-16 bg-zinc-900"
 >
-  <p>An ARO-Project</p>
-  <p>
+  <p i18n="@@home.footer.project">An ARO-Project</p>
+  <p i18n="@@home.footer.disclaimer">
     An unofficial companion for "The Werewolves of Miller's Hollow". It is not affiliated with or
     endorsed by lui-même, Asmodee or the game's creators. All images and characters remain their
     property and are used here for non-commercial fan use only.

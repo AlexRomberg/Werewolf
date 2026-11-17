@@ -39,6 +39,14 @@
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
+      "i18n": {
+        "sourceLocale": "en",
+        "locales": {
+          "de": {
+            "translation": "src/locale/messages.de.json"
+          }
+        }
+      },
       "architect": {
         "build": {
           "builder": "@angular/build:application",
@@ -51,15 +59,11 @@
                 "input": "public"
               }
             ],
-            "styles": [
-              "src/styles.css"
-            ],
+            "styles": ["src/styles.css"],
             "security": {
-              "allowedHosts": [
-                "localhost",
-                "wolf.aro-playground.ch"
-              ]
-            }
+              "allowedHosts": ["localhost", "wolf.aro-playground.ch"]
+            },
+            "polyfills": ["@angular/localize/init"]
           },
           "configurations": {
             "production": {
@@ -75,6 +79,7 @@
                   "maximumError": "8kB"
                 }
               ],
+              "localize": true,
               "outputHashing": "all",
               "optimization": {
                 "scripts": true,
@@ -89,6 +94,9 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "de": {
+              "localize": ["de"]
             }
           },
           "defaultConfiguration": "production"
@@ -102,9 +110,20 @@
             "development": {
               "buildTarget": "frontend:build:development",
               "proxyConfig": "./proxy.conf.json"
+            },
+            "de": {
+              "buildTarget": "frontend:build:development,de",
+              "proxyConfig": "./proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular/build:extract-i18n",
+          "options": {
+            "format": "json",
+            "outputPath": "src/locale"
+          }
         },
         "test": {
           "builder": "@angular/build:unit-test"

@@ -1,0 +1,17 @@
+{
+  "locale": "en",
+  "translations": {
+    "home.logoAlt": "Moon icon",
+    "home.title": "Werewolf",
+    "home.tagline": "A companion app for narrating the game{$LINE_BREAK}\"The Werewolves of Miller's Hollow\"",
+    "home.languageLink": "/de",
+    "home.languageLinkLang": "de",
+    "home.switchLanguage": "Wechsel zu Deutsch",
+    "home.navLabel": "Main",
+    "home.startGame": "Start new game",
+    "home.joinRoom": "Join a room",
+    "home.characters": "Characters",
+    "home.footer.project": "An ARO-Project",
+    "home.footer.disclaimer": " An unofficial companion for \"The Werewolves of Miller's Hollow\". It is not affiliated with or endorsed by lui-même, Asmodee or the game's creators. All images and characters remain their property and are used here for non-commercial fan use only. "
+  }
+}
