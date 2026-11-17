@@ -9,7 +9,7 @@ const QUIET_ZONE = 2;
 })
 export class QrCodeComponent {
   public value = input.required<string>();
-  public label = input('QR code');
+  public label = input($localize`:@@qrCode.label:QR code`);
 
   protected code = computed(() => {
     const { size, data } = encode(this.value(), { border: QUIET_ZONE, ecc: 'M' });

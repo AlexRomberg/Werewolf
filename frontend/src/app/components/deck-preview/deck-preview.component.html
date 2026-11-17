@@ -4,6 +4,12 @@
     [style.left.px]="20 * $index"
     [style.zIndex]="30 - $index"
   >
-    <img width="40" height="40" [ngSrc]="character.image" [alt]="'card ' + character.name" />
+    <img
+      width="40"
+      height="40"
+      [ngSrc]="character.image"
+      alt="card {{ character.name }}"
+      i18n-alt="@@deck.cardAlt"
+    />
   </div>
 }

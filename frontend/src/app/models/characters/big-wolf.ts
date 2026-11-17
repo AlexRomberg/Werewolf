@@ -1,21 +1,23 @@
-import { ActionButton, assignButton, filterFalsy, pickButton } from '../actions/action';
+import { CHARACTER_DESCRIPTIONS } from '../../i18n/descriptions';
+import { CHARACTER_NAMES } from '../../i18n/names';
+import {
+  ActionButton,
+  assignButton,
+  filterFalsy,
+  pickButton,
+  COMMON_LINES,
+} from '../actions/action';
 import { hasMarkedVictim, isAssigned, NightContext } from '../actions/context';
-import { BasePriority, GameSet, GroupType, SectionTitles } from '../character';
+import { BasePriority, GameSet, GroupType } from '../character';
 import { WerewolfCharacter } from '../werewolf-character';
 
 export class BigWolf extends WerewolfCharacter {
   readonly id = 'big_wolf';
-  readonly name = 'The Big Bad Wolf';
+  readonly name = CHARACTER_NAMES.big_wolf;
   readonly group = GroupType.Wolves;
   readonly game = GameSet.Characters;
   override readonly priority = BasePriority.Wolf + 4;
-  readonly description = [
-    {
-      title: SectionTitles.general,
-      description:
-        'Each night the Big Bad Wolf wakes with the other wolves and helps choose a victim. Then, as long as no werewolf has been eliminated, including the Wild Child or the Wolfdog once they have turned, the Big Bad Wolf wakes a second time alone, straight after the wolf phase, and chooses another victim. They may not devour a werewolf.',
-    },
-  ];
+  readonly description = CHARACTER_DESCRIPTIONS.big_wolf;
 
   override isAwakeThisNight(context: NightContext) {
     return !this.hasLostAWolf(context);
@@ -23,15 +25,21 @@ export class BigWolf extends WerewolfCharacter {
 
   override getActions(context: NightContext): (string | false)[] {
     return [
-      !isAssigned(context) && 'Assign person',
-      !hasMarkedVictim(context, this.id) && 'May pick a second victim',
+      !isAssigned(context) && COMMON_LINES.assignPerson,
+      !hasMarkedVictim(context, this.id) &&
+        $localize`:@@big_wolf.mayPickASecondVictim:May pick a second victim`,
     ];
   }
 
   override getButtons(context: NightContext): ActionButton[] {
     return filterFalsy<ActionButton>([
       assignButton(context),
-      pickButton('mark-victim', 'Mark second victim', 1, hasMarkedVictim(context, this.id)),
+      pickButton(
+        'mark-victim',
+        $localize`:@@big_wolf.markSecondVictim:Mark second victim`,
+        1,
+        hasMarkedVictim(context, this.id),
+      ),
     ]);
   }
 }

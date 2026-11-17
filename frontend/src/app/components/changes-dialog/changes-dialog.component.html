@@ -5,7 +5,9 @@
   aria-labelledby="changes-dialog-title"
   (closed)="closed.emit()"
 >
-  <h1 id="changes-dialog-title" class="text-xl font-bold text-zinc-100">This morning</h1>
+  <h1 id="changes-dialog-title" class="text-xl font-bold text-zinc-100" i18n="@@changes.title">
+    This morning
+  </h1>
 
   <div class="mt-4 flex max-h-[60svh] flex-col gap-3 overflow-y-auto">
     @if (deaths().length) {
@@ -15,11 +17,13 @@
         }
       </ul>
     } @else {
-      <p class="text-zinc-100" data-headline>Nobody died</p>
+      <p class="text-zinc-100" data-headline i18n="@@changes.nobodyDied">Nobody died</p>
     }
 
     @if (informational().length) {
-      <h2 class="mt-2 text-sm font-bold text-zinc-400">Informational</h2>
+      <h2 class="mt-2 text-sm font-bold text-zinc-400" i18n="@@changes.informational">
+        Informational
+      </h2>
       <ul class="flex flex-col gap-3" data-informational>
         @for (entry of informational(); track entry.key) {
           <ng-container [ngTemplateOutlet]="row" [ngTemplateOutletContext]="{ $implicit: entry }" />
@@ -74,12 +78,14 @@
         @if (entry.appliable) {
           @if (entry.applied) {
             <span class="flex items-center gap-1 text-xs text-zinc-400">
-              <svg lucideCheck size="14"></svg> Applied
+              <svg lucideCheck size="14"></svg>
+              <ng-container i18n="@@changes.applied">Applied</ng-container>
             </span>
           } @else {
             <button
               class="rounded-full bg-orange-900 px-3 py-1 text-sm hover:bg-orange-800"
               (click)="applied.emit(entry.change)"
+              i18n="@@changes.apply"
             >
               Apply
             </button>
@@ -91,17 +97,37 @@
 
   <div class="mt-6 grid grid-cols-2 gap-3">
     @if (leaving()) {
-      <button class="btn bg-zinc-700 hover:bg-zinc-600" (click)="proceeded.emit()">
+      <button
+        class="btn bg-zinc-700 hover:bg-zinc-600"
+        (click)="proceeded.emit()"
+        i18n="@@changes.skipRest"
+      >
         Skip the rest
       </button>
-      <button class="btn btn-primary" (click)="appliedAll.emit(); proceeded.emit()">
+      <button
+        class="btn btn-primary"
+        (click)="appliedAll.emit(); proceeded.emit()"
+        i18n="@@changes.applyAllAndGoOn"
+      >
         Apply all and go on
       </button>
     } @else if (hasPending()) {
-      <button class="btn bg-zinc-700 hover:bg-zinc-600" (click)="modal.close()">Close</button>
-      <button class="btn btn-primary" (click)="appliedAll.emit()">Apply all</button>
+      <button
+        class="btn bg-zinc-700 hover:bg-zinc-600"
+        (click)="modal.close()"
+        i18n="@@common.close"
+      >
+        Close
+      </button>
+      <button class="btn btn-primary" (click)="appliedAll.emit()" i18n="@@changes.applyAll">
+        Apply all
+      </button>
     } @else {
-      <button class="btn col-span-2 bg-zinc-700 hover:bg-zinc-600" (click)="modal.close()">
+      <button
+        class="btn col-span-2 bg-zinc-700 hover:bg-zinc-600"
+        (click)="modal.close()"
+        i18n="@@common.close"
+      >
         Close
       </button>
     }

@@ -3,7 +3,7 @@
   class="relative z-10 block aspect-square w-full rounded-3xl perspective-distant focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-amber-400 disabled:cursor-default"
   [disabled]="!character()"
   [attr.aria-pressed]="faceUp()"
-  [attr.aria-label]="faceUp() ? 'Turn your card face down' : 'Turn your card around'"
+  [attr.aria-label]="faceUp() ? faceDownLabel : turnAroundLabel"
   (click)="flipPressed.emit()"
 >
   <div
@@ -51,6 +51,7 @@
     [class.opacity-0]="!faceUp()"
     [inert]="!faceUp()"
     aria-label="What you know"
+    i18n-aria-label="@@playerCard.facts"
   >
     @for (fact of facts(); track fact.text) {
       <li class="flex items-start gap-3" [attr.data-tone]="fact.tone">

@@ -1,16 +1,12 @@
-import { Character, GameSet, GroupType, SectionTitles } from '../character';
+import { CHARACTER_DESCRIPTIONS } from '../../i18n/descriptions';
+import { CHARACTER_NAMES } from '../../i18n/names';
+import { Character, GameSet, GroupType } from '../character';
 
 export class Villager extends Character {
   readonly id = 'villager';
-  readonly name = 'The Simple Villager';
+  readonly name = CHARACTER_NAMES.villager;
   readonly group = GroupType.Passive;
   readonly game = GameSet.BaseGame;
   override readonly hasMultiple = true;
-  readonly description = [
-    {
-      title: SectionTitles.general,
-      description:
-        'The Simple Villager has no special ability. Their only weapons are a sharp eye for suspicious behaviour and the knack of talking the rest of the village round to their innocence.',
-    },
-  ];
+  readonly description = CHARACTER_DESCRIPTIONS.villager;
 }

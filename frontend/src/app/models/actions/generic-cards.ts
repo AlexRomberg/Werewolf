@@ -9,12 +9,13 @@ export function rulesCard(round: number, selected: readonly Character[]): Action
   return {
     key: `${round}:rules`,
     id: 'rules',
-    title: 'Rules',
+    title: $localize`:@@card.rules.title:Rules`,
     image: 'img/rules.png',
     actions: filterFalsy([
-      'Explain the rules',
-      wolves.length > 0 && `Name the wolves in play: ${wolves.map((wolf) => wolf.name).join(', ')}`,
-      'Tell the opening story',
+      $localize`:@@card.rules.explain:Explain the rules`,
+      wolves.length > 0 &&
+        $localize`:@@card.rules.nameWolves:Name the wolves in play: ${wolves.map((wolf) => wolf.name).join(', ')}:wolves:`,
+      $localize`:@@card.rules.openingStory:Tell the opening story`,
     ]),
     buttons: [],
   };
@@ -25,7 +26,12 @@ export function withDealShuffledButton(card: ActionCard, hasDealt: boolean): Act
     ...card,
     buttons: [
       ...card.buttons,
-      { kind: 'deal-shuffled', label: hasDealt ? 'Assign cards again' : 'Assign cards' },
+      {
+        kind: 'deal-shuffled',
+        label: hasDealt
+          ? $localize`:@@card.rules.dealAgain:Assign cards again`
+          : $localize`:@@card.rules.deal:Assign cards`,
+      },
     ],
   };
 }
@@ -34,9 +40,9 @@ export function nightfallCard(round: number): ActionCard {
   return {
     key: `${round}:night`,
     id: 'night',
-    title: 'Nightfall',
+    title: $localize`:@@card.night.title:Nightfall`,
     image: 'img/night.png',
-    actions: ['The village falls asleep'],
+    actions: [$localize`:@@card.night.villageSleeps:The village falls asleep`],
     buttons: [],
   };
 }
@@ -51,19 +57,21 @@ export function daybreakCard(
   return {
     key: `${round}:day`,
     id: 'day',
-    title: 'Daybreak',
+    title: $localize`:@@card.day.title:Daybreak`,
     image: 'img/day.png',
     actions: filterFalsy([
-      'The village wakes up',
-      'Announce what happened during the night',
-      hasBearTamer && 'Remember the Bear Tamer',
-      'Open the discussion',
+      $localize`:@@card.day.villageWakes:The village wakes up`,
+      $localize`:@@card.day.announce:Announce what happened during the night`,
+      hasBearTamer && $localize`:@@card.day.rememberBearTamer:Remember the Bear Tamer`,
+      $localize`:@@card.day.openDiscussion:Open the discussion`,
     ]),
     buttons: [
       {
         kind: 'show-daybreak-changes',
         label:
-          pendingChangeCount > 0 ? `Show changes (${pendingChangeCount} open)` : 'Show changes',
+          pendingChangeCount > 0
+            ? $localize`:@@card.day.showOpenChanges:Show changes (${pendingChangeCount}:count: open)`
+            : $localize`:@@card.day.showChanges:Show changes`,
       },
     ],
   };

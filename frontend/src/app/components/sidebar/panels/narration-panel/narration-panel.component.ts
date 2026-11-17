@@ -38,6 +38,7 @@ interface ButtonView {
   button: ActionButton;
   tone: ActionTone;
   active: boolean;
+  undoLabel: string;
 }
 
 interface StackedCard {
@@ -63,7 +64,7 @@ interface StackedCard {
     LucidePlayingCardsFan,
     LucideRotateCcw,
     LucideShield,
-      LucideTombstone,
+    LucideTombstone,
     LucideWandSparkles,
     LucideUndo2,
     LucideUserPlus,
@@ -92,6 +93,13 @@ export class NarrationPanelComponent {
 
   protected charactersOpen = signal(false);
 
+  protected spentViews = computed(() =>
+    this.spentAbilities().map((spent) => ({
+      ...spent,
+      giveBackLabel: $localize`:@@narration.giveBackAbility:Give back: ${spent.label}:ability:`,
+    })),
+  );
+
   protected stack = computed<StackedCard[]>(() => {
     const cards = this.cards();
     const index = this.index();
@@ -114,6 +122,7 @@ export class NarrationPanelComponent {
         button,
         tone: TONE_BY_KIND[button.kind],
         active: isCurrent && button.kind === this.activeKind(),
+        undoLabel: $localize`:@@narration.undoButton:Undo: ${button.label}:action:`,
       })),
       transform:
         depth < 0 ? 'translateX(130%)' : `translateY(-${lift}rem) scale(${1 - depth * 0.03})`,

@@ -1,7 +1,7 @@
 <div class="flex min-h-0 flex-col gap-4 overflow-y-auto">
   <div class="sidebar-container">
     <span class="flex gap-2 items-baseline">
-      <span class="input-label flex-1">Group by:</span>
+      <span class="input-label flex-1" i18n="@@grouping.label">Group by:</span>
       <app-grouping-toggle [(grouping)]="grouping" />
     </span>
     <div class="grid grid-cols-2 gap-2">
@@ -31,7 +31,7 @@
                 <button
                   class="hover:text-zinc-100 disabled:opacity-30 disabled:hover:text-zinc-400"
                   [disabled]="!card.canDecrease"
-                  [attr.aria-label]="'One fewer ' + card.character.name"
+                  [attr.aria-label]="card.fewerLabel"
                   (click)="decrease(card)"
                 >
                   <svg lucideCircleMinus></svg>
@@ -40,7 +40,7 @@
                 <button
                   class="hover:text-zinc-100 disabled:opacity-30 disabled:hover:text-zinc-400"
                   [disabled]="!card.canIncrease"
-                  [attr.aria-label]="'One more ' + card.character.name"
+                  [attr.aria-label]="card.moreLabel"
                   (click)="increase(card)"
                 >
                   <svg lucideCirclePlus></svg>
@@ -60,7 +60,7 @@
   </div>
 </div>
 <div class="sidebar-container">
-  <h2 class="text-lg font-bold text-zinc-300">Presets</h2>
+  <h2 class="text-lg font-bold text-zinc-300" i18n="@@cards.presets">Presets</h2>
 
   @for (view of presets(); track view.preset.name) {
     <button
@@ -70,14 +70,17 @@
       <span class="flex items-baseline gap-2">
         <span class="text-sm text-zinc-100">{{ view.preset.name }}</span>
         @if ($first) {
-          <span class="rounded-full bg-amber-400/15 px-2 py-0.5 text-xs text-amber-300">
+          <span
+            class="rounded-full bg-amber-400/15 px-2 py-0.5 text-xs text-amber-300"
+            i18n="@@cards.recommended"
+          >
             Recommended
           </span>
         }
       </span>
       <span class="text-xs text-zinc-400 flex items-center gap-1">
         {{ view.deck.length }}
-        <svg lucideUsers size="16" alt="people"></svg>
+        <svg lucideUsers size="16" aria-hidden="true"></svg>
       </span>
       <app-deck-preview class="col-span-2 mt-2" [cards]="view.deck" />
     </button>
@@ -87,6 +90,10 @@
     class="input-label self-start hover:text-zinc-100"
     (click)="presetsExpanded.set(!presetsExpanded())"
   >
-    {{ presetsExpanded() ? 'Show fewer' : 'Show ' + hiddenPresetCount + ' more presets' }}
+    @if (presetsExpanded()) {
+      <ng-container i18n="@@cards.showFewer">Show fewer</ng-container>
+    } @else {
+      <ng-container i18n="@@cards.showMore">Show {{ hiddenPresetCount }} more presets</ng-container>
+    }
   </button>
 </div>

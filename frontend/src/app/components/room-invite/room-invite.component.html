@@ -5,20 +5,24 @@
       [class.opacity-30]="!connected()"
       [value]="joinUrl()"
       label="QR code to join the room"
+      i18n-label="@@roomInvite.qrLabel"
     />
     @if (!connected()) {
       <p
         class="absolute inset-0 grid place-items-center text-sm font-semibold text-zinc-100"
         role="status"
+        i18n="@@common.reconnecting"
       >
         Reconnecting…
       </p>
     }
   </div>
-  <p class="mt-2 text-xs uppercase tracking-widest text-zinc-500">Room code</p>
+  <p class="mt-2 text-xs uppercase tracking-widest text-zinc-500" i18n="@@roomInvite.code">
+    Room code
+  </p>
   <p class="font-mono text-3xl tabular-nums tracking-[0.2em] text-zinc-100">
     {{ formattedCode() }}
   </p>
 } @else {
-  <p class="text-sm text-zinc-500" role="status">Opening the room…</p>
+  <p class="text-sm text-zinc-500" role="status" i18n="@@roomInvite.opening">Opening the room…</p>
 }

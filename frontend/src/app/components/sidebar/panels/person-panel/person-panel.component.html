@@ -9,18 +9,19 @@
         <svg lucideUser size="32" class="text-zinc-500"></svg>
       }
     </div>
-    <label class="input-label" for="person-name">Name</label>
+    <label class="input-label" for="person-name" i18n="@@person.name">Name</label>
     <input
       id="person-name"
       class="input"
       type="text"
       autocomplete="off"
       placeholder="Unnamed player"
+      i18n-placeholder="@@person.unnamed"
       [ngModel]="person().name"
       (ngModelChange)="onNameInput($event)"
       (blur)="cleanName()"
     />
-    <label class="input-label" for="person-character">Character</label>
+    <label class="input-label" for="person-character" i18n="@@person.character">Character</label>
     <select
       id="person-character"
       class="input"
@@ -35,7 +36,7 @@
   </div>
 
   <div class="sidebar-container">
-    <h2 class="text-lg font-bold text-zinc-300">Status</h2>
+    <h2 class="text-lg font-bold text-zinc-300" i18n="@@person.status">Status</h2>
     <div class="flex flex-wrap gap-2">
       @for (option of statusOptions(); track option.status) {
         <button

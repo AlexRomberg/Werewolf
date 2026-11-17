@@ -2,7 +2,7 @@ import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import type { PlayerCard } from '@protocol';
-import { SectionTitles } from '../models/character';
+import { SECTION_TITLES } from '../i18n/descriptions';
 import { WEREWOLF } from '../models/characters';
 import { RoomComponent } from '../pages/room/room.component';
 import { RoomPlayerService, RoomStatus } from '../services/room-player.service';
@@ -102,7 +102,7 @@ describe('RoomComponent, a joined player', () => {
       h3.textContent?.trim(),
     );
     expect(titles.length).toBeGreaterThan(0);
-    expect(titles).not.toContain(SectionTitles.hintForTheNarrator);
+    expect(titles).not.toContain(SECTION_TITLES.hintForTheNarrator);
   });
 
   it("should turn a dead player's card face up for good", async () => {

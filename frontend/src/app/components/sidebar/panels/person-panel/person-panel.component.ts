@@ -20,7 +20,7 @@ export class PersonPanelComponent {
   public personChanged = output<Person>();
 
   protected characterOptions = computed(() => [
-    { value: undefined, label: 'Select a character' },
+    { value: undefined, label: $localize`:@@person.selectCharacter:Select a character` },
     ...this.characters().map((character) => ({ value: character.id, label: character.name })),
   ]);
 

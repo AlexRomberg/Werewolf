@@ -46,9 +46,9 @@ const NAME_ABOVE_SPREAD = 22;
 const NOT_BACKGROUND = '.player, button, a, [role="status"], [role="alertdialog"]';
 
 const CONNECTION_LABELS: Record<ConnectionType, string> = {
-  [ConnectionType.Love]: 'In love',
-  [ConnectionType.Trust]: 'Role model',
-  [ConnectionType.Sleepover]: 'Sleepover',
+  [ConnectionType.Love]: $localize`:@@connection.love:In love`,
+  [ConnectionType.Trust]: $localize`:@@connection.trust:Role model`,
+  [ConnectionType.Sleepover]: $localize`:@@connection.sleepover:Sleepover`,
 };
 
 const BADGE_TONES: Record<PersonBadge, ActionTone> = {
@@ -115,6 +115,7 @@ export class CircleComponent {
   private wasDragged = false;
   private drag = signal<{ id: string; angle: number; toIndex: number } | null>(null);
 
+  protected readonly confirmPickLabel = $localize`:@@circle.confirmPick:Confirm this pick`;
   protected canAdd = computed(() => this.people().length < MAX_SEATS);
   protected placedPeople = computed(() => {
     const people = this.people();
@@ -136,6 +137,7 @@ export class CircleComponent {
         selected: !selection && person.id === selectedPersonId,
         pick: selection ? pickStateOf(person.id, selection) : null,
         label: ariaLabelOf(person),
+        removeLabel: $localize`:@@circle.removePerson:Remove ${person.displayName}:person:`,
         badges: person.badges.map((badge) => ({
           kind: badge,
           tone: BADGE_TONES[badge],

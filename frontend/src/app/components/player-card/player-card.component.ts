@@ -22,9 +22,9 @@ interface Fact {
 }
 
 const LINK_TEXT: Record<LinkType, (name: string) => string> = {
-  love: (name) => `You are in love with ${name}.`,
-  trust: (name) => `${name} is your role model.`,
-  sleepover: (name) => `You sleep over at ${name}'s.`,
+  love: (name) => $localize`:@@playerCard.love:You are in love with ${name}:name:.`,
+  trust: (name) => $localize`:@@playerCard.trust:${name}:name: is your role model.`,
+  sleepover: (name) => $localize`:@@playerCard.sleepover:You sleep over at ${name}:name:'s.`,
 };
 
 @Component({
@@ -50,15 +50,26 @@ export class PlayerCardComponent {
 
   public flipPressed = output<void>();
 
+  protected readonly faceDownLabel = $localize`:@@playerCard.faceDown:Turn your card face down`;
+  protected readonly turnAroundLabel = $localize`:@@playerCard.turnAround:Turn your card around`;
+
   protected facts = computed<Fact[]>(() => {
     const card = this.card();
     const states: (Fact | false)[] = [
-      card.isDead && { kind: 'dead', tone: 'kill', text: 'You are dead.' },
-      card.isWerewolf && { kind: 'werewolf', tone: 'kill', text: 'You hunt with the werewolves.' },
+      card.isDead && {
+        kind: 'dead',
+        tone: 'kill',
+        text: $localize`:@@playerCard.dead:You are dead.`,
+      },
+      card.isWerewolf && {
+        kind: 'werewolf',
+        tone: 'kill',
+        text: $localize`:@@playerCard.werewolf:You hunt with the werewolves.`,
+      },
       card.isEnchanted && {
         kind: 'enchanted',
         tone: 'enchant',
-        text: 'The piper has enchanted you.',
+        text: $localize`:@@playerCard.enchanted:The piper has enchanted you.`,
       },
     ];
     const links = card.links.map(({ type, name }): Fact => ({

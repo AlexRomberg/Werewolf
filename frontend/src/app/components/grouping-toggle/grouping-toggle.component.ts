@@ -2,8 +2,8 @@ import { Component, model } from '@angular/core';
 import { CharacterGrouping } from '../../models/characters/sections';
 
 const GROUPING_LABELS: Record<CharacterGrouping, string> = {
-  game: 'Game',
-  group: 'Group',
+  game: $localize`:@@grouping.game:Game`,
+  group: $localize`:@@grouping.group:Group`,
 };
 
 @Component({

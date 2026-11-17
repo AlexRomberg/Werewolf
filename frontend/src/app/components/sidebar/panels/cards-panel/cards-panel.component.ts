@@ -28,6 +28,8 @@ interface CardView {
   amount: number;
   canDecrease: boolean;
   canIncrease: boolean;
+  fewerLabel: string;
+  moreLabel: string;
   hint?: string;
 }
 
@@ -106,7 +108,12 @@ export class CardsPanelComponent {
       isBulk: BULK_CHARACTERS.includes(character),
       canDecrease: amount > minimum,
       canIncrease: amount < MAX_SEATS,
-      hint: character === VILLAGER && minimum > 0 ? 'Fills the remaining seats.' : undefined,
+      fewerLabel: $localize`:@@cards.fewer:One fewer ${character.name}:character:`,
+      moreLabel: $localize`:@@cards.more:One more ${character.name}:character:`,
+      hint:
+        character === VILLAGER && minimum > 0
+          ? $localize`:@@cards.villagerHint:Fills the remaining seats.`
+          : undefined,
     };
   }
 }

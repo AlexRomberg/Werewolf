@@ -1,20 +1,22 @@
-import { ActionButton, assignButton, filterFalsy, pickButton } from '../actions/action';
+import { CHARACTER_DESCRIPTIONS } from '../../i18n/descriptions';
+import { CHARACTER_NAMES } from '../../i18n/names';
+import {
+  ActionButton,
+  assignButton,
+  filterFalsy,
+  pickButton,
+  COMMON_LINES,
+} from '../actions/action';
 import { hasMarkedVictim, isAbilityUsed, isAssigned, NightContext } from '../actions/context';
-import { BasePriority, Character, GameSet, GroupType, SectionTitles } from '../character';
+import { BasePriority, Character, GameSet, GroupType } from '../character';
 
 export class Witch extends Character {
   readonly id = 'witch';
-  readonly name = 'The Witch';
+  readonly name = CHARACTER_NAMES.witch;
   readonly group = GroupType.Active;
   readonly game = GameSet.BaseGame;
   override readonly priority = BasePriority.PostWolf + 1;
-  readonly description = [
-    {
-      title: SectionTitles.general,
-      description:
-        'The Witch can brew two very powerful potions: a healing potion that saves a player the werewolves have chosen as their victim, and a poison that kills any player of their choice during the night. Each potion may be used once per game, and both may be used on the same night. The Witch may also use the healing potion on themselves.',
-    },
-  ];
+  readonly description = CHARACTER_DESCRIPTIONS.witch;
 
   override isAwakeThisNight(context: NightContext) {
     return this.hasHealingPotion(context) || this.hasPoison(context);
@@ -22,10 +24,13 @@ export class Witch extends Character {
 
   override getActions(context: NightContext): (string | false)[] {
     return [
-      !isAssigned(context) && 'Assign person',
-      !this.hasHealingPotion(context) && !this.hasPoison(context) && 'Has no potion left',
-      this.hasHealingPotion(context) && 'May use the healing potion',
-      this.hasPoison(context) && 'May use the poison',
+      !isAssigned(context) && COMMON_LINES.assignPerson,
+      !this.hasHealingPotion(context) &&
+        !this.hasPoison(context) &&
+        $localize`:@@witch.hasNoPotionLeft:Has no potion left`,
+      this.hasHealingPotion(context) &&
+        $localize`:@@witch.mayUseTheHealingPotion:May use the healing potion`,
+      this.hasPoison(context) && $localize`:@@witch.mayUseThePoison:May use the poison`,
     ];
   }
 
@@ -35,9 +40,10 @@ export class Witch extends Character {
 
     return filterFalsy<ActionButton>([
       assignButton(context),
-      (this.hasHealingPotion(context) || healed) && pickButton('heal', 'Heal', 1, healed, false),
+      (this.hasHealingPotion(context) || healed) &&
+        pickButton('heal', $localize`:@@witch.heal:Heal`, 1, healed, false),
       (this.hasPoison(context) || poisoned) &&
-        pickButton('poison', 'Poison someone', 1, poisoned, false),
+        pickButton('poison', $localize`:@@witch.poisonSomeone:Poison someone`, 1, poisoned, false),
     ]);
   }
 

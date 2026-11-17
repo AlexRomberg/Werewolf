@@ -80,6 +80,7 @@
                 }
               ],
               "localize": true,
+              "i18nMissingTranslation": "error",
               "outputHashing": "all",
               "optimization": {
                 "scripts": true,

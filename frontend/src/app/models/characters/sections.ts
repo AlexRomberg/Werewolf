@@ -1,4 +1,5 @@
-import { Character, GAME_SET_LABELS, GROUP_LABELS } from '../character';
+import { GAME_SET_LABELS, GROUP_LABELS } from '../../i18n/names';
+import { Character } from '../character';
 import { BULK_CHARACTERS, CHARACTERS } from './index';
 
 export type CharacterGrouping = 'group' | 'game';

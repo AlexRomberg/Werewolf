@@ -24,7 +24,7 @@ import {
 } from '@lucide/angular';
 import { MAX_NAME_LENGTH, type JoinRefusal, type PlayerCard } from '@protocol';
 import { PlayerCardComponent } from '../../components/player-card/player-card.component';
-import { GROUP_LABELS, SectionTitles } from '../../models/character';
+import { GROUP_LABELS } from '../../i18n/names';
 import { CHARACTERS_BY_ID } from '../../models/characters';
 import { RoomPlayerService, RoomStatus } from '../../services/room-player.service';
 
@@ -38,11 +38,11 @@ const UNDEALT_CARD: PlayerCard = {
 };
 
 const REFUSAL_MESSAGES: Record<Exclude<JoinRefusal, 'host_away'>, string> = {
-  room_not_found: 'There is no room with this code. Check it with the narrator.',
-  invalid_request: 'Check the code and your name, and try again.',
-  room_full: 'Every seat at this table is taken.',
-  room_locked: 'The game has already started. You can join the next one.',
-  too_many_attempts: 'That was a lot of tries. Wait a minute, then try again.',
+  room_not_found: $localize`:@@room.refusal.notFound:There is no room with this code. Check it with the narrator.`,
+  invalid_request: $localize`:@@room.refusal.invalid:Check the code and your name, and try again.`,
+  room_full: $localize`:@@room.refusal.full:Every seat at this table is taken.`,
+  room_locked: $localize`:@@room.refusal.locked:The game has already started. You can join the next one.`,
+  too_many_attempts: $localize`:@@room.refusal.tooManyAttempts:That was a lot of tries. Wait a minute, then try again.`,
 };
 
 const AT_TABLE: readonly RoomStatus[] = ['joined', 'reconnecting', 'host_away'];
@@ -106,9 +106,8 @@ export class RoomComponent implements OnInit {
   });
   protected readonly descriptionSections = computed(
     () =>
-      this.character()?.description.filter(
-        (section) => section.title !== SectionTitles.hintForTheNarrator,
-      ) ?? [],
+      this.character()?.description.filter((section) => section.kind !== 'hintForTheNarrator') ??
+      [],
   );
   protected readonly hasDescription = computed(
     () => this.isFaceUp() && this.descriptionSections().length > 0,

@@ -1,25 +1,16 @@
-import { ActionButton, assignButton, filterFalsy } from '../actions/action';
+import { CHARACTER_DESCRIPTIONS } from '../../i18n/descriptions';
+import { CHARACTER_NAMES } from '../../i18n/names';
+import { ActionButton, assignButton, filterFalsy, COMMON_LINES } from '../actions/action';
 import { isAssigned, isFirstNight, NightContext } from '../actions/context';
-import { BasePriority, Character, GameSet, GroupType, SectionTitles } from '../character';
+import { BasePriority, Character, GameSet, GroupType } from '../character';
 
 export class Scapegoat extends Character {
   readonly id = 'scapegoat';
-  readonly name = 'The Scapegoat';
+  readonly name = CHARACTER_NAMES.scapegoat;
   readonly group = GroupType.Passive;
   readonly game = GameSet.NewMoon;
   override readonly priority = BasePriority.Initial + 12;
-  readonly description = [
-    {
-      title: SectionTitles.general,
-      description:
-        'If the village vote ends in a tie, the Scapegoat is eliminated instead of either of the tied players, so it is on them to steer the day away from that ending. A Scapegoat who is eliminated keeps one privilege: they decide who may vote the next day and who may not.',
-    },
-    {
-      title: SectionTitles.attention,
-      description:
-        'Naming a single voter risks the werewolves devouring that player the following night, which would leave the village with no vote at all. Unless, of course, the chosen player is a werewolf, or the wolves leave them alive on purpose.',
-    },
-  ];
+  readonly description = CHARACTER_DESCRIPTIONS.scapegoat;
 
   override isAwakeThisNight(context: NightContext) {
     return isFirstNight(context);
@@ -27,9 +18,9 @@ export class Scapegoat extends Character {
 
   override getActions(context: NightContext): (string | false)[] {
     return [
-      !isAssigned(context) && 'Assign person',
-      'Can go back to sleep right away',
-      'Is chosen whenever a vote ends in a tie',
+      !isAssigned(context) && COMMON_LINES.assignPerson,
+      COMMON_LINES.backToSleep,
+      $localize`:@@scapegoat.isChosenWheneverAVote:Is chosen whenever a vote ends in a tie`,
     ];
   }
 

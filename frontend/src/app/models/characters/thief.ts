@@ -1,27 +1,26 @@
-import { ActionButton, assignButton, filterFalsy } from '../actions/action';
+import { CHARACTER_DESCRIPTIONS } from '../../i18n/descriptions';
+import { CHARACTER_NAMES } from '../../i18n/names';
+import { ActionButton, assignButton, filterFalsy, COMMON_LINES } from '../actions/action';
 import { isAssigned, isFirstNight, NightContext } from '../actions/context';
-import { BasePriority, Character, GameSet, GroupType, SectionTitles } from '../character';
+import { BasePriority, Character, GameSet, GroupType } from '../character';
 
 export class Thief extends Character {
   readonly id = 'thief';
-  readonly name = 'The Thief';
+  readonly name = CHARACTER_NAMES.thief;
   readonly group = GroupType.Active;
   readonly game = GameSet.BaseGame;
   override readonly priority = BasePriority.Initial + 1;
-  readonly description = [
-    {
-      title: SectionTitles.general,
-      description:
-        'To play with the Thief, add two extra Simple Villager cards to the deck before the game begins. Once the roles are dealt, the two cards left over go face down in the middle of the table. On the first night the Thief looks at both and may swap their own card for one of them. If both are werewolves, the Thief must take one of them. Whatever they end up with is theirs for the rest of the game.',
-    },
-  ];
+  readonly description = CHARACTER_DESCRIPTIONS.thief;
 
   override isAwakeThisNight(context: NightContext) {
     return isFirstNight(context);
   }
 
   override getActions(context: NightContext): (string | false)[] {
-    return ['Has to swap cards', !isAssigned(context) && 'Assign person'];
+    return [
+      $localize`:@@thief.hasToSwapCards:Has to swap cards`,
+      !isAssigned(context) && COMMON_LINES.assignPerson,
+    ];
   }
 
   override getButtons(context: NightContext): ActionButton[] {

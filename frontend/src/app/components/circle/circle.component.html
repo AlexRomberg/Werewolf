@@ -13,20 +13,22 @@
       <div
         class="absolute -top-0.5 left-1/2 z-20 flex max-w-[calc(100%-3rem)] -translate-x-1/2 items-center gap-3 rounded-b-2xl bg-tone px-4 py-2 text-sm font-semibold text-zinc-950 shadow-lg shadow-black/40"
         [attr.role]="activeSelection.pending ? 'alertdialog' : 'status'"
-        [attr.aria-label]="activeSelection.pending ? 'Confirm this pick' : null"
+        [attr.aria-label]="activeSelection.pending ? confirmPickLabel : null"
       >
         @if (activeSelection.pending; as pending) {
-          <span>{{ pending.warning }} Continue?</span>
+          <span i18n="@@circle.pickWarning">{{ pending.warning }} Continue?</span>
           <button
             #cancelButton
             class="rounded-full bg-zinc-950/15 px-3 py-1 hover:bg-zinc-950/25"
             (click)="pickCancelled.emit()"
+            i18n="@@confirm.cancel"
           >
             Cancel
           </button>
           <button
             class="rounded-full bg-zinc-950 px-3 py-1 text-zinc-100 hover:bg-zinc-800"
             (click)="pickConfirmed.emit()"
+            i18n="@@circle.continue"
           >
             Continue
           </button>
@@ -38,6 +40,7 @@
           <button
             class="-mr-1 rounded-full p-1 hover:bg-zinc-950/15"
             aria-label="Stop selecting"
+            i18n-aria-label="@@circle.stopSelecting"
             (click)="selectionClosed.emit()"
           >
             <svg lucideX size="16"></svg>
@@ -186,6 +189,7 @@
                   <button
                     class="absolute -right-1 -top-1 size-6 rounded-full bg-red-700 text-white"
                     (click)="personRemoved.emit(placed.person.id)"
+                    [attr.aria-label]="placed.removeLabel"
                   >
                     <svg class="size-4 mx-auto" lucideX></svg>
                   </button>
@@ -201,12 +205,15 @@
           class="circle absolute left-1/2 top-9/10 -translate-x-1/2 -translate-y-1/2 border-dashed disabled:opacity-30"
           [disabled]="!canAdd()"
           (click)="personAdded.emit()"
+          aria-label="Add a seat"
+          i18n-aria-label="@@circle.addSeat"
         >
           <svg class="self-center mx-auto" lucideUserRoundPlus></svg>
         </button>
       } @else {
         <p
           class="absolute left-1/2 top-9/10 -translate-x-1/2 -translate-y-1/2 text-2xl text-zinc-600"
+          i18n="@@circle.you"
         >
           You
         </p>

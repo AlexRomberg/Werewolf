@@ -8,19 +8,19 @@ export interface Preset {
 
 export const PRESETS: readonly Preset[] = [
   {
-    name: 'Small Group',
+    name: $localize`:@@preset.smallGroup:Small Group`,
     cards: { werewolf: 1, wild_child: 1, seer: 1, healer: 1 },
   },
   {
-    name: 'First Game',
+    name: $localize`:@@preset.firstGame:First Game`,
     cards: { werewolf: 2, seer: 1, witch: 1, hunter: 1, villager: 1 },
   },
   {
-    name: 'Classic Village',
+    name: $localize`:@@preset.classicVillage:Classic Village`,
     cards: { werewolf: 2, seer: 1, witch: 1, hunter: 1, cupid: 1, small_child: 1, villager: 2 },
   },
   {
-    name: 'Complex Game',
+    name: $localize`:@@preset.complexGame:Complex Game`,
     cards: {
       werewolf: 1,
       primal_wolf: 1,
@@ -34,7 +34,7 @@ export const PRESETS: readonly Preset[] = [
     },
   },
   {
-    name: 'Big Table',
+    name: $localize`:@@preset.bigTable:Big Table`,
     cards: {
       werewolf: 3,
       big_wolf: 1,
@@ -49,7 +49,7 @@ export const PRESETS: readonly Preset[] = [
     },
   },
   {
-    name: 'All Characters',
+    name: $localize`:@@preset.allCharacters:All Characters`,
     cards: {
       angel: 1,
       bear_tamer: 1,

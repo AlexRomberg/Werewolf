@@ -9,8 +9,8 @@ import { ModalDirective } from '../modal/modal.directive';
 export class ConfirmDialogComponent {
   public title = input.required<string>();
   public message = input('');
-  public confirmLabel = input('Confirm');
-  public cancelLabel = input('Cancel');
+  public confirmLabel = input($localize`:@@confirm.confirm:Confirm`);
+  public cancelLabel = input($localize`:@@confirm.cancel:Cancel`);
 
   public confirmed = output<void>();
   public cancelled = output<void>();

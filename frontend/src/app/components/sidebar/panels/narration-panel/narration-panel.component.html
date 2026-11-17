@@ -4,7 +4,7 @@
     [attr.aria-expanded]="charactersOpen()"
     (click)="charactersOpen.set(!charactersOpen())"
   >
-    <h2 class="flex-1 text-lg font-bold text-zinc-300">Characters</h2>
+    <h2 class="flex-1 text-lg font-bold text-zinc-300" i18n="@@narration.characters">Characters</h2>
     <span class="text-xs text-zinc-500">{{ characters().length }}</span>
     <svg
       lucideChevronDown
@@ -25,14 +25,17 @@
 
 @if (!charactersOpen() && spentAbilities().length) {
   <section class="sidebar-container shrink-0">
-    <h2 class="text-sm font-bold text-zinc-400">Used up abilities</h2>
+    <h2 class="text-sm font-bold text-zinc-400" i18n="@@narration.usedAbilities">
+      Used up abilities
+    </h2>
     <ul class="flex flex-wrap gap-2">
-      @for (spent of spentAbilities(); track spent.ability) {
+      @for (spent of spentViews(); track spent.ability) {
         <li>
           <button
             class="chip flex items-center gap-2 text-zinc-200"
-            [attr.aria-label]="'Give back: ' + spent.label"
+            [attr.aria-label]="spent.giveBackLabel"
             title="Give back"
+            i18n-title="@@narrator.giveBack"
             (click)="abilityReset.emit(spent.ability)"
           >
             {{ spent.label }}
@@ -114,14 +117,15 @@
                       @if (view.active) {
                         <span class="text-xs tabular-nums text-tone">{{ activeProgress() }}</span>
                       } @else if (view.button.done && view.button.picks !== undefined) {
-                        <span class="text-xs text-zinc-400">Change</span>
+                        <span class="text-xs text-zinc-400" i18n="@@narration.change">Change</span>
                       }
                     </button>
                     @if (view.button.done) {
                       <button
                         class="grid w-12 shrink-0 place-items-center rounded-xl border border-tone/30 bg-tone/10 text-zinc-400 hover:bg-tone/20 hover:text-zinc-100"
-                        [attr.aria-label]="'Undo: ' + view.button.label"
+                        [attr.aria-label]="view.undoLabel"
                         title="Undo"
+                        i18n-title="@@narration.undo"
                         (click)="buttonCleared.emit(view.button)"
                       >
                         <svg lucideUndo2 size="16"></svg>
@@ -145,10 +149,14 @@
       [disabled]="!canGoBack()"
       (click)="previous.emit()"
     >
-      <svg lucideChevronLeft size="20"></svg> <span>Back</span>
+      <svg lucideChevronLeft size="20"></svg> <span i18n="@@common.back">Back</span>
     </button>
     <button class="btn btn-primary col-span-2" (click)="next.emit()">
-      <span>{{ isLastCard() ? 'Next night' : 'Next' }}</span>
+      @if (isLastCard()) {
+        <span i18n="@@narration.nextNight">Next night</span>
+      } @else {
+        <span i18n="@@narration.next">Next</span>
+      }
       <svg lucideChevronRight size="20"></svg>
     </button>
   </span>

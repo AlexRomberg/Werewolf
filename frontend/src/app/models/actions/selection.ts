@@ -40,7 +40,7 @@ export function pickWarning(
   context: NightContext,
 ): string | undefined {
   if (!isAlive(person)) {
-    return 'This player is dead.';
+    return $localize`:@@pick.dead:This player is dead.`;
   }
 
   switch (button.kind) {
@@ -48,26 +48,26 @@ export function pickWarning(
       return assignWarning(cardId, person);
     case 'mark-victim':
       return cardId === WHITE_WOLF.id && !isWerewolf(person)
-        ? 'This player is not a werewolf.'
+        ? $localize`:@@pick.notAWerewolf:This player is not a werewolf.`
         : undefined;
     case 'protect':
       return person.id === context.roles.healerLastProtected
-        ? 'This player was already protected last night.'
+        ? $localize`:@@pick.protectedLastNight:This player was already protected last night.`
         : undefined;
     case 'sleepover':
       return person.id === context.roles.hoodratLastHost
-        ? 'The Hoodrat already stayed here last night.'
+        ? $localize`:@@pick.hoodratStayedLastNight:The Hoodrat already stayed here last night.`
         : undefined;
     case 'set-role-model':
       return holdsCard(person, context)
-        ? 'The Wild Child cannot be their own role model.'
+        ? $localize`:@@pick.ownRoleModel:The Wild Child cannot be their own role model.`
         : undefined;
     case 'enchant':
       return enchantWarning(person, context);
     case 'heal':
       return isWolfVictim(cardId, person, context)
         ? undefined
-        : 'The wolves did not come for this player.';
+        : $localize`:@@pick.notAWolfVictim:The wolves did not come for this player.`;
     default:
       return undefined;
   }
@@ -79,17 +79,17 @@ function assignWarning(cardId: string, person: Person) {
   }
 
   return person.character.id === cardId
-    ? 'This player already holds this card.'
-    : `This player is already ${person.character.name} and would be reassigned.`;
+    ? $localize`:@@pick.holdsThisCard:This player already holds this card.`
+    : $localize`:@@pick.holdsOtherCard:This player is already ${person.character.name}:character: and would be reassigned.`;
 }
 
 function enchantWarning(person: Person, context: NightContext) {
   if (holdsCard(person, context)) {
-    return 'The Piper cannot enchant themself.';
+    return $localize`:@@pick.enchantSelf:The Piper cannot enchant themself.`;
   }
 
   return hasStatus(person, PersonStatus.Enchanted)
-    ? 'This player is already enchanted.'
+    ? $localize`:@@pick.alreadyEnchanted:This player is already enchanted.`
     : undefined;
 }
 

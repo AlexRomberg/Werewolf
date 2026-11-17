@@ -47,7 +47,7 @@ export class PeopleState {
       return {
         ...person,
         seat: index + 1,
-        displayName: person.name || `Seat ${index + 1}`,
+        displayName: person.name || $localize`:@@person.seat:Seat ${index + 1}:seat:`,
         isDead: !isAlive(person),
         badges,
       };

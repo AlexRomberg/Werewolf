@@ -1,26 +1,26 @@
 <div class="flex min-h-0 flex-col gap-4 overflow-y-auto">
   <div class="sidebar-container">
-    <h2 class="text-lg font-bold text-zinc-300">Cards</h2>
+    <h2 class="text-lg font-bold text-zinc-300" i18n="@@setup.cards">Cards</h2>
     <button
       class="grid grid-cols-[1fr_auto] grid-rows-[auto_3rem] gap-2 rounded-lg bg-zinc-800 p-4 hover:bg-zinc-700"
       (click)="cardSelectorPressed.emit()"
     >
-      <p class="text-start">{{ cards().length }} Cards selected</p>
+      <p class="text-start" i18n="@@setup.cardsSelected">{{ cards().length }} Cards selected</p>
       <svg lucideChevronRight class="row-span-2 self-center"></svg>
       <app-deck-preview class="w-80 max-w-80" [cards]="cards()" />
     </button>
   </div>
 
   <div class="sidebar-container">
-    <h2 class="text-lg font-bold text-zinc-300">Players' devices</h2>
+    <h2 class="text-lg font-bold text-zinc-300" i18n="@@setup.devices">Players' devices</h2>
     <app-toggle-switch
       id="virtual-cards"
       [checked]="virtualCards()"
       (checkedChange)="virtualCardsToggled.emit($event)"
     >
-      Enable virtual cards
+      <ng-container i18n="@@setup.virtualCards">Enable virtual cards</ng-container>
     </app-toggle-switch>
-    <p class="text-sm text-zinc-400">
+    <p class="text-sm text-zinc-400" i18n="@@setup.devicesHint">
       Players join with the code in the middle of the table and take the next unnamed seat.
     </p>
   </div>
@@ -30,10 +30,11 @@
   @if (hasExcessCards()) {
     <p class="flex items-start gap-2 text-sm text-zinc-400" role="status">
       <svg lucideTriangleAlert size="16" class="mt-0.5 shrink-0"></svg>
-      <span>There are more cards than players.</span>
+      <span i18n="@@setup.excessCards">There are more cards than players.</span>
     </p>
   }
   <button class="btn btn-primary" (click)="gameStartPressed.emit()">
-    Start <svg lucideChevronRight size="20"></svg>
+    <ng-container i18n="@@setup.start">Start</ng-container>
+    <svg lucideChevronRight size="20"></svg>
   </button>
 </div>

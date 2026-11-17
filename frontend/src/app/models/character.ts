@@ -15,40 +15,26 @@ export enum GameSet {
   Special = 'special',
 }
 
-export const GROUP_LABELS: ReadonlyMap<GroupType, string> = new Map([
-  [GroupType.Wolves, 'Wolves'],
-  [GroupType.Active, 'Active'],
-  [GroupType.Passive, 'Passive'],
-  [GroupType.Loners, 'Loners'],
-]);
-
-export const GAME_SET_LABELS: ReadonlyMap<GameSet, string> = new Map([
-  [GameSet.BaseGame, 'Base Game'],
-  [GameSet.Characters, 'Characters'],
-  [GameSet.NewMoon, 'New Moon'],
-  [GameSet.Special, 'Special'],
-]);
-
 export enum BasePriority {
   Initial = 0,
   Wolf = 50,
   PostWolf = 100,
 }
 
+export type SectionKind =
+  | 'general'
+  | 'hintForTheNarrator'
+  | 'attention'
+  | 'variantForTheBrave'
+  | 'hint'
+  | 'specialCase'
+  | 'explanations';
+
 export interface DescriptionSection {
+  kind: SectionKind;
   title: string;
   description: string;
 }
-
-export const SectionTitles = {
-  general: 'General',
-  hintForTheNarrator: 'Hint for the narrator',
-  attention: 'Attention',
-  variantForTheBrave: 'Variant for the brave',
-  hint: 'Hint',
-  specialCase: 'Special case',
-  explanations: 'Explanations',
-};
 
 export abstract class Character {
   abstract readonly id: string;

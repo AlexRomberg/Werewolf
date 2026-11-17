@@ -52,14 +52,16 @@ interface PartialPick {
 }
 
 const SIDEBAR_TITLES: Record<SidebarPanel['kind'], string | undefined> = {
-  setup: 'Setup',
-  cards: 'Card selection',
-  person: 'Person details',
+  setup: $localize`:@@narrator.title.setup:Setup`,
+  cards: $localize`:@@narrator.title.cards:Card selection`,
+  person: $localize`:@@narrator.title.person:Person details`,
   narration: undefined,
 };
 
 function nightTitle(round: number) {
-  return round === 0 ? 'First night' : `Night ${round + 1}`;
+  return round === 0
+    ? $localize`:@@narrator.title.firstNight:First night`
+    : $localize`:@@narrator.title.night:Night ${round + 1}:number:`;
 }
 
 @Component({
@@ -173,9 +175,11 @@ export class NarratorComponent {
     })),
   );
   protected resettingAbility = signal<Ability | null>(null);
-  protected resettingAbilityLabel = computed(() => {
+  protected resettingAbilityMessage = computed(() => {
     const ability = this.resettingAbility();
-    return ability ? ABILITY_LABELS[ability] : '';
+    return ability
+      ? $localize`:@@narrator.giveBack.message:${ABILITY_LABELS[ability]}:ability: counts as unused again, and the role is called again tonight.`
+      : '';
   });
 
   private selectionChoice = signal<SelectionChoice | null>(null);
@@ -211,7 +215,10 @@ export class NarratorComponent {
     const pending = this.pendingPick();
     return {
       tone: TONE_BY_KIND[button.kind],
-      label: button.kind === 'assign-card' ? `Select ${card.title}` : button.label,
+      label:
+        button.kind === 'assign-card'
+          ? $localize`:@@narrator.selectCard:Select ${card.title}:card:`
+          : button.label,
       needed: button.picks ?? 0,
       picked: this.pickedIds(),
       cautioned: this.people()

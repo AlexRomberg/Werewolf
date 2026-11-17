@@ -33,6 +33,15 @@ export const TONE_BY_KIND: Record<ActionButtonKind, ActionTone> = {
   'deal-shuffled': 'assign',
 };
 
+/** Checklist lines and labels several roles share, translated once. */
+export const COMMON_LINES = {
+  assignPerson: $localize`:@@common.assignPerson:Assign person`,
+  assignPeople: $localize`:@@common.assignPeople:Assign people`,
+  backToSleep: $localize`:@@common.backToSleep:Can go back to sleep right away`,
+  finishedForTheNight: $localize`:@@common.finishedForTheNight:Is finished for this night`,
+  mayExchange: $localize`:@@common.mayExchange:They may exchange with each other`,
+};
+
 export interface ActionButton {
   readonly kind: ActionButtonKind;
   readonly label: string;
@@ -61,7 +70,7 @@ export function assignButton(
 
   return {
     kind: 'assign-card',
-    label: picks === 1 ? 'Assign person' : 'Assign people',
+    label: picks === 1 ? COMMON_LINES.assignPerson : COMMON_LINES.assignPeople,
     picks,
     auto: true,
   };

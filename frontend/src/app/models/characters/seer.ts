@@ -1,27 +1,26 @@
-import { ActionButton, assignButton, filterFalsy } from '../actions/action';
+import { CHARACTER_DESCRIPTIONS } from '../../i18n/descriptions';
+import { CHARACTER_NAMES } from '../../i18n/names';
+import { ActionButton, assignButton, filterFalsy, COMMON_LINES } from '../actions/action';
 import { isAssigned, NightContext } from '../actions/context';
-import { BasePriority, Character, GameSet, GroupType, SectionTitles } from '../character';
+import { BasePriority, Character, GameSet, GroupType } from '../character';
 
 export class Seer extends Character {
   readonly id = 'seer';
-  readonly name = 'The Seer';
+  readonly name = CHARACTER_NAMES.seer;
   readonly group = GroupType.Active;
   readonly game = GameSet.BaseGame;
   override readonly priority = BasePriority.Initial + 4;
-  readonly description = [
-    {
-      title: SectionTitles.general,
-      description:
-        'Each night the Seer learns the true identity of one player of their choice. They have to help the rest of the village with what they know without giving themselves away, or the werewolves will find them.',
-    },
-  ];
+  readonly description = CHARACTER_DESCRIPTIONS.seer;
 
   override isAwakeThisNight(_context: NightContext) {
     return true;
   }
 
   override getActions(context: NightContext): (string | false)[] {
-    return [!isAssigned(context) && 'Assign person', 'May look at one card'];
+    return [
+      !isAssigned(context) && COMMON_LINES.assignPerson,
+      $localize`:@@seer.mayLookAtOneCard:May look at one card`,
+    ];
   }
 
   override getButtons(context: NightContext): ActionButton[] {

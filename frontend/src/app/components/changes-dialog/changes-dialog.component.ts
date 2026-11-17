@@ -69,7 +69,11 @@ function toEntry(view: DaybreakChangeView): ChangeEntry {
     key: `${change.personId}:${change.reason}`,
     portrait: portraitOf(person),
     causePortrait,
-    ...wording(change, callName(person), midSentence(causePortrait?.name ?? 'someone')),
+    ...wording(
+      change,
+      callName(person),
+      midSentence(causePortrait?.name ?? $localize`:@@changes.someone:someone`),
+    ),
   };
 }
 
@@ -79,30 +83,47 @@ function wording(change: DaybreakChange, name: string, cause: string) {
   switch (change.reason) {
     case ChangeReason.DiedGotKilled:
       return {
-        headline: `${name} got killed`,
-        note: causingRole === WITCH.id ? `Poisoned by ${cause}` : `By ${cause}`,
+        headline: $localize`:@@changes.killed:${name}:name: got killed`,
+        note:
+          causingRole === WITCH.id
+            ? $localize`:@@changes.poisonedBy:Poisoned by ${cause}:cause:`
+            : $localize`:@@changes.killedBy:By ${cause}:cause:`,
       };
     case ChangeReason.DiedOfBrokenHeart:
-      return { headline: `${name} died of a broken heart`, note: `In love with ${cause}` };
+      return {
+        headline: $localize`:@@changes.brokenHeart:${name}:name: died of a broken heart`,
+        note: $localize`:@@changes.inLoveWith:In love with ${cause}:cause:`,
+      };
     case ChangeReason.DiedSleptWithVictim:
       return {
-        headline: `${name} died, spent the night at the victim's place`,
-        note: `Guest of ${cause}`,
+        headline: $localize`:@@changes.sleptWithVictim:${name}:name: died, spent the night at the victim's place`,
+        note: $localize`:@@changes.guestOf:Guest of ${cause}:cause:`,
       };
     case ChangeReason.TurnedIntoWolf:
-      return { headline: `${name} turned into a wolf`, note: `Secret! Role model (${cause}) died` };
+      return {
+        headline: $localize`:@@changes.turnedWolf:${name}:name: turned into a wolf`,
+        note: $localize`:@@changes.roleModelDied:Secret! Role model (${cause}:cause:) died`,
+      };
     case ChangeReason.SurvivedHostDeath:
-      return { headline: `${name} survived`, note: `Host ${cause} did not die by the wolves` };
+      return {
+        headline: $localize`:@@changes.survived:${name}:name: survived`,
+        note: $localize`:@@changes.hostNotKilledByWolves:Host ${cause}:cause: did not die by the wolves`,
+      };
     case ChangeReason.SurvivedAttack:
-      return { headline: `${name} survived the attack`, note: savedNote(causingRole, cause) };
+      return {
+        headline: $localize`:@@changes.survivedAttack:${name}:name: survived the attack`,
+        note: savedNote(causingRole, cause),
+      };
   }
 }
 
 function savedNote(savedByRole: string, cause: string) {
   if (savedByRole === WITCH.id) {
-    return `Healed by ${cause}`;
+    return $localize`:@@changes.healedBy:Healed by ${cause}:cause:`;
   }
-  return savedByRole === HOODRAT.id ? 'Not at home' : `Protected by ${cause}`;
+  return savedByRole === HOODRAT.id
+    ? $localize`:@@changes.notAtHome:Not at home`
+    : $localize`:@@changes.protectedBy:Protected by ${cause}:cause:`;
 }
 
 function callName(person: PersonView) {

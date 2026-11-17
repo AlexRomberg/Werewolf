@@ -1,15 +1,11 @@
-import { Character, GameSet, GroupType, SectionTitles } from '../character';
+import { CHARACTER_DESCRIPTIONS } from '../../i18n/descriptions';
+import { CHARACTER_NAMES } from '../../i18n/names';
+import { Character, GameSet, GroupType } from '../character';
 
 export class SmallChild extends Character {
   readonly id = 'small_child';
-  readonly name = 'The Little Girl';
+  readonly name = CHARACTER_NAMES.small_child;
   readonly group = GroupType.Active;
   readonly game = GameSet.BaseGame;
-  readonly description = [
-    {
-      title: SectionTitles.general,
-      description:
-        'The Little Girl may spy on the werewolves through half-closed eyes during the wolf phase. If the wolves notice, they may devour the Little Girl on the spot, silently, in place of the victim they had chosen. The Little Girl may only spy while the werewolves are awake, and must never open their eyes wide to pass as one of the pack.',
-    },
-  ];
+  readonly description = CHARACTER_DESCRIPTIONS.small_child;
 }

@@ -4,13 +4,16 @@
       class="-ml-2 rounded-full p-2 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100"
       routerLink="/"
       aria-label="Back to the start page"
+      i18n-aria-label="@@common.backToStart"
     >
       <svg lucideChevronLeft size="20"></svg>
     </a>
-    <h1 class="flex-1 truncate text-2xl font-bold text-zinc-300">Characters</h1>
+    <h1 class="flex-1 truncate text-2xl font-bold text-zinc-300" i18n="@@cards.title">
+      Characters
+    </h1>
 
     <span class="flex items-baseline gap-2">
-      <span class="input-label max-sm:hidden">Group by:</span>
+      <span class="input-label max-sm:hidden" i18n="@@grouping.label">Group by:</span>
       <app-grouping-toggle [(grouping)]="grouping" />
     </span>
   </header>

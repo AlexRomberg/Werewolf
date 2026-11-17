@@ -44,10 +44,10 @@ export interface DaybreakChange {
 export type Ability = 'witch_heal' | 'witch_poison' | 'fox_request' | 'primal_wolf_infection';
 
 export const ABILITY_LABELS: Record<Ability, string> = {
-  witch_heal: 'Witch: healing potion',
-  witch_poison: 'Witch: poison',
-  fox_request: 'Fox: has missed',
-  primal_wolf_infection: 'Primal Wolf: infection',
+  witch_heal: $localize`:@@ability.witchHeal:Witch: healing potion`,
+  witch_poison: $localize`:@@ability.witchPoison:Witch: poison`,
+  fox_request: $localize`:@@ability.foxRequest:Fox: has missed`,
+  primal_wolf_infection: $localize`:@@ability.primalWolfInfection:Primal Wolf: infection`,
 };
 
 export interface RoleStates {
@@ -69,12 +69,12 @@ export type NightBadge = 'victim' | 'healed';
 export type PersonBadge = Exclude<PersonStatus, PersonStatus.Dead> | NightBadge;
 
 export const STATUS_LABELS: Record<PersonStatus | NightBadge, string> = {
-  [PersonStatus.Dead]: 'Dead',
-  [PersonStatus.Protected]: 'Protected',
-  [PersonStatus.Enchanted]: 'Enchanted',
-  [PersonStatus.TurnedWolf]: 'Turned wolf',
-  victim: 'Marked as a victim',
-  healed: 'Healed',
+  [PersonStatus.Dead]: $localize`:@@status.dead:Dead`,
+  [PersonStatus.Protected]: $localize`:@@status.protected:Protected`,
+  [PersonStatus.Enchanted]: $localize`:@@status.enchanted:Enchanted`,
+  [PersonStatus.TurnedWolf]: $localize`:@@status.turnedWolf:Turned wolf`,
+  victim: $localize`:@@status.victim:Marked as a victim`,
+  healed: $localize`:@@status.healed:Healed`,
 };
 
 export interface PersonView extends Person {

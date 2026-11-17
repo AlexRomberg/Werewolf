@@ -25,9 +25,11 @@
           (click)="rearranging.set(!rearranging())"
         >
           @if (rearranging()) {
-            <svg lucideCheck size="16"></svg> Done
+            <svg lucideCheck size="16"></svg>
+            <ng-container i18n="@@narrator.rearrangeDone">Done</ng-container>
           } @else {
-            <svg lucideArrowUpDown size="16"></svg> Rearrange
+            <svg lucideArrowUpDown size="16"></svg>
+            <ng-container i18n="@@narrator.rearrange">Rearrange</ng-container>
           }
         </button>
       }
@@ -37,7 +39,9 @@
       <button
         class="absolute left-6 top-6 rounded-xl bg-zinc-800 p-3 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-100"
         aria-label="End game"
+        i18n-aria-label="@@narrator.endGame"
         title="End game"
+        i18n-title="@@narrator.endGame"
         (click)="confirmingEnd.set(true)"
       >
         <svg lucideLogOut size="20"></svg>
@@ -46,7 +50,9 @@
       <a
         class="absolute block left-6 top-6 rounded-xl bg-zinc-800 p-3 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-100"
         aria-label="Back"
+        i18n-aria-label="@@common.back"
         title="Back"
+        i18n-title="@@common.back"
         routerLink="/"
       >
         <svg lucideArrowLeft size="20"></svg>
@@ -106,8 +112,11 @@
 @if (confirmingDeal()) {
   <app-confirm-dialog
     title="Assign new cards?"
+    i18n-title="@@narrator.deal.title"
     message="Every seat gets a random card from the deck, and the roles assigned so far are replaced."
+    i18n-message="@@narrator.deal.message"
     confirmLabel="Assign cards"
+    i18n-confirmLabel="@@card.rules.deal"
     (confirmed)="dealShuffled()"
     (cancelled)="confirmingDeal.set(false)"
   />
@@ -116,9 +125,13 @@
 @if (confirmingEnd()) {
   <app-confirm-dialog
     title="End this game?"
+    i18n-title="@@narrator.end.title"
     message="Roles, links and everything that happened so far are cleared. The seats, the names and the chosen cards stay."
+    i18n-message="@@narrator.end.message"
     confirmLabel="End game"
+    i18n-confirmLabel="@@narrator.endGame"
     cancelLabel="Keep playing"
+    i18n-cancelLabel="@@narrator.end.keepPlaying"
     (confirmed)="endGame()"
     (cancelled)="confirmingEnd.set(false)"
   />
@@ -127,10 +140,10 @@
 @if (resettingAbility()) {
   <app-confirm-dialog
     title="Give this back?"
-    [message]="
-      resettingAbilityLabel() + ' counts as unused again, and the role is called again tonight.'
-    "
+    i18n-title="@@narrator.giveBack.title"
+    [message]="resettingAbilityMessage()"
     confirmLabel="Give back"
+    i18n-confirmLabel="@@narrator.giveBack"
     (confirmed)="resetAbility()"
     (cancelled)="resettingAbility.set(null)"
   />

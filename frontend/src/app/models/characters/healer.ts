@@ -1,26 +1,23 @@
-import { ActionButton, assignButton, filterFalsy, pickButton } from '../actions/action';
+import { CHARACTER_DESCRIPTIONS } from '../../i18n/descriptions';
+import { CHARACTER_NAMES } from '../../i18n/names';
+import {
+  ActionButton,
+  assignButton,
+  filterFalsy,
+  pickButton,
+  COMMON_LINES,
+} from '../actions/action';
 import { isAssigned, NightContext, someoneHas } from '../actions/context';
 import { PersonStatus } from '../../services/state/types';
-import { BasePriority, Character, GameSet, GroupType, SectionTitles } from '../character';
+import { BasePriority, Character, GameSet, GroupType } from '../character';
 
 export class Healer extends Character {
   readonly id = 'healer';
-  readonly name = 'The Healer';
+  readonly name = CHARACTER_NAMES.healer;
   readonly group = GroupType.Active;
   readonly game = GameSet.NewMoon;
   override readonly priority = BasePriority.Initial + 10;
-  readonly description = [
-    {
-      title: SectionTitles.general,
-      description:
-        'When the narrator calls the Healer, before the werewolves, the Healer points at one player. That player is protected from the werewolves for that night only. If the wolves choose them as their victim, they are not eliminated.',
-    },
-    {
-      title: SectionTitles.attention,
-      description:
-        'The Healer may protect themselves, but may not protect the same player on two nights in a row. The protection does nothing for the Little Girl, who is deep in a teenage crisis and will go looking for trouble whatever anyone does. It is also no defence against the Piper or against infection by the Primal Wolf.',
-    },
-  ];
+  readonly description = CHARACTER_DESCRIPTIONS.healer;
 
   override isAwakeThisNight(_context: NightContext) {
     return true;
@@ -28,16 +25,22 @@ export class Healer extends Character {
 
   override getActions(context: NightContext): (string | false)[] {
     return [
-      !isAssigned(context) && 'Assign person',
-      !this.hasProtected(context) && 'May make one player immortal for this night',
-      this.hasProtected(context) && 'Is finished for this night',
+      !isAssigned(context) && COMMON_LINES.assignPerson,
+      !this.hasProtected(context) &&
+        $localize`:@@healer.mayMakeOnePlayerImmortal:May make one player immortal for this night`,
+      this.hasProtected(context) && COMMON_LINES.finishedForTheNight,
     ];
   }
 
   override getButtons(context: NightContext): ActionButton[] {
     return filterFalsy<ActionButton>([
       assignButton(context),
-      pickButton('protect', 'Protect a player', 1, this.hasProtected(context)),
+      pickButton(
+        'protect',
+        $localize`:@@healer.protectAPlayer:Protect a player`,
+        1,
+        this.hasProtected(context),
+      ),
     ]);
   }
 
