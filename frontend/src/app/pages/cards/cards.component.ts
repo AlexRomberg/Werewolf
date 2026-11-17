@@ -1,3 +1,4 @@
+import { LandscapeComponent } from '../../components/landscape/landscape.component';
 import { Component, computed, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { LucideChevronLeft } from '@lucide/angular';
@@ -10,6 +11,7 @@ import { CharacterGrouping, characterSections } from '../../models/characters/se
 @Component({
   selector: 'app-cards',
   imports: [
+    LandscapeComponent,
     RouterLink,
     LucideChevronLeft,
     CharacterTileComponent,

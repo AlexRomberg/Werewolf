@@ -34,9 +34,11 @@
   --connection: var(--color-blue-800);
 }
 
-html,
+html {
+  @apply bg-zinc-950;
+}
 body {
-  @apply bg-zinc-950 text-zinc-100;
+  @apply text-zinc-100;
 }
 .btn {
   @apply p-3 rounded-lg text-base text-zinc-100 disabled:bg-zinc-700! disabled:text-zinc-400 disabled:cursor-not-allowed flex items-center gap-2 justify-center;

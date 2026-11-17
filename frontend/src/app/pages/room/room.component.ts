@@ -1,3 +1,4 @@
+import { LandscapeComponent } from '../../components/landscape/landscape.component';
 import {
   Component,
   DestroyRef,
@@ -55,6 +56,7 @@ const NAME_SCHEMA = schema<{ name: string }>((path) => {
 @Component({
   selector: 'app-room',
   imports: [
+    LandscapeComponent,
     FormField,
     NgOptimizedImage,
     RouterLink,

@@ -1,3 +1,4 @@
+import { LandscapeComponent } from '../../components/landscape/landscape.component';
 import { Component, inject, signal } from '@angular/core';
 import { FormField, form, pattern, required } from '@angular/forms/signals';
 import { Router, RouterLink } from '@angular/router';
@@ -11,7 +12,7 @@ import {
 
 @Component({
   selector: 'app-join',
-  imports: [FormField, RouterLink, LucideArrowLeft, LucideChevronRight],
+  imports: [LandscapeComponent, FormField, RouterLink, LucideArrowLeft, LucideChevronRight],
   templateUrl: './join.component.html',
 })
 export class JoinComponent {
