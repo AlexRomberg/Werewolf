@@ -59,7 +59,16 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/styles.css"],
+            "styles": [
+              "src/styles.css",
+              "node_modules/@fontsource/alegreya/latin-400.css",
+              "node_modules/@fontsource/alegreya/latin-500.css",
+              "node_modules/@fontsource/alegreya/latin-400-italic.css",
+              "node_modules/@fontsource/alegreya-sc/latin-500.css",
+              "node_modules/@fontsource/alegreya-sans/latin-400.css",
+              "node_modules/@fontsource/alegreya-sans/latin-500.css",
+              "node_modules/@fontsource/alegreya-sans/latin-700.css"
+            ],
             "security": {
               "allowedHosts": ["localhost", "wolf.aro-playground.ch"]
             },

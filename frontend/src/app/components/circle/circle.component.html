@@ -5,13 +5,13 @@
   (click)="onBackgroundClick($event)"
 >
   <div
-    class="relative grid h-full w-full place-items-center rounded-3xl border-2 transition-colors duration-300"
+    class="circle-frame relative grid h-full w-full place-items-center rounded-surface border-2 pt-10 transition-colors duration-300"
     [class.border-transparent]="!selection()"
     [class.border-tone]="!!selection()"
   >
     @if (selection(); as activeSelection) {
       <div
-        class="absolute -top-0.5 left-1/2 z-20 flex max-w-[calc(100%-3rem)] -translate-x-1/2 items-center gap-3 rounded-b-2xl bg-tone px-4 py-2 text-sm font-semibold text-zinc-950 shadow-lg shadow-black/40"
+        class="absolute -top-0.5 left-1/2 z-20 flex max-w-[calc(100%-1.5rem)] -translate-x-1/2 items-center gap-3 rounded-b-control bg-tone px-4 py-2 text-sm font-bold text-night-950 shadow-lg shadow-black/40"
         [attr.role]="activeSelection.pending ? 'alertdialog' : 'status'"
         [attr.aria-label]="activeSelection.pending ? confirmPickLabel : null"
       >
@@ -19,14 +19,14 @@
           <span i18n="@@circle.pickWarning">{{ pending.warning }} Continue?</span>
           <button
             #cancelButton
-            class="rounded-full bg-zinc-950/15 px-3 py-1 hover:bg-zinc-950/25"
+            class="cursor-pointer rounded-control bg-night-950/15 px-3 py-1 hover:bg-night-950/25"
             (click)="pickCancelled.emit()"
             i18n="@@confirm.cancel"
           >
             Cancel
           </button>
           <button
-            class="rounded-full bg-zinc-950 px-3 py-1 text-zinc-100 hover:bg-zinc-800"
+            class="cursor-pointer rounded-control bg-night-950 px-3 py-1 text-frost-50 hover:bg-night-800"
             (click)="pickConfirmed.emit()"
             i18n="@@circle.continue"
           >
@@ -38,7 +38,7 @@
             >{{ activeSelection.picked.length }}/{{ activeSelection.needed }}</span
           >
           <button
-            class="-mr-1 rounded-full p-1 hover:bg-zinc-950/15"
+            class="-mr-1 cursor-pointer rounded-control p-1 hover:bg-night-950/15"
             aria-label="Stop selecting"
             i18n-aria-label="@@circle.stopSelecting"
             (click)="selectionClosed.emit()"
@@ -51,12 +51,13 @@
 
     <div
       #stage
-      class="circle-stage relative aspect-square w-full max-w-[min(100%,calc(100svh-2rem))] select-none"
+      class="circle-stage relative aspect-square select-none"
+      [style.--seats]="people().length || 1"
       [class.animated]="animated()"
       role="group"
     >
       <svg
-        class="pointer-events-none absolute size-full stroke-zinc-800 fill-none"
+        class="pointer-events-none absolute size-full fill-none stroke-ornament"
         viewBox="0 0 100 100"
       >
         <path
@@ -99,7 +100,7 @@
             >
               @if (placed.person.name) {
                 <span
-                  class="text-xs absolute block truncate max-w-24 px-2 py-0.5 bg-zinc-950 text-zinc-500 rounded-full"
+                  class="absolute block max-w-24 truncate rounded-control bg-night-950/90 px-1.5 py-0.5 font-display text-sm text-frost-200"
                   [class.translate-x-9]="!placed.nameAbove"
                   [class.-translate-y-14]="placed.nameAbove"
                 >
@@ -108,10 +109,10 @@
               }
               <div class="absolute -translate-x-1/2 -translate-y-1/2">
                 <button
-                  class="circle bg-zinc-800 text-zinc-100 touch-none"
+                  class="circle touch-none"
                   [class.cursor-grab]="editMode() && !placed.dragging"
                   [class.cursor-grabbing]="placed.dragging"
-                  [class.border-amber-400]="placed.selected"
+                  [class.selected]="placed.selected"
                   [class.dead]="placed.person.isDead"
                   [attr.aria-label]="placed.label"
                   [attr.data-pick]="placed.pick"
@@ -124,11 +125,11 @@
                 >
                   @if (placed.person.character) {
                     <img
-                      width="60"
-                      height="60"
+                      width="64"
+                      height="64"
                       [ngSrc]="placed.person.character.image"
                       [alt]="placed.person.character.name"
-                      class="pointer-events-none"
+                      class="pointer-events-none size-full object-cover"
                     />
                   } @else {
                     <svg lucideUser class="pointer-events-none"></svg>
@@ -138,7 +139,7 @@
                 @if (placed.person.isDead) {
                   <svg
                     lucideX
-                    class="pointer-events-none absolute inset-0 m-auto size-12 text-red-800"
+                    class="pointer-events-none absolute inset-0 m-auto size-3/4 text-blood-500/80"
                     aria-hidden="true"
                   ></svg>
                 }
@@ -150,7 +151,7 @@
                   >
                     @for (badge of placed.badges; track badge.kind) {
                       <li
-                        class="grid size-6 place-items-center rounded-full bg-zinc-950 text-tone"
+                        class="grid size-6 place-items-center rounded-full border border-night-700 bg-night-950 text-tone"
                         [attr.data-tone]="badge.tone"
                         [attr.data-badge]="badge.kind"
                         [attr.title]="badge.label"
@@ -178,16 +179,14 @@
                 }
 
                 @if (placed.pick === 'picked') {
-                  <span
-                    class="pointer-events-none absolute -right-1 -top-1 grid size-6 place-items-center rounded-full bg-tone text-zinc-950"
-                  >
-                    <svg class="size-4" lucideCheck></svg>
+                  <span class="tick">
+                    <svg class="size-3.5" lucideCheck stroke-width="3"></svg>
                   </span>
                 }
 
                 @if (editMode()) {
                   <button
-                    class="absolute -right-1 -top-1 size-6 rounded-full bg-red-700 text-white"
+                    class="absolute -top-1.5 -right-1.5 size-6 cursor-pointer rounded-full bg-blood-700 text-frost-50 hover:bg-blood-500"
                     (click)="personRemoved.emit(placed.person.id)"
                     [attr.aria-label]="placed.removeLabel"
                   >
@@ -212,7 +211,7 @@
         </button>
       } @else {
         <p
-          class="absolute left-1/2 top-9/10 -translate-x-1/2 -translate-y-1/2 text-2xl text-zinc-600"
+          class="absolute top-9/10 left-1/2 -translate-x-1/2 -translate-y-1/2 font-display text-xl text-frost-500"
           i18n="@@circle.you"
         >
           You
@@ -222,7 +221,7 @@
 
     <div class="absolute bottom-3 left-3 flex flex-col items-start gap-3">
       @if (connectionLines().length) {
-        <ul class="flex flex-col gap-1 text-xs text-zinc-400">
+        <ul class="flex flex-col gap-1 text-sm text-frost-400">
           @for (line of connectionLines(); track line.type) {
             <li class="flex items-center gap-2" [attr.data-connection]="line.type">
               <span class="connection-swatch h-0.5 w-5 rounded-full"></span>

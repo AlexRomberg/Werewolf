@@ -1,4 +1,4 @@
-import { Component, computed, input, output, signal } from '@angular/core';
+import { Component, computed, input, model, output } from '@angular/core';
 import {
   LucideCheck,
   LucideChevronDown,
@@ -25,6 +25,9 @@ import {
 import { Character } from '../../../../models/character';
 import { Ability } from '../../../../services/state/types';
 import { CharacterTileComponent } from '../../../character-tile/character-tile.component';
+import { CornersComponent } from '../../../corners/corners.component';
+import { DeckPreviewComponent } from '../../../deck-preview/deck-preview.component';
+import { DividerComponent } from '../../../divider/divider.component';
 
 const VISIBLE_DEPTH = 3;
 const LIFT_BY_DEPTH = [0, 3.5, 5, 5.75];
@@ -49,6 +52,7 @@ interface StackedCard {
   opacity: number;
   filter: string;
   showsBody: boolean;
+  isCurrent: boolean;
 }
 
 @Component({
@@ -56,6 +60,9 @@ interface StackedCard {
   imports: [
     NgOptimizedImage,
     CharacterTileComponent,
+    CornersComponent,
+    DeckPreviewComponent,
+    DividerComponent,
     LucideCheck,
     LucideChevronDown,
     LucideChevronLeft,
@@ -91,7 +98,7 @@ export class NarrationPanelComponent {
   public characterPressed = output<Character>();
   public abilityReset = output<Ability>();
 
-  protected charactersOpen = signal(false);
+  public charactersOpen = model(false);
 
   protected spentViews = computed(() =>
     this.spentAbilities().map((spent) => ({
@@ -130,6 +137,7 @@ export class NarrationPanelComponent {
       opacity: depth < 0 ? 0 : 1,
       filter: depth > 0 ? `brightness(${1 - depth * 0.12})` : 'none',
       showsBody: depth <= 0,
+      isCurrent,
     };
   }
 }

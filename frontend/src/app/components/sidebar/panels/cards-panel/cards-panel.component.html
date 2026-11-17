@@ -1,93 +1,96 @@
-<div class="flex min-h-0 flex-col gap-4 overflow-y-auto">
-  <div class="sidebar-container">
-    <span class="flex gap-2 items-baseline">
-      <span class="input-label flex-1" i18n="@@grouping.label">Group by:</span>
-      <app-grouping-toggle [(grouping)]="grouping" />
-    </span>
-    <div class="grid grid-cols-2 gap-2">
-      @for (section of sections(); track section.label) {
-        <p class="col-span-2" [class.mt-2]="!$first">{{ section.label }}</p>
-        @for (card of section.cards; track card.character.id) {
-          @if (card.isBulk) {
-            <div
-              class="card-tile col-span-2 grid-cols-[auto_1fr_auto] gap-y-1"
+<div
+  class="flex min-h-0 flex-col gap-4 overflow-y-auto pb-10 [mask-image:linear-gradient(to_bottom,#000_calc(100%-3rem),transparent)]"
+>
+  <span class="flex items-baseline gap-2">
+    <span class="input-label flex-1" i18n="@@grouping.label">Group by:</span>
+    <app-grouping-toggle [(grouping)]="grouping" />
+  </span>
+  <div class="grid grid-cols-2 gap-x-3 gap-y-2">
+    @for (section of sections(); track section.label) {
+      <div class="col-span-2 flex flex-col gap-1.5" [class.mt-4]="!$first">
+        <h2 class="section-title">{{ section.label }}</h2>
+        <app-divider align="start" />
+      </div>
+      @for (card of section.cards; track card.character.id) {
+        @if (card.isBulk) {
+          <div class="col-span-2 flex items-center gap-3 p-1">
+            <span
+              class="portrait ring-ember-400 ring-offset-2 ring-offset-night-900"
               [class.ring-2]="card.selected"
             >
-              <div class="size-12 bg-zinc-950 p-1 rounded-sm">
-                <img
-                  width="40"
-                  height="40"
-                  [ngSrc]="card.character.image"
-                  [alt]="card.character.name"
-                />
-              </div>
-              <span class="text-sm text-zinc-400">
-                {{ card.character.name }}
-                @if (card.hint) {
-                  <span class="block text-xs text-zinc-500">{{ card.hint }}</span>
-                }
-              </span>
-              <div class="flex items-center gap-2 text-zinc-400">
-                <button
-                  class="hover:text-zinc-100 disabled:opacity-30 disabled:hover:text-zinc-400"
-                  [disabled]="!card.canDecrease"
-                  [attr.aria-label]="card.fewerLabel"
-                  (click)="decrease(card)"
-                >
-                  <svg lucideCircleMinus></svg>
-                </button>
-                <span class="w-5 text-center text-sm tabular-nums">{{ card.amount }}</span>
-                <button
-                  class="hover:text-zinc-100 disabled:opacity-30 disabled:hover:text-zinc-400"
-                  [disabled]="!card.canIncrease"
-                  [attr.aria-label]="card.moreLabel"
-                  (click)="increase(card)"
-                >
-                  <svg lucideCirclePlus></svg>
-                </button>
-              </div>
+              <img
+                class="size-12 rounded-[7px]"
+                width="48"
+                height="48"
+                [ngSrc]="card.character.image"
+                [alt]="card.character.name"
+              />
+            </span>
+            <span class="min-w-0 flex-1 font-display text-lg text-frost-50">
+              {{ card.character.name }}
+              @if (card.hint) {
+                <span class="block font-sans text-sm text-frost-400">{{ card.hint }}</span>
+              }
+            </span>
+            <div class="flex items-center gap-1 text-frost-400">
+              <button
+                class="icon-btn size-9 disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-frost-400"
+                [disabled]="!card.canDecrease"
+                [attr.aria-label]="card.fewerLabel"
+                (click)="decrease(card)"
+              >
+                <svg lucideCircleMinus></svg>
+              </button>
+              <span class="w-5 text-center text-frost-50 tabular-nums">{{ card.amount }}</span>
+              <button
+                class="icon-btn size-9 disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-frost-400"
+                [disabled]="!card.canIncrease"
+                [attr.aria-label]="card.moreLabel"
+                (click)="increase(card)"
+              >
+                <svg lucideCirclePlus></svg>
+              </button>
             </div>
-          } @else {
-            <app-character-tile
-              [character]="card.character"
-              [selected]="card.selected"
-              (pressed)="toggle(card)"
-            />
-          }
+          </div>
+        } @else {
+          <app-character-tile
+            [character]="card.character"
+            [selected]="card.selected"
+            (pressed)="toggle(card)"
+          />
         }
       }
-    </div>
+    }
   </div>
 </div>
-<div class="sidebar-container">
-  <h2 class="text-lg font-bold text-zinc-300" i18n="@@cards.presets">Presets</h2>
 
-  @for (view of presets(); track view.preset.name) {
-    <button
-      class="grid grid-cols-[1fr_auto] items-baseline gap-x-2 rounded-lg bg-zinc-800 p-2 text-left hover:bg-zinc-700"
-      (click)="applyPreset(view)"
-    >
-      <span class="flex items-baseline gap-2">
-        <span class="text-sm text-zinc-100">{{ view.preset.name }}</span>
-        @if ($first) {
-          <span
-            class="rounded-full bg-amber-400/15 px-2 py-0.5 text-xs text-amber-300"
-            i18n="@@cards.recommended"
-          >
-            Recommended
-          </span>
-        }
-      </span>
-      <span class="text-xs text-zinc-400 flex items-center gap-1">
-        {{ view.deck.length }}
-        <svg lucideUsers size="16" aria-hidden="true"></svg>
-      </span>
-      <app-deck-preview class="col-span-2 mt-2" [cards]="view.deck" />
-    </button>
-  }
+<div class="flex flex-col gap-1.5">
+  <h2 class="section-title" i18n="@@cards.presets">Presets</h2>
+  <app-divider align="start" />
+
+  <div class="mt-1 flex flex-col">
+    @for (view of presets(); track view.preset.name) {
+      <button
+        class="grid cursor-pointer grid-cols-[1fr_auto] items-baseline gap-x-2 border-t border-night-700 px-1 py-2.5 text-left first:border-t-0 hover:bg-night-800"
+        (click)="applyPreset(view)"
+      >
+        <span class="flex items-baseline gap-2">
+          <span class="font-display text-lg text-frost-50">{{ view.preset.name }}</span>
+          @if ($first) {
+            <span class="text-sm text-ember-400" i18n="@@cards.recommended">Recommended</span>
+          }
+        </span>
+        <span class="flex items-center gap-1 text-sm text-frost-400">
+          {{ view.deck.length }}
+          <svg lucideUsers size="16" aria-hidden="true"></svg>
+        </span>
+        <app-deck-preview class="col-span-2 mt-2" [cards]="view.deck" />
+      </button>
+    }
+  </div>
 
   <button
-    class="input-label self-start hover:text-zinc-100"
+    class="btn-quiet mt-1 cursor-pointer self-start"
     (click)="presetsExpanded.set(!presetsExpanded())"
   >
     @if (presetsExpanded()) {

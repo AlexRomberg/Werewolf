@@ -1,15 +1,16 @@
 @for (character of cards(); track $index) {
-  <div
-    class="absolute size-12 rounded-sm bg-zinc-950 p-1 shadow shadow-black/50"
+  <span
+    class="absolute size-12 rounded-[7px] bg-inset p-1 shadow-md shadow-black/60"
     [style.left.px]="20 * $index"
     [style.zIndex]="30 - $index"
   >
     <img
+      class="rounded-[4px]"
       width="40"
       height="40"
       [ngSrc]="character.image"
       alt="card {{ character.name }}"
       i18n-alt="@@deck.cardAlt"
     />
-  </div>
+  </span>
 }

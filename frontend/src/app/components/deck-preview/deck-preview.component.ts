@@ -7,8 +7,7 @@ import { Character } from '../../models/character';
   imports: [NgOptimizedImage],
   templateUrl: './deck-preview.component.html',
   host: {
-    class:
-      'relative block h-12 mask-alpha overflow-x-clip mask-r-from-80% mask-r-to-100% rounded-sm',
+    class: 'relative block h-12 mask-alpha overflow-x-clip mask-r-from-80% mask-r-to-100%',
   },
 })
 export class DeckPreviewComponent {

@@ -2,7 +2,7 @@ import { LandscapeComponent } from '../../components/landscape/landscape.compone
 import { Component, inject, signal } from '@angular/core';
 import { FormField, form, pattern, required } from '@angular/forms/signals';
 import { Router, RouterLink } from '@angular/router';
-import { LucideArrowLeft, LucideChevronRight } from '@lucide/angular';
+import { LucideChevronLeft } from '@lucide/angular';
 import { ROOM_CODE_LENGTH } from '@protocol';
 import {
   ROOM_CODE_INPUT_PATTERN,
@@ -12,7 +12,7 @@ import {
 
 @Component({
   selector: 'app-join',
-  imports: [LandscapeComponent, FormField, RouterLink, LucideArrowLeft, LucideChevronRight],
+  imports: [LandscapeComponent, FormField, RouterLink, LucideChevronLeft],
   templateUrl: './join.component.html',
 })
 export class JoinComponent {

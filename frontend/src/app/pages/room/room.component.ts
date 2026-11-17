@@ -13,10 +13,9 @@ import { NgOptimizedImage } from '@angular/common';
 import { FormField, form, maxLength, required, schema } from '@angular/forms/signals';
 import { Router, RouterLink } from '@angular/router';
 import {
-  LucideArrowLeft,
   LucideCheck,
   LucideChevronDown,
-  LucideChevronRight,
+  LucideChevronLeft,
   LucideHourglass,
   LucideLogOut,
   LucidePencil,
@@ -24,6 +23,7 @@ import {
   LucideX,
 } from '@lucide/angular';
 import { MAX_NAME_LENGTH, type JoinRefusal, type PlayerCard } from '@protocol';
+import { DividerComponent } from '../../components/divider/divider.component';
 import { PlayerCardComponent } from '../../components/player-card/player-card.component';
 import { GROUP_LABELS } from '../../i18n/names';
 import { CHARACTERS_BY_ID } from '../../models/characters';
@@ -61,10 +61,10 @@ const NAME_SCHEMA = schema<{ name: string }>((path) => {
     NgOptimizedImage,
     RouterLink,
     PlayerCardComponent,
-    LucideArrowLeft,
+    DividerComponent,
     LucideCheck,
     LucideChevronDown,
-    LucideChevronRight,
+    LucideChevronLeft,
     LucideHourglass,
     LucideLogOut,
     LucidePencil,

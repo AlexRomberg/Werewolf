@@ -1,18 +1,24 @@
-<div class="flex min-h-0 flex-col gap-4 overflow-y-auto">
-  <div class="sidebar-container">
-    <h2 class="text-lg font-bold text-zinc-300" i18n="@@setup.cards">Cards</h2>
+<div class="flex min-h-0 flex-col gap-6 overflow-y-auto">
+  <section class="flex flex-col gap-3">
+    <div class="flex flex-col gap-1.5">
+      <h2 class="section-title" i18n="@@setup.cards">Cards</h2>
+      <app-divider align="start" />
+    </div>
     <button
-      class="grid grid-cols-[1fr_auto] grid-rows-[auto_3rem] gap-2 rounded-lg bg-zinc-800 p-4 hover:bg-zinc-700"
+      class="grid cursor-pointer grid-cols-[1fr_auto] grid-rows-[auto_3rem] gap-2 rounded-control border border-night-700 bg-night-800 p-4 text-left hover:border-frost-500"
       (click)="cardSelectorPressed.emit()"
     >
-      <p class="text-start" i18n="@@setup.cardsSelected">{{ cards().length }} Cards selected</p>
-      <svg lucideChevronRight class="row-span-2 self-center"></svg>
-      <app-deck-preview class="w-80 max-w-80" [cards]="cards()" />
+      <p class="text-frost-50" i18n="@@setup.cardsSelected">{{ cards().length }} Cards selected</p>
+      <svg lucideChevronRight class="row-span-2 self-center text-frost-400"></svg>
+      <app-deck-preview class="w-full max-w-80" [cards]="cards()" />
     </button>
-  </div>
+  </section>
 
-  <div class="sidebar-container">
-    <h2 class="text-lg font-bold text-zinc-300" i18n="@@setup.devices">Players' devices</h2>
+  <section class="flex flex-col gap-3">
+    <div class="flex flex-col gap-1.5">
+      <h2 class="section-title" i18n="@@setup.devices">Players' devices</h2>
+      <app-divider align="start" />
+    </div>
     <app-toggle-switch
       id="virtual-cards"
       [checked]="virtualCards()"
@@ -20,21 +26,20 @@
     >
       <ng-container i18n="@@setup.virtualCards">Enable virtual cards</ng-container>
     </app-toggle-switch>
-    <p class="text-sm text-zinc-400" i18n="@@setup.devicesHint">
+    <p class="text-sm text-frost-400" i18n="@@setup.devicesHint">
       Players join with the code in the middle of the table and take the next unnamed seat.
     </p>
-  </div>
+  </section>
 </div>
 
-<div class="sidebar-container">
+<div class="flex flex-col gap-3">
   @if (hasExcessCards()) {
-    <p class="flex items-start gap-2 text-sm text-zinc-400" role="status">
+    <p class="flex items-start gap-2 text-sm text-frost-400" role="status">
       <svg lucideTriangleAlert size="16" class="mt-0.5 shrink-0"></svg>
       <span i18n="@@setup.excessCards">There are more cards than players.</span>
     </p>
   }
-  <button class="btn btn-primary" (click)="gameStartPressed.emit()">
-    <ng-container i18n="@@setup.start">Start</ng-container>
-    <svg lucideChevronRight size="20"></svg>
+  <button class="btn btn-primary" (click)="gameStartPressed.emit()" i18n="@@setup.start">
+    Start
   </button>
 </div>

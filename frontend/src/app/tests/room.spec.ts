@@ -66,7 +66,7 @@ describe('RoomComponent, a joined player', () => {
 
     expect(cardButton().disabled).toBe(false);
     expect(hint()).toContain('Tap your card');
-    expect(title()).toBe('Face down');
+    expect(title()).toBe('Your card is face down');
   });
 
   it('should show the role above the card once it is turned', async () => {

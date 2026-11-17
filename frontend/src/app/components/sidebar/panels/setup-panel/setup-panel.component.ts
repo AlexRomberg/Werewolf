@@ -2,11 +2,18 @@ import { Component, input, output } from '@angular/core';
 import { LucideChevronRight, LucideTriangleAlert } from '@lucide/angular';
 import { Character } from '../../../../models/character';
 import { DeckPreviewComponent } from '../../../deck-preview/deck-preview.component';
+import { DividerComponent } from '../../../divider/divider.component';
 import { ToggleSwitchComponent } from '../../../toggle-switch/toggle-switch.component';
 
 @Component({
   selector: 'app-setup-panel',
-  imports: [DeckPreviewComponent, ToggleSwitchComponent, LucideChevronRight, LucideTriangleAlert],
+  imports: [
+    DeckPreviewComponent,
+    DividerComponent,
+    ToggleSwitchComponent,
+    LucideChevronRight,
+    LucideTriangleAlert,
+  ],
   templateUrl: './setup-panel.component.html',
   host: {
     class: 'grid grid-rows-[1fr_auto] min-h-0 gap-4',

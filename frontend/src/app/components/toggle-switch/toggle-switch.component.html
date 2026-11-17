@@ -2,7 +2,7 @@
   type="button"
   role="switch"
   [id]="id()"
-  class="group flex items-center gap-2 text-sm text-zinc-100 disabled:cursor-not-allowed disabled:opacity-40"
+  class="group flex items-center gap-2 text-sm text-frost-50 disabled:cursor-not-allowed disabled:opacity-40"
   [attr.aria-checked]="checked()"
   [disabled]="disabled()"
   (click)="checkedChange.emit(!checked())"
@@ -10,11 +10,11 @@
   <span
     class="relative h-6 w-11 shrink-0 rounded-full transition-colors"
     [class]="
-      checked() ? 'bg-amber-400 group-hover:bg-amber-300' : 'bg-zinc-700 group-hover:bg-zinc-600'
+      checked() ? 'bg-ember-600 group-hover:bg-ember-500' : 'bg-night-700 group-hover:bg-night-600'
     "
   >
     <span
-      class="absolute top-0.5 left-0.5 size-5 rounded-full bg-zinc-900 shadow transition-transform"
+      class="absolute top-0.5 left-0.5 size-5 rounded-full bg-frost-50 shadow transition-transform"
       [class.translate-x-5]="checked()"
     ></span>
   </span>

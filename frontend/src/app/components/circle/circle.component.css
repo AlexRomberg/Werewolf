@@ -2,11 +2,17 @@
 
 @layer components {
   .circle {
-    @apply size-16 rounded-full overflow-hidden border-4 grid justify-center items-center hover:border-zinc-500 border-zinc-700;
+    @apply grid cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 border-night-700 bg-night-800 text-frost-50 hover:border-frost-500;
+    width: var(--seat);
+    height: var(--seat);
 
     & svg {
-      @apply text-zinc-500;
+      @apply text-frost-500;
     }
+  }
+
+  .circle.selected {
+    @apply outline-2 outline-offset-2 outline-ember-400;
   }
 
   .circle[data-pick='open'] {
@@ -14,27 +20,35 @@
   }
 
   .circle[data-pick='open']:hover,
-  .circle[data-pick='picked'],
   .circle[data-pick='pending'] {
     border-color: var(--tone);
   }
 
   .circle[data-pick='picked'] {
-    box-shadow: 0 0 0 4px color-mix(in oklab, var(--tone) 35%, transparent);
+    @apply border-ember-400;
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-ember-400) 35%, transparent);
   }
 
   .circle[data-pick='cautioned'] {
-    @apply border-dashed opacity-60 hover:opacity-100;
+    @apply border-dashed;
+  }
+
+  .circle[data-pick='cautioned']:not(:hover) > * {
+    @apply opacity-50;
   }
 
   .circle[data-pick='pending'] {
-    @apply animate-pulse border-dashed;
+    @apply border-dashed;
+
+    & > * {
+      @apply animate-pulse;
+    }
   }
 
   .connection {
     @apply pointer-events-none absolute h-0.5 rounded-full;
     background: var(--connection);
-    width: calc(var(--length) * 1cqw - 5rem);
+    width: calc(var(--length) * 1cqw - var(--seat) - 1rem);
     translate: -50% -50%;
     rotate: var(--angle);
     transform: translateY(var(--shift));
@@ -48,8 +62,14 @@
     @apply opacity-30 grayscale;
   }
 
+  .circle-frame {
+    container-type: size;
+  }
+
   .circle-stage {
     container-type: inline-size;
+    width: min(100cqw, 100cqh);
+    --seat: clamp(2.75rem, min(15cqw, calc(240cqw / var(--seats, 8))), 4rem);
     --player-animation-duration: 0ms;
   }
 

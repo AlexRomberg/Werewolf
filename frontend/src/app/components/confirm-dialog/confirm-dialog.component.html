@@ -1,20 +1,26 @@
 <dialog
   appModal
   #modal="appModal"
-  class="m-auto w-[min(24rem,calc(100vw-2rem))] rounded-2xl bg-zinc-800 p-6 text-zinc-200 shadow-2xl shadow-black/60 backdrop:bg-zinc-950/60 backdrop:backdrop-blur-sm"
+  class="surface m-auto w-[min(24rem,calc(100vw-2rem))] p-7 text-frost-200 shadow-2xl shadow-black/60"
   role="alertdialog"
   aria-labelledby="confirm-dialog-title"
   aria-describedby="confirm-dialog-message"
   (closed)="cancelled.emit()"
 >
-  <h1 id="confirm-dialog-title" class="text-xl font-bold text-zinc-100">{{ title() }}</h1>
-  <p id="confirm-dialog-message" class="mt-2 text-sm text-zinc-400">{{ message() }}</p>
+  <app-corners />
+  <h1 id="confirm-dialog-title" class="text-2xl">{{ title() }}</h1>
+  <p id="confirm-dialog-message" class="mt-2 text-frost-400">{{ message() }}</p>
 
   <div class="mt-6 grid grid-cols-2 gap-3">
-    <button class="btn bg-zinc-700 hover:bg-zinc-600" autofocus (click)="modal.close()">
+    <button class="btn btn-secondary" autofocus (click)="modal.close()">
       {{ cancelLabel() }}
     </button>
-    <button class="btn bg-red-800 hover:bg-red-700" (click)="confirmed.emit()">
+    <button
+      class="btn"
+      [class.btn-danger]="destructive()"
+      [class.btn-primary]="!destructive()"
+      (click)="confirmed.emit()"
+    >
       {{ confirmLabel() }}
     </button>
   </div>

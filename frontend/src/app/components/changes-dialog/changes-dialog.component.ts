@@ -4,6 +4,7 @@ import { LucideCheck, LucideInfo, LucideUser } from '@lucide/angular';
 import { Character } from '../../models/character';
 import { HOODRAT, WITCH } from '../../models/characters';
 import { ChangeReason, DaybreakChange, PersonView } from '../../services/state/types';
+import { CornersComponent } from '../corners/corners.component';
 import { ModalDirective } from '../modal/modal.directive';
 
 export interface DaybreakChangeView {
@@ -33,6 +34,7 @@ interface ChangeEntry extends DaybreakChangeView {
     NgOptimizedImage,
     NgTemplateOutlet,
     ModalDirective,
+    CornersComponent,
     LucideCheck,
     LucideInfo,
     LucideUser,

@@ -33,7 +33,8 @@ import { Component } from '@angular/core';
   `,
   templateUrl: './landscape.component.html',
   host: {
-    class: 'pointer-events-none fixed inset-x-0 bottom-0 -z-10 block h-[45svh] min-h-64',
+    class:
+      'pointer-events-none fixed inset-x-0 bottom-0 -z-10 block overflow-hidden [--scene:max(16rem,45svh)] md:[--scene:60svh]',
     'aria-hidden': 'true',
   },
 })

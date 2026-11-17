@@ -1,30 +1,29 @@
 <dialog
   appModal
   #modal="appModal"
-  class="m-auto w-[min(34rem,calc(100vw-2rem))] rounded-2xl bg-zinc-800 p-6 text-zinc-200 shadow-2xl shadow-black/60 backdrop:bg-zinc-950/60 backdrop:backdrop-blur-sm"
+  class="surface m-auto w-[min(34rem,calc(100vw-2rem))] p-7 text-frost-200 shadow-2xl shadow-black/60 open:flex open:flex-col max-md:mb-0 max-md:h-[calc(100svh-1.5rem)] max-md:max-h-none max-md:w-full max-md:max-w-none max-md:rounded-b-none max-md:border-b-0 max-md:px-5 max-md:pb-[max(1.25rem,env(safe-area-inset-bottom))]"
   aria-labelledby="changes-dialog-title"
   (closed)="closed.emit()"
 >
-  <h1 id="changes-dialog-title" class="text-xl font-bold text-zinc-100" i18n="@@changes.title">
-    This morning
-  </h1>
+  <app-corners class="max-md:hidden" />
+  <h1 id="changes-dialog-title" class="text-3xl" i18n="@@changes.title">This morning</h1>
 
-  <div class="mt-4 flex max-h-[60svh] flex-col gap-3 overflow-y-auto">
+  <div class="mt-4 flex min-h-0 flex-1 flex-col overflow-y-auto md:max-h-[60svh]">
     @if (deaths().length) {
-      <ul class="flex flex-col gap-3" data-deaths>
+      <ul class="flex flex-col" data-deaths>
         @for (entry of deaths(); track entry.key) {
           <ng-container [ngTemplateOutlet]="row" [ngTemplateOutletContext]="{ $implicit: entry }" />
         }
       </ul>
     } @else {
-      <p class="text-zinc-100" data-headline i18n="@@changes.nobodyDied">Nobody died</p>
+      <p class="font-display text-xl text-frost-50" data-headline i18n="@@changes.nobodyDied">
+        Nobody died
+      </p>
     }
 
     @if (informational().length) {
-      <h2 class="mt-2 text-sm font-bold text-zinc-400" i18n="@@changes.informational">
-        Informational
-      </h2>
-      <ul class="flex flex-col gap-3" data-informational>
+      <h2 class="mt-6 mb-2 text-lg text-frost-400" i18n="@@changes.informational">Informational</h2>
+      <ul class="flex flex-col" data-informational>
         @for (entry of informational(); track entry.key) {
           <ng-container [ngTemplateOutlet]="row" [ngTemplateOutletContext]="{ $implicit: entry }" />
         }
@@ -34,26 +33,26 @@
 
   <ng-template #row let-entry>
     <li
-      class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 rounded-xl bg-zinc-900 p-3"
-      [class.opacity-60]="entry.applied"
+      class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 border-t border-night-700 py-3.5 last:border-b data-applied:*:opacity-60"
+      [attr.data-applied]="entry.applied || null"
       [attr.data-change]="entry.key"
     >
       <span class="relative row-span-2 h-12 w-17 self-start">
         @if (entry.causePortrait; as cause) {
           <span
-            class="absolute left-0 top-0 grid size-10 place-items-center overflow-hidden rounded-full bg-zinc-800"
+            class="absolute top-0 left-0 grid size-10 place-items-center overflow-hidden rounded-full bg-night-800"
             data-cause
             [attr.title]="cause.name"
           >
             @if (cause.image) {
               <img width="40" height="40" [ngSrc]="cause.image" [alt]="cause.name" />
             } @else {
-              <svg lucideUser size="16" class="text-zinc-500"></svg>
+              <svg lucideUser size="16" class="text-frost-500"></svg>
             }
           </span>
         }
         <span
-          class="absolute right-0 top-0 grid size-12 place-items-center overflow-hidden rounded-full border-2 border-zinc-900 bg-zinc-800"
+          class="absolute top-0 right-0 grid size-12 place-items-center overflow-hidden rounded-full border-2 border-night-900 bg-night-800"
         >
           @if (entry.portrait.image) {
             <img
@@ -63,27 +62,29 @@
               [alt]="entry.portrait.name"
             />
           } @else {
-            <svg lucideUser size="20" class="text-zinc-500"></svg>
+            <svg lucideUser size="20" class="text-frost-500"></svg>
           }
         </span>
       </span>
 
-      <p class="self-center font-medium text-zinc-100" data-headline>{{ entry.headline }}</p>
+      <p class="self-center font-display text-xl leading-tight text-frost-50" data-headline>
+        {{ entry.headline }}
+      </p>
 
-      <div class="flex items-center gap-3">
-        <p class="flex flex-1 items-start gap-2 text-sm text-zinc-400" data-note>
+      <div class="flex min-h-9 items-center gap-3">
+        <p class="flex flex-1 items-start gap-2 text-sm text-frost-400" data-note>
           <svg lucideInfo size="14" class="mt-0.5 shrink-0" aria-hidden="true"></svg>
           <span>{{ entry.note }}</span>
         </p>
         @if (entry.appliable) {
           @if (entry.applied) {
-            <span class="flex items-center gap-1 text-xs text-zinc-400">
+            <span class="flex h-9 items-center gap-1 px-3 text-sm text-frost-500">
               <svg lucideCheck size="14"></svg>
               <ng-container i18n="@@changes.applied">Applied</ng-container>
             </span>
           } @else {
             <button
-              class="rounded-full bg-orange-900 px-3 py-1 text-sm hover:bg-orange-800"
+              class="btn btn-secondary h-9 px-3 py-0 text-sm"
               (click)="applied.emit(entry.change)"
               i18n="@@changes.apply"
             >
@@ -95,13 +96,9 @@
     </li>
   </ng-template>
 
-  <div class="mt-6 grid grid-cols-2 gap-3">
+  <div class="mt-6 grid shrink-0 grid-cols-2 gap-3">
     @if (leaving()) {
-      <button
-        class="btn bg-zinc-700 hover:bg-zinc-600"
-        (click)="proceeded.emit()"
-        i18n="@@changes.skipRest"
-      >
+      <button class="btn btn-secondary" (click)="proceeded.emit()" i18n="@@changes.skipRest">
         Skip the rest
       </button>
       <button
@@ -112,22 +109,12 @@
         Apply all and go on
       </button>
     } @else if (hasPending()) {
-      <button
-        class="btn bg-zinc-700 hover:bg-zinc-600"
-        (click)="modal.close()"
-        i18n="@@common.close"
-      >
-        Close
-      </button>
+      <button class="btn btn-secondary" (click)="modal.close()" i18n="@@common.close">Close</button>
       <button class="btn btn-primary" (click)="appliedAll.emit()" i18n="@@changes.applyAll">
         Apply all
       </button>
     } @else {
-      <button
-        class="btn col-span-2 bg-zinc-700 hover:bg-zinc-600"
-        (click)="modal.close()"
-        i18n="@@common.close"
-      >
+      <button class="btn btn-secondary col-span-2" (click)="modal.close()" i18n="@@common.close">
         Close
       </button>
     }

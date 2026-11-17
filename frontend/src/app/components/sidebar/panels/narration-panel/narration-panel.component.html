@@ -1,18 +1,35 @@
-<section class="sidebar-container min-h-0" [class.flex-1]="charactersOpen()">
-  <button
-    class="flex items-center gap-2 text-left"
-    [attr.aria-expanded]="charactersOpen()"
-    (click)="charactersOpen.set(!charactersOpen())"
-  >
-    <h2 class="flex-1 text-lg font-bold text-zinc-300" i18n="@@narration.characters">Characters</h2>
-    <span class="text-xs text-zinc-500">{{ characters().length }}</span>
-    <svg
-      lucideChevronDown
-      size="20"
-      class="text-zinc-400 transition-transform motion-reduce:transition-none"
-      [class.rotate-180]="charactersOpen()"
-    ></svg>
-  </button>
+<section
+  class="min-h-0 flex-col gap-3 max-md:hidden max-md:data-[open=true]:flex md:flex"
+  [class.flex-1]="charactersOpen()"
+  [attr.data-open]="charactersOpen()"
+>
+  <div class="flex flex-col gap-1.5 max-md:hidden">
+    <button
+      class="flex cursor-pointer items-center gap-2 text-left"
+      [attr.aria-expanded]="charactersOpen()"
+      (click)="charactersOpen.set(!charactersOpen())"
+    >
+      <h2 class="section-title flex-1" i18n="@@narration.characters">Characters</h2>
+      <span class="text-sm text-frost-400">{{ characters().length }}</span>
+      <svg
+        lucideChevronDown
+        size="20"
+        class="text-frost-400 transition-transform motion-reduce:transition-none"
+        [class.rotate-180]="charactersOpen()"
+      ></svg>
+    </button>
+    <app-divider align="start" />
+    @if (!charactersOpen()) {
+      <button
+        class="mt-1.5 cursor-pointer"
+        tabindex="-1"
+        aria-hidden="true"
+        (click)="charactersOpen.set(true)"
+      >
+        <app-deck-preview [cards]="characters()" />
+      </button>
+    }
+  </div>
 
   @if (charactersOpen()) {
     <div class="grid min-h-0 grid-cols-2 content-start gap-2 overflow-y-auto p-0.5">
@@ -24,22 +41,22 @@
 </section>
 
 @if (!charactersOpen() && spentAbilities().length) {
-  <section class="sidebar-container shrink-0">
-    <h2 class="text-sm font-bold text-zinc-400" i18n="@@narration.usedAbilities">
+  <section class="flex shrink-0 flex-col gap-2">
+    <h2 class="font-sans text-sm text-frost-400" i18n="@@narration.usedAbilities">
       Used up abilities
     </h2>
     <ul class="flex flex-wrap gap-2">
       @for (spent of spentViews(); track spent.ability) {
         <li>
           <button
-            class="chip flex items-center gap-2 text-zinc-200"
+            class="chip flex items-center gap-2"
             [attr.aria-label]="spent.giveBackLabel"
             title="Give back"
             i18n-title="@@narrator.giveBack"
             (click)="abilityReset.emit(spent.ability)"
           >
             {{ spent.label }}
-            <svg lucideRotateCcw size="14" class="text-zinc-400"></svg>
+            <svg lucideRotateCcw size="14" class="text-frost-400"></svg>
           </button>
         </li>
       }
@@ -48,81 +65,86 @@
 }
 
 @if (!charactersOpen()) {
-  <div class="flex min-h-0 flex-1 flex-col justify-end overflow-x-clip pt-24">
-    <div class="grid h-80 grid-cols-1 grid-rows-1">
+  <div
+    class="flex min-h-0 flex-1 flex-col justify-end overflow-x-clip max-md:justify-start max-md:overflow-y-auto md:pt-24"
+  >
+    <div class="grid grid-cols-1 grid-rows-1 md:h-80">
       @for (entry of stack(); track entry.card.key) {
         <article
-          class="col-start-1 row-start-1 flex flex-col overflow-hidden rounded-3xl bg-zinc-800 shadow-lg shadow-black/50 transition-[transform,opacity,filter] duration-300 ease-out motion-reduce:transition-none"
+          class="relative col-start-1 row-start-1 flex-col overflow-hidden transition-[transform,opacity,filter] duration-300 ease-out max-md:hidden max-md:data-[current=true]:flex motion-reduce:transition-none md:flex md:rounded-surface md:border md:border-night-700 md:bg-night-800 md:shadow-lg md:shadow-black/50"
+          [attr.data-current]="entry.isCurrent"
           [style.transform]="entry.transform"
           [style.zIndex]="entry.zIndex"
           [style.opacity]="entry.opacity"
           [style.filter]="entry.filter"
         >
-          <header class="flex h-14 shrink-0 items-center gap-3 px-3">
-            <img class="rounded-lg" width="32" height="32" [ngSrc]="entry.card.image" alt="" />
-            <h2 class="truncate text-lg font-bold text-zinc-200">{{ entry.card.title }}</h2>
+          @if (entry.isCurrent) {
+            <app-corners class="max-md:hidden" />
+          }
+          <header class="flex shrink-0 items-center gap-3 md:h-16 md:px-7 md:pt-3">
+            <img class="rounded-control" width="36" height="36" [ngSrc]="entry.card.image" alt="" />
+            <h2 class="truncate text-2xl">{{ entry.card.title }}</h2>
           </header>
 
           @if (entry.showsBody) {
-            <ul class="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto px-3 pt-1">
+            <ul class="flex flex-col gap-1 py-3 md:min-h-0 md:flex-1 md:overflow-y-auto md:px-7">
               @for (line of entry.card.actions; track $index) {
-                <li class="flex items-start gap-2 text-zinc-200">
-                  <span class="text-zinc-500" aria-hidden="true">–</span>
+                <li class="flex items-start gap-2">
+                  <span class="text-frost-500" aria-hidden="true">–</span>
                   <span>{{ line }}</span>
                 </li>
               }
             </ul>
 
             @if (entry.buttons.length) {
-              <div class="flex shrink-0 flex-col gap-2 p-3">
+              <div class="flex shrink-0 flex-col gap-2 md:px-7 md:pb-6">
                 @for (view of entry.buttons; track view.button.kind + view.button.label) {
-                  <div class="flex gap-1" [attr.data-tone]="view.tone">
+                  <div class="flex gap-1.5" [attr.data-tone]="view.tone">
                     <button
-                      class="flex min-w-0 flex-1 items-center gap-3 rounded-xl border border-tone/30 bg-tone/10 p-2 pr-3 text-left text-sm text-zinc-100 ring-tone hover:bg-tone/20"
-                      [class.ring-2]="view.active"
+                      class="ability flex-1"
                       [attr.aria-pressed]="view.button.picks === undefined ? null : view.active"
                       (click)="buttonPressed.emit(view.button)"
                     >
-                      <span
-                        class="grid size-8 shrink-0 place-items-center rounded-sm bg-tone/20 text-tone"
-                      >
+                      <span class="shrink-0 text-tone">
                         @if (view.button.done) {
-                          <svg lucideCheck size="18"></svg>
+                          <svg lucideCheck size="20"></svg>
                         } @else if (view.button.kind === 'deal-shuffled') {
-                          <svg lucidePlayingCardsFan size="18"></svg>
+                          <svg lucidePlayingCardsFan size="20"></svg>
                         } @else {
                           @switch (view.tone) {
                             @case ('assign') {
-                              <svg lucideUserPlus size="18"></svg>
+                              <svg lucideUserPlus size="20"></svg>
                             }
                             @case ('kill') {
-                              <svg lucideTombstone size="18"></svg>
+                              <svg lucideTombstone size="20"></svg>
                             }
                             @case ('protect') {
-                              <svg lucideShield size="18"></svg>
+                              <svg lucideShield size="20"></svg>
                             }
                             @case ('bond') {
-                              <svg lucideHeart size="18"></svg>
+                              <svg lucideHeart size="20"></svg>
                             }
                             @case ('enchant') {
-                              <svg lucideWandSparkles size="18"></svg>
+                              <svg lucideWandSparkles size="20"></svg>
                             }
                             @default {
-                              <svg lucideZap size="18"></svg>
+                              <svg lucideZap size="20"></svg>
                             }
                           }
                         }
                       </span>
-                      <span class="flex-1">{{ view.button.label }}</span>
+                      <span class="min-w-0 flex-1">{{ view.button.label }}</span>
                       @if (view.active) {
-                        <span class="text-xs tabular-nums text-tone">{{ activeProgress() }}</span>
+                        <span class="text-sm text-ember-400 tabular-nums">{{
+                          activeProgress()
+                        }}</span>
                       } @else if (view.button.done && view.button.picks !== undefined) {
-                        <span class="text-xs text-zinc-400" i18n="@@narration.change">Change</span>
+                        <span class="text-sm text-frost-400" i18n="@@narration.change">Change</span>
                       }
                     </button>
                     @if (view.button.done) {
                       <button
-                        class="grid w-12 shrink-0 place-items-center rounded-xl border border-tone/30 bg-tone/10 text-zinc-400 hover:bg-tone/20 hover:text-zinc-100"
+                        class="ability w-11 justify-center px-0 text-frost-400 hover:text-frost-50"
                         [attr.aria-label]="view.undoLabel"
                         title="Undo"
                         i18n-title="@@narration.undo"
@@ -142,22 +164,16 @@
   </div>
 }
 
-<div class="sidebar-container shrink-0">
-  <span class="grid grid-cols-3 gap-4">
-    <button
-      class="btn bg-zinc-800 hover:bg-zinc-700"
-      [disabled]="!canGoBack()"
-      (click)="previous.emit()"
-    >
-      <svg lucideChevronLeft size="20"></svg> <span i18n="@@common.back">Back</span>
-    </button>
-    <button class="btn btn-primary col-span-2" (click)="next.emit()">
-      @if (isLastCard()) {
-        <span i18n="@@narration.nextNight">Next night</span>
-      } @else {
-        <span i18n="@@narration.next">Next</span>
-      }
-      <svg lucideChevronRight size="20"></svg>
-    </button>
-  </span>
+<div class="grid shrink-0 grid-cols-3 gap-3">
+  <button class="btn btn-secondary" [disabled]="!canGoBack()" (click)="previous.emit()">
+    <svg lucideChevronLeft size="20"></svg> <span i18n="@@common.back">Back</span>
+  </button>
+  <button class="btn btn-primary col-span-2" (click)="next.emit()">
+    @if (isLastCard()) {
+      <span i18n="@@narration.nextNight">Next night</span>
+    } @else {
+      <span i18n="@@narration.next">Next</span>
+    }
+    <svg lucideChevronRight size="20"></svg>
+  </button>
 </div>

@@ -1,7 +1,11 @@
 <app-landscape />
-<main class="mx-auto flex min-h-svh w-full max-w-md flex-col px-6">
+<main
+  class="mx-auto flex min-h-svh w-full flex-col px-6"
+  [class.max-w-sm]="!isAtTable()"
+  [class.max-w-md]="isAtTable()"
+>
   @if (isAtTable()) {
-    <header class="flex h-12 items-center justify-between gap-3 pt-4 text-xs text-zinc-500">
+    <header class="flex h-14 items-center justify-between gap-3 pt-2 text-sm text-frost-400">
       @if (isRenaming()) {
         <form class="flex min-w-0 items-center gap-1" (submit)="rename($event)">
           <input
@@ -13,7 +17,7 @@
             [formField]="renameForm.name"
           />
           <button
-            class="rounded-full p-1.5 text-zinc-300 hover:bg-zinc-900 disabled:opacity-40"
+            class="icon-btn size-9 text-frost-200 disabled:opacity-40"
             type="submit"
             aria-label="Save name"
             i18n-aria-label="@@room.saveName"
@@ -22,7 +26,7 @@
             <svg lucideCheck size="16"></svg>
           </button>
           <button
-            class="rounded-full p-1.5 hover:bg-zinc-900 hover:text-zinc-300"
+            class="icon-btn size-9"
             type="button"
             aria-label="Keep the name"
             i18n-aria-label="@@room.keepName"
@@ -33,29 +37,25 @@
         </form>
       } @else {
         <button
-          class="group flex min-w-0 items-center gap-2 rounded-full py-1.5 hover:text-zinc-300"
+          class="group flex min-w-0 cursor-pointer items-center gap-2 py-1.5 font-display text-lg text-frost-200 hover:text-frost-50"
           aria-label="Change your name"
           i18n-aria-label="@@room.changeName"
           (click)="startRenaming()"
         >
-          <span class="truncate uppercase tracking-[0.3em]">{{ displayName() }}</span>
-          <svg lucidePencil size="12" class="shrink-0 opacity-50 group-hover:opacity-100"></svg>
+          <span class="truncate">{{ displayName() }}</span>
+          <svg lucidePencil size="14" class="shrink-0 opacity-50 group-hover:opacity-100"></svg>
         </button>
       }
       <button
-        class="flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 hover:bg-zinc-900 hover:text-zinc-300"
+        class="flex shrink-0 cursor-pointer items-center gap-1.5 rounded-control px-3 py-1.5 hover:bg-night-800 hover:text-frost-50"
         (click)="leaveRoom()"
       >
-        <svg lucideLogOut size="14"></svg> <ng-container i18n="@@room.leave">Leave</ng-container>
+        <svg lucideLogOut size="16"></svg> <ng-container i18n="@@room.leave">Leave</ng-container>
       </button>
     </header>
 
     @if (status() !== 'joined') {
-      <p
-        class="fixed left-1/2 top-16 z-20 flex -translate-x-1/2 items-center gap-2 rounded-full bg-zinc-900/90 px-4 py-2 text-xs text-zinc-300 shadow-lg shadow-black/50"
-        role="status"
-      >
-        <span class="size-2 animate-pulse rounded-full bg-amber-400"></span>
+      <p class="text-center text-sm text-frost-400" role="status">
         @if (status() === 'reconnecting') {
           <ng-container i18n="@@common.reconnecting">Reconnecting…</ng-container>
         } @else {
@@ -66,33 +66,21 @@
       </p>
     }
 
-    <section class="flex min-h-[calc(100svh-3rem)] flex-col items-center justify-center gap-6 py-6">
+    <section
+      class="flex min-h-[calc(100svh-3.5rem)] flex-col items-center justify-center gap-6 py-6"
+    >
       <div class="flex h-20 flex-col items-center justify-end text-center" aria-live="polite">
         @if (isFaceUp() && character(); as character) {
-          <p class="text-xs uppercase tracking-[0.3em] text-amber-200/60">{{ groupLabel() }}</p>
-          <h1
-            class="text-4xl font-bold tracking-tight text-zinc-100"
-            [class.text-zinc-400]="card().isDead"
-          >
+          <h1 class="text-4xl" [class.text-frost-400]="card().isDead">
             {{ character.name }}
           </h1>
+          <p class="mt-1 text-frost-400">{{ groupLabel() }}</p>
         } @else {
-          <p class="text-xs uppercase tracking-[0.3em] text-zinc-500" i18n="@@room.yourCard">
-            Your card
-          </p>
-          <h1 class="text-4xl font-bold tracking-tight text-zinc-700" i18n="@@room.faceDown">
-            Face down
-          </h1>
+          <h1 class="text-3xl" i18n="@@room.cardFaceDown">Your card is face down</h1>
         }
       </div>
 
       <div class="relative w-[min(20rem,calc(100vw-3rem))]">
-        <div
-          class="pointer-events-none absolute inset-x-0 top-0 aspect-square scale-110 rounded-full blur-3xl transition-opacity duration-700"
-          [class]="card().isDead ? 'bg-red-950/40' : 'bg-amber-500/15'"
-          [class.opacity-0]="!isFaceUp() && !hasUnseenCard()"
-          aria-hidden="true"
-        ></div>
         <app-player-card
           [card]="card()"
           [character]="character()"
@@ -101,20 +89,20 @@
         />
       </div>
 
-      <p class="flex h-6 items-center gap-2 text-sm text-zinc-400" aria-live="polite">
+      <p class="flex h-6 items-center gap-2 text-frost-400" aria-live="polite">
         @if (!character()) {
-          <svg lucideHourglass size="16" class="text-zinc-500"></svg>
+          <svg lucideHourglass size="16" class="text-frost-500"></svg>
           <ng-container i18n="@@room.waitingForDeal"
             >Waiting for the narrator to deal the cards…</ng-container
           >
         } @else if (!isFaceUp() && hasUnseenCard()) {
-          <svg lucideRotate3d size="16" class="animate-pulse text-amber-300"></svg>
+          <svg lucideRotate3d size="16" class="animate-pulse text-ember-400"></svg>
           <ng-container i18n="@@room.tapCard">Tap your card to turn it around</ng-container>
         }
       </p>
 
       <button
-        class="flex flex-col items-center text-xs uppercase tracking-[0.3em] text-zinc-500 transition-opacity duration-500 hover:text-zinc-300"
+        class="flex cursor-pointer flex-col items-center text-sm text-frost-400 transition-opacity duration-500 hover:text-frost-50"
         [class.invisible]="!hasDescription()"
         [class.opacity-0]="!hasDescription()"
         [attr.aria-hidden]="!hasDescription()"
@@ -127,23 +115,20 @@
 
     <section
       #description
-      class="flex flex-col gap-6 pb-16"
+      class="surface mb-16 flex flex-col gap-5 bg-night-900/95 p-6"
       [class.hidden]="!isFaceUp()"
       aria-label="About your role"
       i18n-aria-label="@@room.aboutRole"
     >
       @if (isFaceUp()) {
-        <div class="flex items-center gap-4">
-          <hr class="grow border-zinc-800" />
-          <h2 class="text-xs uppercase tracking-[0.3em] text-zinc-500" i18n="@@room.aboutRole">
-            About your role
-          </h2>
-          <hr class="grow border-zinc-800" />
+        <div class="flex flex-col items-center gap-2">
+          <h2 class="text-2xl" i18n="@@room.aboutRole">About your role</h2>
+          <app-divider class="w-40" />
         </div>
         @for (section of descriptionSections(); track section.title) {
           <article class="flex flex-col gap-1">
-            <h3 class="font-semibold text-zinc-200">{{ section.title }}</h3>
-            <p class="leading-relaxed text-zinc-400">{{ section.description }}</p>
+            <h3 class="text-lg">{{ section.title }}</h3>
+            <p class="leading-relaxed">{{ section.description }}</p>
           </article>
         }
       }
@@ -153,13 +138,13 @@
       @case ('joining') {
         <div class="flex min-h-svh flex-col items-center justify-center gap-4" role="status">
           <img
-            class="size-20 animate-pulse rounded-2xl opacity-60"
+            class="size-20 animate-pulse rounded-[1.25rem] opacity-70"
             ngSrc="img/night.png"
             width="80"
             height="80"
             alt=""
           />
-          <p class="text-zinc-400" i18n="@@room.joining">Taking a seat…</p>
+          <p class="text-frost-400" i18n="@@room.joining">Taking a seat…</p>
         </div>
       }
 
@@ -168,10 +153,8 @@
           class="flex min-h-svh flex-col items-center justify-center gap-6 text-center"
           role="status"
         >
-          <h1 class="text-2xl font-bold" i18n="@@room.kicked">
-            The narrator took you off the table.
-          </h1>
-          <a class="btn bg-zinc-800 hover:bg-zinc-700" routerLink="/" i18n="@@room.backToStart"
+          <h1 class="text-3xl" i18n="@@room.kicked">The narrator took you off the table.</h1>
+          <a class="btn btn-secondary" routerLink="/" i18n="@@room.backToStart"
             >Back to the start</a
           >
         </div>
@@ -182,14 +165,8 @@
           class="flex min-h-svh flex-col items-center justify-center gap-6 text-center"
           role="status"
         >
-          <h1 class="text-2xl font-bold" i18n="@@room.moved">
-            Your card is open on another device.
-          </h1>
-          <button
-            class="btn bg-zinc-800 hover:bg-zinc-700"
-            (click)="takeCardBack()"
-            i18n="@@room.takeCardBack"
-          >
+          <h1 class="text-3xl" i18n="@@room.moved">Your card is open on another device.</h1>
+          <button class="btn btn-secondary" (click)="takeCardBack()" i18n="@@room.takeCardBack">
             Show it here instead
           </button>
         </div>
@@ -200,45 +177,54 @@
           class="flex min-h-svh flex-col items-center justify-center gap-6 text-center"
           role="status"
         >
-          <h1 class="text-2xl font-bold" i18n="@@room.closed">The narrator closed the room.</h1>
-          <a class="btn bg-zinc-800 hover:bg-zinc-700" routerLink="/" i18n="@@room.backToStart"
+          <h1 class="text-3xl" i18n="@@room.closed">The narrator closed the room.</h1>
+          <a class="btn btn-secondary" routerLink="/" i18n="@@room.backToStart"
             >Back to the start</a
           >
         </div>
       }
 
       @default {
-        <div class="flex min-h-svh flex-col justify-center gap-8 py-12">
-          <a
-            class="flex items-center gap-2 text-sm text-zinc-400 hover:text-zinc-100"
-            routerLink="/join"
-          >
-            <svg lucideArrowLeft size="16"></svg>
-            <ng-container i18n="@@room.otherRoom">Other room</ng-container>
-          </a>
-          <header class="flex flex-col gap-2">
-            <h1 class="text-3xl font-bold" i18n="@@room.takeYourSeat">Take your seat</h1>
-            <p class="text-zinc-400" i18n="@@room.nameHint">
-              Enter the name the others at the table know you by.
-            </p>
-          </header>
-          <form class="flex flex-col gap-3" (submit)="joinRoom($event)">
-            @if (refusal(); as message) {
-              <p class="text-sm text-red-400" role="alert">{{ message }}</p>
-            }
-            <label class="input-label" for="player-name" i18n="@@room.yourName">Your name</label>
-            <input
-              id="player-name"
-              class="input"
-              type="text"
-              autocomplete="given-name"
-              [formField]="nameForm.name"
-            />
-            <button class="btn btn-primary" type="submit" [disabled]="nameForm().invalid()">
-              <ng-container i18n="@@room.takeASeat">Take a seat</ng-container>
-              <svg lucideChevronRight size="20"></svg>
-            </button>
-          </form>
+        <div class="flex min-h-svh flex-col pb-40">
+          <div class="my-auto flex flex-col gap-8">
+            <header class="flex flex-col gap-2">
+              <div class="-ml-3 flex items-center gap-1">
+                <a
+                  class="icon-btn"
+                  routerLink="/join"
+                  aria-label="Other room"
+                  i18n-aria-label="@@room.otherRoom"
+                >
+                  <svg lucideChevronLeft size="22"></svg>
+                </a>
+                <h1 class="text-4xl" i18n="@@room.takeYourSeat">Take your seat</h1>
+              </div>
+              <p class="text-frost-400" i18n="@@room.nameHint">
+                Enter the name the others at the table know you by.
+              </p>
+            </header>
+            <form class="flex flex-col gap-3" (submit)="joinRoom($event)">
+              @if (refusal(); as message) {
+                <p class="text-sm text-blood-400" role="alert">{{ message }}</p>
+              }
+              <label class="input-label" for="player-name" i18n="@@room.yourName">Your name</label>
+              <input
+                id="player-name"
+                class="input text-center font-display text-3xl"
+                type="text"
+                autocomplete="given-name"
+                [formField]="nameForm.name"
+              />
+              <button
+                class="btn btn-primary"
+                type="submit"
+                [disabled]="nameForm().invalid()"
+                i18n="@@room.takeASeat"
+              >
+                Take a seat
+              </button>
+            </form>
+          </div>
         </div>
       }
     }

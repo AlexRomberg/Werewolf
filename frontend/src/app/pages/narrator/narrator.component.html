@@ -1,5 +1,52 @@
-<div class="grid h-svh max-h-svh min-h-svh grid-cols-[1fr_28rem]">
-  <div class="relative">
+<div class="flex h-svh flex-col md:grid md:grid-cols-[1fr_28rem]">
+  <header
+    class="grid h-14 shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-2 px-1 pt-[env(safe-area-inset-top)] md:hidden"
+  >
+    @if (canClosePanel()) {
+      <button
+        class="icon-btn justify-self-start"
+        aria-label="Back"
+        i18n-aria-label="@@common.back"
+        (click)="closePanel()"
+      >
+        <svg lucideChevronLeft size="22"></svg>
+      </button>
+    } @else if (isPlaying()) {
+      <button
+        class="icon-btn justify-self-start"
+        aria-label="End game"
+        i18n-aria-label="@@narrator.endGame"
+        (click)="confirmingEnd.set(true)"
+      >
+        <svg lucideLogOut size="20"></svg>
+      </button>
+    } @else {
+      <a
+        class="icon-btn justify-self-start"
+        routerLink="/"
+        aria-label="Back"
+        i18n-aria-label="@@common.back"
+      >
+        <svg lucideChevronLeft size="22"></svg>
+      </a>
+    }
+    <h1 class="truncate text-2xl">{{ panelTitle() }}</h1>
+    @if (panel().kind === 'narration') {
+      <button
+        class="h-11 cursor-pointer justify-self-end rounded-control px-3 text-frost-400 hover:text-frost-50 aria-expanded:text-frost-50"
+        [attr.aria-expanded]="charactersOpen()"
+        (click)="charactersOpen.set(!charactersOpen())"
+        i18n="@@narration.characters"
+      >
+        Characters
+      </button>
+    }
+  </header>
+
+  <div
+    class="relative shrink-0 max-md:h-[min(calc(100vw+2.5rem),55svh)] max-md:data-[sheet=full]:hidden md:min-h-0"
+    [attr.data-sheet]="sheet()"
+  >
     <app-circle
       [people]="personViews()"
       [editMode]="isEditMode()"
@@ -19,8 +66,7 @@
       }
       @if (isPlaying()) {
         <button
-          class="flex items-center gap-2 rounded-xl bg-zinc-800 px-4 py-2 text-sm ring-amber-400 hover:bg-zinc-700"
-          [class.ring-2]="rearranging()"
+          class="btn btn-secondary py-2 text-sm aria-pressed:border-ember-400"
           [attr.aria-pressed]="rearranging()"
           (click)="rearranging.set(!rearranging())"
         >
@@ -37,30 +83,35 @@
 
     @if (isPlaying()) {
       <button
-        class="absolute left-6 top-6 rounded-xl bg-zinc-800 p-3 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-100"
+        class="icon-btn absolute top-5 left-5 border border-night-700 bg-night-900 max-md:hidden"
         aria-label="End game"
         i18n-aria-label="@@narrator.endGame"
         title="End game"
         i18n-title="@@narrator.endGame"
         (click)="confirmingEnd.set(true)"
       >
-        <svg lucideLogOut size="20"></svg>
+        <svg lucideChevronLeft size="20"></svg>
       </button>
     } @else {
       <a
-        class="absolute block left-6 top-6 rounded-xl bg-zinc-800 p-3 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-100"
+        class="icon-btn absolute top-5 left-5 border border-night-700 bg-night-900 max-md:hidden"
         aria-label="Back"
         i18n-aria-label="@@common.back"
         title="Back"
         i18n-title="@@common.back"
         routerLink="/"
       >
-        <svg lucideArrowLeft size="20"></svg>
+        <svg lucideChevronLeft size="22"></svg>
       </a>
     }
   </div>
 
-  <app-sidebar [title]="panelTitle()" [canGoBack]="canClosePanel()" (back)="closePanel()">
+  <app-sidebar
+    class="max-md:flex-1"
+    [title]="panelTitle()"
+    [canGoBack]="canClosePanel()"
+    (back)="closePanel()"
+  >
     @switch (panel().kind) {
       @case ('cards') {
         <app-cards-panel />
@@ -83,6 +134,7 @@
           [activeKind]="activeButton()?.kind ?? null"
           [activeProgress]="pickProgress()"
           [spentAbilities]="spentAbilities()"
+          [(charactersOpen)]="charactersOpen"
           (next)="nextAction()"
           (previous)="previousAction()"
           (buttonPressed)="pressButton($event)"
@@ -144,6 +196,7 @@
     [message]="resettingAbilityMessage()"
     confirmLabel="Give back"
     i18n-confirmLabel="@@narrator.giveBack"
+    [destructive]="false"
     (confirmed)="resetAbility()"
     (cancelled)="resettingAbility.set(null)"
   />

@@ -1,10 +1,11 @@
 import { Component, input, output } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
+import { LucideCheck } from '@lucide/angular';
 import { Character } from '../../models/character';
 
 @Component({
   selector: 'app-character-tile',
-  imports: [NgOptimizedImage],
+  imports: [NgOptimizedImage, LucideCheck],
   templateUrl: './character-tile.component.html',
   host: {
     class: 'grid',

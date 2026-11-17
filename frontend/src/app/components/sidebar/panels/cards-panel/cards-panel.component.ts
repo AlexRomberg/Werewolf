@@ -10,6 +10,7 @@ import { MAX_SEATS } from '../../../../services/state/types';
 import { CharacterTileComponent } from '../../../character-tile/character-tile.component';
 import { DeckPreviewComponent } from '../../../deck-preview/deck-preview.component';
 import { GroupingToggleComponent } from '../../../grouping-toggle/grouping-toggle.component';
+import { DividerComponent } from '../../../divider/divider.component';
 
 interface PresetView {
   preset: Preset;
@@ -43,6 +44,7 @@ interface CardView {
     CharacterTileComponent,
     DeckPreviewComponent,
     GroupingToggleComponent,
+    DividerComponent,
   ],
   templateUrl: './cards-panel.component.html',
   host: {

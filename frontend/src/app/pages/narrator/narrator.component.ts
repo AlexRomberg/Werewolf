@@ -1,5 +1,5 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
-import { LucideArrowLeft, LucideArrowUpDown, LucideCheck, LucideLogOut } from '@lucide/angular';
+import { Component, DOCUMENT, computed, effect, inject, signal } from '@angular/core';
+import { LucideArrowUpDown, LucideCheck, LucideChevronLeft } from '@lucide/angular';
 import {
   ChangesDialogComponent,
   DaybreakChangeView,
@@ -79,14 +79,14 @@ function nightTitle(round: number) {
     RoomInviteComponent,
     LucideArrowUpDown,
     LucideCheck,
-    LucideLogOut,
-    LucideArrowLeft,
+    LucideChevronLeft,
     RouterLink,
   ],
   templateUrl: './narrator.component.html',
 })
 export class NarratorComponent {
   private game = inject(GameService);
+  private document = inject(DOCUMENT);
   private roomHost = inject(RoomHostService);
 
   private people = this.game.people.all;
@@ -112,6 +112,12 @@ export class NarratorComponent {
       : SIDEBAR_TITLES[this.panel().kind],
   );
   protected canClosePanel = computed(() => this.panel().kind !== this.basePanel().kind);
+  protected charactersOpen = signal(false);
+  protected sheet = computed(() =>
+    this.panel().kind === 'cards' || (this.panel().kind === 'narration' && this.charactersOpen())
+      ? 'full'
+      : 'fit',
+  );
 
   protected selectedPersonId = computed(() => {
     const panel = this.panel();
@@ -254,6 +260,28 @@ export class NarratorComponent {
     if (this.roomHost.hasRoomToResume()) {
       this.roomHost.open(this.seating);
     }
+    effect((onCleanup) => {
+      const wakeLock = this.document.defaultView?.navigator.wakeLock;
+      if (!this.isPlaying() || !wakeLock) {
+        return;
+      }
+
+      let lock: WakeLockSentinel | undefined;
+      const keepAwake = () => {
+        if (this.document.visibilityState === 'visible') {
+          wakeLock.request('screen').then(
+            (granted) => (lock = granted),
+            () => undefined,
+          );
+        }
+      };
+      keepAwake();
+      this.document.addEventListener('visibilitychange', keepAwake);
+      onCleanup(() => {
+        this.document.removeEventListener('visibilitychange', keepAwake);
+        lock?.release();
+      });
+    });
   }
 
   protected addPerson() {
@@ -334,6 +362,7 @@ export class NarratorComponent {
     this.confirmingEnd.set(false);
     this.resettingAbility.set(null);
     this.overlayPanel.set(null);
+    this.charactersOpen.set(false);
     this.selectionChoice.set(null);
     this.daybreakDialog.set(null);
     this.discardPicks();

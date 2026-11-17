@@ -1,30 +1,37 @@
 <app-landscape />
-<main class="mx-auto flex min-h-svh max-w-md flex-col justify-center gap-8 px-6 py-12">
-  <a class="flex items-center gap-2 text-sm text-zinc-400 hover:text-zinc-100" routerLink="/">
-    <svg lucideArrowLeft size="16"></svg> <ng-container i18n="@@common.back">Back</ng-container>
-  </a>
+<main class="mx-auto flex min-h-svh max-w-sm flex-col px-6 pb-40">
+  <div class="my-auto flex flex-col gap-8">
+    <header class="flex flex-col gap-2">
+      <div class="-ml-3 flex items-center gap-1">
+        <a class="icon-btn" routerLink="/" aria-label="Back" i18n-aria-label="@@common.back">
+          <svg lucideChevronLeft size="22"></svg>
+        </a>
+        <h1 class="text-4xl" i18n="@@home.joinRoom">Join a room</h1>
+      </div>
+      <p class="text-frost-400" i18n="@@join.hint">
+        Enter the code shown in the middle of the narrator's table.
+      </p>
+    </header>
 
-  <header class="flex flex-col gap-2">
-    <h1 class="text-3xl font-bold" i18n="@@home.joinRoom">Join a room</h1>
-    <p class="text-zinc-400" i18n="@@join.hint">
-      Enter the code shown in the middle of the narrator's table.
-    </p>
-  </header>
-
-  <form class="flex flex-col gap-3" (submit)="enterRoom($event)">
-    <label class="input-label" for="room-code" i18n="@@roomInvite.code">Room code</label>
-    <input
-      id="room-code"
-      class="input text-center font-mono text-3xl tracking-[0.3em]"
-      type="text"
-      inputmode="numeric"
-      autocomplete="off"
-      [placeholder]="placeholder"
-      [formField]="joinForm.code"
-    />
-    <button class="btn btn-primary" type="submit" [disabled]="joinForm().invalid()">
-      <ng-container i18n="@@join.submit">Join</ng-container>
-      <svg lucideChevronRight size="20"></svg>
-    </button>
-  </form>
+    <form class="flex flex-col gap-3" (submit)="enterRoom($event)">
+      <label class="input-label" for="room-code" i18n="@@roomInvite.code">Room code</label>
+      <input
+        id="room-code"
+        class="input text-center font-display text-3xl tracking-[0.3em]"
+        type="text"
+        inputmode="numeric"
+        autocomplete="off"
+        [placeholder]="placeholder"
+        [formField]="joinForm.code"
+      />
+      <button
+        class="btn btn-primary"
+        type="submit"
+        [disabled]="joinForm().invalid()"
+        i18n="@@join.submit"
+      >
+        Join
+      </button>
+    </form>
+  </div>
 </main>

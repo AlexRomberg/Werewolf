@@ -1,6 +1,6 @@
 <button
   type="button"
-  class="relative z-10 block aspect-square w-full rounded-3xl perspective-distant focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-amber-400 disabled:cursor-default"
+  class="relative z-10 block aspect-square w-full cursor-pointer rounded-2xl perspective-distant disabled:cursor-default"
   [disabled]="!character()"
   [attr.aria-pressed]="faceUp()"
   [attr.aria-label]="faceUp() ? faceDownLabel : turnAroundLabel"
@@ -11,26 +11,17 @@
     [class.rotate-y-180]="faceUp()"
   >
     <div
-      class="absolute inset-0 overflow-hidden rounded-3xl bg-zinc-900 shadow-2xl shadow-black/70 ring-1 ring-amber-100/10 backface-hidden"
+      class="absolute inset-0 grid place-items-center overflow-hidden rounded-2xl border border-night-700 bg-night-900 shadow-[inset_0_0_0_14px_var(--color-inset),0_30px_60px_-24px_#000] backface-hidden"
     >
-      <img
-        class="size-full object-cover opacity-40 saturate-50"
-        ngSrc="img/night.png"
-        width="360"
-        height="360"
-        priority
-        alt=""
-      />
-      <div class="absolute inset-2 rounded-2xl border border-amber-100/15"></div>
-      <div class="absolute inset-3.5 rounded-[10px] border border-amber-100/10"></div>
+      <img class="size-1/2" ngSrc="img/moon.svg" width="160" height="160" priority alt="" />
     </div>
 
     <div
-      class="absolute inset-0 rotate-y-180 overflow-hidden rounded-3xl bg-zinc-900 shadow-2xl shadow-black/70 ring-1 ring-amber-100/20 backface-hidden"
+      class="absolute inset-0 rotate-y-180 overflow-hidden rounded-2xl border border-night-700 bg-inset p-3.5 shadow-[0_30px_60px_-24px_#000] backface-hidden"
     >
       @if (character(); as character) {
         <img
-          class="size-full object-cover transition duration-700"
+          class="size-full rounded-surface object-cover transition duration-700"
           [class.grayscale]="card().isDead"
           [class.brightness-75]="card().isDead"
           width="360"
@@ -45,7 +36,7 @@
 
 @if (facts().length > 0) {
   <ul
-    class="-mt-6 flex w-[88%] flex-col gap-2.5 rounded-b-2xl border border-t-0 border-zinc-800 bg-zinc-900/95 px-5 pb-4 pt-12 text-sm text-zinc-300 shadow-xl shadow-black/50 transition duration-500 motion-reduce:transition-none"
+    class="-mt-6 flex w-[88%] flex-col gap-2.5 rounded-b-surface border border-t-0 border-night-700 bg-night-900/95 px-5 pt-12 pb-4 text-frost-200 shadow-xl shadow-black/50 transition duration-500 motion-reduce:transition-none"
     [class.delay-300]="faceUp()"
     [class.-translate-y-full]="!faceUp()"
     [class.opacity-0]="!faceUp()"

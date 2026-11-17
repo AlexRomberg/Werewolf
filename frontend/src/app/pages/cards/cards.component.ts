@@ -5,6 +5,7 @@ import { LucideChevronLeft } from '@lucide/angular';
 import { CharacterDetailsComponent } from '../../components/character-details/character-details.component';
 import { CharacterTileComponent } from '../../components/character-tile/character-tile.component';
 import { GroupingToggleComponent } from '../../components/grouping-toggle/grouping-toggle.component';
+import { DividerComponent } from '../../components/divider/divider.component';
 import { Character } from '../../models/character';
 import { CharacterGrouping, characterSections } from '../../models/characters/sections';
 
@@ -17,6 +18,7 @@ import { CharacterGrouping, characterSections } from '../../models/characters/se
     CharacterTileComponent,
     CharacterDetailsComponent,
     GroupingToggleComponent,
+    DividerComponent,
   ],
   templateUrl: './cards.component.html',
 })

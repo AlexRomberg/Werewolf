@@ -2,11 +2,12 @@ import { LandscapeComponent } from '../../components/landscape/landscape.compone
 import { Component } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { LucideChevronRight, LucideGlobe } from '@lucide/angular';
+import { LucideGlobe } from '@lucide/angular';
+import { DividerComponent } from '../../components/divider/divider.component';
 
 @Component({
   selector: 'app-home',
-  imports: [LandscapeComponent, RouterLink, NgOptimizedImage, LucideChevronRight, LucideGlobe],
+  imports: [LandscapeComponent, DividerComponent, RouterLink, NgOptimizedImage, LucideGlobe],
   templateUrl: './home.component.html',
 })
 export class HomeComponent {}

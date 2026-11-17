@@ -1,38 +1,32 @@
 <app-landscape />
 <main
-  class="mx-auto flex min-h-svh max-w-md flex-col items-center justify-center gap-10 px-6 pb-40"
+  class="mx-auto flex min-h-svh max-w-sm flex-col items-center justify-center gap-8 px-6 pb-40 text-center"
 >
-  <header class="flex flex-col items-center gap-4 text-center">
+  <header class="flex flex-col items-center gap-5">
     <img
-      class="rounded-3xl shadow-lg shadow-black/50"
+      class="rounded-[1.25rem] shadow-lg shadow-black/50"
       ngSrc="img/night.png"
-      width="112"
-      height="112"
+      width="88"
+      height="88"
       priority
       alt="Moon icon"
       i18n-alt="@@home.logoAlt"
     />
-    <h1 class="text-3xl font-bold text-zinc-100" i18n="@@home.title">Werewolf</h1>
-    <p class="text-zinc-400" i18n="@@home.tagline">
+    <h1 class="font-wordmark text-5xl leading-none" i18n="@@home.title">Werewolf</h1>
+    <app-divider class="w-48" />
+    <p class="text-frost-400" i18n="@@home.tagline">
       A companion app for narrating the game<br />"The Werewolves of Miller's Hollow".
     </p>
   </header>
 
-  <nav class="flex w-full flex-col gap-3" aria-label="Main" i18n-aria-label="@@home.navLabel">
-    <a class="btn btn-primary" routerLink="/narrator">
-      <ng-container i18n="@@home.startGame">Start new game</ng-container>
-      <svg lucideChevronRight size="20"></svg>
-    </a>
-    <div class="grid grid-cols-2 gap-3">
-      <a class="btn bg-zinc-800 hover:bg-zinc-700" routerLink="/join" i18n="@@home.joinRoom"
-        >Join a room</a
-      >
-      <a class="btn bg-zinc-800 hover:bg-zinc-700" routerLink="/cards" i18n="@@home.characters"
-        >Characters</a
-      >
-    </div>
+  <nav class="grid w-full grid-cols-2 gap-3" aria-label="Main" i18n-aria-label="@@home.navLabel">
+    <a class="btn btn-primary col-span-2" routerLink="/narrator" i18n="@@home.startGame"
+      >Start new game</a
+    >
+    <a class="btn btn-secondary" routerLink="/join" i18n="@@home.joinRoom">Join a room</a>
+    <a class="btn btn-secondary" routerLink="/cards" i18n="@@home.characters">Characters</a>
     <a
-      class="flex items-center gap-1 text-sm text-zinc-300 underline hover:text-zinc-100 justify-center"
+      class="btn-quiet col-span-2 mt-1"
       href="/de"
       i18n-href="@@home.languageLink"
       lang="de"
@@ -46,10 +40,10 @@
   </nav>
 </main>
 <footer
-  class="flex flex-col items-center justify-center gap-4 text-center text-xs text-zinc-500 p-4 bg-zinc-900"
+  class="flex flex-col items-center gap-3 bg-ground px-6 py-6 text-center text-xs text-frost-500"
 >
   <p i18n="@@home.footer.project">An ARO-Project</p>
-  <p i18n="@@home.footer.disclaimer">
+  <p class="max-w-2xl" i18n="@@home.footer.disclaimer">
     An unofficial companion for "The Werewolves of Miller's Hollow". It is not affiliated with or
     endorsed by lui-même, Asmodee or the game's creators. All images and characters remain their
     property and are used here for non-commercial fan use only.

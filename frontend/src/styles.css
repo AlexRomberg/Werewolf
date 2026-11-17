@@ -1,63 +1,137 @@
 @import 'tailwindcss';
 
+@theme {
+  --breakpoint-md: 45rem;
+
+  --font-sans: 'Alegreya Sans', 'Gill Sans', 'Segoe UI', system-ui, sans-serif;
+  --font-display: 'Alegreya', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+  --font-wordmark: 'Alegreya SC', 'Alegreya', Georgia, serif;
+
+  --color-night-950: #0a0c14;
+  --color-night-900: #10131f;
+  --color-night-800: #1a1e30;
+  --color-night-700: #282d47;
+  --color-night-600: #3a4062;
+  --color-frost-500: #747a98;
+  --color-frost-400: #8a90ab;
+  --color-frost-200: #c9cdda;
+  --color-frost-50: #eceef4;
+  --color-ornament: #5f6689;
+  --color-ember-600: #b5541f;
+  --color-ember-500: #c8642a;
+  --color-ember-400: #e59a4b;
+  --color-blood-700: #7d2323;
+  --color-blood-500: #c0443f;
+  --color-blood-400: #e3807a;
+  --color-inset: #040509;
+  --color-ground: #07080d;
+
+  --radius-control: 6px;
+  --radius-surface: 10px;
+}
+
 @theme inline {
   --color-tone: var(--tone);
+  --color-connection: var(--connection);
 }
 
 :root,
 [data-tone='neutral'] {
-  --tone: var(--color-zinc-400);
+  --tone: var(--color-frost-400);
 }
 [data-tone='assign'] {
-  --tone: var(--color-sky-400);
-}
-[data-tone='kill'] {
-  --tone: var(--color-red-500);
-}
-[data-tone='protect'] {
-  --tone: var(--color-emerald-400);
+  --tone: #d4b25c;
 }
 [data-tone='bond'] {
-  --tone: var(--color-pink-400);
+  --tone: #6f9fdc;
+}
+[data-tone='protect'] {
+  --tone: #6fb38a;
+}
+[data-tone='kill'] {
+  --tone: var(--color-blood-500);
 }
 [data-tone='enchant'] {
-  --tone: var(--color-violet-400);
+  --tone: #a58ad8;
 }
 
 [data-connection='love'] {
-  --connection: var(--color-rose-800);
+  --connection: #d9798a;
 }
 [data-connection='trust'] {
-  --connection: var(--color-amber-700);
+  --connection: #d4b25c;
 }
 [data-connection='sleepover'] {
-  --connection: var(--color-blue-800);
+  --connection: #6f9fdc;
 }
 
-html {
-  @apply bg-zinc-950;
+@layer base {
+  html {
+    color-scheme: dark;
+    @apply bg-night-950;
+  }
+  body {
+    @apply font-sans text-frost-200;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-display font-medium text-balance text-frost-50;
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-ember-400;
+  }
+  dialog::backdrop {
+    background: rgb(10 12 20 / 0.75);
+    backdrop-filter: blur(6px) grayscale(1);
+  }
 }
-body {
-  @apply text-zinc-100;
-}
-.btn {
-  @apply p-3 rounded-lg text-base text-zinc-100 disabled:bg-zinc-700! disabled:text-zinc-400 disabled:cursor-not-allowed flex items-center gap-2 justify-center;
-}
-.btn-primary {
-  @apply bg-orange-900 hover:bg-orange-800;
-}
-.input {
-  @apply rounded-lg bg-zinc-800 px-3 py-2 text-zinc-100 placeholder:text-zinc-500;
-}
-.input-label {
-  @apply text-sm text-zinc-400;
-}
-.sidebar-container {
-  @apply flex flex-col gap-2 rounded-3xl bg-zinc-900 p-4 shadow shadow-zinc-950;
-}
-.card-tile {
-  @apply grid items-center gap-x-2 rounded-lg bg-zinc-800 p-2 text-left ring-amber-400;
-}
-.chip {
-  @apply rounded-full bg-zinc-800 px-3 py-1 text-sm ring-amber-400 hover:bg-zinc-700;
+
+@layer components {
+  .btn {
+    @apply flex cursor-pointer items-center justify-center gap-2 rounded-control border border-transparent px-4 py-3 text-base font-medium text-frost-50 disabled:cursor-not-allowed disabled:border-night-700! disabled:bg-night-800! disabled:text-frost-500!;
+  }
+  .btn-primary {
+    @apply bg-ember-600 text-[#fff7ee] hover:bg-ember-500;
+  }
+  .btn-secondary {
+    @apply border-night-700 bg-night-800 hover:border-frost-500;
+  }
+  .btn-danger {
+    @apply bg-blood-700 text-[#fff7ee] hover:bg-blood-500;
+  }
+  .btn-quiet {
+    @apply flex items-center justify-center gap-1 text-sm text-frost-400 underline underline-offset-3 hover:text-frost-50;
+  }
+  .icon-btn {
+    @apply grid size-11 shrink-0 cursor-pointer place-items-center rounded-control text-frost-400 hover:bg-night-800 hover:text-frost-50;
+  }
+  .input {
+    @apply rounded-control border border-night-700 bg-night-800 px-3 py-2 text-frost-50 placeholder:text-frost-500 focus:border-frost-500;
+  }
+  .input-label {
+    @apply text-sm text-frost-400;
+  }
+  .surface {
+    @apply rounded-surface border border-night-700 bg-night-900;
+  }
+  .section-title {
+    @apply font-display text-xl font-medium text-frost-50;
+  }
+  .card-tile {
+    @apply flex cursor-pointer items-center gap-3 rounded-control p-1 text-left font-display text-lg text-frost-50 hover:bg-night-800;
+  }
+  .portrait {
+    @apply relative block size-12 shrink-0 rounded-[7px];
+  }
+  .chip {
+    @apply cursor-pointer rounded-control border border-night-700 bg-night-800 px-3 py-1 text-sm text-frost-200 hover:border-frost-500 aria-pressed:border-ember-400 aria-pressed:text-frost-50;
+  }
+  .ability {
+    @apply flex min-h-11 min-w-0 cursor-pointer items-center gap-3 rounded-control border bg-night-900 px-3 py-2 text-left text-base font-medium text-frost-50 hover:border-tone aria-pressed:border-tone aria-pressed:bg-tone/12 aria-pressed:shadow-[0_0_0_1px_var(--tone)];
+    border-color: color-mix(in oklab, var(--tone) 65%, transparent);
+  }
+  .tick {
+    @apply pointer-events-none absolute -top-1.5 -right-1.5 grid size-5 place-items-center rounded-full bg-ember-400 text-night-950;
+  }
 }

@@ -4,13 +4,14 @@ import { FormsModule } from '@angular/forms';
 import { LucideUser } from '@lucide/angular';
 import { Character } from '../../../../models/character';
 import { Person, PersonStatus, STATUS_LABELS } from '../../../../services/state/types';
+import { DividerComponent } from '../../../divider/divider.component';
 
 @Component({
   selector: 'app-person-panel',
-  imports: [NgOptimizedImage, LucideUser, FormsModule],
+  imports: [NgOptimizedImage, LucideUser, FormsModule, DividerComponent],
   templateUrl: './person-panel.component.html',
   host: {
-    class: 'grid grid-rows-[1fr_auto] min-h-0 gap-4',
+    class: 'grid min-h-0',
   },
 })
 export class PersonPanelComponent {
