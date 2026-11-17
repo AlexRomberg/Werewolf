@@ -5,19 +5,22 @@ x-hardened: &hardened
   security_opt: [no-new-privileges:true]
   pids_limit: 100
 
+# Images are built by GitHub CI and pushed to GHCR, so the deploy server only
+# pulls them. To build locally instead:
+#   docker compose -f docker-compose.yml -f docker-compose.build.yml up --build
 services:
   server:
     <<: *hardened
-    build: ./server
+    image: ghcr.io/alexromberg/werewolf-server:latest
+    pull_policy: always
     mem_limit: 256m
     tmpfs: [/tmp]
     expose: ['3000']
 
   web:
     <<: *hardened
-    build:
-      context: .
-      dockerfile: frontend/Dockerfile
+    image: ghcr.io/alexromberg/werewolf-web:latest
+    pull_policy: always
     mem_limit: 128m
     tmpfs: [/tmp]
     ports:

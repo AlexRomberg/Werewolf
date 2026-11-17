@@ -4,10 +4,12 @@ COPY frontend/package.json frontend/package-lock.json ./
 RUN npm ci
 COPY server/src/protocol.ts /app/server/src/protocol.ts
 COPY frontend/ ./
-# Keep `ng build` inside a small server's RAM. Each worker thread gets its own
-# V8 heap, so cap the heap size and cut the worker count rather than only one.
-# Raise BUILD_MEMORY_MB with `--build-arg BUILD_MEMORY_MB=...` if the build OOMs inside node.
-ARG BUILD_MEMORY_MB=768
+# Keep `ng build`'s memory bounded. Each worker thread gets its own V8 heap of
+# this size, so also cut the worker count. The floor is set by @lucide/angular:
+# its single 11.5 MB bundle goes through Babel in one worker, which runs out of
+# heap at 768 MB. Override with `--build-arg BUILD_MEMORY_MB=...`.
+# The deploy server does not build this image; CI does (see docker-compose.yml).
+ARG BUILD_MEMORY_MB=2048
 ENV NODE_OPTIONS=--max-old-space-size=${BUILD_MEMORY_MB} \
     NG_BUILD_MAX_WORKERS=1 \
     NG_BUILD_PARALLEL_TS=0 \

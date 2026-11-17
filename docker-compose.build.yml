@@ -1,0 +1,12 @@
+# Local override: build the images from source instead of pulling them from GHCR.
+#   docker compose -f docker-compose.yml -f docker-compose.build.yml up --build
+services:
+  server:
+    build: ./server
+    pull_policy: build
+
+  web:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    pull_policy: build
