@@ -59,6 +59,7 @@ export interface RoleStates {
   healerLastProtected?: string;
   hoodratLastHost?: string;
   knightWound?: string;
+  middleCardsShownTo?: string;
 }
 
 export interface Person {

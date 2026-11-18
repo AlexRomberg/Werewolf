@@ -83,5 +83,8 @@ export function clearPick(game: GameService, card: ActionCard, button: ActionBut
     case 'lose-fox-request':
       night.resetAbility('fox_request');
       break;
+    case 'send-middle-cards':
+      night.hideMiddleCards();
+      break;
   }
 }

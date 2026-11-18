@@ -61,12 +61,64 @@
       (personAdded)="addPerson()"
       (personMoved)="movePerson($event)"
     >
+      @if (isPlaying()) {
+        <button
+          circleCorner
+          class="btn btn-secondary size-11 p-0 max-md:hidden"
+          aria-label="End game"
+          i18n-aria-label="@@narrator.endGame"
+          title="End game"
+          i18n-title="@@narrator.endGame"
+          (click)="confirmingEnd.set(true)"
+        >
+          <svg lucideChevronLeft size="20"></svg>
+        </button>
+      } @else {
+        <a
+          circleCorner
+          class="btn btn-secondary size-11 p-0 max-md:hidden"
+          aria-label="Back"
+          i18n-aria-label="@@common.back"
+          title="Back"
+          i18n-title="@@common.back"
+          routerLink="/"
+        >
+          <svg lucideChevronLeft size="20"></svg>
+        </a>
+      }
       @if (isHostingRoom() && !isPlaying()) {
         <app-room-invite circleCenter [code]="roomCode()" [connected]="isRoomConnected()" />
       }
+      @if (isPlaying() && middleCards().length) {
+        <button
+          circleCenter
+          class="flex cursor-pointer flex-col items-center gap-2 rounded-surface p-1 text-frost-400 hover:bg-night-900/80 hover:text-frost-50"
+          aria-label="Show the middle cards"
+          i18n-aria-label="@@common.showMiddleCards"
+          (click)="showingMiddleCards.set(true)"
+        >
+          <span class="text-sm" i18n="@@narrator.middleCards">In the middle</span>
+          <span class="flex max-w-[50cqw] flex-wrap justify-center gap-1.5">
+            @for (middleCard of middleCards(); track $index) {
+              <span
+                class="rounded-control bg-inset p-1 shadow-md shadow-black/60"
+                [title]="middleCard.name"
+              >
+                <img
+                  class="size-10 rounded-xs"
+                  width="40"
+                  height="40"
+                  [ngSrc]="middleCard.image"
+                  [alt]="middleCard.name"
+                />
+              </span>
+            }
+          </span>
+        </button>
+      }
       @if (isPlaying()) {
         <button
-          class="btn btn-secondary py-2 text-sm aria-pressed:border-ember-400"
+          class="btn btn-secondary h-11 py-0 text-sm aria-pressed:border-ember-400"
           [attr.aria-pressed]="rearranging()"
           (click)="rearranging.set(!rearranging())"
         >
@@ -80,30 +132,6 @@
         </button>
       }
     </app-circle>
-
-    @if (isPlaying()) {
-      <button
-        class="icon-btn absolute top-5 left-5 border border-night-700 bg-night-900 max-md:hidden"
-        aria-label="End game"
-        i18n-aria-label="@@narrator.endGame"
-        title="End game"
-        i18n-title="@@narrator.endGame"
-        (click)="confirmingEnd.set(true)"
-      >
-        <svg lucideChevronLeft size="20"></svg>
-      </button>
-    } @else {
-      <a
-        class="icon-btn absolute top-5 left-5 border border-night-700 bg-night-900 max-md:hidden"
-        aria-label="Back"
-        i18n-aria-label="@@common.back"
-        title="Back"
-        i18n-title="@@common.back"
-        routerLink="/"
-      >
-        <svg lucideChevronLeft size="22"></svg>
-      </a>
-    }
   </div>
 
   <app-sidebar
@@ -159,6 +187,10 @@
 
 @if (describedCharacter(); as character) {
   <app-character-details [character]="character" (closed)="describedCharacter.set(null)" />
+}
+
+@if (showingMiddleCards()) {
+  <app-middle-cards-dialog [cards]="middleCards()" (closed)="showingMiddleCards.set(false)" />
 }
 
 @if (confirmingDeal()) {

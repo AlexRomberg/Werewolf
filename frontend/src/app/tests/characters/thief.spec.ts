@@ -57,4 +57,12 @@ describe('Thief', () => {
       character.getActions(seated(0, 1)).some((line) => line && line.startsWith('Middle')),
     ).toBe(false);
   });
+
+  it('should offer to show the middle cards once they are known', () => {
+    const shows = (context: ReturnType<typeof seated>) =>
+      character.getButtons(context).some((button) => button.kind === 'show-middle-cards');
+
+    expect(shows(seated(0, 1))).toBe(false);
+    expect(shows(seated(0, 1, { leftover: [WEREWOLF, VILLAGER] }))).toBe(true);
+  });
 });

@@ -110,6 +110,14 @@ export class NightState {
     this.restoreAbility('witch_poison');
   }
 
+  showMiddleCards(personId: string) {
+    this.updateRoles({ middleCardsShownTo: personId });
+  }
+
+  hideMiddleCards() {
+    this.updateRoles({ middleCardsShownTo: undefined });
+  }
+
   useAbility(ability: Ability) {
     if (!this.state().roles.usedAbilities.includes(ability)) {
       this.updateRoles({ usedAbilities: [...this.state().roles.usedAbilities, ability] });

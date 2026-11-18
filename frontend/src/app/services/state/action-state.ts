@@ -11,7 +11,12 @@ import { Character } from '../../models/character';
 import { ANGEL, BEAR_TAMER, ELDER, WEREWOLF } from '../../models/characters';
 import { isWerewolf } from '../../models/werewolf-character';
 import { leftoverCards } from './character-state';
-import { isPersonDead, pendingChanges, resolveDaybreak, woundedByTheKnight } from './daybreak-state';
+import {
+  isPersonDead,
+  pendingChanges,
+  resolveDaybreak,
+  woundedByTheKnight,
+} from './daybreak-state';
 import {
   ChangeReason,
   ConnectionType,
@@ -25,7 +30,7 @@ import {
 } from './types';
 
 export class ActionState {
-  constructor(private state: WritableSignal<State>) { }
+  constructor(private state: WritableSignal<State>) {}
 
   readonly round = computed(() => this.state().round);
 
@@ -105,6 +110,7 @@ function startNextNight(state: State): State {
       healerLastProtected: protectedPerson?.id,
       hoodratLastHost: sleepover?.to,
       knightWound: woundedByTheKnight(state, morning),
+      middleCardsShownTo: undefined,
     },
   });
 }

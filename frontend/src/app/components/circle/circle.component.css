@@ -64,6 +64,7 @@
 
   .circle-frame {
     container-type: size;
+    border-radius: calc(var(--radius-control) + 0.5rem + 2px);
   }
 
   .circle-stage {

@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { GameService } from '../services/game.service';
 import { ConnectionType, INITIAL_SEATS, MAX_SEATS, PersonStatus } from '../services/state/types';
-import { WEREWOLF } from '../models/characters';
+import { THIEF, VILLAGER, WEREWOLF } from '../models/characters';
 
 describe('GameService', () => {
   let service: GameService;
@@ -204,6 +204,7 @@ describe('GameService', () => {
         isWerewolf: true,
         isEnchanted: true,
         links: [],
+        middleCards: [],
       });
     });
 
@@ -225,6 +226,55 @@ describe('GameService', () => {
       expect(cardOf(model.id).links).toEqual([]);
       expect(cardOf(hoodrat.id).links).toEqual([{ type: 'sleepover', name: 'Seat 4' }]);
       expect(cardOf(host.id).links).toEqual([]);
+    });
+
+    describe('the middle cards', () => {
+      beforeEach(() => {
+        service.characters.toggle(THIEF);
+        service.characters.setAmount(WEREWOLF, 1);
+        const ids = service.people.all().map((person) => person.id);
+        service.people.assign(ids.slice(0, 1), THIEF);
+        service.people.assign(ids.slice(1, 2), WEREWOLF);
+        service.people.assign(ids.slice(2), VILLAGER);
+        service.startGame();
+      });
+
+      it('should stay hidden until the narrator shows them', () => {
+        for (const card of service.people.cards().values()) {
+          expect(card.middleCards).toEqual([]);
+        }
+      });
+
+      it('should reach only the player they are shown to', () => {
+        const [thief, wolf] = service.people.all();
+        service.night.showMiddleCards(thief.id);
+
+        expect(cardOf(thief.id).middleCards).toEqual([VILLAGER.id, VILLAGER.id]);
+        expect(cardOf(wolf.id).middleCards).toEqual([]);
+
+        service.night.hideMiddleCards();
+
+        expect(cardOf(thief.id).middleCards).toEqual([]);
+      });
+
+      it('should follow the Thief through a swap', () => {
+        const [thief] = service.people.all();
+        service.night.showMiddleCards(thief.id);
+        service.people.assign([thief.id], VILLAGER);
+
+        expect(cardOf(thief.id).middleCards).toEqual([THIEF.id, VILLAGER.id]);
+      });
+
+      it('should be put away when the next night falls', () => {
+        const [thief] = service.people.all();
+        service.night.showMiddleCards(thief.id);
+        while (!service.actions.isLastCard()) {
+          service.actions.next();
+        }
+        service.actions.next();
+
+        expect(cardOf(thief.id).middleCards).toEqual([]);
+      });
     });
   });
 

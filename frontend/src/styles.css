@@ -82,8 +82,8 @@
     @apply outline-2 outline-offset-2 outline-ember-400;
   }
   dialog::backdrop {
+    @apply backdrop-blur-xl backdrop-grayscale-100 backdrop-brightness-50;
     background: rgb(10 12 20 / 0.75);
-    backdrop-filter: blur(6px) grayscale(1);
   }
 }
 
@@ -119,10 +119,10 @@
     @apply font-display text-xl font-medium text-frost-50;
   }
   .card-tile {
-    @apply flex cursor-pointer items-center gap-3 rounded-control p-1 text-left font-display text-lg text-frost-50 hover:bg-night-800;
+    @apply flex cursor-pointer items-center gap-3 rounded-surface p-1 text-left font-display text-lg text-frost-50 hover:bg-night-800;
   }
   .portrait {
-    @apply relative block size-12 shrink-0 rounded-[7px];
+    @apply relative block size-12 shrink-0 rounded-control;
   }
   .chip {
     @apply cursor-pointer rounded-control border border-night-700 bg-night-800 px-3 py-1 text-sm text-frost-200 hover:border-frost-500 aria-pressed:border-ember-400 aria-pressed:text-frost-50;

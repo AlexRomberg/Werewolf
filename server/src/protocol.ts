@@ -46,6 +46,7 @@ export interface PlayerCard {
   isWerewolf: boolean;
   isEnchanted: boolean;
   links: PlayerLink[];
+  middleCards: string[];
 }
 
 export interface ClientToServerEvents {

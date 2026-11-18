@@ -1,6 +1,12 @@
 import { CHARACTER_DESCRIPTIONS } from '../../i18n/descriptions';
 import { CHARACTER_NAMES } from '../../i18n/names';
-import { ActionButton, assignButton, filterFalsy, COMMON_LINES } from '../actions/action';
+import {
+  ActionButton,
+  assignButton,
+  filterFalsy,
+  COMMON_LINES,
+  showMiddleCardsButton,
+} from '../actions/action';
 import { isAssigned, isFirstNight, NightContext } from '../actions/context';
 import { BasePriority, Character, GameSet, GroupType } from '../character';
 
@@ -26,6 +32,6 @@ export class Thief extends Character {
   }
 
   override getButtons(context: NightContext): ActionButton[] {
-    return filterFalsy([assignButton(context)]);
+    return filterFalsy([assignButton(context), showMiddleCardsButton(context)]);
   }
 }

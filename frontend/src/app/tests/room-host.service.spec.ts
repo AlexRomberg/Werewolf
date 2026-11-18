@@ -15,6 +15,7 @@ function card(overrides: Partial<PlayerCard> = {}): PlayerCard {
     isWerewolf: false,
     isEnchanted: false,
     links: [],
+    middleCards: [],
     ...overrides,
   };
 }

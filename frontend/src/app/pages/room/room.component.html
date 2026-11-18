@@ -101,6 +101,28 @@
         }
       </p>
 
+      @if (isFaceUp() && middleCards().length > 0) {
+        <div class="flex flex-col items-center gap-3" role="group" aria-labelledby="middle-cards">
+          <h2 id="middle-cards" class="text-xl" i18n="@@room.middleCards">Cards in the middle</h2>
+          <ul class="flex flex-wrap justify-center gap-4">
+            @for (middleCard of middleCards(); track $index) {
+              <li class="flex w-24 flex-col items-center gap-2 text-center">
+                <span class="block rounded-surface bg-inset p-1 shadow-lg shadow-black/50">
+                  <img
+                    class="rounded-control"
+                    width="88"
+                    height="88"
+                    [ngSrc]="middleCard.image"
+                    alt=""
+                  />
+                </span>
+                <span class="font-display leading-tight text-frost-100">{{ middleCard.name }}</span>
+              </li>
+            }
+          </ul>
+        </div>
+      }
+
       <button
         class="flex cursor-pointer flex-col items-center text-sm text-frost-400 transition-opacity duration-500 hover:text-frost-50"
         [class.invisible]="!hasDescription()"

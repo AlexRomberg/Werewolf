@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import type { PlayerCard } from '@protocol';
 import { SECTION_TITLES } from '../i18n/descriptions';
-import { WEREWOLF } from '../models/characters';
+import { VILLAGER, WEREWOLF } from '../models/characters';
 import { RoomComponent } from '../pages/room/room.component';
 import { RoomPlayerService, RoomStatus } from '../services/room-player.service';
 
@@ -14,6 +14,7 @@ const WEREWOLF_CARD: PlayerCard = {
   isWerewolf: true,
   isEnchanted: false,
   links: [],
+  middleCards: [],
 };
 
 describe('RoomComponent, a joined player', () => {
@@ -90,6 +91,22 @@ describe('RoomComponent, a joined player', () => {
     card.set({ ...WEREWOLF_CARD, isEnchanted: true });
     await fixture.whenStable();
     expect(hint()).toContain('Tap your card');
+  });
+
+  it('should show the middle cards only while the card is face up', async () => {
+    const middle = () =>
+      [...element().querySelectorAll('[aria-labelledby="middle-cards"] li')].map((item) =>
+        item.textContent?.trim(),
+      );
+    card.set({ ...WEREWOLF_CARD, middleCards: [VILLAGER.id, WEREWOLF.id] });
+    await fixture.whenStable();
+
+    expect(middle()).toEqual([]);
+
+    cardButton().click();
+    await fixture.whenStable();
+
+    expect(middle()).toEqual([VILLAGER.name, WEREWOLF.name]);
   });
 
   it('should describe the role without the advice meant for the narrator', async () => {

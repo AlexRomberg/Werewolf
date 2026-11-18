@@ -1,11 +1,11 @@
 @for (character of cards(); track $index) {
   <span
-    class="absolute size-12 rounded-[7px] bg-inset p-1 shadow-md shadow-black/60"
+    class="absolute size-12 rounded-control bg-inset p-1 shadow-md shadow-black/60"
     [style.left.px]="20 * $index"
     [style.zIndex]="30 - $index"
   >
     <img
-      class="rounded-[4px]"
+      class="rounded-xs"
       width="40"
       height="40"
       [ngSrc]="character.image"

@@ -52,6 +52,22 @@ export function withDealShuffledButton(card: ActionCard, hasDealt: boolean): Act
   };
 }
 
+export const MIDDLE_CARD_ROLES: readonly string[] = [THIEF.id, JUGGLER.id];
+
+export function withSendMiddleCardsButton(card: ActionCard, isSent: boolean): ActionCard {
+  return {
+    ...card,
+    buttons: [
+      ...card.buttons,
+      {
+        kind: 'send-middle-cards',
+        label: $localize`:@@card.sendMiddleCards:Show on their phone`,
+        done: isSent,
+      },
+    ],
+  };
+}
+
 export function nightfallCard(round: number): ActionCard {
   return {
     key: `${round}:night`,

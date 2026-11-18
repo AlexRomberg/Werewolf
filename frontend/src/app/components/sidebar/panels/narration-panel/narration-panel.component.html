@@ -110,6 +110,10 @@
                           <svg lucideCheck size="20"></svg>
                         } @else if (view.button.kind === 'deal-shuffled') {
                           <svg lucidePlayingCardsFan size="20"></svg>
+                        } @else if (view.button.kind === 'show-middle-cards') {
+                          <svg lucideEye size="20"></svg>
+                        } @else if (view.button.kind === 'send-middle-cards') {
+                          <svg lucideSmartphone size="20"></svg>
                         } @else {
                           @switch (view.tone) {
                             @case ('assign') {

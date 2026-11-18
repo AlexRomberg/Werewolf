@@ -5,13 +5,13 @@
   (click)="onBackgroundClick($event)"
 >
   <div
-    class="circle-frame relative grid h-full w-full place-items-center rounded-surface border-2 pt-10 transition-colors duration-300"
+    class="circle-frame relative grid h-full w-full place-items-center border-2 pt-10 transition-colors duration-300"
     [class.border-transparent]="!selection()"
     [class.border-tone]="!!selection()"
   >
     @if (selection(); as activeSelection) {
       <div
-        class="absolute -top-0.5 left-1/2 z-20 flex max-w-[calc(100%-1.5rem)] -translate-x-1/2 items-center gap-3 rounded-b-control bg-tone px-4 py-2 text-sm font-bold text-night-950 shadow-lg shadow-black/40"
+        class="absolute -top-0.5 left-1/2 z-20 flex max-w-[calc(100%-1.5rem)] -translate-x-1/2 items-center gap-3 rounded-b-surface bg-tone px-4 py-2 text-sm font-bold text-night-950 shadow-lg shadow-black/40"
         [attr.role]="activeSelection.pending ? 'alertdialog' : 'status'"
         [attr.aria-label]="activeSelection.pending ? confirmPickLabel : null"
       >
@@ -19,14 +19,14 @@
           <span i18n="@@circle.pickWarning">{{ pending.warning }} Continue?</span>
           <button
             #cancelButton
-            class="cursor-pointer rounded-control bg-night-950/15 px-3 py-1 hover:bg-night-950/25"
+            class="-my-1 cursor-pointer rounded-control bg-night-950/15 px-3 py-1 hover:bg-night-950/25"
             (click)="pickCancelled.emit()"
             i18n="@@confirm.cancel"
           >
             Cancel
           </button>
           <button
-            class="cursor-pointer rounded-control bg-night-950 px-3 py-1 text-frost-50 hover:bg-night-800"
+            class="-my-1 -mr-3 cursor-pointer rounded-control bg-night-950 px-3 py-1 text-frost-50 hover:bg-night-800"
             (click)="pickConfirmed.emit()"
             i18n="@@circle.continue"
           >
@@ -38,7 +38,7 @@
             >{{ activeSelection.picked.length }}/{{ activeSelection.needed }}</span
           >
           <button
-            class="-mr-1 cursor-pointer rounded-control p-1 hover:bg-night-950/15"
+            class="-my-1 -mr-3 cursor-pointer rounded-control p-1.5 hover:bg-night-950/15"
             aria-label="Stop selecting"
             i18n-aria-label="@@circle.stopSelecting"
             (click)="selectionClosed.emit()"
@@ -222,7 +222,11 @@
       }
     </div>
 
-    <div class="absolute bottom-3 left-3 flex flex-col items-start gap-3">
+    <div class="absolute top-2 left-2">
+      <ng-content select="[circleCorner]" />
+    </div>
+
+    <div class="absolute bottom-2 left-2 flex flex-col items-start gap-3">
       @if (connectionLines().length) {
         <ul class="flex flex-col gap-1 text-sm text-frost-400">
           @for (line of connectionLines(); track line.type) {

@@ -13,7 +13,9 @@ export type ActionButtonKind =
   | 'enchant'
   | 'lose-fox-request'
   | 'show-daybreak-changes'
-  | 'deal-shuffled';
+  | 'deal-shuffled'
+  | 'show-middle-cards'
+  | 'send-middle-cards';
 
 export type ActionTone = 'assign' | 'kill' | 'protect' | 'bond' | 'enchant' | 'neutral';
 
@@ -31,6 +33,8 @@ export const TONE_BY_KIND: Record<ActionButtonKind, ActionTone> = {
   'lose-fox-request': 'neutral',
   'show-daybreak-changes': 'neutral',
   'deal-shuffled': 'assign',
+  'show-middle-cards': 'neutral',
+  'send-middle-cards': 'neutral',
 };
 
 /** Checklist lines and labels several roles share, translated once. */
@@ -74,6 +78,15 @@ export function assignButton(
     picks,
     auto: true,
   };
+}
+
+export function showMiddleCardsButton(context: NightContext): ActionButton | false {
+  return (
+    context.leftover.length > 0 && {
+      kind: 'show-middle-cards',
+      label: $localize`:@@common.showMiddleCards:Show the middle cards`,
+    }
+  );
 }
 
 export function pickButton(

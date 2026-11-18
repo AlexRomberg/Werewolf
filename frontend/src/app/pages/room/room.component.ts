@@ -36,6 +36,7 @@ const UNDEALT_CARD: PlayerCard = {
   isWerewolf: false,
   isEnchanted: false,
   links: [],
+  middleCards: [],
 };
 
 const REFUSAL_MESSAGES: Record<Exclude<JoinRefusal, 'host_away'>, string> = {
@@ -110,6 +111,9 @@ export class RoomComponent implements OnInit {
     () =>
       this.character()?.description.filter((section) => section.kind !== 'hintForTheNarrator') ??
       [],
+  );
+  protected readonly middleCards = computed(() =>
+    this.card().middleCards.flatMap((id) => CHARACTERS_BY_ID.get(id) ?? []),
   );
   protected readonly hasDescription = computed(
     () => this.isFaceUp() && this.descriptionSections().length > 0,

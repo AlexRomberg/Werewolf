@@ -1,0 +1,47 @@
+<dialog
+  appModal
+  #modal="appModal"
+  class="m-auto w-[min(40rem,calc(100vw-2rem))] bg-transparent text-frost-200"
+  aria-labelledby="middle-cards-title"
+  (closed)="closed.emit()"
+>
+  <div
+    class="surface relative flex max-h-[calc(100svh-4rem)] flex-col gap-6 overflow-y-auto px-6 pt-6 pb-8 shadow-2xl shadow-black/60"
+  >
+    <app-corners />
+
+    <div class="grid grid-cols-[2.75rem_1fr_2.75rem] items-start">
+      <div class="col-start-2 flex flex-col items-center gap-2 pt-1">
+        <h1 id="middle-cards-title" class="text-center text-3xl" i18n="@@middleCards.title">
+          Cards in the middle
+        </h1>
+        <app-divider class="w-48" />
+      </div>
+      <button
+        class="icon-btn"
+        aria-label="Close"
+        i18n-aria-label="@@common.close"
+        (click)="modal.close()"
+      >
+        <svg lucideX size="20"></svg>
+      </button>
+    </div>
+
+    <ul class="flex flex-wrap justify-center gap-5">
+      @for (card of cards(); track $index) {
+        <li class="flex w-[min(10rem,36vw)] flex-col items-center gap-3 text-center">
+          <span class="block w-full rounded-surface bg-inset p-1 shadow-lg shadow-black/50">
+            <img
+              class="aspect-square w-full rounded-control"
+              width="160"
+              height="160"
+              [ngSrc]="card.image"
+              alt=""
+            />
+          </span>
+          <span class="font-display text-xl leading-tight text-frost-50">{{ card.name }}</span>
+        </li>
+      }
+    </ul>
+  </div>
+</dialog>

@@ -2,6 +2,7 @@ import { computed, WritableSignal } from '@angular/core';
 import { Character } from '../../models/character';
 import type { LinkType, PlayerCard, PlayerLink } from '@protocol';
 import { isWerewolf } from '../../models/werewolf-character';
+import { leftoverCards } from './character-state';
 import { woundedByTheKnight } from './daybreak-state';
 import {
   Connection,
@@ -59,8 +60,10 @@ export class PeopleState {
   });
 
   readonly cards = computed<ReadonlyMap<string, PlayerCard>>(() => {
-    const { connections } = this.state();
+    const state = this.state();
+    const { connections, roles } = state;
     const views = this.views();
+    const middleCards = roles.middleCardsShownTo ? leftoverCards(state).map((card) => card.id) : [];
     const nameById = new Map(views.map((view) => [view.id, view.displayName]));
 
     return new Map(
@@ -73,6 +76,7 @@ export class PeopleState {
           isWerewolf: isWerewolf(person),
           isEnchanted: hasStatus(person, PersonStatus.Enchanted),
           links: linksKnownBy(person.id, connections, nameById),
+          middleCards: person.id === roles.middleCardsShownTo ? middleCards : [],
         },
       ]),
     );

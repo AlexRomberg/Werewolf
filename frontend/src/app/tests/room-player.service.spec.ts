@@ -15,6 +15,7 @@ const SEER_CARD: PlayerCard = {
   isWerewolf: false,
   isEnchanted: false,
   links: [{ type: 'love', name: 'Ben' }],
+  middleCards: [],
 };
 
 describe('RoomPlayerService', () => {

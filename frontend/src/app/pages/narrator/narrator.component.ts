@@ -12,13 +12,18 @@ import {
   PersonMove,
 } from '../../components/circle/circle.component';
 import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
+import { MiddleCardsDialogComponent } from '../../components/middle-cards-dialog/middle-cards-dialog.component';
 import { CardsPanelComponent } from '../../components/sidebar/panels/cards-panel/cards-panel.component';
 import { NarrationPanelComponent } from '../../components/sidebar/panels/narration-panel/narration-panel.component';
 import { PersonPanelComponent } from '../../components/sidebar/panels/person-panel/person-panel.component';
 import { SetupPanelComponent } from '../../components/sidebar/panels/setup-panel/setup-panel.component';
 import { SidebarComponent, SidebarPanel } from '../../components/sidebar/sidebar.component';
 import { ActionButton, TONE_BY_KIND } from '../../models/actions/action';
-import { withDealShuffledButton } from '../../models/actions/generic-cards';
+import {
+  MIDDLE_CARD_ROLES,
+  withDealShuffledButton,
+  withSendMiddleCardsButton,
+} from '../../models/actions/generic-cards';
 import {
   activeButton,
   isStayingHome,
@@ -35,9 +40,11 @@ import {
   ABILITY_LABELS,
   ConnectionType,
   DaybreakChange,
+  isAlive,
   Person,
 } from '../../services/state/types';
 import { applyPick, clearPick } from './pick-actions';
+import { NgOptimizedImage } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
 interface PendingPick {
@@ -76,11 +83,13 @@ function nightTitle(round: number) {
     CharacterDetailsComponent,
     ConfirmDialogComponent,
     ChangesDialogComponent,
+    MiddleCardsDialogComponent,
     RoomInviteComponent,
     LucideArrowUpDown,
     LucideCheck,
     LucideChevronLeft,
     RouterLink,
+    NgOptimizedImage,
   ],
   templateUrl: './narrator.component.html',
 })
@@ -162,9 +171,17 @@ export class NarratorComponent {
     }
 
     const hasDealt = this.people().some((person) => person.character);
-    return cards.map((card) =>
-      card.id === 'rules' ? withDealShuffledButton(card, hasDealt) : card,
-    );
+    const hasMiddleCards = this.game.characters.leftover().length > 0;
+    const shownTo = this.game.night.roles().middleCardsShownTo;
+    return cards.map((card) => {
+      if (card.id === 'rules') {
+        return withDealShuffledButton(card, hasDealt);
+      }
+      const holder = this.middleCardHolder(card.id);
+      return holder && hasMiddleCards
+        ? withSendMiddleCardsButton(card, holder.id === shownTo)
+        : card;
+    });
   });
   protected actionIndex = this.game.actions.index;
   protected canStepBack = this.game.actions.canGoBack;
@@ -172,6 +189,8 @@ export class NarratorComponent {
   private currentContext = this.game.actions.currentContext;
 
   protected charactersInPlay = this.game.characters.inPlay;
+  protected middleCards = this.game.characters.leftover;
+  protected showingMiddleCards = signal(false);
   protected describedCharacter = signal<Character | null>(null);
 
   protected spentAbilities = computed(() =>
@@ -422,6 +441,16 @@ export class NarratorComponent {
       case 'deal-shuffled':
         this.dealShuffled();
         break;
+      case 'show-middle-cards':
+        this.showingMiddleCards.set(true);
+        break;
+      case 'send-middle-cards': {
+        const holder = this.middleCardHolder(card.id);
+        if (holder) {
+          this.game.night.showMiddleCards(holder.id);
+        }
+        break;
+      }
       default:
         if (button.picks !== undefined) {
           this.selectionChoice.set({ cardKey: card.key, kind: button.kind });
@@ -493,6 +522,12 @@ export class NarratorComponent {
 
   private setPickedIds(personIds: readonly string[]) {
     this.partialPick.set({ selectionKey: this.selectionKey(), personIds });
+  }
+
+  private middleCardHolder(cardId: string) {
+    return MIDDLE_CARD_ROLES.includes(cardId)
+      ? this.people().find((person) => person.character?.id === cardId && isAlive(person))
+      : undefined;
   }
 
   private personById(id: string | null) {

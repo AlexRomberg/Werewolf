@@ -599,6 +599,76 @@ describe('NarratorComponent, picking players on the circle', () => {
       expect(buttonNamed('Assign cards again')).toBeDefined();
     });
 
+    it('should let the Thief see the middle cards on their own phone', async () => {
+      await playUntil('thief', 'thief');
+      const [holder] = game.people.all();
+      game.people.assign([holder.id], character('thief'));
+      expect(buttonNamed('Show on their phone')).toBeUndefined();
+
+      await openRoom();
+      game.dealShuffled(() => 0);
+      game.people.assign([holder.id], character('thief'));
+      await fixture.whenStable();
+      await click(buttonNamed('Show on their phone'));
+
+      expect(game.night.roles().middleCardsShownTo).toBe(holder.id);
+      expect(game.people.cards().get(holder.id)?.middleCards).toHaveLength(2);
+
+      await click(buttonNamed('Undo: Show on their phone'));
+
+      expect(game.night.roles().middleCardsShownTo).toBeUndefined();
+    });
+
+    it('should lay the cards nobody holds in the middle of the table for the narrator', async () => {
+      const middle = () =>
+        [...page().querySelectorAll('app-circle [aria-label="Show the middle cards"] img')].map(
+          (image) => image.getAttribute('alt'),
+        );
+      await playUntil('night', 'thief');
+
+      expect(middle()).toEqual([]);
+
+      game.dealShuffled(() => 0);
+      await fixture.whenStable();
+
+      expect(middle()).toHaveLength(2);
+      expect(middle()).toEqual(game.characters.leftover().map((card) => card.name));
+    });
+
+    it('should show the middle cards in a dialog to hand to the player', async () => {
+      const dialogCards = () =>
+        [...page().querySelectorAll('dialog[aria-labelledby="middle-cards-title"] li')].map(
+          (item) => item.textContent?.trim(),
+        );
+      await playUntil('thief', 'thief');
+      game.dealShuffled(() => 0);
+      await fixture.whenStable();
+      const names = game.characters.leftover().map((card) => card.name);
+
+      expect(dialogCards()).toEqual([]);
+
+      const onTheNightCard = [
+        ...page().querySelectorAll<HTMLButtonElement>('app-narration-panel button'),
+      ].find((button) => button.textContent?.trim() === 'Show the middle cards');
+      await click(onTheNightCard);
+
+      expect(dialogCards()).toEqual(names);
+
+      await click(
+        page().querySelector<HTMLButtonElement>(
+          'dialog[aria-labelledby="middle-cards-title"] button[aria-label="Close"]',
+        )!,
+      );
+
+      expect(dialogCards()).toEqual([]);
+
+      await click(
+        page().querySelector<HTMLButtonElement>('app-circle [aria-label="Show the middle cards"]')!,
+      );
+
+      expect(dialogCards()).toEqual(names);
+    });
+
     it('should ask before replacing roles that were already assigned', async () => {
       await playUntil('rules', 'cupid');
       game.people.assign([game.people.all()[0].id], character('cupid'));
