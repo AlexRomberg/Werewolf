@@ -332,6 +332,7 @@
     "status.protected": "Protected",
     "status.turnedWolf": "Turned wolf",
     "status.victim": "Marked as a victim",
+    "status.wounded": "Wounded by the Knight: dies tonight",
     "thief.maySwapCards": "May swap their card for one of the two middle cards (must, if both are werewolves)",
     "thief.middleCards": "Middle cards: {$cards}",
     "werewolf.assignTheWolves": "Assign the wolves",

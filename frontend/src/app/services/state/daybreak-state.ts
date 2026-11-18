@@ -6,9 +6,10 @@ import {
   HOODRAT,
   KNIGHT,
   SMALL_CHILD,
+  WEREWOLF,
   WITCH,
 } from '../../models/characters';
-import { WerewolfCharacter } from '../../models/werewolf-character';
+import { isWerewolf, WerewolfCharacter } from '../../models/werewolf-character';
 import {
   ChangeCause,
   ChangeReason,
@@ -31,7 +32,7 @@ const STATUS_BY_REASON: Partial<Record<ChangeReason, PersonStatus>> = {
 };
 
 export class DaybreakState {
-  constructor(private state: WritableSignal<State>) {}
+  constructor(private state: WritableSignal<State>) { }
 
   readonly changes = computed<readonly DaybreakChange[]>(() => resolveDaybreak(this.state()));
   readonly pending = computed<readonly DaybreakChange[]>(() => pendingChanges(this.state()));
@@ -66,7 +67,7 @@ export function pendingChanges(state: State): DaybreakChange[] {
 export function resolveDaybreak(state: State): DaybreakChange[] {
   const applied = state.appliedChanges;
   const diedThisMorning = (personId: string) =>
-    applied.some((change) => change.personId === personId && isDeath(change));
+    applied.some((change) => change.personId === personId && isPersonDead(change));
   const alive = new Set(
     state.people
       .filter((person) => isAlive(person) || diedThisMorning(person.id))
@@ -157,7 +158,37 @@ export function resolveDaybreak(state: State): DaybreakChange[] {
   );
 }
 
-export function isDeath(change: DaybreakChange) {
+export function woundedByTheKnight(state: State, morning?: readonly DaybreakChange[]) {
+  const seat = state.people.findIndex((person) => person.character?.id === KNIGHT.id);
+  const knight = state.people[seat];
+  if (!knight || isAlive(knight)) {
+    return undefined;
+  }
+
+  const death = (morning ?? resolveDaybreak(state)).find(
+    (change) =>
+      change.personId === knight.id &&
+      change.reason === ChangeReason.DiedGotKilled &&
+      'role' in change.causedBy &&
+      CHARACTERS_BY_ID.get(change.causedBy.role) instanceof WerewolfCharacter,
+  );
+  if (!death || !('role' in death.causedBy)) {
+    return undefined;
+  }
+
+  const killer = death.causedBy.role;
+  const loneWolf = state.people.find(
+    (person) => killer !== WEREWOLF.id && person.character?.id === killer && isAlive(person),
+  );
+  if (loneWolf) {
+    return loneWolf.id;
+  }
+
+  const leftOfTheKnight = [...state.people.slice(seat + 1), ...state.people.slice(0, seat)];
+  return leftOfTheKnight.find((person) => isAlive(person) && isWerewolf(person))?.id;
+}
+
+export function isPersonDead(change: DaybreakChange) {
   return STATUS_BY_REASON[change.reason] === PersonStatus.Dead;
 }
 

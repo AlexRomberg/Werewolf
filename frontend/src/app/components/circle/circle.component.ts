@@ -14,6 +14,7 @@ import {
   LucideHeartPulse,
   LucidePawPrint,
   LucideShield,
+  LucideSword,
   LucideTombstone,
   LucideUser,
   LucideUserRoundPlus,
@@ -57,6 +58,7 @@ const BADGE_TONES: Record<PersonBadge, ActionTone> = {
   victim: 'kill',
   enchanted: 'enchant',
   turned_wolf: 'neutral',
+  wounded: 'kill',
 };
 
 export interface PersonMove {
@@ -81,6 +83,7 @@ export interface CircleSelection {
     LucideHeartPulse,
     LucidePawPrint,
     LucideShield,
+    LucideSword,
     LucideTombstone,
     LucideWandSparkles,
     LucideUser,

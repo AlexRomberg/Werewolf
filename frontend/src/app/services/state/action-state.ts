@@ -8,17 +8,10 @@ import {
   rulesCard,
 } from '../../models/actions/generic-cards';
 import { Character } from '../../models/character';
-import {
-  ANGEL,
-  BEAR_TAMER,
-  CHARACTERS_BY_ID,
-  ELDER,
-  KNIGHT,
-  WEREWOLF,
-} from '../../models/characters';
-import { isWerewolf, WerewolfCharacter } from '../../models/werewolf-character';
+import { ANGEL, BEAR_TAMER, ELDER, WEREWOLF } from '../../models/characters';
+import { isWerewolf } from '../../models/werewolf-character';
 import { leftoverCards } from './character-state';
-import { isDeath, pendingChanges, resolveDaybreak } from './daybreak-state';
+import { isPersonDead, pendingChanges, resolveDaybreak, woundedByTheKnight } from './daybreak-state';
 import {
   ChangeReason,
   ConnectionType,
@@ -32,7 +25,7 @@ import {
 } from './types';
 
 export class ActionState {
-  constructor(private state: WritableSignal<State>) {}
+  constructor(private state: WritableSignal<State>) { }
 
   readonly round = computed(() => this.state().round);
 
@@ -116,39 +109,13 @@ function startNextNight(state: State): State {
   });
 }
 
-function woundedByTheKnight(state: State, morning: readonly DaybreakChange[]) {
-  const seat = state.people.findIndex((person) => person.character?.id === KNIGHT.id);
-  const knight = state.people[seat];
-  const death = morning.find(
-    (change) =>
-      change.personId === knight?.id &&
-      change.reason === ChangeReason.DiedGotKilled &&
-      'role' in change.causedBy &&
-      CHARACTERS_BY_ID.get(change.causedBy.role) instanceof WerewolfCharacter,
-  );
-  if (!knight || isAlive(knight) || !death || !('role' in death.causedBy)) {
-    return undefined;
-  }
-
-  const killer = death.causedBy.role;
-  const loneWolf = state.people.find(
-    (person) => killer !== WEREWOLF.id && person.character?.id === killer && isAlive(person),
-  );
-  if (loneWolf) {
-    return loneWolf.id;
-  }
-
-  const leftOfTheKnight = [...state.people.slice(seat + 1), ...state.people.slice(0, seat)];
-  return leftOfTheKnight.find((person) => isAlive(person) && isWerewolf(person))?.id;
-}
-
 function bearSignal(state: State): BearSignal | undefined {
   if (!state.characters.has(BEAR_TAMER.id)) {
     return undefined;
   }
 
   const morning = resolveDaybreak(state);
-  const dying = new Set(morning.filter(isDeath).map((change) => change.personId));
+  const dying = new Set(morning.filter(isPersonDead).map((change) => change.personId));
   const turning = new Set(
     morning
       .filter((change) => change.reason === ChangeReason.TurnedIntoWolf)

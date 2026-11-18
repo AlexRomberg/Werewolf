@@ -332,6 +332,7 @@
     "status.protected": "Geschützt",
     "status.turnedWolf": "Zum Wolf geworden",
     "status.victim": "Als Opfer markiert",
+    "status.wounded": "Vom Ritter verwundet: stirbt heute Nacht",
     "thief.maySwapCards": "Darf seine Karte gegen eine der zwei Karten in der Mitte tauschen (muss, wenn beide Werwölfe sind)",
     "thief.middleCards": "Karten in der Mitte: {$cards}",
     "werewolf.assignTheWolves": "Wölfe zuweisen",

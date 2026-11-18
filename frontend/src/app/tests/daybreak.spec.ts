@@ -389,6 +389,27 @@ describe('DaybreakState', () => {
       expect(changes()).toEqual([]);
     });
 
+    it('should mark the wounded wolf from the death of the Knight until its own', () => {
+      const badgesOf = (id: string) =>
+        service.people.views().find((view) => view.id === id)?.badges ?? [];
+      service.night.markVictim(anna, 'werewolf');
+
+      expect(badgesOf(cleo)).not.toContain('wounded');
+
+      service.daybreak.applyAll();
+
+      expect(badgesOf(cleo)).toContain('wounded');
+      expect(badgesOf(eve)).not.toContain('wounded');
+
+      nextNight();
+
+      expect(badgesOf(cleo)).toContain('wounded');
+
+      service.daybreak.applyAll();
+
+      expect(badgesOf(cleo)).not.toContain('wounded');
+    });
+
     it('should claim the wolf only once', () => {
       service.night.markVictim(anna, 'werewolf');
       nextNight();

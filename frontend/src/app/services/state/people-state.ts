@@ -2,6 +2,7 @@ import { computed, WritableSignal } from '@angular/core';
 import { Character } from '../../models/character';
 import type { LinkType, PlayerCard, PlayerLink } from '@protocol';
 import { isWerewolf } from '../../models/werewolf-character';
+import { woundedByTheKnight } from './daybreak-state';
 import {
   Connection,
   ConnectionType,
@@ -28,7 +29,9 @@ export class PeopleState {
   readonly all = computed(() => this.state().people);
 
   readonly views = computed<readonly PersonView[]>(() => {
-    const { people, victims, roles } = this.state();
+    const state = this.state();
+    const { people, victims, roles } = state;
+    const wounded = roles.knightWound ?? woundedByTheKnight(state);
 
     return people.map((person, index) => {
       const statusBadges = person.statuses.filter(
@@ -38,6 +41,7 @@ export class PeopleState {
       const nightBadges: (NightBadge | false)[] = [
         victims.some((mark) => mark.personId === person.id) && 'victim',
         roles.healedTonight === person.id && 'healed',
+        wounded === person.id && isAlive(person) && 'wounded',
       ];
       const badges: PersonBadge[] = [
         ...statusBadges,

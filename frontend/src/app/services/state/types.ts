@@ -68,7 +68,7 @@ export interface Person {
   statuses: PersonStatus[];
 }
 
-export type NightBadge = 'victim' | 'healed';
+export type NightBadge = 'victim' | 'healed' | 'wounded';
 export type PersonBadge = Exclude<PersonStatus, PersonStatus.Dead> | NightBadge;
 
 export const STATUS_LABELS: Record<PersonStatus | NightBadge, string> = {
@@ -78,6 +78,7 @@ export const STATUS_LABELS: Record<PersonStatus | NightBadge, string> = {
   [PersonStatus.TurnedWolf]: $localize`:@@status.turnedWolf:Turned wolf`,
   victim: $localize`:@@status.victim:Marked as a victim`,
   healed: $localize`:@@status.healed:Healed`,
+  wounded: $localize`:@@status.wounded:Wounded by the Knight: dies tonight`,
 };
 
 export interface PersonView extends Person {
