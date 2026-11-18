@@ -2,7 +2,7 @@ import { Component, computed, input, output } from '@angular/core';
 import { NgOptimizedImage, NgTemplateOutlet } from '@angular/common';
 import { LucideCheck, LucideInfo, LucideUser } from '@lucide/angular';
 import { Character } from '../../models/character';
-import { HOODRAT, WITCH } from '../../models/characters';
+import { ELDER, HOODRAT, KNIGHT, WITCH } from '../../models/characters';
 import { ChangeReason, DaybreakChange, PersonView } from '../../services/state/types';
 import { CornersComponent } from '../corners/corners.component';
 import { ModalDirective } from '../modal/modal.directive';
@@ -86,10 +86,7 @@ function wording(change: DaybreakChange, name: string, cause: string) {
     case ChangeReason.DiedGotKilled:
       return {
         headline: $localize`:@@changes.killed:${name}:name: got killed`,
-        note:
-          causingRole === WITCH.id
-            ? $localize`:@@changes.poisonedBy:Poisoned by ${cause}:cause:`
-            : $localize`:@@changes.killedBy:By ${cause}:cause:`,
+        note: killedNote(causingRole, cause),
       };
     case ChangeReason.DiedOfBrokenHeart:
       return {
@@ -119,13 +116,28 @@ function wording(change: DaybreakChange, name: string, cause: string) {
   }
 }
 
-function savedNote(savedByRole: string, cause: string) {
-  if (savedByRole === WITCH.id) {
-    return $localize`:@@changes.healedBy:Healed by ${cause}:cause:`;
+function killedNote(killedByRole: string, cause: string) {
+  switch (killedByRole) {
+    case WITCH.id:
+      return $localize`:@@changes.poisonedBy:Poisoned by ${cause}:cause:`;
+    case KNIGHT.id:
+      return $localize`:@@changes.woundedByKnight:Wounded by the rusty blade`;
+    default:
+      return $localize`:@@changes.killedBy:By ${cause}:cause:`;
   }
-  return savedByRole === HOODRAT.id
-    ? $localize`:@@changes.notAtHome:Not at home`
-    : $localize`:@@changes.protectedBy:Protected by ${cause}:cause:`;
+}
+
+function savedNote(savedByRole: string, cause: string) {
+  switch (savedByRole) {
+    case WITCH.id:
+      return $localize`:@@changes.healedBy:Healed by ${cause}:cause:`;
+    case HOODRAT.id:
+      return $localize`:@@changes.notAtHome:Not at home`;
+    case ELDER.id:
+      return $localize`:@@changes.lostExtraLife:Lost the extra life`;
+    default:
+      return $localize`:@@changes.protectedBy:Protected by ${cause}:cause:`;
+  }
 }
 
 function callName(person: PersonView) {

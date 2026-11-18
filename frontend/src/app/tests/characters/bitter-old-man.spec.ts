@@ -9,9 +9,9 @@ describe('BitterOldMan', () => {
     expect(character.id).toBe('bitter_old_man');
     expect(character.name).toBe('The Bitter Old Man');
     expect(character.group).toBe(GroupType.Loners);
-    expect(character.game).toBe(GameSet.NewMoon);
+    expect(character.game).toBe(GameSet.Characters);
     expect(character.hasMultiple).toBe(false);
-    expect(character.priority).toBe(BasePriority.Initial + 13);
+    expect(character.priority).toBe(BasePriority.Initial + 14);
   });
 
   it('should describe the card', () => {

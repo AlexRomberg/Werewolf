@@ -1,3 +1,4 @@
+import type { Character } from '../character';
 import {
   Ability,
   Connection,
@@ -18,6 +19,7 @@ export interface NightContext {
   readonly victims: readonly VictimMark[];
   readonly connections: readonly Connection[];
   readonly roles: RoleStates;
+  readonly leftover: readonly Character[];
 }
 
 export function isFirstNight(context: NightContext) {

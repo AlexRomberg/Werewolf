@@ -1,7 +1,7 @@
 import { BasePriority, GameSet, GroupType } from '../../models/character';
 import { PrimalWolf } from '../../models/characters/primal-wolf';
 import { WerewolfCharacter } from '../../models/werewolf-character';
-import { WEREWOLF } from '../../models/characters';
+import { ELDER, WEREWOLF } from '../../models/characters';
 import { PersonStatus } from '../../services/state/types';
 import { night, person, seated } from '../night';
 
@@ -47,17 +47,36 @@ describe('PrimalWolf', () => {
     );
   });
 
-  it('should sleep once the infection has been used', () => {
+  it('should still be called once the infection has been used, and say so', () => {
     const spent = night(1, {
       roles: { usedAbilities: ['primal_wolf_infection'], enchantedTonight: [] },
     });
 
-    expect(character.isAwakeThisNight(spent)).toBe(false);
+    expect(character.isAwakeThisNight(spent)).toBe(true);
+    expect(character.getActions(spent)).toContain('Has used the infection; call them anyway');
+    expect(character.getActions(spent)).not.toContain('May turn the victim into a werewolf');
+    expect(character.getButtons(spent).some((button) => button.kind === 'infect')).toBe(false);
   });
 
-  it('should go back to sleep once a wolf has been eliminated', () => {
+  it('should stay awake after a wolf has been eliminated', () => {
     const wolfDown = person({ statuses: [PersonStatus.Dead], character: WEREWOLF });
 
-    expect(character.isAwakeThisNight(night(1, { people: [wolfDown] }))).toBe(false);
+    expect(character.isAwakeThisNight(night(1, { people: [wolfDown] }))).toBe(true);
+  });
+
+  it('should point out that the Elder cannot be infected by a first bite', () => {
+    const elder = person({ character: ELDER });
+    const biting = night(1, {
+      people: [elder],
+      victims: [{ personId: elder.id, byCharacterId: 'werewolf' }],
+    });
+    const secondBite = {
+      ...biting,
+      roles: { usedAbilities: ['elder_life' as const], enchantedTonight: [] },
+    };
+    const line = 'The Elder survives this bite and cannot be infected by it';
+
+    expect(character.getActions(biting)).toContain(line);
+    expect(character.getActions(secondBite)).not.toContain(line);
   });
 });

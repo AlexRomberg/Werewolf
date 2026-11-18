@@ -8,7 +8,10 @@ import {
   COMMON_LINES,
 } from '../actions/action';
 import { isAssigned, NightContext } from '../actions/context';
+import { hasStatus, isAlive, PersonStatus } from '../../services/state/types';
 import { BasePriority, Character, GameSet, GroupType } from '../character';
+
+const ENCHANTMENTS_PER_NIGHT = 2;
 
 export class Piper extends Character {
   readonly id = 'piper';
@@ -26,6 +29,7 @@ export class Piper extends Character {
     return [
       !isAssigned(context) && COMMON_LINES.assignPerson,
       $localize`:@@piper.mayEnchantTwoPlayers:May enchant two players`,
+      $localize`:@@piper.wakeTheEnchanted:Then wake all enchanted players so they recognise each other`,
     ];
   }
 
@@ -35,9 +39,21 @@ export class Piper extends Character {
       pickButton(
         'enchant',
         $localize`:@@piper.enchantTwoPlayers:Enchant two players`,
-        2,
+        this.picksTonight(context),
         context.roles.enchantedTonight.length > 0,
       ),
     ]);
+  }
+
+  private picksTonight(context: NightContext) {
+    const isPiper = (id: string) => context.assigned.some((piper) => piper.id === id);
+    const candidates = context.people.filter(
+      (person) =>
+        isAlive(person) &&
+        !isPiper(person.id) &&
+        (!hasStatus(person, PersonStatus.Enchanted) ||
+          context.roles.enchantedTonight.includes(person.id)),
+    );
+    return Math.max(1, Math.min(ENCHANTMENTS_PER_NIGHT, candidates.length));
   }
 }

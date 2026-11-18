@@ -6,7 +6,7 @@ export const CHARACTER_NAMES = {
   big_wolf: $localize`:@@character.big_wolf.name:The Big Bad Wolf`,
   bitter_old_man: $localize`:@@character.bitter_old_man.name:The Bitter Old Man`,
   brothers: $localize`:@@character.brothers.name:The Three Brothers`,
-  cupid: $localize`:@@character.cupid.name:The Cupid`,
+  cupid: $localize`:@@character.cupid.name:Cupid`,
   elder: $localize`:@@character.elder.name:The Elder`,
   fox: $localize`:@@character.fox.name:The Fox`,
   healer: $localize`:@@character.healer.name:The Healer`,

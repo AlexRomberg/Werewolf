@@ -41,13 +41,15 @@ export interface DaybreakChange {
   causedBy: ChangeCause;
 }
 
-export type Ability = 'witch_heal' | 'witch_poison' | 'fox_request' | 'primal_wolf_infection';
+export type Ability =
+  'witch_heal' | 'witch_poison' | 'fox_request' | 'primal_wolf_infection' | 'elder_life';
 
 export const ABILITY_LABELS: Record<Ability, string> = {
   witch_heal: $localize`:@@ability.witchHeal:Witch: healing potion`,
   witch_poison: $localize`:@@ability.witchPoison:Witch: poison`,
   fox_request: $localize`:@@ability.foxRequest:Fox: has missed`,
   primal_wolf_infection: $localize`:@@ability.primalWolfInfection:Primal Wolf: infection`,
+  elder_life: $localize`:@@ability.elderLife:Elder: extra life`,
 };
 
 export interface RoleStates {
@@ -56,6 +58,7 @@ export interface RoleStates {
   healedTonight?: string;
   healerLastProtected?: string;
   hoodratLastHost?: string;
+  knightWound?: string;
 }
 
 export interface Person {

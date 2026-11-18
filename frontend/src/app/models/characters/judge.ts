@@ -9,7 +9,7 @@ export class Judge extends Character {
   readonly name = CHARACTER_NAMES.judge;
   readonly group = GroupType.Passive;
   readonly game = GameSet.Characters;
-  override readonly priority = BasePriority.Initial + 14;
+  override readonly priority = BasePriority.Initial + 6;
   readonly description = CHARACTER_DESCRIPTIONS.judge;
 
   override isAwakeThisNight(context: NightContext) {

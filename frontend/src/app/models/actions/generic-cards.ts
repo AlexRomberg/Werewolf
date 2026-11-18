@@ -1,10 +1,17 @@
 import { Character } from '../character';
-import { BEAR_TAMER } from '../characters';
+import { BITTER_OLD_MAN, JUGGLER, THIEF } from '../characters';
 import { WerewolfCharacter } from '../werewolf-character';
 import { ActionCard, filterFalsy } from './action';
 
-export function rulesCard(round: number, selected: readonly Character[]): ActionCard {
+export type BearSignal = 'growl' | 'silent' | 'unknown';
+
+export function rulesCard(
+  round: number,
+  selected: readonly Character[],
+  leftover: readonly Character[] = [],
+): ActionCard {
   const wolves = selected.filter((character) => character instanceof WerewolfCharacter);
+  const has = (character: Character) => selected.some((entry) => entry.id === character.id);
 
   return {
     key: `${round}:rules`,
@@ -15,6 +22,15 @@ export function rulesCard(round: number, selected: readonly Character[]): Action
       $localize`:@@card.rules.explain:Explain the rules`,
       wolves.length > 0 &&
         $localize`:@@card.rules.nameWolves:Name the wolves in play: ${wolves.map((wolf) => wolf.name).join(', ')}:wolves:`,
+      has(BITTER_OLD_MAN) &&
+        $localize`:@@card.rules.splitTheVillage:Split the village into two groups and announce them`,
+      has(THIEF) &&
+        $localize`:@@card.rules.thiefMiddleCards:Put the two leftover cards face down in the middle`,
+      has(JUGGLER) &&
+        $localize`:@@card.rules.jugglerCards:Lay out three characters with abilities face up for the Juggler, no wolves`,
+      leftover.length > 0 &&
+        $localize`:@@card.rules.notDealt:Not dealt: ${leftover.map((card) => card.name).join(', ')}:cards:`,
+      $localize`:@@card.rules.electTheCaptain:Elect the Captain, now or later in the game`,
       $localize`:@@card.rules.openingStory:Tell the opening story`,
     ]),
     buttons: [],
@@ -47,13 +63,7 @@ export function nightfallCard(round: number): ActionCard {
   };
 }
 
-export function daybreakCard(
-  round: number,
-  selected: readonly Character[],
-  pendingChangeCount = 0,
-): ActionCard {
-  const hasBearTamer = selected.some((character) => character.id === BEAR_TAMER.id);
-
+export function daybreakCard(round: number, pendingChangeCount = 0, bear?: BearSignal): ActionCard {
   return {
     key: `${round}:day`,
     id: 'day',
@@ -62,7 +72,11 @@ export function daybreakCard(
     actions: filterFalsy([
       $localize`:@@card.day.villageWakes:The village wakes up`,
       $localize`:@@card.day.announce:Announce what happened during the night`,
-      hasBearTamer && $localize`:@@card.day.rememberBearTamer:Remember the Bear Tamer`,
+      bear === 'growl' &&
+        $localize`:@@card.day.bearGrowls:Growl like a bear: a werewolf sits next to the Bear Tamer`,
+      bear === 'silent' &&
+        $localize`:@@card.day.bearSilent:Stay silent: no werewolf sits next to the Bear Tamer`,
+      bear === 'unknown' && $localize`:@@card.day.rememberBearTamer:Remember the Bear Tamer`,
       $localize`:@@card.day.openDiscussion:Open the discussion`,
     ]),
     buttons: [

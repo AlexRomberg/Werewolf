@@ -4,7 +4,7 @@ import { Cupid } from '../models/characters/cupid';
 import { Seer } from '../models/characters/seer';
 import { Werewolf } from '../models/characters/werewolf';
 import { Witch } from '../models/characters/witch';
-import { PersonStatus } from '../services/state/types';
+import { ConnectionType, PersonStatus } from '../services/state/types';
 import { night, person, seated } from './night';
 
 const card = (buttons: ActionButton[]): ActionCard => ({
@@ -138,6 +138,31 @@ describe('pickWarning', () => {
     expect(warningFor(villager)).toContain('not a werewolf');
     expect(warningFor(person())).toContain('not a werewolf');
     expect(pickWarning(button('mark-victim'), 'werewolf', villager, night(1))).toBeUndefined();
+  });
+
+  it('should ask before the pack or the Big Bad Wolf devour a werewolf', () => {
+    const wolf = person({ character: new Werewolf() });
+    const turned = person({ statuses: [PersonStatus.TurnedWolf] });
+
+    for (const wolfCard of ['werewolf', 'big_wolf']) {
+      expect(pickWarning(button('mark-victim'), wolfCard, wolf, night(1))).toContain(
+        'is a werewolf',
+      );
+      expect(pickWarning(button('mark-victim'), wolfCard, turned, night(1))).toContain(
+        'is a werewolf',
+      );
+    }
+  });
+
+  it('should count the guest of a raided host as a wolf victim the Witch may heal', () => {
+    const host = person();
+    const guest = person();
+    const context = night(1, {
+      victims: [{ personId: host.id, byCharacterId: 'werewolf' }],
+      connections: [{ type: ConnectionType.Sleepover, from: guest.id, to: host.id }],
+    });
+
+    expect(pickWarning(button('heal'), 'witch', guest, context)).toBeUndefined();
   });
 });
 

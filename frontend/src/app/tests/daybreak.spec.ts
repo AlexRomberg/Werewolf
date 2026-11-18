@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { GameService } from '../services/game.service';
+import { CHARACTERS_BY_ID } from '../models/characters';
 import { ChangeReason, ConnectionType, PersonStatus } from '../services/state/types';
 
 const {
@@ -29,6 +30,10 @@ describe('DaybreakState', () => {
   const statusesOf = (id: string) =>
     service.people.all().find((person) => person.id === id)?.statuses ?? [];
   const kill = (id: string) => service.night.addStatus(id, PersonStatus.Dead);
+  const hand = (id: string, characterId: string) => {
+    const person = service.people.all().find((entry) => entry.id === id)!;
+    service.people.update(id, { ...person, character: CHARACTERS_BY_ID.get(characterId) });
+  };
 
   describe('a night without victims', () => {
     it('should bring no changes', () => {
@@ -227,6 +232,37 @@ describe('DaybreakState', () => {
       expect(changes()).toEqual([{ personId: hoodrat(), reason: DiedGotKilled }]);
     });
 
+    it('should die in the raid on a host the Witch heals, as the potion saves only the host', () => {
+      service.night.markVictim(host(), 'werewolf');
+      service.night.heal(host());
+
+      expect(changes()).toEqual([
+        { personId: host(), reason: SurvivedAttack },
+        { personId: hoodrat(), reason: DiedSleptWithVictim },
+      ]);
+    });
+
+    it('should survive the raid when the Witch heals the Hoodrat, while the host dies', () => {
+      service.night.markVictim(host(), 'werewolf');
+      service.night.heal(hoodrat());
+
+      expect(changes()).toEqual([
+        { personId: host(), reason: DiedGotKilled },
+        { personId: hoodrat(), reason: SurvivedAttack },
+      ]);
+      expect(causes()[1]).toEqual({ role: 'witch' });
+    });
+
+    it('should die in the raid on the Elder, who survives it on the extra life', () => {
+      hand(host(), 'elder');
+      service.night.markVictim(host(), 'werewolf');
+
+      expect(changes()).toEqual([
+        { personId: host(), reason: SurvivedAttack },
+        { personId: hoodrat(), reason: DiedSleptWithVictim },
+      ]);
+    });
+
     it('should not die with a host who dies of a broken heart', () => {
       service.night.connect(ConnectionType.Love, host(), anna);
       service.night.markVictim(anna, 'werewolf');
@@ -236,6 +272,129 @@ describe('DaybreakState', () => {
         { personId: host(), reason: DiedOfBrokenHeart },
         { personId: hoodrat(), reason: SurvivedHostDeath },
       ]);
+    });
+  });
+
+  describe('the Little Girl', () => {
+    it('should not be saved by the Healer', () => {
+      hand(anna, 'small_child');
+      service.night.protect(anna);
+      service.night.markVictim(anna, 'werewolf');
+
+      expect(changes()).toEqual([{ personId: anna, reason: DiedGotKilled }]);
+    });
+
+    it('should still be saved by the healing potion', () => {
+      hand(anna, 'small_child');
+      service.night.markVictim(anna, 'werewolf');
+      service.night.heal(anna);
+
+      expect(changes()).toEqual([{ personId: anna, reason: SurvivedAttack }]);
+    });
+  });
+
+  describe('the Elder', () => {
+    beforeEach(() => hand(anna, 'elder'));
+
+    it('should survive the first bite on the extra life', () => {
+      service.night.markVictim(anna, 'werewolf');
+
+      expect(changes()).toEqual([{ personId: anna, reason: SurvivedAttack }]);
+      expect(causes()).toEqual([{ role: 'elder' }]);
+      expect(service.daybreak.pending()).toEqual([]);
+    });
+
+    it('should die of the second bite', () => {
+      service.night.useAbility('elder_life');
+      service.night.markVictim(anna, 'werewolf');
+
+      expect(changes()).toEqual([{ personId: anna, reason: DiedGotKilled }]);
+    });
+
+    it('should die when the pack and the Big Bad Wolf both bite the same night', () => {
+      service.night.markVictim(anna, 'werewolf');
+      service.night.markVictim(anna, 'big_wolf');
+
+      expect(changes()).toEqual([{ personId: anna, reason: DiedGotKilled }]);
+    });
+
+    it('should die of the poison at once', () => {
+      service.night.poison(anna, 'witch');
+
+      expect(changes()).toEqual([{ personId: anna, reason: DiedGotKilled }]);
+    });
+
+    it('should owe a healed bite to the Witch, not the extra life', () => {
+      service.night.markVictim(anna, 'werewolf');
+      service.night.heal(anna);
+
+      expect(causes()).toEqual([{ role: 'witch' }]);
+    });
+  });
+
+  describe('the wound of the Knight', () => {
+    const nextNight = () => {
+      service.daybreak.applyAll();
+      while (!service.actions.isLastCard()) {
+        service.actions.next();
+      }
+      service.actions.next();
+    };
+
+    beforeEach(() => {
+      hand(anna, 'knight');
+      hand(cleo, 'werewolf');
+      hand(eve, 'werewolf');
+    });
+
+    it('should kill the nearest wolf to the left of the Knight the morning after', () => {
+      service.night.markVictim(anna, 'werewolf');
+      nextNight();
+
+      expect(changes()).toEqual([{ personId: cleo, reason: DiedGotKilled }]);
+      expect(causes()).toEqual([{ role: 'knight' }]);
+    });
+
+    it('should break the heart of the wounded wolf too', () => {
+      service.night.connect(ConnectionType.Love, cleo, ben);
+      service.night.markVictim(anna, 'werewolf');
+      nextNight();
+
+      expect(changes()).toEqual([
+        { personId: cleo, reason: DiedGotKilled },
+        { personId: ben, reason: DiedOfBrokenHeart },
+      ]);
+    });
+
+    it('should pass over wolves that are already dead', () => {
+      kill(cleo);
+      service.night.markVictim(anna, 'werewolf');
+      nextNight();
+
+      expect(changes()).toEqual([{ personId: eve, reason: DiedGotKilled }]);
+    });
+
+    it('should wound the Big Bad Wolf when the Knight was his own victim', () => {
+      hand(dan, 'big_wolf');
+      service.night.markVictim(anna, 'big_wolf');
+      nextNight();
+
+      expect(changes()).toEqual([{ personId: dan, reason: DiedGotKilled }]);
+    });
+
+    it('should wound nobody when the Knight did not die to the wolves', () => {
+      service.night.poison(anna, 'witch');
+      nextNight();
+
+      expect(changes()).toEqual([]);
+    });
+
+    it('should claim the wolf only once', () => {
+      service.night.markVictim(anna, 'werewolf');
+      nextNight();
+      nextNight();
+
+      expect(changes()).toEqual([]);
     });
   });
 

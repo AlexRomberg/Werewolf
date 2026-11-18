@@ -18,8 +18,8 @@ export class Witch extends Character {
   override readonly priority = BasePriority.PostWolf + 1;
   readonly description = CHARACTER_DESCRIPTIONS.witch;
 
-  override isAwakeThisNight(context: NightContext) {
-    return this.hasHealingPotion(context) || this.hasPoison(context);
+  override isAwakeThisNight(_context: NightContext) {
+    return true;
   }
 
   override getActions(context: NightContext): (string | false)[] {
@@ -27,7 +27,7 @@ export class Witch extends Character {
       !isAssigned(context) && COMMON_LINES.assignPerson,
       !this.hasHealingPotion(context) &&
         !this.hasPoison(context) &&
-        $localize`:@@witch.hasNoPotionLeft:Has no potion left`,
+        $localize`:@@witch.hasNoPotionLeft:Has no potion left; call her anyway`,
       this.hasHealingPotion(context) &&
         $localize`:@@witch.mayUseTheHealingPotion:May use the healing potion`,
       this.hasPoison(context) && $localize`:@@witch.mayUseThePoison:May use the poison`,

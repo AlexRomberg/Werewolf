@@ -29,9 +29,16 @@ import { WildChild } from './wild-child';
 import { Witch } from './witch';
 import { Wolfdog } from './wolfdog';
 
+export const ANGEL = new Angel();
 export const BEAR_TAMER = new BearTamer();
+export const BITTER_OLD_MAN = new BitterOldMan();
+export const ELDER = new Elder();
 export const HEALER = new Healer();
 export const HOODRAT = new Hoodrat();
+export const JUGGLER = new Juggler();
+export const KNIGHT = new Knight();
+export const SMALL_CHILD = new SmallChild();
+export const THIEF = new Thief();
 export const VILLAGER = new Villager();
 export const WEREWOLF = new Werewolf();
 export const WHITE_WOLF = new WhiteWolf();
@@ -40,28 +47,28 @@ export const WITCH = new Witch();
 export const BULK_CHARACTERS: readonly Character[] = [WEREWOLF, VILLAGER];
 
 export const CHARACTERS: readonly Character[] = [
-  new Angel(),
+  ANGEL,
   BEAR_TAMER,
   new BigWolf(),
-  new BitterOldMan(),
+  BITTER_OLD_MAN,
   new Brothers(),
   new Cupid(),
-  new Elder(),
+  ELDER,
   new Fox(),
   HEALER,
   HOODRAT,
   new Hunter(),
   new Judge(),
-  new Juggler(),
-  new Knight(),
+  JUGGLER,
+  KNIGHT,
   new Maid(),
   new Piper(),
   new PrimalWolf(),
   new Scapegoat(),
   new Seer(),
   new Sisters(),
-  new SmallChild(),
-  new Thief(),
+  SMALL_CHILD,
+  THIEF,
   new VillageIdiot(),
   VILLAGER,
   WEREWOLF,

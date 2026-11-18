@@ -76,7 +76,7 @@ describe('NarratorComponent, picking players on the circle', () => {
   it('should ask for the holder of the card as soon as it comes up', async () => {
     await playUntil('cupid', 'cupid');
 
-    expect(notch()?.textContent).toContain('Select The Cupid');
+    expect(notch()?.textContent).toContain('Select Cupid');
     expect(notch()?.textContent).toContain('0/1');
     expect(notch()?.closest('[data-tone]')?.getAttribute('data-tone')).toBe('assign');
   });
@@ -163,7 +163,7 @@ describe('NarratorComponent, picking players on the circle', () => {
     await click(seats()[0]);
 
     expect(notch()?.getAttribute('role')).toBe('alertdialog');
-    expect(notch()?.textContent).toContain('The Cupid');
+    expect(notch()?.textContent).toContain('Cupid');
     expect(roleOf(0)).toBe('cupid');
   });
 
@@ -224,7 +224,7 @@ describe('NarratorComponent, picking players on the circle', () => {
     const tiles = [...page().querySelectorAll('button.card-tile')].map((tile) =>
       tile.textContent?.trim(),
     );
-    expect(tiles).toEqual(expect.arrayContaining(['The Cupid', 'The Seer']));
+    expect(tiles).toEqual(expect.arrayContaining(['Cupid', 'The Seer']));
   });
 
   it('should draw a line between two linked players, clear of their seats', async () => {
@@ -259,7 +259,7 @@ describe('NarratorComponent, picking players on the circle', () => {
 
     await click(buttonNamed('Done'));
 
-    expect(notch()?.textContent).toContain('Select The Cupid');
+    expect(notch()?.textContent).toContain('Select Cupid');
     expect(seats().length).toBe(game.people.all().length);
   });
 
@@ -380,7 +380,7 @@ describe('NarratorComponent, picking players on the circle', () => {
       await click(buttonNamed('Next'));
       await click(buttonNamed('Show changes (3 open)'));
 
-      expect(headlines()).toEqual(['Anna got killed', 'The Cupid got killed', 'Seat 4 got killed']);
+      expect(headlines()).toEqual(['Anna got killed', 'Cupid got killed', 'Seat 4 got killed']);
     });
 
     it('should make clear that only one holder of a shared card is meant', async () => {
@@ -510,7 +510,7 @@ describe('NarratorComponent, picking players on the circle', () => {
       await playUntil('fox', 'fox');
       await click(buttonNamed('Has missed'));
 
-      expect(card()).toContain('Has missed and will not wake up again');
+      expect(card()).toContain('Has lost the ability; call them anyway');
       expect(game.night.roles().usedAbilities).toEqual(['fox_request']);
 
       await click(buttonNamed('Undo: Has missed'));
@@ -529,13 +529,13 @@ describe('NarratorComponent, picking players on the circle', () => {
       }
       await fixture.whenStable();
       const cardIds = () => game.actions.queue().map((queued) => queued.id);
-      expect(cardIds()).toEqual(['night', 'day']);
+      expect(cardIds()).toEqual(['night', 'fox', 'witch', 'day']);
 
       await click(buttonNamed('Give back: Fox: has missed'));
       await click(dialogButton('Give back'));
 
       expect(game.night.roles().usedAbilities).toEqual(['witch_heal', 'witch_poison']);
-      expect(cardIds()).toEqual(['night', 'fox', 'day']);
+      expect(cardIds()).toEqual(['night', 'fox', 'witch', 'day']);
       expect(game.actions.current()?.id).toBe('night');
     });
 

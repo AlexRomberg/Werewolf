@@ -11,7 +11,7 @@ describe('Scapegoat', () => {
     expect(character.group).toBe(GroupType.Passive);
     expect(character.game).toBe(GameSet.NewMoon);
     expect(character.hasMultiple).toBe(false);
-    expect(character.priority).toBe(BasePriority.Initial + 12);
+    expect(character.priority).toBe(BasePriority.Initial + 13);
   });
 
   it('should describe the card', () => {

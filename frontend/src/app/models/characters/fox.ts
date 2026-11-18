@@ -12,8 +12,8 @@ export class Fox extends Character {
   override readonly priority = BasePriority.Initial + 5;
   readonly description = CHARACTER_DESCRIPTIONS.fox;
 
-  override isAwakeThisNight(context: NightContext) {
-    return !this.hasMissed(context);
+  override isAwakeThisNight(_context: NightContext) {
+    return true;
   }
 
   override getActions(context: NightContext): (string | false)[] {
@@ -22,7 +22,7 @@ export class Fox extends Character {
       !this.hasMissed(context) &&
         $localize`:@@fox.mayPointAtAPlayer:May point at a player; confirm if they or one of their neighbours is a werewolf`,
       this.hasMissed(context) &&
-        $localize`:@@fox.hasMissedAndWillNot:Has missed and will not wake up again from tomorrow night`,
+        $localize`:@@fox.hasLostTheAbility:Has lost the ability; call them anyway`,
       $localize`:@@fox.neverShowTheThreeCards:Never show the three cards`,
     ];
   }

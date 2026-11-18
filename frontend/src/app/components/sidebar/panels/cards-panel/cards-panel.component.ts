@@ -6,6 +6,7 @@ import { BULK_CHARACTERS, VILLAGER } from '../../../../models/characters';
 import { CharacterGrouping, characterSections } from '../../../../models/characters/sections';
 import { Preset, PRESETS, presetDeck, presetEntries } from '../../../../models/presets';
 import { GameService } from '../../../../services/game.service';
+import { seatsFor } from '../../../../services/state/character-state';
 import { MAX_SEATS } from '../../../../services/state/types';
 import { CharacterTileComponent } from '../../../character-tile/character-tile.component';
 import { DeckPreviewComponent } from '../../../deck-preview/deck-preview.component';
@@ -68,8 +69,8 @@ export class CardsPanelComponent {
   private recommendedPreset = computed(() => {
     const seatCount = this.game.people.all().length;
     return (
-      PRESET_VIEWS.filter((view) => view.deck.length <= seatCount).sort(
-        (a, b) => b.deck.length - a.deck.length,
+      PRESET_VIEWS.filter((view) => seatsFor(view.deck) <= seatCount).sort(
+        (a, b) => seatsFor(b.deck) - seatsFor(a.deck),
       )[0] ?? PRESET_VIEWS[0]
     );
   });

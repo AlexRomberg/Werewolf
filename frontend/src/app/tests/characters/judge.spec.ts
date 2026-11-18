@@ -11,7 +11,7 @@ describe('Judge', () => {
     expect(character.group).toBe(GroupType.Passive);
     expect(character.game).toBe(GameSet.Characters);
     expect(character.hasMultiple).toBe(false);
-    expect(character.priority).toBe(BasePriority.Initial + 14);
+    expect(character.priority).toBe(BasePriority.Initial + 6);
   });
 
   it('should describe the card', () => {

@@ -40,18 +40,16 @@ describe('Fox', () => {
     );
   });
 
-  it('should sleep once it has missed', () => {
+  it('should still be called once it has missed', () => {
     const missed = night(1, { roles: { usedAbilities: ['fox_request'], enchantedTonight: [] } });
 
-    expect(character.isAwakeThisNight(missed)).toBe(false);
+    expect(character.isAwakeThisNight(missed)).toBe(true);
   });
 
   it('should say on its card that it has missed', () => {
     const missed = night(1, { roles: { usedAbilities: ['fox_request'], enchantedTonight: [] } });
 
-    expect(character.getActions(missed)).toContain(
-      'Has missed and will not wake up again from tomorrow night',
-    );
+    expect(character.getActions(missed)).toContain('Has lost the ability; call them anyway');
     expect(character.getButtons(missed).find((b) => b.kind === 'lose-fox-request')?.done).toBe(
       true,
     );

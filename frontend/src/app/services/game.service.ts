@@ -28,7 +28,6 @@ export class GameService {
 
   private readonly state = signal<State>(this.restoreGame());
 
-
   readonly people = new PeopleState(this.state);
   readonly characters = new CharacterState(this.state);
   readonly actions = new ActionState(this.state);
@@ -55,7 +54,6 @@ export class GameService {
 
   resetAbility(ability: Ability) {
     this.night.resetAbility(ability);
-    this.actions.wakeRestoredRoles();
   }
 
   dealShuffled(random: () => number = Math.random) {

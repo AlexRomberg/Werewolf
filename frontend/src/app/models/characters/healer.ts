@@ -8,15 +8,16 @@ import {
   COMMON_LINES,
 } from '../actions/action';
 import { isAssigned, NightContext, someoneHas } from '../actions/context';
-import { PersonStatus } from '../../services/state/types';
+import { hasStatus, PersonStatus } from '../../services/state/types';
 import { BasePriority, Character, GameSet, GroupType } from '../character';
+import { SmallChild } from './small-child';
 
 export class Healer extends Character {
   readonly id = 'healer';
   readonly name = CHARACTER_NAMES.healer;
   readonly group = GroupType.Active;
   readonly game = GameSet.NewMoon;
-  override readonly priority = BasePriority.Initial + 10;
+  override readonly priority = BasePriority.Initial + 11;
   readonly description = CHARACTER_DESCRIPTIONS.healer;
 
   override isAwakeThisNight(_context: NightContext) {
@@ -27,8 +28,10 @@ export class Healer extends Character {
     return [
       !isAssigned(context) && COMMON_LINES.assignPerson,
       !this.hasProtected(context) &&
-        $localize`:@@healer.mayMakeOnePlayerImmortal:May make one player immortal for this night`,
+        $localize`:@@healer.mayProtectOnePlayer:May protect one player from the werewolves tonight`,
       this.hasProtected(context) && COMMON_LINES.finishedForTheNight,
+      this.hasProtectedTheLittleGirl(context) &&
+        $localize`:@@healer.noEffectOnTheLittleGirl:No effect: the Little Girl cannot be protected`,
     ];
   }
 
@@ -46,5 +49,12 @@ export class Healer extends Character {
 
   private hasProtected(context: NightContext) {
     return someoneHas(context, PersonStatus.Protected);
+  }
+
+  private hasProtectedTheLittleGirl(context: NightContext) {
+    return context.people.some(
+      (person) =>
+        person.character instanceof SmallChild && hasStatus(person, PersonStatus.Protected),
+    );
   }
 }

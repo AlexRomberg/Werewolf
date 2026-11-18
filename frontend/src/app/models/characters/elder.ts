@@ -6,6 +6,6 @@ export class Elder extends Character {
   readonly id = 'elder';
   readonly name = CHARACTER_NAMES.elder;
   readonly group = GroupType.Passive;
-  readonly game = GameSet.Characters;
+  readonly game = GameSet.NewMoon;
   readonly description = CHARACTER_DESCRIPTIONS.elder;
 }

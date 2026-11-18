@@ -80,6 +80,20 @@ describe('saved game', () => {
     expectNewGame(reload());
   });
 
+  it('starts a new game from a save written before the Knight and the Elder were kept', () => {
+    TestBed.tick();
+    editSave((save) => (save['version'] = 1));
+
+    expectNewGame(reload());
+  });
+
+  it('starts a new game when the wound of the Knight is not a player', () => {
+    TestBed.tick();
+    editSave((save) => (save['roles'].knightWound = 7));
+
+    expectNewGame(reload());
+  });
+
   it('starts a new game when the save is unreadable', () => {
     TestBed.tick();
     storage.setItem(KEY, '{"version":1,');

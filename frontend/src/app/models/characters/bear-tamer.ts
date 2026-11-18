@@ -9,7 +9,7 @@ export class BearTamer extends Character {
   readonly name = CHARACTER_NAMES.bear_tamer;
   readonly group = GroupType.Passive;
   readonly game = GameSet.Characters;
-  override readonly priority = BasePriority.Initial + 9;
+  override readonly priority = BasePriority.Initial + 10;
   readonly description = CHARACTER_DESCRIPTIONS.bear_tamer;
 
   override isAwakeThisNight(context: NightContext) {
@@ -19,7 +19,7 @@ export class BearTamer extends Character {
   override getActions(context: NightContext): (string | false)[] {
     return [
       !isAssigned(context) && COMMON_LINES.assignPerson,
-      $localize`:@@bear_tamer.ifTheySitNextTo:If they sit next to a werewolf or are infected, tell the village in the morning`,
+      $localize`:@@bear_tamer.ifTheySitNextTo:Growl in the morning if they sit next to a werewolf or are infected`,
     ];
   }
 

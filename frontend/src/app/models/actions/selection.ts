@@ -1,4 +1,11 @@
-import { hasStatus, isAlive, Person, PersonStatus } from '../../services/state/types';
+import {
+  ConnectionType,
+  findConnection,
+  hasStatus,
+  isAlive,
+  Person,
+  PersonStatus,
+} from '../../services/state/types';
 import { WHITE_WOLF } from '../characters';
 import { isWerewolf } from '../werewolf-character';
 import { ActionButton, ActionButtonKind, ActionCard } from './action';
@@ -47,9 +54,7 @@ export function pickWarning(
     case 'assign-card':
       return assignWarning(cardId, person);
     case 'mark-victim':
-      return cardId === WHITE_WOLF.id && !isWerewolf(person)
-        ? $localize`:@@pick.notAWerewolf:This player is not a werewolf.`
-        : undefined;
+      return markWarning(cardId, person);
     case 'protect':
       return person.id === context.roles.healerLastProtected
         ? $localize`:@@pick.protectedLastNight:This player was already protected last night.`
@@ -83,6 +88,16 @@ function assignWarning(cardId: string, person: Person) {
     : $localize`:@@pick.holdsOtherCard:This player is already ${person.character.name}:character: and would be reassigned.`;
 }
 
+function markWarning(cardId: string, person: Person) {
+  if (cardId === WHITE_WOLF.id) {
+    return isWerewolf(person)
+      ? undefined
+      : $localize`:@@pick.notAWerewolf:This player is not a werewolf.`;
+  }
+
+  return isWerewolf(person) ? $localize`:@@pick.isAWerewolf:This player is a werewolf.` : undefined;
+}
+
 function enchantWarning(person: Person, context: NightContext) {
   if (holdsCard(person, context)) {
     return $localize`:@@pick.enchantSelf:The Piper cannot enchant themself.`;
@@ -98,7 +113,10 @@ function holdsCard(person: Person, context: NightContext) {
 }
 
 function isWolfVictim(witchId: string, person: Person, context: NightContext) {
+  const sleepover = findConnection(context.connections, ConnectionType.Sleepover);
+  const host = sleepover?.from === person.id ? sleepover.to : undefined;
   return context.victims.some(
-    (mark) => mark.personId === person.id && mark.byCharacterId !== witchId,
+    (mark) =>
+      mark.byCharacterId !== witchId && (mark.personId === person.id || mark.personId === host),
   );
 }

@@ -9,7 +9,7 @@ export class Scapegoat extends Character {
   readonly name = CHARACTER_NAMES.scapegoat;
   readonly group = GroupType.Passive;
   readonly game = GameSet.NewMoon;
-  override readonly priority = BasePriority.Initial + 12;
+  override readonly priority = BasePriority.Initial + 13;
   readonly description = CHARACTER_DESCRIPTIONS.scapegoat;
 
   override isAwakeThisNight(context: NightContext) {
@@ -20,7 +20,7 @@ export class Scapegoat extends Character {
     return [
       !isAssigned(context) && COMMON_LINES.assignPerson,
       COMMON_LINES.backToSleep,
-      $localize`:@@scapegoat.isChosenWheneverAVote:Is chosen whenever a vote ends in a tie`,
+      $localize`:@@scapegoat.isEliminatedWheneverAVote:Is eliminated whenever a vote ends in a tie`,
     ];
   }
 

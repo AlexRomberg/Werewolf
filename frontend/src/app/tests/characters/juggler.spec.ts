@@ -8,7 +8,7 @@ describe('Juggler', () => {
   it("should have the card's identity", () => {
     expect(character.id).toBe('juggler');
     expect(character.name).toBe('The Juggler');
-    expect(character.group).toBe(GroupType.Passive);
+    expect(character.group).toBe(GroupType.Active);
     expect(character.game).toBe(GameSet.Characters);
     expect(character.hasMultiple).toBe(false);
     expect(character.priority).toBe(BasePriority.Initial + 2);
@@ -37,6 +37,12 @@ describe('Juggler', () => {
     expect(character.getActions(seated(0, 1))).not.toContain('Assign person');
     expect(character.getButtons(seated(0, 1)).map((button) => button.kind)).not.toContain(
       'assign-card',
+    );
+  });
+
+  it('should leave the choice of a role to the Juggler', () => {
+    expect(character.getActions(seated(1, 1))).toContain(
+      'May choose one of the displayed roles to play until the next night',
     );
   });
 });

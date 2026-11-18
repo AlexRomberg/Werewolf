@@ -67,12 +67,12 @@ describe('Witch', () => {
     ]);
   });
 
-  it('should sleep once both potions are gone', () => {
+  it('should still be called once both potions are gone, and say so', () => {
     const empty = seated(1, 1, {
       roles: { usedAbilities: ['witch_heal', 'witch_poison'], enchantedTonight: [] },
     });
 
-    expect(character.isAwakeThisNight(empty)).toBe(false);
-    expect(character.getActions(empty)).toContain('Has no potion left');
+    expect(character.isAwakeThisNight(empty)).toBe(true);
+    expect(character.getActions(empty)).toContain('Has no potion left; call her anyway');
   });
 });

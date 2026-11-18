@@ -1,11 +1,35 @@
 import { computed, WritableSignal } from '@angular/core';
 import { ActionCard, filterFalsy } from '../../models/actions/action';
 import { NightContext } from '../../models/actions/context';
-import { daybreakCard, nightfallCard, rulesCard } from '../../models/actions/generic-cards';
+import {
+  BearSignal,
+  daybreakCard,
+  nightfallCard,
+  rulesCard,
+} from '../../models/actions/generic-cards';
 import { Character } from '../../models/character';
-import { WEREWOLF } from '../../models/characters';
-import { pendingChanges } from './daybreak-state';
-import { ConnectionType, findConnection, hasStatus, isAlive, PersonStatus, State } from './types';
+import {
+  ANGEL,
+  BEAR_TAMER,
+  CHARACTERS_BY_ID,
+  ELDER,
+  KNIGHT,
+  WEREWOLF,
+} from '../../models/characters';
+import { isWerewolf, WerewolfCharacter } from '../../models/werewolf-character';
+import { leftoverCards } from './character-state';
+import { isDeath, pendingChanges, resolveDaybreak } from './daybreak-state';
+import {
+  ChangeReason,
+  ConnectionType,
+  DaybreakChange,
+  findConnection,
+  hasStatus,
+  isAlive,
+  Person,
+  PersonStatus,
+  State,
+} from './types';
 
 export class ActionState {
   constructor(private state: WritableSignal<State>) {}
@@ -18,10 +42,11 @@ export class ActionState {
     const awake = state.awake.flatMap((id) => state.characters.get(id)?.character ?? []);
 
     return [
-      ...(hasRulesCard(state) ? [rulesCard(state.round, selected)] : []),
+      ...(hasRulesCard(state) ? [rulesCard(state.round, selected, leftoverCards(state))] : []),
+      ...(opensWithTheAngel(state) ? [characterCard(state, ANGEL)] : []),
       nightfallCard(state.round),
       ...awake.map((character) => characterCard(state, character)),
-      daybreakCard(state.round, selected, pendingChanges(state).length),
+      daybreakCard(state.round, pendingChanges(state).length, bearSignal(state)),
     ];
   });
 
@@ -46,10 +71,6 @@ export class ActionState {
       state.actionIndex > 0 ? { ...state, actionIndex: state.actionIndex - 1 } : state,
     );
   }
-
-  wakeRestoredRoles() {
-    this.state.update(wakeRestoredRoles);
-  }
 }
 
 export function beginNight(state: State): State {
@@ -59,26 +80,13 @@ export function beginNight(state: State): State {
   };
 }
 
-function wakeRestoredRoles(state: State): State {
-  const awake = charactersInNightOrder(
-    state,
-    (character) => state.awake.includes(character.id) || isAwakeTonight(state, character),
-  );
-
-  const cardsBeforeRoles = hasRulesCard(state) ? 2 : 1;
-  const position = state.actionIndex - cardsBeforeRoles;
-  if (position < 0) {
-    return { ...state, awake };
-  }
-
-  const current = state.awake[position];
-  const newPosition = current === undefined ? awake.length : awake.indexOf(current);
-  return { ...state, awake, actionIndex: cardsBeforeRoles + newPosition };
-}
-
 function startNextNight(state: State): State {
   const protectedPerson = state.people.find((person) => hasStatus(person, PersonStatus.Protected));
   const sleepover = findConnection(state.connections, ConnectionType.Sleepover);
+  const morning = resolveDaybreak(state);
+  const elderWasBitten = morning.some(
+    (change) => change.reason === ChangeReason.SurvivedAttack && isCausedBy(change, ELDER),
+  );
 
   return beginNight({
     ...state,
@@ -95,16 +103,82 @@ function startNextNight(state: State): State {
     ),
     roles: {
       ...state.roles,
+      usedAbilities:
+        elderWasBitten && !state.roles.usedAbilities.includes('elder_life')
+          ? [...state.roles.usedAbilities, 'elder_life']
+          : state.roles.usedAbilities,
       enchantedTonight: [],
       healedTonight: undefined,
       healerLastProtected: protectedPerson?.id,
       hoodratLastHost: sleepover?.to,
+      knightWound: woundedByTheKnight(state, morning),
     },
   });
 }
 
+function woundedByTheKnight(state: State, morning: readonly DaybreakChange[]) {
+  const seat = state.people.findIndex((person) => person.character?.id === KNIGHT.id);
+  const knight = state.people[seat];
+  const death = morning.find(
+    (change) =>
+      change.personId === knight?.id &&
+      change.reason === ChangeReason.DiedGotKilled &&
+      'role' in change.causedBy &&
+      CHARACTERS_BY_ID.get(change.causedBy.role) instanceof WerewolfCharacter,
+  );
+  if (!knight || isAlive(knight) || !death || !('role' in death.causedBy)) {
+    return undefined;
+  }
+
+  const killer = death.causedBy.role;
+  const loneWolf = state.people.find(
+    (person) => killer !== WEREWOLF.id && person.character?.id === killer && isAlive(person),
+  );
+  if (loneWolf) {
+    return loneWolf.id;
+  }
+
+  const leftOfTheKnight = [...state.people.slice(seat + 1), ...state.people.slice(0, seat)];
+  return leftOfTheKnight.find((person) => isAlive(person) && isWerewolf(person))?.id;
+}
+
+function bearSignal(state: State): BearSignal | undefined {
+  if (!state.characters.has(BEAR_TAMER.id)) {
+    return undefined;
+  }
+
+  const morning = resolveDaybreak(state);
+  const dying = new Set(morning.filter(isDeath).map((change) => change.personId));
+  const turning = new Set(
+    morning
+      .filter((change) => change.reason === ChangeReason.TurnedIntoWolf)
+      .map((change) => change.personId),
+  );
+  const living = state.people.filter((person) => isAlive(person) && !dying.has(person.id));
+  const isTamer = (person: Person) => person.character?.id === BEAR_TAMER.id;
+  const seat = living.findIndex(isTamer);
+  if (seat === -1) {
+    return state.people.some(isTamer) ? undefined : 'unknown';
+  }
+
+  const isWolf = (person: Person) => isWerewolf(person) || turning.has(person.id);
+  const neighbours = [
+    living[(seat - 1 + living.length) % living.length],
+    living[(seat + 1) % living.length],
+  ].filter((person) => person !== living[seat]);
+  return isWolf(living[seat]) || neighbours.some(isWolf) ? 'growl' : 'silent';
+}
+
+function isCausedBy(change: DaybreakChange, character: Character) {
+  return 'role' in change.causedBy && change.causedBy.role === character.id;
+}
+
 function hasRulesCard(state: State) {
   return state.round === 0;
+}
+
+function opensWithTheAngel(state: State) {
+  return state.round === 0 && state.characters.has(ANGEL.id);
 }
 
 function selectedCharacters(state: State) {
@@ -140,6 +214,7 @@ function contextFor(state: State, character: Character): NightContext {
     victims: state.victims,
     connections: state.connections,
     roles: state.roles,
+    leftover: leftoverCards(state),
   };
 }
 

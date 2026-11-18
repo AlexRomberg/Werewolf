@@ -9,7 +9,7 @@ describe('Elder', () => {
     expect(character.id).toBe('elder');
     expect(character.name).toBe('The Elder');
     expect(character.group).toBe(GroupType.Passive);
-    expect(character.game).toBe(GameSet.Characters);
+    expect(character.game).toBe(GameSet.NewMoon);
     expect(character.hasMultiple).toBe(false);
     expect(character.priority).toBe(-1);
   });

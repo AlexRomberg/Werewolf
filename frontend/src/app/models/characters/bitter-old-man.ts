@@ -8,8 +8,8 @@ export class BitterOldMan extends Character {
   readonly id = 'bitter_old_man';
   readonly name = CHARACTER_NAMES.bitter_old_man;
   readonly group = GroupType.Loners;
-  readonly game = GameSet.NewMoon;
-  override readonly priority = BasePriority.Initial + 13;
+  readonly game = GameSet.Characters;
+  override readonly priority = BasePriority.Initial + 14;
   readonly description = CHARACTER_DESCRIPTIONS.bitter_old_man;
 
   override isAwakeThisNight(context: NightContext) {

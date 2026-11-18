@@ -8,7 +8,7 @@ describe('Cupid', () => {
 
   it("should have the card's identity", () => {
     expect(character.id).toBe('cupid');
-    expect(character.name).toBe('The Cupid');
+    expect(character.name).toBe('Cupid');
     expect(character.group).toBe(GroupType.Active);
     expect(character.game).toBe(GameSet.BaseGame);
     expect(character.hasMultiple).toBe(false);

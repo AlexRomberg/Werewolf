@@ -113,11 +113,11 @@ export const CHARACTER_DESCRIPTIONS = {
   hoodrat: [
     section(
       'general',
-      $localize`:@@character.hoodrat.general:When the narrator calls the Hoodrat, before the werewolves, the Hoodrat may choose to spend the night at another player's house. If that player dies during the night, the Hoodrat dies with them. If the werewolves come for the Hoodrat while they are out, the Hoodrat is spared.`,
+      $localize`:@@character.hoodrat.general:When the narrator calls the Hoodrat, before the werewolves, the Hoodrat may choose to spend the night at another player's house. If the werewolves come for that player, they find the Hoodrat there too, and both die. If the werewolves come for the Hoodrat while they are out, the Hoodrat is spared.`,
     ),
     section(
       'attention',
-      $localize`:@@character.hoodrat.attention:The Hoodrat may also stay at home, and may not spend two nights in a row at the same player's house. Where they slept concerns only the wolves: the Witch's poison, the Hunter's shot and the village vote reach the Hoodrat and the host separately. The Healer's protection on the Hoodrat does not cover a host's death.`,
+      $localize`:@@character.hoodrat.attention:The Hoodrat may also stay at home, and may not spend two nights in a row at the same player's house. Protection works on the house, potions on the person. If the Healer protects the host, the wolves cannot get in and both survive, but protecting the Hoodrat only guards their own empty house. The Witch's healing potion saves only the player it is given to, so healing the host does not save the Hoodrat. Where they slept matters only to the wolves: the poison, the Hunter's shot and the village vote reach the Hoodrat and the host separately.`,
     ),
   ],
   hunter: [
@@ -239,7 +239,7 @@ export const CHARACTER_DESCRIPTIONS = {
   village_idiot: [
     section(
       'general',
-      $localize`:@@character.village_idiot.general:What village does not have its idiot? They make a nuisance of themselves, but they are so likeable that nobody could bring themselves to do them harm. If the village votes the Village Idiot out, the Idiot turns their card over, the villagers see their mistake and pardon them on the spot. The Idiot plays on but loses the right to vote from then on, because who listens to an idiot anyway, and there is no fresh vote that day. The pardon only covers the village vote. If the werewolves take the Idiot, or the Hunter shoots them, they are eliminated like anyone else, and if the Idiot was Captain, the office is lost for good.`,
+      $localize`:@@character.village_idiot.general:What village does not have its idiot? They make a nuisance of themselves, but they are so likeable that nobody could bring themselves to do them harm. If the village votes the Village Idiot out, the Idiot turns their card over, the villagers see their mistake and pardon them on the spot. The Idiot plays on but loses the right to vote from then on, because who listens to an idiot anyway, and there is no fresh vote that day. The pardon only covers the village vote. If the werewolves devour the Idiot, they are eliminated. If the Idiot was Captain, that office is lost for good. If the Hunter shoots the Idiot, they are eliminated.`,
     ),
   ],
   villager: [

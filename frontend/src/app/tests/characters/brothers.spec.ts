@@ -1,5 +1,6 @@
 import { BasePriority, GameSet, GroupType } from '../../models/character';
 import { Brothers } from '../../models/characters/brothers';
+import { PersonStatus } from '../../services/state/types';
 import { night, seated } from '../night';
 
 describe('Brothers', () => {
@@ -11,7 +12,7 @@ describe('Brothers', () => {
     expect(character.group).toBe(GroupType.Active);
     expect(character.game).toBe(GameSet.Characters);
     expect(character.hasMultiple).toBe(true);
-    expect(character.priority).toBe(BasePriority.Initial + 7);
+    expect(character.priority).toBe(BasePriority.Initial + 8);
   });
 
   it('should describe the card', () => {
@@ -43,5 +44,18 @@ describe('Brothers', () => {
   it('should keep asking until all three brothers are seated', () => {
     expect(character.getActions(seated(0, 2))).toContain('Assign people');
     expect(character.getButtons(seated(0, 2))[0].picks).toBe(1);
+  });
+
+  it('should not be woken again with only one of the brothers left alive', () => {
+    const together = seated(2, 3);
+    const alone = seated(2, 3, {
+      assigned: together.assigned.map((holder, index) =>
+        index === 0 ? holder : { ...holder, statuses: [PersonStatus.Dead] },
+      ),
+    });
+
+    expect(character.isAwakeThisNight(together)).toBe(true);
+    expect(character.isAwakeThisNight(alone)).toBe(false);
+    expect(character.isAwakeThisNight({ ...alone, round: 0 })).toBe(true);
   });
 });

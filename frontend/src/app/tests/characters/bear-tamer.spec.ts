@@ -11,7 +11,7 @@ describe('BearTamer', () => {
     expect(character.group).toBe(GroupType.Passive);
     expect(character.game).toBe(GameSet.Characters);
     expect(character.hasMultiple).toBe(false);
-    expect(character.priority).toBe(BasePriority.Initial + 9);
+    expect(character.priority).toBe(BasePriority.Initial + 10);
   });
 
   it('should describe the card', () => {

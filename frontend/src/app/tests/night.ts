@@ -10,6 +10,7 @@ export function night(round = 0, overrides: Partial<NightContext> = {}): NightCo
     victims: [],
     connections: [],
     roles: { usedAbilities: [], enchantedTonight: [] },
+    leftover: [],
     ...overrides,
   };
 }

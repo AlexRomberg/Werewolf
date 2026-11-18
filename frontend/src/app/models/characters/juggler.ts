@@ -7,7 +7,7 @@ import { BasePriority, Character, GameSet, GroupType } from '../character';
 export class Juggler extends Character {
   readonly id = 'juggler';
   readonly name = CHARACTER_NAMES.juggler;
-  readonly group = GroupType.Passive;
+  readonly group = GroupType.Active;
   readonly game = GameSet.Characters;
   override readonly priority = BasePriority.Initial + 2;
   readonly description = CHARACTER_DESCRIPTIONS.juggler;
@@ -19,7 +19,7 @@ export class Juggler extends Character {
   override getActions(context: NightContext): (string | false)[] {
     return [
       !isAssigned(context) && COMMON_LINES.assignPerson,
-      $localize`:@@juggler.hasToChooseARole:Has to choose a role`,
+      $localize`:@@juggler.mayChooseARole:May choose one of the displayed roles to play until the next night`,
     ];
   }
 

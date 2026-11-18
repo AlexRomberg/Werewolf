@@ -1,7 +1,7 @@
 import { CHARACTERS_BY_ID } from '../../models/characters';
 import { Person, State } from './types';
 
-const SAVE_VERSION = 1;
+const SAVE_VERSION = 2;
 
 type SavedPerson = Omit<Person, 'character'> & { character?: string };
 
@@ -57,7 +57,8 @@ export function isSavedGame(value: unknown): value is SavedGame {
     ['connections', 'victims', 'appliedChanges'].every((key) => Array.isArray(value[key])) &&
     isRecord(roles) &&
     Array.isArray(roles['usedAbilities']) &&
-    Array.isArray(roles['enchantedTonight'])
+    Array.isArray(roles['enchantedTonight']) &&
+    (roles['knightWound'] === undefined || isString(roles['knightWound']))
   );
 }
 

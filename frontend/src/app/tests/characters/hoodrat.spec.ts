@@ -12,7 +12,7 @@ describe('Hoodrat', () => {
     expect(character.group).toBe(GroupType.Active);
     expect(character.game).toBe(GameSet.Special);
     expect(character.hasMultiple).toBe(false);
-    expect(character.priority).toBe(BasePriority.Initial + 11);
+    expect(character.priority).toBe(BasePriority.Initial + 12);
   });
 
   it('should describe the card', () => {

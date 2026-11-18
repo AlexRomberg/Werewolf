@@ -16,7 +16,7 @@ export class WildChild extends Character {
   readonly name = CHARACTER_NAMES.wild_child;
   readonly group = GroupType.Wolves;
   readonly game = GameSet.Characters;
-  override readonly priority = BasePriority.Initial + 8;
+  override readonly priority = BasePriority.Initial + 9;
   readonly description = CHARACTER_DESCRIPTIONS.wild_child;
 
   override isAwakeThisNight(context: NightContext) {

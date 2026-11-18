@@ -1,4 +1,4 @@
-import { CHARACTERS, CHARACTERS_BY_ID, VILLAGER } from '../../models/characters';
+import { ANGEL, CHARACTERS, CHARACTERS_BY_ID, VILLAGER } from '../../models/characters';
 import { night, seated } from '../night';
 
 const EXPECTED_IDS = [
@@ -91,7 +91,8 @@ describe('character registry', () => {
   });
 
   it('should leave roles that never wake up without a night card', () => {
-    for (const character of CHARACTERS.filter((c) => c.priority < 0)) {
+    const neverCalled = CHARACTERS.filter((c) => c.priority < 0 && c !== ANGEL);
+    for (const character of neverCalled) {
       expect(character.getActions(night())).toEqual([]);
       expect(character.getButtons(night())).toEqual([]);
     }

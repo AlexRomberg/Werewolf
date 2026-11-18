@@ -12,7 +12,7 @@ describe('WildChild', () => {
     expect(character.group).toBe(GroupType.Wolves);
     expect(character.game).toBe(GameSet.Characters);
     expect(character.hasMultiple).toBe(false);
-    expect(character.priority).toBe(BasePriority.Initial + 8);
+    expect(character.priority).toBe(BasePriority.Initial + 9);
   });
 
   it('should describe the card', () => {

@@ -16,7 +16,7 @@ export class Hoodrat extends Character {
   readonly name = CHARACTER_NAMES.hoodrat;
   readonly group = GroupType.Active;
   readonly game = GameSet.Special;
-  override readonly priority = BasePriority.Initial + 11;
+  override readonly priority = BasePriority.Initial + 12;
   readonly description = CHARACTER_DESCRIPTIONS.hoodrat;
 
   override isAwakeThisNight(_context: NightContext) {

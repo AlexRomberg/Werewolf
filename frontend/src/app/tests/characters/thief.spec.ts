@@ -1,5 +1,6 @@
 import { BasePriority, GameSet, GroupType } from '../../models/character';
 import { Thief } from '../../models/characters/thief';
+import { VILLAGER, WEREWOLF } from '../../models/characters';
 import { night, seated } from '../night';
 
 describe('Thief', () => {
@@ -38,5 +39,22 @@ describe('Thief', () => {
     expect(character.getButtons(seated(0, 1)).map((button) => button.kind)).not.toContain(
       'assign-card',
     );
+  });
+
+  it('should only offer the swap, unless both middle cards are werewolves', () => {
+    expect(character.getActions(seated(0, 1))).toContain(
+      'May swap their card for one of the two middle cards (must, if both are werewolves)',
+    );
+  });
+
+  it('should name the middle cards once they are known', () => {
+    const known = seated(0, 1, { leftover: [WEREWOLF, VILLAGER] });
+
+    expect(character.getActions(known)).toContain(
+      'Middle cards: The Simple Werewolf, The Simple Villager',
+    );
+    expect(
+      character.getActions(seated(0, 1)).some((line) => line && line.startsWith('Middle')),
+    ).toBe(false);
   });
 });

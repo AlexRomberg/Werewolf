@@ -1,6 +1,7 @@
 import { BasePriority, GameSet, GroupType } from '../../models/character';
 import { Piper } from '../../models/characters/piper';
-import { night, seated } from '../night';
+import { PersonStatus } from '../../services/state/types';
+import { night, person, seated } from '../night';
 
 describe('Piper', () => {
   const character = new Piper();
@@ -46,5 +47,26 @@ describe('Piper', () => {
     expect(character.getButtons(done)).toMatchObject([
       { kind: 'enchant', done: true, auto: false },
     ]);
+  });
+
+  it('should wake every enchanted player after enchanting', () => {
+    expect(character.getActions(seated(1, 1))).toContain(
+      'Then wake all enchanted players so they recognise each other',
+    );
+  });
+
+  it('should ask for fewer picks once fewer players are left to enchant', () => {
+    const piper = seated(1, 1);
+    const enchanted = person({ statuses: [PersonStatus.Enchanted] });
+    const people = (others: ReturnType<typeof person>[]) => ({
+      ...piper,
+      people: [...piper.assigned, ...others],
+    });
+    const picks = (others: ReturnType<typeof person>[]) =>
+      character.getButtons(people(others)).find((button) => button.kind === 'enchant')?.picks;
+
+    expect(picks([person(), person(), person()])).toBe(2);
+    expect(picks([person(), enchanted])).toBe(1);
+    expect(picks([person({ statuses: [PersonStatus.Dead] }), person(), enchanted])).toBe(1);
   });
 });

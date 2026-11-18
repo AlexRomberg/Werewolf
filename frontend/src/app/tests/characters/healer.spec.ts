@@ -1,5 +1,6 @@
 import { BasePriority, GameSet, GroupType } from '../../models/character';
 import { Healer } from '../../models/characters/healer';
+import { SMALL_CHILD } from '../../models/characters';
 import { PersonStatus } from '../../services/state/types';
 import { night, person, seated } from '../night';
 
@@ -12,7 +13,7 @@ describe('Healer', () => {
     expect(character.group).toBe(GroupType.Active);
     expect(character.game).toBe(GameSet.NewMoon);
     expect(character.hasMultiple).toBe(false);
-    expect(character.priority).toBe(BasePriority.Initial + 10);
+    expect(character.priority).toBe(BasePriority.Initial + 11);
   });
 
   it('should describe the card', () => {
@@ -49,5 +50,19 @@ describe('Healer', () => {
     expect(character.getButtons(done)).toMatchObject([
       { kind: 'protect', done: true, auto: false },
     ]);
+  });
+
+  it('should point out that the protection does nothing for the Little Girl', () => {
+    const girl = person({ character: SMALL_CHILD, statuses: [PersonStatus.Protected] });
+    const line = 'No effect: the Little Girl cannot be protected';
+
+    expect(character.getActions(seated(1, 1, { people: [girl] }))).toContain(line);
+    expect(character.getActions(seated(1, 1, { people: [person()] }))).not.toContain(line);
+  });
+
+  it('should promise protection from the werewolves only', () => {
+    expect(character.getActions(seated(1, 1))).toContain(
+      'May protect one player from the werewolves tonight',
+    );
   });
 });

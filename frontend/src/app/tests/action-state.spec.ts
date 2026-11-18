@@ -83,7 +83,7 @@ describe('ActionState', () => {
       select('cupid');
       const card = service.actions.queue().find((c) => c.id === 'cupid');
 
-      expect(card?.title).toBe('The Cupid');
+      expect(card?.title).toBe('Cupid');
       expect(card?.image).toBe('img/cupid.png');
       expect(card?.actions.length).toBeGreaterThan(0);
       expect(card?.buttons.map((button) => button.kind)).toContain('pair-lovers');
@@ -93,13 +93,13 @@ describe('ActionState', () => {
       select('healer');
       const healer = () => service.actions.queue().find((card) => card.id === 'healer');
 
-      expect(healer()?.actions).toContain('May make one player immortal for this night');
+      expect(healer()?.actions).toContain('May protect one player from the werewolves tonight');
       expect(healer()?.actions).not.toContain('Is finished for this night');
 
       service.night.addStatus(service.people.all()[0].id, PersonStatus.Protected);
 
       expect(healer()?.actions).toContain('Is finished for this night');
-      expect(healer()?.actions).not.toContain('May make one player immortal for this night');
+      expect(healer()?.actions).not.toContain('May protect one player from the werewolves tonight');
     });
 
     it('should give every card a key that is unique within the night', () => {
@@ -307,23 +307,37 @@ describe('ActionState', () => {
       expect(ids()).toContain('witch');
     });
 
-    it('should stop calling the witch from the night after', () => {
+    it('should keep calling the witch without potions, so nobody notices', () => {
       select('witch');
       service.night.useAbility('witch_heal');
       service.night.useAbility('witch_poison');
       nextNight();
+      advanceTo('witch');
 
-      expect(ids()).not.toContain('witch');
+      expect(service.actions.current()?.actions).toContain('Has no potion left; call her anyway');
     });
 
-    it('should stop calling the fox the night after it has missed', () => {
+    it('should keep calling the fox after it has missed, so nobody notices', () => {
       select('fox');
       service.night.useAbility('fox_request');
-      expect(ids()).toContain('fox');
-
       nextNight();
+      advanceTo('fox');
 
-      expect(ids()).not.toContain('fox');
+      expect(service.actions.current()?.actions).toContain(
+        'Has lost the ability; call them anyway',
+      );
+    });
+
+    it('should keep calling the primal wolf after the infection, so nobody notices', () => {
+      select('primal_wolf', 'werewolf');
+      assign(0, 'werewolf', [PersonStatus.Dead]);
+      service.night.useAbility('primal_wolf_infection');
+      nextNight();
+      advanceTo('primal_wolf');
+
+      expect(service.actions.current()?.actions).toContain(
+        'Has used the infection; call them anyway',
+      );
     });
 
     it('should send the big wolf to sleep the night after a wolf has died', () => {
@@ -371,6 +385,128 @@ describe('ActionState', () => {
       expect(service.night.connections()).toEqual([]);
       expect(service.night.victims()).toEqual([]);
       expect(service.night.roles().usedAbilities).toEqual([]);
+    });
+  });
+
+  describe("the narrator's reminders", () => {
+    const people = () => service.people.all();
+    const cardOf = (id: string) => service.actions.queue().find((card) => card.id === id);
+    const nextNight = () => {
+      advanceTo('day');
+      service.actions.next();
+    };
+
+    it('should open a game with the Angel by a day of its own, before the first night', () => {
+      select('angel');
+
+      expect(ids()).toEqual(['rules', 'angel', 'night', 'day']);
+      expect(cardOf('angel')?.title).toBe('The Angel');
+      expect(cardOf('angel')?.actions).toContain('Hold the vote');
+
+      nextNight();
+
+      expect(ids()).toEqual(['night', 'day']);
+    });
+
+    it('should prepare the table on the rules card', () => {
+      select('thief', 'juggler', 'bitter_old_man');
+
+      expect(cardOf('rules')?.actions).toEqual(
+        expect.arrayContaining([
+          'Split the village into two groups and announce them',
+          'Put the two leftover cards face down in the middle',
+          'Lay out three characters with abilities face up for the Juggler, no wolves',
+          'Elect the Captain, now or later in the game',
+        ]),
+      );
+    });
+
+    it('should name the cards nobody was dealt, as the middle cards of the Thief', () => {
+      select('thief', 'werewolf');
+      ['thief', 'werewolf', 'villager', 'villager', 'villager'].forEach((id, index) =>
+        assign(index, id),
+      );
+      const villagers = 'The Simple Villager, The Simple Villager';
+
+      expect(cardOf('rules')?.actions).toContain(`Not dealt: ${villagers}`);
+      expect(cardOf('thief')?.actions).toContain(`Middle cards: ${villagers}`);
+    });
+
+    it('should not name undealt cards while seats are still empty', () => {
+      select('thief');
+      assign(0, 'thief');
+
+      expect(cardOf('rules')?.actions.some((line) => line.startsWith('Not dealt'))).toBe(false);
+    });
+
+    describe('the Bear Tamer', () => {
+      const growl = 'Growl like a bear: a werewolf sits next to the Bear Tamer';
+      const silent = 'Stay silent: no werewolf sits next to the Bear Tamer';
+
+      beforeEach(() => select('bear_tamer', 'werewolf'));
+
+      it('should growl when a werewolf sits next to the Bear Tamer', () => {
+        assign(0, 'bear_tamer');
+        assign(1, 'werewolf');
+
+        expect(cardOf('day')?.actions).toContain(growl);
+      });
+
+      it('should stay silent once that werewolf dies this morning', () => {
+        assign(0, 'bear_tamer');
+        assign(1, 'werewolf');
+        service.night.markVictim(people()[1].id, 'werewolf');
+
+        expect(cardOf('day')?.actions).toContain(silent);
+      });
+
+      it('should skip the dead to find the neighbours', () => {
+        assign(0, 'bear_tamer');
+        assign(1, 'villager', [PersonStatus.Dead]);
+        assign(2, 'werewolf');
+
+        expect(cardOf('day')?.actions).toContain(growl);
+      });
+
+      it('should growl every morning for an infected Bear Tamer', () => {
+        assign(0, 'bear_tamer', [PersonStatus.TurnedWolf]);
+
+        expect(cardOf('day')?.actions).toContain(growl);
+      });
+
+      it('should only remind the narrator while nobody holds the card', () => {
+        expect(cardOf('day')?.actions).toContain('Remember the Bear Tamer');
+      });
+
+      it('should say nothing once the Bear Tamer is dead', () => {
+        assign(0, 'bear_tamer', [PersonStatus.Dead]);
+        assign(1, 'werewolf');
+
+        expect(cardOf('day')?.actions.some((line) => line.includes('Bear'))).toBe(false);
+      });
+    });
+
+    describe('the extra life of the Elder', () => {
+      beforeEach(() => {
+        select('elder', 'werewolf');
+        assign(0, 'elder');
+        service.night.markVictim(people()[0].id, 'werewolf');
+      });
+
+      it('should be spent by a bite once the night is over', () => {
+        expect(service.night.roles().usedAbilities).toEqual([]);
+
+        nextNight();
+
+        expect(service.night.roles().usedAbilities).toEqual(['elder_life']);
+      });
+
+      it('should be kept when the Witch heals the bite', () => {
+        service.night.heal(people()[0].id);
+        nextNight();
+
+        expect(service.night.roles().usedAbilities).toEqual(['witch_heal']);
+      });
     });
   });
 });

@@ -184,7 +184,7 @@ export class NarratorComponent {
   protected resettingAbilityMessage = computed(() => {
     const ability = this.resettingAbility();
     return ability
-      ? $localize`:@@narrator.giveBack.message:${ABILITY_LABELS[ability]}:ability: counts as unused again, and the role is called again tonight.`
+      ? $localize`:@@narrator.giveBack.message:${ABILITY_LABELS[ability]}:ability: counts as unused again.`
       : '';
   });
 

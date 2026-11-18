@@ -18,7 +18,9 @@ export class Thief extends Character {
 
   override getActions(context: NightContext): (string | false)[] {
     return [
-      $localize`:@@thief.hasToSwapCards:Has to swap cards`,
+      $localize`:@@thief.maySwapCards:May swap their card for one of the two middle cards (must, if both are werewolves)`,
+      context.leftover.length > 0 &&
+        $localize`:@@thief.middleCards:Middle cards: ${context.leftover.map((card) => card.name).join(', ')}:cards:`,
       !isAssigned(context) && COMMON_LINES.assignPerson,
     ];
   }
