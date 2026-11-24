@@ -11,6 +11,7 @@ const {
   SurvivedAttack,
   SurvivedHostDeath,
   TurnedIntoWolf,
+  WoundedByTheKnight,
 } = ChangeReason;
 
 describe('DaybreakState', () => {
@@ -340,6 +341,19 @@ describe('DaybreakState', () => {
       }
       service.actions.next();
     };
+    const toDaybreak = () => {
+      while (!service.actions.isLastCard()) {
+        service.actions.next();
+      }
+    };
+    const setWounded = (id: string, isWounded: boolean) => {
+      const person = service.people.all().find((entry) => entry.id === id)!;
+      const statuses = person.statuses.filter((status) => status !== PersonStatus.Wounded);
+      service.people.update(id, {
+        ...person,
+        statuses: isWounded ? [...statuses, PersonStatus.Wounded] : statuses,
+      });
+    };
 
     beforeEach(() => {
       hand(anna, 'knight');
@@ -408,6 +422,67 @@ describe('DaybreakState', () => {
       service.daybreak.applyAll();
 
       expect(badgesOf(cleo)).not.toContain('wounded');
+    });
+
+    it('should report the wound in the morning the Knight dies', () => {
+      service.night.markVictim(anna, 'werewolf');
+
+      expect(changes()).toEqual([
+        { personId: anna, reason: DiedGotKilled },
+        { personId: cleo, reason: WoundedByTheKnight },
+      ]);
+      expect(service.daybreak.pending().map((change) => change.personId)).toEqual([anna, cleo]);
+    });
+
+    it('should let the narrator wound a wolf on the Daybreak card, to die the next morning', () => {
+      toDaybreak();
+      setWounded(cleo, true);
+
+      expect(changes()).toEqual([{ personId: cleo, reason: WoundedByTheKnight }]);
+      expect(service.daybreak.pending()).toEqual([]);
+
+      nextNight();
+
+      expect(changes()).toEqual([{ personId: cleo, reason: DiedGotKilled }]);
+      expect(causes()).toEqual([{ role: 'knight' }]);
+    });
+
+    it('should kill a wolf wounded during the night at the daybreak of that night', () => {
+      setWounded(cleo, true);
+
+      expect(changes()).toEqual([{ personId: cleo, reason: DiedGotKilled }]);
+    });
+
+    it('should move the wound to the wolf the narrator picks instead', () => {
+      service.night.markVictim(anna, 'werewolf');
+      service.daybreak.applyAll();
+      toDaybreak();
+      setWounded(cleo, false);
+      setWounded(eve, true);
+
+      expect(changes()).toEqual([
+        { personId: anna, reason: DiedGotKilled },
+        { personId: eve, reason: WoundedByTheKnight },
+      ]);
+      expect(service.daybreak.pending()).toEqual([]);
+
+      nextNight();
+
+      expect(changes()).toEqual([{ personId: eve, reason: DiedGotKilled }]);
+    });
+
+    it('should drop a wound the narrator takes back, without suggesting it again', () => {
+      service.night.markVictim(anna, 'werewolf');
+      service.daybreak.applyAll();
+      toDaybreak();
+      setWounded(cleo, false);
+
+      expect(changes()).toEqual([{ personId: anna, reason: DiedGotKilled }]);
+      expect(service.daybreak.pending()).toEqual([]);
+
+      nextNight();
+
+      expect(changes()).toEqual([]);
     });
 
     it('should claim the wolf only once', () => {

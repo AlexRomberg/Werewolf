@@ -13,9 +13,9 @@ import { isWerewolf } from '../../models/werewolf-character';
 import { leftoverCards } from './character-state';
 import {
   isPersonDead,
+  isWoundedThisMorning,
   pendingChanges,
   resolveDaybreak,
-  woundedByTheKnight,
 } from './daybreak-state';
 import {
   ChangeReason,
@@ -34,19 +34,7 @@ export class ActionState {
 
   readonly round = computed(() => this.state().round);
 
-  readonly queue = computed<readonly ActionCard[]>(() => {
-    const state = this.state();
-    const selected = selectedCharacters(state);
-    const awake = state.awake.flatMap((id) => state.characters.get(id)?.character ?? []);
-
-    return [
-      ...(hasRulesCard(state) ? [rulesCard(state.round, selected, leftoverCards(state))] : []),
-      ...(opensWithTheAngel(state) ? [characterCard(state, ANGEL)] : []),
-      nightfallCard(state.round),
-      ...awake.map((character) => characterCard(state, character)),
-      daybreakCard(state.round, pendingChanges(state).length, bearSignal(state)),
-    ];
-  });
+  readonly queue = computed<readonly ActionCard[]>(() => nightQueue(this.state()));
 
   readonly index = computed(() => this.state().actionIndex);
   readonly current = computed<ActionCard | undefined>(() => this.queue()[this.index()]);
@@ -69,6 +57,10 @@ export class ActionState {
       state.actionIndex > 0 ? { ...state, actionIndex: state.actionIndex - 1 } : state,
     );
   }
+}
+
+export function isAtDaybreak(state: State) {
+  return state.phase === 'playing' && state.actionIndex >= nightQueue(state).length - 1;
 }
 
 export function beginNight(state: State): State {
@@ -94,7 +86,11 @@ function startNextNight(state: State): State {
     appliedChanges: [],
     people: state.people.map((person) => ({
       ...person,
-      statuses: person.statuses.filter((status) => status !== PersonStatus.Protected),
+      statuses: person.statuses.filter(
+        (status) =>
+          status !== PersonStatus.Protected &&
+          (status !== PersonStatus.Wounded || isWoundedThisMorning(state, person.id)),
+      ),
     })),
     connections: state.connections.filter(
       (connection) => connection.type !== ConnectionType.Sleepover,
@@ -109,10 +105,22 @@ function startNextNight(state: State): State {
       healedTonight: undefined,
       healerLastProtected: protectedPerson?.id,
       hoodratLastHost: sleepover?.to,
-      knightWound: woundedByTheKnight(state, morning),
       middleCardsShownTo: undefined,
     },
   });
+}
+
+function nightQueue(state: State): ActionCard[] {
+  const selected = selectedCharacters(state);
+  const awake = state.awake.flatMap((id) => state.characters.get(id)?.character ?? []);
+
+  return [
+    ...(hasRulesCard(state) ? [rulesCard(state.round, selected, leftoverCards(state))] : []),
+    ...(opensWithTheAngel(state) ? [characterCard(state, ANGEL)] : []),
+    nightfallCard(state.round),
+    ...awake.map((character) => characterCard(state, character)),
+    daybreakCard(state.round, pendingChanges(state).length, bearSignal(state)),
+  ];
 }
 
 function bearSignal(state: State): BearSignal | undefined {

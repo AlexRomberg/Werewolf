@@ -13,6 +13,7 @@ describe('ActionState', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({});
     service = TestBed.inject(GameService);
+    service.characters.replaceSelection([]);
   });
 
   const ids = () => service.actions.queue().map((card) => card.id);

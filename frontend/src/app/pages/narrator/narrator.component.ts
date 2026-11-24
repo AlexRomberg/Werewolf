@@ -225,9 +225,6 @@ export class NarratorComponent {
     const partial = this.partialPick();
     return partial.selectionKey === this.selectionKey() ? partial.personIds : [];
   });
-  protected pickProgress = computed(
-    () => `${this.pickedIds().length}/${this.activeButton()?.picks ?? 0}`,
-  );
 
   protected circleSelection = computed<CircleSelection | null>(() => {
     const button = this.activeButton();

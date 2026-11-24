@@ -5,6 +5,7 @@ export enum PersonStatus {
   Protected = 'protected',
   Enchanted = 'enchanted',
   TurnedWolf = 'turned_wolf',
+  Wounded = 'wounded',
 }
 
 export enum ConnectionType {
@@ -31,6 +32,7 @@ export enum ChangeReason {
   TurnedIntoWolf = 'turned_into_wolf',
   SurvivedAttack = 'survived_attack',
   SurvivedHostDeath = 'survived_host_death',
+  WoundedByTheKnight = 'wounded_by_the_knight',
 }
 
 export type ChangeCause = { role: string } | { person: string };
@@ -58,7 +60,6 @@ export interface RoleStates {
   healedTonight?: string;
   healerLastProtected?: string;
   hoodratLastHost?: string;
-  knightWound?: string;
   middleCardsShownTo?: string;
 }
 
@@ -69,7 +70,7 @@ export interface Person {
   statuses: PersonStatus[];
 }
 
-export type NightBadge = 'victim' | 'healed' | 'wounded';
+export type NightBadge = 'victim' | 'healed';
 export type PersonBadge = Exclude<PersonStatus, PersonStatus.Dead> | NightBadge;
 
 export const STATUS_LABELS: Record<PersonStatus | NightBadge, string> = {
@@ -77,9 +78,9 @@ export const STATUS_LABELS: Record<PersonStatus | NightBadge, string> = {
   [PersonStatus.Protected]: $localize`:@@status.protected:Protected`,
   [PersonStatus.Enchanted]: $localize`:@@status.enchanted:Enchanted`,
   [PersonStatus.TurnedWolf]: $localize`:@@status.turnedWolf:Turned wolf`,
+  [PersonStatus.Wounded]: $localize`:@@status.wounded:Wounded`,
   victim: $localize`:@@status.victim:Marked as a victim`,
   healed: $localize`:@@status.healed:Healed`,
-  wounded: $localize`:@@status.wounded:Wounded by the Knight: dies tonight`,
 };
 
 export interface PersonView extends Person {

@@ -14,6 +14,7 @@ describe('CharacterState', () => {
     TestBed.configureTestingModule({});
     game = TestBed.inject(GameService);
     characters = game.characters;
+    characters.replaceSelection([]);
   });
 
   describe('with the Thief', () => {

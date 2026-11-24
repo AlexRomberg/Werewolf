@@ -1,7 +1,14 @@
 <div class="flex min-h-0 flex-col gap-6 overflow-y-auto">
   <section class="flex flex-col gap-3">
     <div class="flex flex-col gap-1.5">
-      <h2 class="section-title" i18n="@@setup.cards">Cards</h2>
+      <div class="flex items-center gap-2">
+        <h2 class="section-title flex-1" i18n="@@setup.cards">Cards</h2>
+        <span class="flex items-center gap-1 text-sm text-frost-400">
+          <span aria-hidden="true">{{ players() }}</span>
+          <svg lucideUsers size="16" aria-hidden="true"></svg>
+          <span class="sr-only" i18n="@@setup.players">{{ players() }} players</span>
+        </span>
+      </div>
       <app-divider align="start" />
     </div>
     <button

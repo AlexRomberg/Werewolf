@@ -1,5 +1,5 @@
 import { Component, input, output } from '@angular/core';
-import { LucideChevronRight, LucideTriangleAlert } from '@lucide/angular';
+import { LucideChevronRight, LucideTriangleAlert, LucideUsers } from '@lucide/angular';
 import { Character } from '../../../../models/character';
 import { DeckPreviewComponent } from '../../../deck-preview/deck-preview.component';
 import { DividerComponent } from '../../../divider/divider.component';
@@ -13,6 +13,7 @@ import { ToggleSwitchComponent } from '../../../toggle-switch/toggle-switch.comp
     ToggleSwitchComponent,
     LucideChevronRight,
     LucideTriangleAlert,
+    LucideUsers,
   ],
   templateUrl: './setup-panel.component.html',
   host: {
@@ -21,6 +22,7 @@ import { ToggleSwitchComponent } from '../../../toggle-switch/toggle-switch.comp
 })
 export class SetupPanelComponent {
   public cards = input.required<readonly Character[]>();
+  public players = input.required<number>();
   public hasExcessCards = input(false);
   public virtualCards = input(false);
 

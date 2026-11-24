@@ -58,8 +58,13 @@ export class ChangesDialogComponent {
   );
 }
 
+const SECRET_CHANGES: readonly ChangeReason[] = [
+  ChangeReason.TurnedIntoWolf,
+  ChangeReason.WoundedByTheKnight,
+];
+
 function isInformational(view: DaybreakChangeView) {
-  return !view.appliable || view.change.reason === ChangeReason.TurnedIntoWolf;
+  return !view.appliable || SECRET_CHANGES.includes(view.change.reason);
 }
 
 function toEntry(view: DaybreakChangeView): ChangeEntry {
@@ -112,6 +117,11 @@ function wording(change: DaybreakChange, name: string, cause: string) {
       return {
         headline: $localize`:@@changes.survivedAttack:${name}:name: survived the attack`,
         note: savedNote(causingRole, cause),
+      };
+    case ChangeReason.WoundedByTheKnight:
+      return {
+        headline: $localize`:@@changes.woundedByTheKnight:${name}:name: was wounded by the Knight`,
+        note: $localize`:@@changes.diesTonight:Secret! Dies tonight`,
       };
   }
 }

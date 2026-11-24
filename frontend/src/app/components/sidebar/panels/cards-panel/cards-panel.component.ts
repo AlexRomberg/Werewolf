@@ -4,7 +4,13 @@ import { LucideCircleMinus, LucideCirclePlus, LucideUsers } from '@lucide/angula
 import { Character } from '../../../../models/character';
 import { BULK_CHARACTERS, VILLAGER } from '../../../../models/characters';
 import { CharacterGrouping, characterSections } from '../../../../models/characters/sections';
-import { Preset, PRESETS, presetDeck, presetEntries } from '../../../../models/presets';
+import {
+  isPresetApplied,
+  Preset,
+  PRESETS,
+  presetDeck,
+  presetEntries,
+} from '../../../../models/presets';
 import { GameService } from '../../../../services/game.service';
 import { seatsFor } from '../../../../services/state/character-state';
 import { MAX_SEATS } from '../../../../services/state/types';
@@ -49,7 +55,7 @@ interface CardView {
   ],
   templateUrl: './cards-panel.component.html',
   host: {
-    class: 'grid grid-rows-[1fr_auto] min-h-0 gap-4',
+    class: 'grid grid-rows-[auto_1fr] min-h-0 gap-4',
   },
 })
 export class CardsPanelComponent {
@@ -57,7 +63,6 @@ export class CardsPanelComponent {
   private characters = this.game.characters;
 
   protected grouping = signal<CharacterGrouping>('game');
-  protected presetsExpanded = signal(false);
 
   protected sections = computed(() =>
     characterSections(this.grouping()).map(({ label, characters }) => ({
@@ -77,12 +82,13 @@ export class CardsPanelComponent {
 
   protected presets = computed(() => {
     const recommended = this.recommendedPreset();
-    return this.presetsExpanded()
-      ? [recommended, ...PRESET_VIEWS.filter((view) => view !== recommended)]
-      : [recommended];
+    const selection = this.characters.selection();
+    return [recommended, ...PRESET_VIEWS.filter((view) => view !== recommended)].map((view) => ({
+      ...view,
+      isRecommended: view === recommended,
+      isApplied: isPresetApplied(view.preset, selection),
+    }));
   });
-
-  protected readonly hiddenPresetCount = PRESET_VIEWS.length - 1;
 
   protected applyPreset(view: PresetView) {
     this.characters.replaceSelection(presetEntries(view.preset));

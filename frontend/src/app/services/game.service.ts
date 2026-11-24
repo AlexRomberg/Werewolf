@@ -1,4 +1,5 @@
 import { DOCUMENT, Service, computed, effect, inject, signal } from '@angular/core';
+import { WEREWOLF } from '../models/characters';
 import { StoredValue } from './room-storage';
 import { ActionState, beginNight } from './state/action-state';
 import { CharacterState } from './state/character-state';
@@ -69,7 +70,7 @@ export class GameService {
       ...UNPLAYED_GAME,
       phase: 'setup',
       people: createSeats(INITIAL_SEATS),
-      characters: new Map(),
+      characters: new Map([[WEREWOLF.id, { character: WEREWOLF, amount: 1 }]]),
     };
   }
 }

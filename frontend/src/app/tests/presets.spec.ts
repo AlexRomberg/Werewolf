@@ -1,7 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 
 import { GameService } from '../services/game.service';
-import { PRESETS, presetDeck, presetEntries } from '../models/presets';
+import { isPresetApplied, PRESETS, presetDeck, presetEntries } from '../models/presets';
+import { CHARACTERS_BY_ID, WEREWOLF } from '../models/characters';
 
 describe('presets', () => {
   it('should name only characters that exist', () => {
@@ -36,6 +37,44 @@ describe('presets', () => {
       characters.replaceSelection(presetEntries(second));
 
       expect([...characters.selection().keys()].sort()).toEqual(Object.keys(second.cards).sort());
+    });
+
+    it('should count as applied right after it is applied', () => {
+      const [preset] = PRESETS;
+      characters.replaceSelection(presetEntries(preset));
+
+      expect(isPresetApplied(preset, characters.selection())).toBe(true);
+    });
+
+    it('should no longer count as applied once an amount is changed by hand', () => {
+      const [preset] = PRESETS;
+      characters.replaceSelection(presetEntries(preset));
+      characters.setAmount(WEREWOLF, characters.amountOf(WEREWOLF) + 1);
+
+      expect(isPresetApplied(preset, characters.selection())).toBe(false);
+    });
+
+    it('should no longer count as applied once a card outside it is added', () => {
+      const preset = PRESETS.find((candidate) => !('witch' in candidate.cards))!;
+      characters.replaceSelection(presetEntries(preset));
+      characters.toggle(CHARACTERS_BY_ID.get('witch')!);
+
+      expect(isPresetApplied(preset, characters.selection())).toBe(false);
+    });
+
+    it('should count only the preset that replaced the one before', () => {
+      const [first, second] = PRESETS;
+      characters.replaceSelection(presetEntries(first));
+      characters.replaceSelection(presetEntries(second));
+
+      expect(isPresetApplied(first, characters.selection())).toBe(false);
+      expect(isPresetApplied(second, characters.selection())).toBe(true);
+    });
+
+    it('should count no preset as applied when nothing is picked', () => {
+      characters.replaceSelection([]);
+
+      expect(PRESETS.some((preset) => isPresetApplied(preset, characters.selection()))).toBe(false);
     });
 
     it('should deal the deck the preset describes', () => {

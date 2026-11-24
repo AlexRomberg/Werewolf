@@ -92,7 +92,6 @@ export class NarrationPanelComponent {
   public canGoBack = input(false);
   public characters = input<readonly Character[]>([]);
   public activeKind = input<ActionButtonKind | null>(null);
-  public activeProgress = input('');
   public spentAbilities = input<readonly SpentAbility[]>([]);
 
   public next = output<void>();

@@ -20,6 +20,13 @@ describe('GameService', () => {
     expect(service.people.all().length).toBe(INITIAL_SEATS);
   });
 
+  it('should start a new game with one werewolf in the deck', () => {
+    expect([...service.characters.selection().values()]).toEqual([
+      { character: WEREWOLF, amount: 1 },
+    ]);
+    expect(service.characters.amountOf(VILLAGER)).toBe(INITIAL_SEATS - 1);
+  });
+
   it('should be able to update a person', () => {
     const person = service.people.all()[0];
     service.people.update(person.id, { ...person, name: 'Test' });

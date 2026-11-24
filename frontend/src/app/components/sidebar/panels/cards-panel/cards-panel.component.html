@@ -1,3 +1,32 @@
+<div class="flex min-w-0 flex-col gap-1.5">
+  <h2 class="section-title" i18n="@@cards.presets">Presets</h2>
+  <app-divider align="start" />
+
+  <div class="-mx-1 -mb-1 flex snap-x gap-2 overflow-x-auto p-1">
+    @for (view of presets(); track view.preset.name) {
+      <button
+        class="flex w-40 shrink-0 cursor-pointer snap-start flex-col gap-2 rounded-surface border border-night-700 p-1 text-left hover:border-frost-500 aria-pressed:border-ember-400"
+        [attr.aria-pressed]="view.isApplied"
+        (click)="applyPreset(view)"
+      >
+        <span class="flex flex-col px-1.5 pt-0.5">
+          <span class="truncate font-display text-lg text-frost-50">{{ view.preset.name }}</span>
+          <span class="flex items-center gap-1 text-sm text-frost-400">
+            {{ view.deck.length }}
+            <svg lucideUsers size="14" aria-hidden="true"></svg>
+            @if (view.isRecommended) {
+              <span class="ml-1 truncate text-ember-400" i18n="@@cards.recommended"
+                >Recommended</span
+              >
+            }
+          </span>
+        </span>
+        <app-deck-preview class="w-full" [cards]="view.deck" />
+      </button>
+    }
+  </div>
+</div>
+
 <div
   class="flex min-h-0 flex-col gap-4 overflow-y-auto pb-10 [mask-image:linear-gradient(to_bottom,#000_calc(100%-3rem),transparent)]"
 >
@@ -62,41 +91,4 @@
       }
     }
   </div>
-</div>
-
-<div class="flex flex-col gap-1.5">
-  <h2 class="section-title" i18n="@@cards.presets">Presets</h2>
-  <app-divider align="start" />
-
-  <div class="mt-1 flex flex-col">
-    @for (view of presets(); track view.preset.name) {
-      <button
-        class="grid cursor-pointer grid-cols-[1fr_auto] items-baseline gap-x-2 border-t border-night-700 px-1 py-2.5 text-left first:border-t-0 hover:bg-night-800"
-        (click)="applyPreset(view)"
-      >
-        <span class="flex items-baseline gap-2">
-          <span class="font-display text-lg text-frost-50">{{ view.preset.name }}</span>
-          @if ($first) {
-            <span class="text-sm text-ember-400" i18n="@@cards.recommended">Recommended</span>
-          }
-        </span>
-        <span class="flex items-center gap-1 text-sm text-frost-400">
-          {{ view.deck.length }}
-          <svg lucideUsers size="16" aria-hidden="true"></svg>
-        </span>
-        <app-deck-preview class="col-span-2 mt-2" [cards]="view.deck" />
-      </button>
-    }
-  </div>
-
-  <button
-    class="btn-quiet mt-1 cursor-pointer self-start"
-    (click)="presetsExpanded.set(!presetsExpanded())"
-  >
-    @if (presetsExpanded()) {
-      <ng-container i18n="@@cards.showFewer">Show fewer</ng-container>
-    } @else {
-      <ng-container i18n="@@cards.showMore">Show {{ hiddenPresetCount }} more presets</ng-container>
-    }
-  </button>
 </div>

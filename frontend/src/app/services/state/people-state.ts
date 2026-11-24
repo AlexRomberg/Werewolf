@@ -3,7 +3,8 @@ import { Character } from '../../models/character';
 import type { LinkType, PlayerCard, PlayerLink } from '@protocol';
 import { isWerewolf } from '../../models/werewolf-character';
 import { leftoverCards } from './character-state';
-import { woundedByTheKnight } from './daybreak-state';
+import { isAtDaybreak } from './action-state';
+import { applyChange, woundChange } from './daybreak-state';
 import {
   Connection,
   ConnectionType,
@@ -32,17 +33,15 @@ export class PeopleState {
   readonly views = computed<readonly PersonView[]>(() => {
     const state = this.state();
     const { people, victims, roles } = state;
-    const wounded = roles.knightWound ?? woundedByTheKnight(state);
 
     return people.map((person, index) => {
       const statusBadges = person.statuses.filter(
         (status): status is Exclude<PersonStatus, PersonStatus.Dead> =>
-          status !== PersonStatus.Dead,
+          status !== PersonStatus.Dead && (status !== PersonStatus.Wounded || isAlive(person)),
       );
       const nightBadges: (NightBadge | false)[] = [
         victims.some((mark) => mark.personId === person.id) && 'victim',
         roles.healedTonight === person.id && 'healed',
-        wounded === person.id && isAlive(person) && 'wounded',
       ];
       const badges: PersonBadge[] = [
         ...statusBadges,
@@ -112,10 +111,18 @@ export class PeopleState {
   }
 
   update(id: string, person: Person) {
-    this.state.update((state) => ({
-      ...state,
-      people: state.people.map((existing) => (existing.id === id ? person : existing)),
-    }));
+    this.state.update((state) => {
+      const before = state.people.find((existing) => existing.id === id);
+      const updated = {
+        ...state,
+        people: state.people.map((existing) => (existing.id === id ? person : existing)),
+      };
+      const isNewWound =
+        hasStatus(person, PersonStatus.Wounded) &&
+        !!before &&
+        !hasStatus(before, PersonStatus.Wounded);
+      return isNewWound && isAtDaybreak(state) ? applyChange(updated, woundChange(id)) : updated;
+    });
   }
 
   assign(ids: readonly string[], character: Character) {

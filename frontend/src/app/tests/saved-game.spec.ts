@@ -87,9 +87,9 @@ describe('saved game', () => {
     expectNewGame(reload());
   });
 
-  it('starts a new game when the wound of the Knight is not a player', () => {
+  it('starts a new game from a save written before the wound of the Knight became a status', () => {
     TestBed.tick();
-    editSave((save) => (save['roles'].knightWound = 7));
+    editSave((save) => (save['version'] = 2));
 
     expectNewGame(reload());
   });

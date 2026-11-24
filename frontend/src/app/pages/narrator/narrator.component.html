@@ -118,16 +118,16 @@
       }
       @if (isPlaying()) {
         <button
-          class="btn btn-secondary h-11 py-0 text-sm aria-pressed:border-ember-400"
+          class="btn btn-secondary h-11 py-0 text-sm aria-pressed:border-ember-400 max-md:w-11 max-md:px-0"
           [attr.aria-pressed]="rearranging()"
           (click)="rearranging.set(!rearranging())"
         >
           @if (rearranging()) {
             <svg lucideCheck size="16"></svg>
-            <ng-container i18n="@@narrator.rearrangeDone">Done</ng-container>
+            <span class="max-md:sr-only" i18n="@@narrator.rearrangeDone">Done</span>
           } @else {
             <svg lucideArrowUpDown size="16"></svg>
-            <ng-container i18n="@@narrator.rearrange">Rearrange</ng-container>
+            <span class="max-md:sr-only" i18n="@@narrator.rearrange">Rearrange</span>
           }
         </button>
       }
@@ -160,7 +160,6 @@
           [canGoBack]="canStepBack()"
           [characters]="charactersInPlay()"
           [activeKind]="activeButton()?.kind ?? null"
-          [activeProgress]="pickProgress()"
           [spentAbilities]="spentAbilities()"
           [(charactersOpen)]="charactersOpen"
           (next)="nextAction()"
@@ -174,6 +173,7 @@
       @default {
         <app-setup-panel
           [cards]="cards()"
+          [players]="personViews().length"
           [hasExcessCards]="hasExcessCards()"
           [virtualCards]="isHostingRoom()"
           (cardSelectorPressed)="openCardSelector()"

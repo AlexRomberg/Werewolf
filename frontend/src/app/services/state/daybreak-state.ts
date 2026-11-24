@@ -29,10 +29,11 @@ const STATUS_BY_REASON: Partial<Record<ChangeReason, PersonStatus>> = {
   [ChangeReason.DiedSleptWithVictim]: PersonStatus.Dead,
   [ChangeReason.DiedOfBrokenHeart]: PersonStatus.Dead,
   [ChangeReason.TurnedIntoWolf]: PersonStatus.TurnedWolf,
+  [ChangeReason.WoundedByTheKnight]: PersonStatus.Wounded,
 };
 
 export class DaybreakState {
-  constructor(private state: WritableSignal<State>) { }
+  constructor(private state: WritableSignal<State>) {}
 
   readonly changes = computed<readonly DaybreakChange[]>(() => resolveDaybreak(this.state()));
   readonly pending = computed<readonly DaybreakChange[]>(() => pendingChanges(this.state()));
@@ -42,9 +43,7 @@ export class DaybreakState {
   }
 
   apply(change: DaybreakChange) {
-    this.state.update((state) =>
-      includesChange(state.appliedChanges, change) ? state : applyChange(state, change),
-    );
+    this.state.update((state) => applyChange(state, change));
   }
 
   applyAll() {
@@ -128,8 +127,10 @@ export function resolveDaybreak(state: State): DaybreakChange[] {
     }
   }
 
-  if (state.roles.knightWound) {
-    die(state.roles.knightWound, ChangeReason.DiedGotKilled, { role: KNIGHT.id });
+  for (const person of state.people) {
+    if (hasStatus(person, PersonStatus.Wounded) && !isWoundedThisMorning(state, person.id)) {
+      die(person.id, ChangeReason.DiedGotKilled, { role: KNIGHT.id });
+    }
   }
 
   if (trust && dying.has(trust.to) && canTurnWolf(state, trust.from, alive, dying)) {
@@ -153,19 +154,75 @@ export function resolveDaybreak(state: State): DaybreakChange[] {
     });
   }
 
+  changes.push(...knightWounds(state, changes, (personId) => isLiving(personId, alive, dying)));
+
   return changes.filter(
     (change) => change.reason !== ChangeReason.SurvivedAttack || !dying.has(change.personId),
   );
 }
 
-export function woundedByTheKnight(state: State, morning?: readonly DaybreakChange[]) {
+export function woundChange(personId: string): DaybreakChange {
+  return { personId, reason: ChangeReason.WoundedByTheKnight, causedBy: { role: KNIGHT.id } };
+}
+
+export function isWoundedThisMorning(state: State, personId: string) {
+  return includesChange(state.appliedChanges, woundChange(personId));
+}
+
+export function isPersonDead(change: DaybreakChange) {
+  return STATUS_BY_REASON[change.reason] === PersonStatus.Dead;
+}
+
+export function applyChange(state: State, change: DaybreakChange): State {
+  if (includesChange(state.appliedChanges, change)) {
+    return state;
+  }
+  const status = STATUS_BY_REASON[change.reason];
+
+  return {
+    ...state,
+    appliedChanges: [...state.appliedChanges, change],
+    people: state.people.map((person) =>
+      status && person.id === change.personId && !hasStatus(person, status)
+        ? { ...person, statuses: [...person.statuses, status] }
+        : person,
+    ),
+  };
+}
+
+function knightWounds(
+  state: State,
+  morning: readonly DaybreakChange[],
+  survives: (personId: string) => boolean,
+): DaybreakChange[] {
+  const handledThisMorning = state.appliedChanges.some(
+    (change) => change.reason === ChangeReason.WoundedByTheKnight,
+  );
+  if (handledThisMorning) {
+    return state.people
+      .filter(
+        (person) =>
+          hasStatus(person, PersonStatus.Wounded) && isWoundedThisMorning(state, person.id),
+      )
+      .map((person) => woundChange(person.id));
+  }
+
+  const wolf = woundedByTheKnight(state, morning, survives);
+  return wolf ? [woundChange(wolf)] : [];
+}
+
+function woundedByTheKnight(
+  state: State,
+  morning: readonly DaybreakChange[],
+  survives: (personId: string) => boolean,
+) {
   const seat = state.people.findIndex((person) => person.character?.id === KNIGHT.id);
   const knight = state.people[seat];
-  if (!knight || isAlive(knight)) {
+  if (!knight) {
     return undefined;
   }
 
-  const death = (morning ?? resolveDaybreak(state)).find(
+  const death = morning.find(
     (change) =>
       change.personId === knight.id &&
       change.reason === ChangeReason.DiedGotKilled &&
@@ -178,32 +235,14 @@ export function woundedByTheKnight(state: State, morning?: readonly DaybreakChan
 
   const killer = death.causedBy.role;
   const loneWolf = state.people.find(
-    (person) => killer !== WEREWOLF.id && person.character?.id === killer && isAlive(person),
+    (person) => killer !== WEREWOLF.id && person.character?.id === killer && survives(person.id),
   );
   if (loneWolf) {
     return loneWolf.id;
   }
 
   const leftOfTheKnight = [...state.people.slice(seat + 1), ...state.people.slice(0, seat)];
-  return leftOfTheKnight.find((person) => isAlive(person) && isWerewolf(person))?.id;
-}
-
-export function isPersonDead(change: DaybreakChange) {
-  return STATUS_BY_REASON[change.reason] === PersonStatus.Dead;
-}
-
-function applyChange(state: State, change: DaybreakChange): State {
-  const status = STATUS_BY_REASON[change.reason];
-
-  return {
-    ...state,
-    appliedChanges: [...state.appliedChanges, change],
-    people: state.people.map((person) =>
-      status && person.id === change.personId && !hasStatus(person, status)
-        ? { ...person, statuses: [...person.statuses, status] }
-        : person,
-    ),
-  };
+  return leftOfTheKnight.find((person) => survives(person.id) && isWerewolf(person))?.id;
 }
 
 function isLiving(personId: string, alive: Set<string>, dying: Set<string>) {

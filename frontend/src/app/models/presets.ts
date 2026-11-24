@@ -1,5 +1,6 @@
 import { Character, copiesOf } from './character';
 import { CHARACTERS_BY_ID } from './characters';
+import { CharacterSelection } from '../services/state/types';
 
 export interface Preset {
   readonly name: string;
@@ -96,4 +97,15 @@ export function presetEntries(preset: Preset): [Character, number][] {
 
 export function presetDeck(preset: Preset): Character[] {
   return presetEntries(preset).flatMap(([character, amount]) => copiesOf(character, amount));
+}
+
+export function isPresetApplied(
+  preset: Preset,
+  selection: ReadonlyMap<string, CharacterSelection>,
+): boolean {
+  const entries = Object.entries(preset.cards);
+  return (
+    entries.length === selection.size &&
+    entries.every(([id, amount]) => selection.get(id)?.amount === amount)
+  );
 }
