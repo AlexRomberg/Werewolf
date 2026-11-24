@@ -84,7 +84,7 @@ describe('ActionState', () => {
       const card = service.actions.queue().find((c) => c.id === 'cupid');
 
       expect(card?.title).toBe('Cupid');
-      expect(card?.image).toBe('img/cupid.png');
+      expect(card?.image).toBe('img/cupid.webp');
       expect(card?.actions.length).toBeGreaterThan(0);
       expect(card?.buttons.map((button) => button.kind)).toContain('pair-lovers');
     });

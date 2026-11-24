@@ -48,7 +48,7 @@ export abstract class Character {
   readonly priority: number = -1;
 
   get image() {
-    return `img/${this.id}.png`;
+    return `img/${this.id}.webp`;
   }
 
   isAwakeThisNight(_context: NightContext): boolean {

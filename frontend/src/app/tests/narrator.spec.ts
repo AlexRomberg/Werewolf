@@ -403,7 +403,7 @@ describe('NarratorComponent, picking players on the circle', () => {
         'The Simple Werewolf',
         'Seat 2',
       ]);
-      expect(causes[0].querySelector('img')?.getAttribute('src')).toContain('werewolf.png');
+      expect(causes[0].querySelector('img')?.getAttribute('src')).toContain('werewolf.webp');
     });
 
     it('should apply the changes one by one', async () => {
