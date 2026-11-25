@@ -1,7 +1,7 @@
 import { DOCUMENT, Service, inject, signal } from '@angular/core';
-import { KEY_PATTERN, type JoinRefusal, type PlayerCard } from '@protocol';
+import { KEY_PATTERN, SECRET_KEY_BYTES, type JoinRefusal, type PlayerCard } from '@protocol';
 import { CONNECT_TO_ROOM_SERVER, RoomSocket } from './room-socket';
-import { StoredValue, newSecretKey } from './room-storage';
+import { StoredValue } from './stored-value';
 
 const HOST_RETRY_MS = 15_000;
 
@@ -102,20 +102,21 @@ export class RoomPlayerService {
       return;
     }
 
-    try {
-      const result = await socket.emitWithAck('room:join', { code: this.code, ...seat });
-      if (socket !== this.socket) {
-        return;
-      }
-      if (result.ok) {
-        this.currentStatus.set('joined');
-      } else if (result.reason === 'host_away') {
-        this.currentStatus.set('host_away');
-        this.retryTimer = setTimeout(() => this.requestSeat(socket), HOST_RETRY_MS);
-      } else {
-        this.end(result.reason, { forgetSeat: result.reason === 'room_not_found' });
-      }
-    } catch {}
+    const answer = await socket
+      .emitWithAck('room:join', { code: this.code, ...seat })
+      .catch(() => null);
+    if (!answer || socket !== this.socket) {
+      return;
+    }
+
+    if (answer.ok) {
+      this.currentStatus.set('joined');
+    } else if (answer.reason === 'host_away') {
+      this.currentStatus.set('host_away');
+      this.retryTimer = setTimeout(() => this.requestSeat(socket), HOST_RETRY_MS);
+    } else {
+      this.end(answer.reason, { forgetSeat: answer.reason === 'room_not_found' });
+    }
   }
 
   private end(status: RoomStatus, { forgetSeat }: { forgetSeat: boolean }) {
@@ -141,4 +142,12 @@ export class RoomPlayerService {
 function isHeldSeat(value: unknown): value is HeldSeat {
   const { playerId, name } = (value ?? {}) as Partial<Record<keyof HeldSeat, unknown>>;
   return typeof playerId === 'string' && KEY_PATTERN.test(playerId) && typeof name === 'string';
+}
+
+function newSecretKey() {
+  const bytes = crypto.getRandomValues(new Uint8Array(SECRET_KEY_BYTES));
+  return btoa(String.fromCharCode(...bytes))
+    .replaceAll('+', '-')
+    .replaceAll('/', '_')
+    .replaceAll('=', '');
 }

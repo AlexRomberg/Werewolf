@@ -8,7 +8,7 @@ import {
   ROOM_CODE_INPUT_PATTERN,
   formatRoomCode,
   normalizeRoomCode,
-} from '../../services/room-storage';
+} from '../../services/room-code';
 
 @Component({
   selector: 'app-join',

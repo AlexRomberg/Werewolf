@@ -5,7 +5,6 @@ import {
   LucideHeart,
   LucideHouse,
   LucidePawPrint,
-  LucideSkull,
   LucideWandSparkles,
   LucideTombstone,
 } from '@lucide/angular';

@@ -1,7 +1,7 @@
 import { DOCUMENT, Service, computed, inject, signal } from '@angular/core';
 import type { HostSession, JoinResult, PlayerCard, RoomPlayer } from '@protocol';
 import { CONNECT_TO_ROOM_SERVER, RoomSocket } from './room-socket';
-import { StoredValue } from './room-storage';
+import { StoredValue } from './stored-value';
 
 export type SeatResult = { personId: string } | { refused: 'room_full' | 'room_locked' };
 
@@ -86,22 +86,26 @@ export class RoomHostService {
   }
 
   private async claimRoom(socket: RoomSocket) {
-    try {
-      const session = this.session();
-      if (session) {
-        const resumed = await socket.emitWithAck('room:resume', session);
-        if (resumed.ok) {
-          this.letGoOfPlayersOtherThan(resumed.playerIds);
-          this.connected.set(true);
-          return;
-        }
-        this.vacateAll();
+    const session = this.session();
+    if (session) {
+      const resumed = await socket.emitWithAck('room:resume', session).catch(() => null);
+      if (!resumed) {
+        return;
       }
+      if (resumed.ok) {
+        this.letGoOfPlayersOtherThan(resumed.playerIds);
+        this.connected.set(true);
+        return;
+      }
+      this.vacateAll();
+    }
 
-      const created = await socket.emitWithAck('room:create');
-      this.setSession(created);
-      this.connected.set(created !== null);
-    } catch {}
+    const created = await socket.emitWithAck('room:create').catch(() => undefined);
+    if (created === undefined) {
+      return;
+    }
+    this.setSession(created);
+    this.connected.set(created !== null);
   }
 
   private seat({ id, name }: RoomPlayer): JoinResult {

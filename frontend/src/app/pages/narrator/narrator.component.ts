@@ -388,7 +388,7 @@ export class NarratorComponent {
     const ability = this.resettingAbility();
     this.resettingAbility.set(null);
     if (ability) {
-      this.game.resetAbility(ability);
+      this.game.night.resetAbility(ability);
     }
   }
 

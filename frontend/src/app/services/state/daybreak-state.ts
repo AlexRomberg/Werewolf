@@ -64,101 +64,21 @@ export function pendingChanges(state: State): DaybreakChange[] {
 }
 
 export function resolveDaybreak(state: State): DaybreakChange[] {
-  const applied = state.appliedChanges;
-  const diedThisMorning = (personId: string) =>
-    applied.some((change) => change.personId === personId && isPersonDead(change));
-  const alive = new Set(
-    state.people
-      .filter((person) => isAlive(person) || diedThisMorning(person.id))
-      .map((person) => person.id),
+  const morning = new Morning(
+    aliveAtDawn(state),
+    findConnection(state.connections, ConnectionType.Love),
   );
-  const love = findConnection(state.connections, ConnectionType.Love);
-  const trust = findConnection(state.connections, ConnectionType.Trust);
   const sleepover = findConnection(state.connections, ConnectionType.Sleepover);
 
-  const changes: DaybreakChange[] = [];
-  const dying = new Set<string>();
-  const raided = new Set<string>();
-
-  const die = (personId: string, reason: ChangeReason, causedBy: ChangeCause) => {
-    if (!alive.has(personId) || dying.has(personId)) {
-      return;
-    }
-    dying.add(personId);
-    changes.push({ personId, reason, causedBy });
-
-    const partner = partnerOf(love, personId);
-    if (partner) {
-      die(partner, ChangeReason.DiedOfBrokenHeart, { person: personId });
-    }
-  };
-
-  const survive = (personId: string, savedBy: string) => {
-    const reported = changes.some(
-      (change) => change.personId === personId && change.reason === ChangeReason.SurvivedAttack,
-    );
-    if (alive.has(personId) && !reported) {
-      changes.push({ personId, reason: ChangeReason.SurvivedAttack, causedBy: { role: savedBy } });
-    }
-  };
-
   for (const personId of new Set(state.victims.map((mark) => mark.personId))) {
-    const marks = state.victims.filter((mark) => mark.personId === personId);
-    const bites = marks.filter(isByWolves).length;
-    const keptOut = bites > 0 ? houseGuardOf(state, personId, sleepover) : undefined;
-    const raidLands = bites > 0 && !keptOut;
-    const spared = raidLands ? personalGuardOf(state, personId, bites) : undefined;
-    const lethal = marks.filter((mark) => !isByWolves(mark) || (raidLands && !spared));
-
-    if (raidLands) {
-      raided.add(personId);
-    }
-    if (lethal.length > 0) {
-      die(personId, ChangeReason.DiedGotKilled, { role: lethal[0].byCharacterId });
-    } else {
-      survive(personId, keptOut ?? spared ?? HEALER.id);
-    }
-
-    const guest = raidLands && sleepover?.to === personId ? sleepover.from : undefined;
-    if (guest && state.roles.healedTonight === guest) {
-      survive(guest, WITCH.id);
-    } else if (guest) {
-      die(guest, ChangeReason.DiedSleptWithVictim, { person: personId });
-    }
+    resolveAttack(state, morning, personId, sleepover);
   }
+  resolveDueWounds(state, morning);
+  resolveRoleModel(state, morning);
+  resolveHostDeath(morning, sleepover);
+  morning.changes.push(...knightWoundChanges(state, morning));
 
-  for (const person of state.people) {
-    if (hasStatus(person, PersonStatus.Wounded) && !isWoundedThisMorning(state, person.id)) {
-      die(person.id, ChangeReason.DiedGotKilled, { role: KNIGHT.id });
-    }
-  }
-
-  if (trust && dying.has(trust.to) && canTurnWolf(state, trust.from, alive, dying)) {
-    changes.push({
-      personId: trust.from,
-      reason: ChangeReason.TurnedIntoWolf,
-      causedBy: { person: trust.to },
-    });
-  }
-
-  if (
-    sleepover &&
-    dying.has(sleepover.to) &&
-    !raided.has(sleepover.to) &&
-    isLiving(sleepover.from, alive, dying)
-  ) {
-    changes.push({
-      personId: sleepover.from,
-      reason: ChangeReason.SurvivedHostDeath,
-      causedBy: { person: sleepover.to },
-    });
-  }
-
-  changes.push(...knightWounds(state, changes, (personId) => isLiving(personId, alive, dying)));
-
-  return changes.filter(
-    (change) => change.reason !== ChangeReason.SurvivedAttack || !dying.has(change.personId),
-  );
+  return morning.toChanges();
 }
 
 export function woundChange(personId: string): DaybreakChange {
@@ -166,7 +86,7 @@ export function woundChange(personId: string): DaybreakChange {
 }
 
 export function isWoundedThisMorning(state: State, personId: string) {
-  return includesChange(state.appliedChanges, woundChange(personId));
+  return wasAppliedThisMorning(state, personId, ChangeReason.WoundedByTheKnight);
 }
 
 export function isPersonDead(change: DaybreakChange) {
@@ -190,15 +110,158 @@ export function applyChange(state: State, change: DaybreakChange): State {
   };
 }
 
-function knightWounds(
+class Morning {
+  readonly changes: DaybreakChange[] = [];
+  readonly dying = new Set<string>();
+  readonly raided = new Set<string>();
+
+  constructor(
+    private readonly alive: ReadonlySet<string>,
+    private readonly love: Connection | undefined,
+  ) {}
+
+  die(personId: string, reason: ChangeReason, causedBy: ChangeCause) {
+    if (!this.alive.has(personId) || this.dying.has(personId)) {
+      return;
+    }
+    this.dying.add(personId);
+    this.changes.push({ personId, reason, causedBy });
+
+    const partner = partnerOf(this.love, personId);
+    if (partner) {
+      this.die(partner, ChangeReason.DiedOfBrokenHeart, { person: personId });
+    }
+  }
+
+  survive(personId: string, savedBy: string) {
+    const isReported = this.changes.some(
+      (change) => change.personId === personId && change.reason === ChangeReason.SurvivedAttack,
+    );
+    if (this.alive.has(personId) && !isReported) {
+      this.changes.push({
+        personId,
+        reason: ChangeReason.SurvivedAttack,
+        causedBy: { role: savedBy },
+      });
+    }
+  }
+
+  isLiving(personId: string) {
+    return this.alive.has(personId) && !this.dying.has(personId);
+  }
+
+  toChanges(): DaybreakChange[] {
+    return this.changes.filter(
+      (change) => change.reason !== ChangeReason.SurvivedAttack || !this.dying.has(change.personId),
+    );
+  }
+}
+
+interface Raid {
+  lands: boolean;
+  keptOutBy?: string;
+  sparedBy?: string;
+}
+
+function aliveAtDawn(state: State) {
+  const diedThisMorning = (personId: string) =>
+    state.appliedChanges.some((change) => change.personId === personId && isPersonDead(change));
+  return new Set(
+    state.people
+      .filter((person) => isAlive(person) || diedThisMorning(person.id))
+      .map((person) => person.id),
+  );
+}
+
+function resolveAttack(
   state: State,
-  morning: readonly DaybreakChange[],
-  survives: (personId: string) => boolean,
-): DaybreakChange[] {
-  const handledThisMorning = state.appliedChanges.some(
+  morning: Morning,
+  personId: string,
+  sleepover: Connection | undefined,
+) {
+  const marks = state.victims.filter((mark) => mark.personId === personId);
+  const raid = raidOn(state, personId, marks, sleepover);
+  const lethal = marks.filter((mark) => !isByWolves(mark) || (raid.lands && !raid.sparedBy));
+
+  if (raid.lands) {
+    morning.raided.add(personId);
+  }
+  if (lethal.length > 0) {
+    morning.die(personId, ChangeReason.DiedGotKilled, { role: lethal[0].byCharacterId });
+  } else {
+    morning.survive(personId, raid.keptOutBy ?? raid.sparedBy ?? HEALER.id);
+  }
+
+  if (raid.lands && sleepover?.to === personId) {
+    resolveGuest(state, morning, sleepover.from, personId);
+  }
+}
+
+function raidOn(
+  state: State,
+  personId: string,
+  marks: readonly VictimMark[],
+  sleepover: Connection | undefined,
+): Raid {
+  const bites = marks.filter(isByWolves).length;
+  if (bites === 0) {
+    return { lands: false };
+  }
+
+  const keptOutBy = houseGuardOf(state, personId, sleepover);
+  if (keptOutBy) {
+    return { lands: false, keptOutBy };
+  }
+  return { lands: true, sparedBy: personalGuardOf(state, personId, bites) };
+}
+
+function resolveGuest(state: State, morning: Morning, guestId: string, hostId: string) {
+  if (state.roles.healedTonight === guestId) {
+    morning.survive(guestId, WITCH.id);
+  } else {
+    morning.die(guestId, ChangeReason.DiedSleptWithVictim, { person: hostId });
+  }
+}
+
+function resolveDueWounds(state: State, morning: Morning) {
+  for (const person of state.people) {
+    if (hasStatus(person, PersonStatus.Wounded) && !isWoundedThisMorning(state, person.id)) {
+      morning.die(person.id, ChangeReason.DiedGotKilled, { role: KNIGHT.id });
+    }
+  }
+}
+
+function resolveRoleModel(state: State, morning: Morning) {
+  const trust = findConnection(state.connections, ConnectionType.Trust);
+  if (trust && morning.dying.has(trust.to) && canTurnWolf(state, trust.from, morning)) {
+    morning.changes.push({
+      personId: trust.from,
+      reason: ChangeReason.TurnedIntoWolf,
+      causedBy: { person: trust.to },
+    });
+  }
+}
+
+function resolveHostDeath(morning: Morning, sleepover: Connection | undefined) {
+  if (
+    sleepover &&
+    morning.dying.has(sleepover.to) &&
+    !morning.raided.has(sleepover.to) &&
+    morning.isLiving(sleepover.from)
+  ) {
+    morning.changes.push({
+      personId: sleepover.from,
+      reason: ChangeReason.SurvivedHostDeath,
+      causedBy: { person: sleepover.to },
+    });
+  }
+}
+
+function knightWoundChanges(state: State, morning: Morning): DaybreakChange[] {
+  const isHandledThisMorning = state.appliedChanges.some(
     (change) => change.reason === ChangeReason.WoundedByTheKnight,
   );
-  if (handledThisMorning) {
+  if (isHandledThisMorning) {
     return state.people
       .filter(
         (person) =>
@@ -207,49 +270,47 @@ function knightWounds(
       .map((person) => woundChange(person.id));
   }
 
-  const wolf = woundedByTheKnight(state, morning, survives);
+  const wolf = wolfTheKnightWounds(state, morning);
   return wolf ? [woundChange(wolf)] : [];
 }
 
-function woundedByTheKnight(
-  state: State,
-  morning: readonly DaybreakChange[],
-  survives: (personId: string) => boolean,
-) {
+function wolfTheKnightWounds(state: State, morning: Morning) {
   const seat = state.people.findIndex((person) => person.character?.id === KNIGHT.id);
   const knight = state.people[seat];
   if (!knight) {
     return undefined;
   }
 
-  const death = morning.find(
-    (change) =>
-      change.personId === knight.id &&
-      change.reason === ChangeReason.DiedGotKilled &&
-      'role' in change.causedBy &&
-      CHARACTERS_BY_ID.get(change.causedBy.role) instanceof WerewolfCharacter,
+  const death = morning.changes.find(
+    (change) => change.personId === knight.id && change.reason === ChangeReason.DiedGotKilled,
   );
-  if (!death || !('role' in death.causedBy)) {
+  const killer = death && 'role' in death.causedBy ? death.causedBy.role : undefined;
+  if (!killer || !isWolfRole(killer)) {
     return undefined;
   }
 
-  const killer = death.causedBy.role;
-  const loneWolf = state.people.find(
-    (person) => killer !== WEREWOLF.id && person.character?.id === killer && survives(person.id),
-  );
+  const loneWolf =
+    killer === WEREWOLF.id
+      ? undefined
+      : state.people.find(
+          (person) => person.character?.id === killer && morning.isLiving(person.id),
+        );
   if (loneWolf) {
     return loneWolf.id;
   }
 
   const leftOfTheKnight = [...state.people.slice(seat + 1), ...state.people.slice(0, seat)];
-  return leftOfTheKnight.find((person) => survives(person.id) && isWerewolf(person))?.id;
+  return leftOfTheKnight.find((person) => morning.isLiving(person.id) && isWerewolf(person))?.id;
 }
 
-function isLiving(personId: string, alive: Set<string>, dying: Set<string>) {
-  return alive.has(personId) && !dying.has(personId);
+function wasAppliedThisMorning(state: State, personId: string, reason: ChangeReason) {
+  return includesChange(state.appliedChanges, { personId, reason });
 }
 
-function includesChange(changes: readonly DaybreakChange[], change: DaybreakChange) {
+function includesChange(
+  changes: readonly DaybreakChange[],
+  change: Pick<DaybreakChange, 'personId' | 'reason'>,
+) {
   return changes.some(
     (other) => other.personId === change.personId && other.reason === change.reason,
   );
@@ -262,8 +323,12 @@ function partnerOf(love: Connection | undefined, personId: string) {
   return love?.to === personId ? love.from : undefined;
 }
 
+function isWolfRole(characterId: string) {
+  return CHARACTERS_BY_ID.get(characterId) instanceof WerewolfCharacter;
+}
+
 function isByWolves(mark: VictimMark) {
-  return CHARACTERS_BY_ID.get(mark.byCharacterId) instanceof WerewolfCharacter;
+  return isWolfRole(mark.byCharacterId);
 }
 
 function houseGuardOf(state: State, personId: string, sleepover: Connection | undefined) {
@@ -290,12 +355,11 @@ function personById(state: State, personId: string) {
   return state.people.find((person) => person.id === personId);
 }
 
-function canTurnWolf(state: State, childId: string, alive: Set<string>, dying: Set<string>) {
+function canTurnWolf(state: State, childId: string, morning: Morning) {
   const child = personById(state, childId);
-  const turnedThisMorning = state.appliedChanges.some(
-    (change) => change.personId === childId && change.reason === ChangeReason.TurnedIntoWolf,
-  );
   const wasWolfAlready =
-    child !== undefined && hasStatus(child, PersonStatus.TurnedWolf) && !turnedThisMorning;
-  return isLiving(childId, alive, dying) && !wasWolfAlready;
+    child !== undefined &&
+    hasStatus(child, PersonStatus.TurnedWolf) &&
+    !wasAppliedThisMorning(state, childId, ChangeReason.TurnedIntoWolf);
+  return morning.isLiving(childId) && !wasWolfAlready;
 }

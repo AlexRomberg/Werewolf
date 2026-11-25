@@ -1,6 +1,6 @@
 import { Component, DOCUMENT, computed, inject, input, signal } from '@angular/core';
 import { LucideCheck, LucideShare2 } from '@lucide/angular';
-import { formatRoomCode } from '../../services/room-storage';
+import { formatRoomCode } from '../../services/room-code';
 import { QrCodeComponent } from '../qr-code/qr-code.component';
 
 @Component({

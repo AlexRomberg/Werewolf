@@ -1,3 +1,4 @@
+import { MAX_PLAYERS } from '@protocol';
 import { Character } from '../../models/character';
 
 export enum PersonStatus {
@@ -114,7 +115,7 @@ export const INITIAL_ROLE_STATE: RoleStates = {
 };
 
 export const INITIAL_SEATS = 5;
-export const MAX_SEATS = 20;
+export const MAX_SEATS = MAX_PLAYERS;
 
 export function hasStatus(person: Person, status: PersonStatus) {
   return person.statuses.includes(status);

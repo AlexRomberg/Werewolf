@@ -33,6 +33,10 @@ import { DividerComponent } from '../../../divider/divider.component';
 
 const VISIBLE_DEPTH = 3;
 const LIFT_BY_DEPTH = [0, 3.5, 5, 5.75];
+const SHRINK_PER_DEPTH = 0.03;
+const DIM_PER_DEPTH = 0.12;
+const TOP_LAYER = 40;
+const PASSED_CARD_TRANSFORM = 'translateX(130%)';
 
 export interface SpentAbility {
   ability: Ability;
@@ -135,10 +139,12 @@ export class NarrationPanelComponent {
         undoLabel: $localize`:@@narration.undoButton:Undo: ${button.label}:action:`,
       })),
       transform:
-        depth < 0 ? 'translateX(130%)' : `translateY(-${lift}rem) scale(${1 - depth * 0.03})`,
-      zIndex: 40 - depth,
+        depth < 0
+          ? PASSED_CARD_TRANSFORM
+          : `translateY(-${lift}rem) scale(${1 - depth * SHRINK_PER_DEPTH})`,
+      zIndex: TOP_LAYER - depth,
       opacity: depth < 0 ? 0 : 1,
-      filter: depth > 0 ? `brightness(${1 - depth * 0.12})` : 'none',
+      filter: depth > 0 ? `brightness(${1 - depth * DIM_PER_DEPTH})` : 'none',
       showsBody: depth <= 0,
       isCurrent,
     };

@@ -112,16 +112,13 @@ export class PeopleState {
 
   update(id: string, person: Person) {
     this.state.update((state) => {
-      const before = state.people.find((existing) => existing.id === id);
       const updated = {
         ...state,
         people: state.people.map((existing) => (existing.id === id ? person : existing)),
       };
-      const isNewWound =
-        hasStatus(person, PersonStatus.Wounded) &&
-        !!before &&
-        !hasStatus(before, PersonStatus.Wounded);
-      return isNewWound && isAtDaybreak(state) ? applyChange(updated, woundChange(id)) : updated;
+      return isWoundGivenAtDaybreak(state, id, person)
+        ? applyChange(updated, woundChange(id))
+        : updated;
     });
   }
 
@@ -162,6 +159,16 @@ export class PeopleState {
 
 export function createSeats(count: number): Person[] {
   return Array.from({ length: count }, createPerson);
+}
+
+function isWoundGivenAtDaybreak(state: State, id: string, person: Person) {
+  const before = state.people.find((existing) => existing.id === id);
+  return (
+    before !== undefined &&
+    !hasStatus(before, PersonStatus.Wounded) &&
+    hasStatus(person, PersonStatus.Wounded) &&
+    isAtDaybreak(state)
+  );
 }
 
 function createPerson(): Person {

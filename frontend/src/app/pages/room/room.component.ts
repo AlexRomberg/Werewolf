@@ -71,6 +71,7 @@ const NAME_SCHEMA = schema<{ name: string }>((path) => {
     LucideX,
   ],
   templateUrl: './room.component.html',
+  host: { '[attr.data-scrolls]': '(isAtTable() && isFaceUp()) || null' },
 })
 export class RoomComponent implements OnInit {
   private player = inject(RoomPlayerService);

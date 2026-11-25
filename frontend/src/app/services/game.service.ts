@@ -1,13 +1,13 @@
 import { DOCUMENT, Service, computed, effect, inject, signal } from '@angular/core';
 import { WEREWOLF } from '../models/characters';
-import { StoredValue } from './room-storage';
+import { StoredValue } from './stored-value';
 import { ActionState, beginNight } from './state/action-state';
 import { CharacterState } from './state/character-state';
 import { DaybreakState } from './state/daybreak-state';
 import { NightState } from './state/night-state';
 import { PeopleState, createSeats } from './state/people-state';
 import { fromSavedGame, isSavedGame, toSavedGame } from './state/saved-game';
-import { Ability, INITIAL_ROLE_STATE, INITIAL_SEATS, State } from './state/types';
+import { INITIAL_ROLE_STATE, INITIAL_SEATS, State } from './state/types';
 
 const UNPLAYED_GAME = {
   round: 0,
@@ -51,10 +51,6 @@ export class GameService {
       phase: 'setup',
       people: state.people.map((person) => ({ ...person, character: undefined, statuses: [] })),
     }));
-  }
-
-  resetAbility(ability: Ability) {
-    this.night.resetAbility(ability);
   }
 
   dealShuffled(random: () => number = Math.random) {

@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 
+@custom-variant standalone (@media (display-mode: standalone));
+
 @theme {
   --breakpoint-md: 45rem;
 
@@ -73,7 +75,7 @@
   body {
     @apply font-sans text-frost-200;
   }
-  :root:has(app-narrator, app-join, app-room:not([data-at-table])) {
+  :root:has(app-narrator, app-join, app-room:not([data-scrolls])) {
     overflow: hidden;
     overscroll-behavior: none;
   }
