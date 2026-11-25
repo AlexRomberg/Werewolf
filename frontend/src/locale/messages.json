@@ -47,7 +47,7 @@
     "changes.applyAll": " Apply all ",
     "changes.applyAllAndGoOn": " Apply all and go on ",
     "changes.brokenHeart": "{$name} died of a broken heart",
-    "changes.diesTonight": "Secret! Dies tonight",
+    "changes.diesNextNight": "Secret! Dies next night",
     "changes.guestOf": "Guest of {$cause}",
     "changes.healedBy": "Healed by {$cause}",
     "changes.hostNotKilledByWolves": "Host {$cause} did not die by the wolves",

@@ -47,7 +47,7 @@
     "changes.applyAll": "Alle übernehmen",
     "changes.applyAllAndGoOn": "Alle übernehmen und weiter",
     "changes.brokenHeart": "{$name} ist an gebrochenem Herzen gestorben",
-    "changes.diesTonight": "Geheim! Stirbt heute Nacht",
+    "changes.diesNextNight": "Geheim! Stirbt in der nächsten Nacht",
     "changes.guestOf": "Gast bei: {$cause}",
     "changes.healedBy": "Geheilt von: {$cause}",
     "changes.hostNotKilledByWolves": "Gastgeber ({$cause}) starb nicht durch die Wölfe",

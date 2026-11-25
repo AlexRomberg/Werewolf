@@ -121,7 +121,7 @@ function wording(change: DaybreakChange, name: string, cause: string) {
     case ChangeReason.WoundedByTheKnight:
       return {
         headline: $localize`:@@changes.woundedByTheKnight:${name}:name: was wounded by the Knight`,
-        note: $localize`:@@changes.diesTonight:Secret! Dies tonight`,
+        note: $localize`:@@changes.diesNextNight:Secret! Dies next night`,
       };
   }
 }
