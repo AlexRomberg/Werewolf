@@ -84,7 +84,7 @@ export function showMiddleCardsButton(context: NightContext): ActionButton | fal
   return (
     context.leftover.length > 0 && {
       kind: 'show-middle-cards',
-      label: $localize`:@@common.showMiddleCards:Show the middle cards`,
+      label: $localize`:@@common.showMiddleCards:Show the leftover cards`,
     }
   );
 }

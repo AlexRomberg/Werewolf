@@ -23,6 +23,7 @@ import {
 } from '@lucide/angular';
 import { NgOptimizedImage } from '@angular/common';
 import { ActionTone } from '../../models/actions/action';
+import type { Presence } from '../../services/room-host.service';
 import {
   Connection,
   ConnectionType,
@@ -50,6 +51,11 @@ const CONNECTION_LABELS: Record<ConnectionType, string> = {
   [ConnectionType.Love]: $localize`:@@connection.love:In love`,
   [ConnectionType.Trust]: $localize`:@@connection.trust:Role model`,
   [ConnectionType.Sleepover]: $localize`:@@connection.sleepover:Sleepover`,
+};
+
+const PRESENCE_LABELS: Record<Presence, string> = {
+  connected: $localize`:@@circle.phoneConnected:Phone connected`,
+  disconnected: $localize`:@@circle.phoneDisconnected:Phone disconnected`,
 };
 
 const BADGE_TONES: Record<PersonBadge, ActionTone> = {
@@ -99,6 +105,7 @@ export class CircleComponent {
   public selectedPersonId = input<string | null>(null);
   public selection = input<CircleSelection | null>(null);
   public connections = input<readonly Connection[]>([]);
+  public presence = input<ReadonlyMap<string, Presence>>(new Map());
 
   public personSelected = output<string>();
   public personRemoved = output<string>();
@@ -125,10 +132,12 @@ export class CircleComponent {
     const drag = this.drag();
     const selectedPersonId = this.selectedPersonId();
     const selection = this.selection();
+    const presence = this.presence();
 
     const order = drag ? movedOrder(people, drag.id, drag.toIndex) : people.map(({ id }) => id);
     const angleStep = ARC_ANGLE / people.length;
     return people.map((person) => {
+      const personPresence = presence.get(person.id);
       const dragging = drag?.id === person.id;
       const angle = dragging
         ? drag.angle
@@ -139,7 +148,8 @@ export class CircleComponent {
         dragging,
         selected: !selection && person.id === selectedPersonId,
         pick: selection ? pickStateOf(person.id, selection) : null,
-        label: ariaLabelOf(person),
+        label: ariaLabelOf(person, personPresence),
+        presence: personPresence,
         removeLabel: $localize`:@@circle.removePerson:Remove ${person.displayName}:person:`,
         badges: person.badges.map((badge) => ({
           kind: badge,
@@ -286,10 +296,11 @@ function seatPoint(angle: number): Point {
   return { x: CENTER + RADIUS * Math.cos(radians), y: CENTER + RADIUS * Math.sin(radians) };
 }
 
-function ariaLabelOf(person: PersonView) {
+function ariaLabelOf(person: PersonView, presence: Presence | undefined) {
   return [
     person.displayName,
     person.character?.name,
+    presence && PRESENCE_LABELS[presence],
     person.isDead && STATUS_LABELS.dead,
     ...person.badges.map((badge) => STATUS_LABELS[badge]),
   ]

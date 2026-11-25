@@ -31,7 +31,8 @@ export type JoinRefusal =
 
 export type JoinResult = { ok: true } | { ok: false; reason: JoinRefusal };
 
-export type ResumeResult = { ok: true; playerIds: string[] } | { ok: false };
+export type ResumeResult =
+  { ok: true; playerIds: string[]; disconnectedPlayerIds: string[] } | { ok: false };
 
 export type LinkType = 'love' | 'trust' | 'sleepover';
 
@@ -64,6 +65,7 @@ export interface ClientToServerEvents {
 export interface ServerToClientEvents {
   'player:joined': (player: RoomPlayer, answer: (result: JoinResult) => void) => void;
   'player:left': (playerId: string) => void;
+  'player:disconnected': (playerId: string) => void;
   'player:renamed': (playerId: string, name: string) => void;
   'player:dealt': (card: PlayerCard) => void;
   'player:kicked': () => void;

@@ -55,6 +55,7 @@
       [selectedPersonId]="selectedPersonId()"
       [selection]="circleSelection()"
       [connections]="connections()"
+      [presence]="presenceByPersonId()"
       (personSelected)="selectPerson($event)"
       (selectionClosed)="closeSelection()"
       (pickConfirmed)="confirmPick()"
@@ -95,11 +96,11 @@
         <button
           circleCenter
           class="flex cursor-pointer flex-col items-center gap-2 rounded-surface p-1 text-frost-400 hover:bg-night-900/80 hover:text-frost-50"
-          aria-label="Show the middle cards"
+          aria-label="Show the leftover cards"
           i18n-aria-label="@@common.showMiddleCards"
           (click)="showingMiddleCards.set(true)"
         >
-          <span class="text-sm" i18n="@@narrator.middleCards">In the middle</span>
+          <span class="text-sm" i18n="@@narrator.middleCards">Leftover cards</span>
           <span class="flex max-w-[50cqw] flex-wrap justify-center gap-1.5">
             @for (middleCard of middleCards(); track $index) {
               <span

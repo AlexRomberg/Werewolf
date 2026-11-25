@@ -54,6 +54,14 @@
     transform: translateY(var(--shift));
   }
 
+  .presence {
+    @apply size-2.5 shrink-0 rounded-full bg-online;
+  }
+
+  .presence[data-presence='disconnected'] {
+    @apply border-2 border-frost-500 bg-transparent;
+  }
+
   .connection-swatch {
     background: var(--connection);
   }

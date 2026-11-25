@@ -43,7 +43,7 @@ describe('Thief', () => {
 
   it('should only offer the swap, unless both middle cards are werewolves', () => {
     expect(character.getActions(seated(0, 1))).toContain(
-      'May swap their card for one of the two middle cards (must, if both are werewolves)',
+      'May swap their card for one of the two leftover cards (must, if both are werewolves)',
     );
   });
 
@@ -51,7 +51,7 @@ describe('Thief', () => {
     const known = seated(0, 1, { leftover: [WEREWOLF, VILLAGER] });
 
     expect(character.getActions(known)).toContain(
-      'Middle cards: The Simple Werewolf, The Simple Villager',
+      'Leftover cards: The Simple Werewolf, The Simple Villager',
     );
     expect(
       character.getActions(seated(0, 1)).some((line) => line && line.startsWith('Middle')),

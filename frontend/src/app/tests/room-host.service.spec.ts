@@ -135,10 +135,36 @@ describe('RoomHostService', () => {
     expect(vacated).toEqual([]);
   });
 
+  it('should show the phone of a seated player as connected, and none for other seats', () => {
+    join('player-1');
+
+    expect(host.presenceByPersonId()).toEqual(new Map([['seat-1', 'connected']]));
+  });
+
+  it('should show a phone as disconnected until its player asks for their seat again', () => {
+    join('player-1');
+    socket.trigger('player:disconnected', 'player-1');
+    expect(host.presenceByPersonId().get('seat-1')).toBe('disconnected');
+
+    join('player-1');
+    expect(host.presenceByPersonId().get('seat-1')).toBe('connected');
+  });
+
+  it('should forget the phone of a player who left for good', () => {
+    join('player-1');
+    socket.trigger('player:left', 'player-1');
+
+    expect(host.presenceByPersonId().size).toBe(0);
+  });
+
   describe('when the connection drops', () => {
     beforeEach(() => {
       join('player-1');
-      socket.answers.set('room:resume', { ok: true, playerIds: ['player-1'] });
+      socket.answers.set('room:resume', {
+        ok: true,
+        playerIds: ['player-1'],
+        disconnectedPlayerIds: [],
+      });
       socket.drop();
     });
 
@@ -146,6 +172,16 @@ describe('RoomHostService', () => {
       expect(host.isConnected()).toBe(false);
       expect(host.code()).toBe(SESSION.code);
       expect(vacated).toEqual([]);
+    });
+
+    it('should show every phone as disconnected while it is down', () => {
+      expect(host.presenceByPersonId().get('seat-1')).toBe('disconnected');
+    });
+
+    it('should show the phones as the server knows them once it is back', async () => {
+      await socket.connect();
+
+      expect(host.presenceByPersonId().get('seat-1')).toBe('connected');
     });
 
     it('should take the same room back on reconnect', async () => {
@@ -158,7 +194,7 @@ describe('RoomHostService', () => {
     });
 
     it('should let go of the players who left meanwhile', async () => {
-      socket.answers.set('room:resume', { ok: true, playerIds: [] });
+      socket.answers.set('room:resume', { ok: true, playerIds: [], disconnectedPlayerIds: [] });
       await socket.connect();
 
       expect(vacated).toEqual(['seat-1']);
@@ -174,7 +210,7 @@ describe('RoomHostService', () => {
     });
   });
 
-  async function reload(playerIds: string[]) {
+  async function reload(playerIds: string[], disconnectedPlayerIds: string[] = []) {
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({
       providers: [{ provide: CONNECT_TO_ROOM_SERVER, useValue: newSocket }],
@@ -183,7 +219,7 @@ describe('RoomHostService', () => {
     expect(reloaded.hasRoomToResume()).toBe(true);
 
     reloaded.open(seating);
-    socket.answers.set('room:resume', { ok: true, playerIds });
+    socket.answers.set('room:resume', { ok: true, playerIds, disconnectedPlayerIds });
     await socket.connect();
     await settle();
     return reloaded;
@@ -210,6 +246,13 @@ describe('RoomHostService', () => {
     await reload([]);
 
     expect(vacated).toEqual(['seat-1']);
+  });
+
+  it('should show which phones dropped while the page was reloading', async () => {
+    join('player-1');
+    const reloaded = await reload(['player-1'], ['player-1']);
+
+    expect(reloaded.presenceByPersonId()).toEqual(new Map([['seat-1', 'disconnected']]));
   });
 
   it('should close the room for good, and forget it', () => {

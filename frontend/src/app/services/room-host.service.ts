@@ -5,6 +5,8 @@ import { StoredValue } from './stored-value';
 
 export type SeatResult = { personId: string } | { refused: 'room_full' | 'room_locked' };
 
+export type Presence = 'connected' | 'disconnected';
+
 export interface RoomSeating {
   seat(name: string): SeatResult;
   hasSeat(personId: string): boolean;
@@ -29,17 +31,30 @@ export class RoomHostService {
 
   private socket: RoomSocket | null = null;
   private seating: RoomSeating | null = null;
-  private readonly personIdByPlayerId = new Map(Object.entries(this.storedSeats.read() ?? {}));
   private cards: ReadonlyMap<string, PlayerCard> = new Map();
   private readonly dealtCardByPlayerId = new Map<string, string>();
 
   private readonly hosting = signal(false);
   private readonly connected = signal(false);
   private readonly session = signal<HostSession | null>(this.storedSession.read());
+  private readonly personIdByPlayerId = signal<ReadonlyMap<string, string>>(
+    new Map(Object.entries(this.storedSeats.read() ?? {})),
+  );
+  private readonly disconnectedPlayerIds = signal<ReadonlySet<string>>(new Set());
 
   readonly isHosting = this.hosting.asReadonly();
   readonly isConnected = this.connected.asReadonly();
   readonly code = computed(() => this.session()?.code ?? null);
+  readonly presenceByPersonId = computed<ReadonlyMap<string, Presence>>(() => {
+    const isConnected = this.connected();
+    const disconnected = this.disconnectedPlayerIds();
+    return new Map(
+      [...this.personIdByPlayerId()].map(([playerId, personId]) => [
+        personId,
+        isConnected && !disconnected.has(playerId) ? 'connected' : 'disconnected',
+      ]),
+    );
+  });
 
   hasRoomToResume() {
     return this.session() !== null;
@@ -55,8 +70,11 @@ export class RoomHostService {
     socket.on('disconnect', () => this.connected.set(false));
     socket.on('player:joined', (player, answer) => answer(this.seat(player)));
     socket.on('player:left', (playerId) => this.vacate(playerId));
+    socket.on('player:disconnected', (playerId) =>
+      this.disconnectedPlayerIds.update((ids) => new Set(ids).add(playerId)),
+    );
     socket.on('player:renamed', (playerId, name) => {
-      const personId = this.personIdByPlayerId.get(playerId);
+      const personId = this.personIdByPlayerId().get(playerId);
       if (personId) {
         this.seating?.rename(personId, name);
       }
@@ -80,7 +98,7 @@ export class RoomHostService {
 
   deal(cardsByPersonId: ReadonlyMap<string, PlayerCard>) {
     this.cards = cardsByPersonId;
-    this.personIdByPlayerId.forEach((_, playerId) => this.dealTo(playerId));
+    this.personIdByPlayerId().forEach((_, playerId) => this.dealTo(playerId));
   }
 
   kick(personId: string) {
@@ -100,6 +118,7 @@ export class RoomHostService {
       }
       if (resumed.ok) {
         this.letGoOfPlayersOtherThan(resumed.playerIds);
+        this.disconnectedPlayerIds.set(new Set(resumed.disconnectedPlayerIds));
         this.connected.set(true);
         return;
       }
@@ -120,7 +139,8 @@ export class RoomHostService {
       return { ok: false, reason: 'room_locked' };
     }
 
-    const knownSeat = this.personIdByPlayerId.get(id);
+    this.disconnectedPlayerIds.update((ids) => new Set([...ids].filter((other) => other !== id)));
+    const knownSeat = this.personIdByPlayerId().get(id);
     if (knownSeat && seating.hasSeat(knownSeat)) {
       this.dealtCardByPlayerId.delete(id);
       this.dealTo(id);
@@ -132,14 +152,13 @@ export class RoomHostService {
       return { ok: false, reason: result.refused };
     }
 
-    this.personIdByPlayerId.set(id, result.personId);
-    this.saveSeats();
+    this.setSeats(new Map(this.personIdByPlayerId()).set(id, result.personId));
     this.dealTo(id);
     return { ok: true };
   }
 
   private dealTo(playerId: string) {
-    const card = this.cards.get(this.personIdByPlayerId.get(playerId) ?? '');
+    const card = this.cards.get(this.personIdByPlayerId().get(playerId) ?? '');
     const serialized = JSON.stringify(card);
     if (!card || this.dealtCardByPlayerId.get(playerId) === serialized) {
       return;
@@ -150,17 +169,17 @@ export class RoomHostService {
   }
 
   private letGoOfPlayersOtherThan(playerIds: readonly string[]) {
-    [...this.personIdByPlayerId.keys()]
+    [...this.personIdByPlayerId().keys()]
       .filter((playerId) => !playerIds.includes(playerId))
       .forEach((playerId) => this.vacate(playerId));
   }
 
   private vacateAll() {
-    [...this.personIdByPlayerId.keys()].forEach((playerId) => this.vacate(playerId));
+    [...this.personIdByPlayerId().keys()].forEach((playerId) => this.vacate(playerId));
   }
 
   private vacate(playerId: string) {
-    const personId = this.personIdByPlayerId.get(playerId);
+    const personId = this.personIdByPlayerId().get(playerId);
     this.forgetPlayer(playerId);
     if (personId) {
       this.seating?.vacate(personId);
@@ -168,17 +187,19 @@ export class RoomHostService {
   }
 
   private forgetPlayer(playerId: string) {
-    this.personIdByPlayerId.delete(playerId);
-    this.saveSeats();
+    const seats = new Map(this.personIdByPlayerId());
+    seats.delete(playerId);
+    this.setSeats(seats);
     this.dealtCardByPlayerId.delete(playerId);
   }
 
-  private saveSeats() {
-    this.storedSeats.write(Object.fromEntries(this.personIdByPlayerId));
+  private playerIn(personId: string) {
+    return [...this.personIdByPlayerId()].find(([, seatedId]) => seatedId === personId)?.[0];
   }
 
-  private playerIn(personId: string) {
-    return [...this.personIdByPlayerId].find(([, seatedId]) => seatedId === personId)?.[0];
+  private setSeats(personIdByPlayerId: ReadonlyMap<string, string>) {
+    this.personIdByPlayerId.set(personIdByPlayerId);
+    this.storedSeats.write(Object.fromEntries(personIdByPlayerId));
   }
 
   private setSession(session: HostSession | null) {

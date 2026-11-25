@@ -621,7 +621,7 @@ describe('NarratorComponent, picking players on the circle', () => {
 
     it('should lay the cards nobody holds in the middle of the table for the narrator', async () => {
       const middle = () =>
-        [...page().querySelectorAll('app-circle [aria-label="Show the middle cards"] img')].map(
+        [...page().querySelectorAll('app-circle [aria-label="Show the leftover cards"] img')].map(
           (image) => image.getAttribute('alt'),
         );
       await playUntil('night', 'thief');
@@ -649,7 +649,7 @@ describe('NarratorComponent, picking players on the circle', () => {
 
       const onTheNightCard = [
         ...page().querySelectorAll<HTMLButtonElement>('app-narration-panel button'),
-      ].find((button) => button.textContent?.trim() === 'Show the middle cards');
+      ].find((button) => button.textContent?.trim() === 'Show the leftover cards');
       await click(onTheNightCard);
 
       expect(dialogCards()).toEqual(names);
@@ -663,7 +663,9 @@ describe('NarratorComponent, picking players on the circle', () => {
       expect(dialogCards()).toEqual([]);
 
       await click(
-        page().querySelector<HTMLButtonElement>('app-circle [aria-label="Show the middle cards"]')!,
+        page().querySelector<HTMLButtonElement>(
+          'app-circle [aria-label="Show the leftover cards"]',
+        )!,
       );
 
       expect(dialogCards()).toEqual(names);

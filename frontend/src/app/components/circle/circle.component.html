@@ -98,13 +98,20 @@
               [class.shake]="!placed.dragging && editMode()"
               [style.animationDelay]="-$index + 's'"
             >
-              @if (placed.person.name) {
+              @if (placed.person.name || placed.presence) {
                 <span
-                  class="absolute block max-w-24 truncate rounded-control bg-night-950/90 px-1.5 py-0.5 font-display text-sm text-frost-200"
+                  class="absolute flex max-w-24 items-center gap-1.5 rounded-control bg-night-950/90 px-1.5 py-0.5 font-display text-sm text-frost-200"
                   [class.translate-x-9]="!placed.nameAbove"
                   [class.-translate-y-14]="placed.nameAbove"
                 >
-                  {{ placed.person.name }}
+                  <span class="truncate">{{ placed.person.name }}</span>
+                  @if (placed.presence) {
+                    <span
+                      class="presence"
+                      [attr.data-presence]="placed.presence"
+                      aria-hidden="true"
+                    ></span>
+                  }
                 </span>
               }
               <div class="absolute -translate-x-1/2 -translate-y-1/2">

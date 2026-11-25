@@ -79,7 +79,13 @@ io.on('connection', (socket: RoomSocket) => {
     clearTimeout(room.closeTimer);
     socket.data.hostedCode = room.code;
     io.to(room.code).emit('host:back');
-    answer({ ok: true, playerIds: [...room.players.keys()] });
+    answer({
+      ok: true,
+      playerIds: [...room.players.keys()],
+      disconnectedPlayerIds: [...room.players]
+        .filter(([, member]) => member.socketId === null)
+        .map(([playerId]) => playerId),
+    });
   });
 
   socket.on('room:close', () => closeRoom(hostedRoom(socket)));
@@ -149,6 +155,7 @@ io.on('connection', (socket: RoomSocket) => {
     const member = playerId ? room?.players.get(playerId) : undefined;
     if (room && playerId && member?.socketId === socket.id) {
       member.socketId = null;
+      hostOf(room)?.emit('player:disconnected', playerId);
       member.leaveTimer = setTimeout(() => {
         room.players.delete(playerId);
         hostOf(room)?.emit('player:left', playerId);

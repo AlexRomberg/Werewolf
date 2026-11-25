@@ -140,6 +140,7 @@ export class NarratorComponent {
   protected isHostingRoom = this.roomHost.isHosting;
   protected isRoomConnected = this.roomHost.isConnected;
   protected roomCode = this.roomHost.code;
+  protected presenceByPersonId = this.roomHost.presenceByPersonId;
   protected confirmingDeal = signal(false);
 
   private readonly seating: RoomSeating = {

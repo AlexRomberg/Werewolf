@@ -430,7 +430,7 @@ describe('ActionState', () => {
       const villagers = 'The Simple Villager, The Simple Villager';
 
       expect(cardOf('rules')?.actions).toContain(`Not dealt: ${villagers}`);
-      expect(cardOf('thief')?.actions).toContain(`Middle cards: ${villagers}`);
+      expect(cardOf('thief')?.actions).toContain(`Leftover cards: ${villagers}`);
     });
 
     it('should not name undealt cards while seats are still empty', () => {

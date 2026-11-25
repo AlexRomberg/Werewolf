@@ -108,7 +108,7 @@
 
       @if (isFaceUp() && middleCards().length > 0) {
         <div class="flex flex-col items-center gap-3" role="group" aria-labelledby="middle-cards">
-          <h2 id="middle-cards" class="text-xl" i18n="@@room.middleCards">Cards in the middle</h2>
+          <h2 id="middle-cards" class="text-xl" i18n="@@room.middleCards">Leftover cards</h2>
           <ul class="flex flex-wrap justify-center gap-4">
             @for (middleCard of middleCards(); track $index) {
               <li class="flex w-24 flex-col items-center gap-2 text-center">
