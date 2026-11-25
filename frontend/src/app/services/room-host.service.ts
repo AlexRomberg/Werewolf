@@ -15,15 +15,21 @@ export interface RoomSeating {
 @Service()
 export class RoomHostService {
   private readonly connectToRoomServer = inject(CONNECT_TO_ROOM_SERVER);
+  private readonly sessionStorage = inject(DOCUMENT).defaultView?.sessionStorage;
   private readonly storedSession = new StoredValue<HostSession>(
-    inject(DOCUMENT).defaultView?.sessionStorage,
+    this.sessionStorage,
     'werewolf:host-session',
     isHostSession,
+  );
+  private readonly storedSeats = new StoredValue<Record<string, string>>(
+    this.sessionStorage,
+    'werewolf:host-seats',
+    isSeatMap,
   );
 
   private socket: RoomSocket | null = null;
   private seating: RoomSeating | null = null;
-  private readonly personIdByPlayerId = new Map<string, string>();
+  private readonly personIdByPlayerId = new Map(Object.entries(this.storedSeats.read() ?? {}));
   private cards: ReadonlyMap<string, PlayerCard> = new Map();
   private readonly dealtCardByPlayerId = new Map<string, string>();
 
@@ -127,6 +133,7 @@ export class RoomHostService {
     }
 
     this.personIdByPlayerId.set(id, result.personId);
+    this.saveSeats();
     this.dealTo(id);
     return { ok: true };
   }
@@ -162,7 +169,12 @@ export class RoomHostService {
 
   private forgetPlayer(playerId: string) {
     this.personIdByPlayerId.delete(playerId);
+    this.saveSeats();
     this.dealtCardByPlayerId.delete(playerId);
+  }
+
+  private saveSeats() {
+    this.storedSeats.write(Object.fromEntries(this.personIdByPlayerId));
   }
 
   private playerIn(personId: string) {
@@ -182,4 +194,13 @@ export class RoomHostService {
 function isHostSession(value: unknown): value is HostSession {
   const { code, hostKey } = (value ?? {}) as Partial<Record<keyof HostSession, unknown>>;
   return typeof code === 'string' && typeof hostKey === 'string';
+}
+
+function isSeatMap(value: unknown): value is Record<string, string> {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    !Array.isArray(value) &&
+    Object.values(value).every((personId) => typeof personId === 'string')
+  );
 }

@@ -174,7 +174,7 @@ describe('RoomHostService', () => {
     });
   });
 
-  it('should take back the room this tab hosted before a reload', async () => {
+  async function reload(playerIds: string[]) {
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({
       providers: [{ provide: CONNECT_TO_ROOM_SERVER, useValue: newSocket }],
@@ -183,12 +183,33 @@ describe('RoomHostService', () => {
     expect(reloaded.hasRoomToResume()).toBe(true);
 
     reloaded.open(seating);
-    socket.answers.set('room:resume', { ok: true, playerIds: [] });
+    socket.answers.set('room:resume', { ok: true, playerIds });
     await socket.connect();
     await settle();
+    return reloaded;
+  }
+
+  it('should take back the room this tab hosted before a reload', async () => {
+    const reloaded = await reload([]);
 
     expect(socket.emittedOf('room:resume')).toEqual([[SESSION]]);
     expect(reloaded.code()).toBe(SESSION.code);
+  });
+
+  it('should give players their own seats back after a reload, even once seating is closed', async () => {
+    join('player-1');
+    seatResult = { refused: 'room_locked' };
+    await reload(['player-1']);
+
+    expect(join('player-1')).toEqual({ ok: true });
+    expect(vacated).toEqual([]);
+  });
+
+  it('should let go of the players who left while the page was reloading', async () => {
+    join('player-1');
+    await reload([]);
+
+    expect(vacated).toEqual(['seat-1']);
   });
 
   it('should close the room for good, and forget it', () => {
