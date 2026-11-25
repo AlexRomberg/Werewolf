@@ -1,11 +1,22 @@
 <app-landscape />
+<div
+  class="pointer-events-none fixed inset-x-0 top-0 z-10 h-3 bg-night-950"
+  aria-hidden="true"
+></div>
 <main
-  class="mx-auto flex min-h-svh w-full flex-col px-6"
+  class="mx-auto flex min-h-dvh w-full flex-col px-6"
   [class.max-w-sm]="!isAtTable()"
   [class.max-w-md]="isAtTable()"
 >
   @if (isAtTable()) {
     <header class="flex h-14 items-center justify-between gap-3 pt-2 text-sm text-frost-400">
+      <button
+        class="flex shrink-0 cursor-pointer items-center gap-1.5 rounded-control px-3 py-1.5 hover:bg-night-800 hover:text-frost-50"
+        (click)="leaveRoom()"
+      >
+        <svg lucideChevronLeft size="16"></svg>
+        <ng-container i18n="@@room.leave">Leave</ng-container>
+      </button>
       @if (isRenaming()) {
         <form class="flex min-w-0 items-center gap-1" (submit)="rename($event)">
           <input
@@ -46,13 +57,6 @@
           <svg lucidePencil size="14" class="shrink-0 opacity-50 group-hover:opacity-100"></svg>
         </button>
       }
-      <button
-        class="flex shrink-0 cursor-pointer items-center gap-1.5 rounded-control px-3 py-1.5 hover:bg-night-800 hover:text-frost-50"
-        (click)="leaveRoom()"
-      >
-        <svg lucideChevronLeft size="16"></svg>
-        <ng-container i18n="@@room.leave">Leave</ng-container>
-      </button>
     </header>
 
     @if (status() !== 'joined') {
@@ -68,7 +72,7 @@
     }
 
     <section
-      class="flex min-h-[calc(100svh-3.5rem)] flex-col items-center justify-center gap-6 py-6"
+      class="flex min-h-[calc(100svh-3.5rem)] standalone:min-h-[calc(100dvh-3.5rem)] flex-col items-center justify-center gap-6 py-6"
     >
       <div class="flex h-20 flex-col items-center justify-end text-center" aria-live="polite">
         @if (isFaceUp() && character(); as character) {
@@ -159,7 +163,7 @@
   } @else {
     @switch (status()) {
       @case ('joining') {
-        <div class="flex min-h-svh flex-col items-center justify-center gap-4" role="status">
+        <div class="flex min-h-dvh flex-col items-center justify-center gap-4" role="status">
           <img
             class="size-20 animate-pulse rounded-[1.25rem] opacity-70"
             ngSrc="img/night.webp"
@@ -173,7 +177,7 @@
 
       @case ('kicked') {
         <div
-          class="flex min-h-svh flex-col items-center justify-center gap-6 text-center"
+          class="flex min-h-dvh flex-col items-center justify-center gap-6 text-center"
           role="status"
         >
           <h1 class="text-3xl" i18n="@@room.kicked">The narrator took you off the table.</h1>
@@ -185,7 +189,7 @@
 
       @case ('moved') {
         <div
-          class="flex min-h-svh flex-col items-center justify-center gap-6 text-center"
+          class="flex min-h-dvh flex-col items-center justify-center gap-6 text-center"
           role="status"
         >
           <h1 class="text-3xl" i18n="@@room.moved">Your card is open on another device.</h1>
@@ -197,7 +201,7 @@
 
       @case ('room_closed') {
         <div
-          class="flex min-h-svh flex-col items-center justify-center gap-6 text-center"
+          class="flex min-h-dvh flex-col items-center justify-center gap-6 text-center"
           role="status"
         >
           <h1 class="text-3xl" i18n="@@room.closed">The narrator closed the room.</h1>
@@ -208,7 +212,7 @@
       }
 
       @default {
-        <div class="flex min-h-svh flex-col pb-40">
+        <div class="flex min-h-dvh flex-col pb-40">
           <div class="my-auto flex flex-col gap-8">
             <header class="flex flex-col gap-2">
               <div class="-ml-3 flex items-center gap-1">

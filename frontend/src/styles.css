@@ -73,6 +73,10 @@
   body {
     @apply font-sans text-frost-200;
   }
+  :root:has(app-narrator, app-join, app-room:not([data-at-table])) {
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
   h1,
   h2,
   h3 {

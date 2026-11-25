@@ -1,14 +1,14 @@
 <dialog
   appModal
   #modal="appModal"
-  class="surface m-auto w-[min(34rem,calc(100vw-2rem))] p-7 text-frost-200 shadow-2xl shadow-black/60 open:flex open:flex-col max-md:mb-0 max-md:h-[calc(100svh-1.5rem)] max-md:max-h-none max-md:w-full max-md:max-w-none max-md:rounded-b-none max-md:border-b-0 max-md:px-5 max-md:pb-[max(1.25rem,env(safe-area-inset-bottom))]"
+  class="surface m-auto w-[min(34rem,calc(100vw-2rem))] p-7 text-frost-200 shadow-2xl shadow-black/60 open:flex open:flex-col max-md:mb-0 max-md:h-[calc(100dvh-1.5rem)] max-md:max-h-none max-md:w-full max-md:max-w-none max-md:rounded-b-none max-md:border-b-0 max-md:px-5 max-md:pb-[max(1.25rem,env(safe-area-inset-bottom))]"
   aria-labelledby="changes-dialog-title"
   (closed)="closed.emit()"
 >
   <app-corners class="max-md:hidden" />
   <h1 id="changes-dialog-title" class="text-3xl" i18n="@@changes.title">This morning</h1>
 
-  <div class="mt-4 flex min-h-0 flex-1 flex-col overflow-y-auto md:max-h-[60svh]">
+  <div class="-mx-1 mt-4 flex min-h-0 flex-1 flex-col overflow-y-auto px-1 md:max-h-[60svh]">
     @if (deaths().length) {
       <ul class="flex flex-col" data-deaths>
         @for (entry of deaths(); track entry.key) {
