@@ -3,6 +3,7 @@ export const ROOM_CODE_PATTERN = new RegExp(`^\\d{${ROOM_CODE_LENGTH}}$`);
 export const MAX_NAME_LENGTH = 30;
 export const MAX_PLAYERS = 20;
 export const KEY_PATTERN = /^[A-Za-z0-9_-]{22,64}$/;
+export const SECRET_KEY_BYTES = 24;
 
 export interface HostSession {
   code: string;

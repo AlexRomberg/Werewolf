@@ -7,10 +7,12 @@ import {
   ROOM_CODE_PATTERN,
   type ClientToServerEvents,
   type HostSession,
+  type JoinRequest,
   type JoinResult,
+  type RoomPlayer,
   type ServerToClientEvents,
 } from './protocol.ts';
-import { Rooms, type Room } from './rooms.ts';
+import { Rooms, type Room, type RoomMember } from './rooms.ts';
 import { Throttle } from './throttle.ts';
 
 const PORT = Number(process.env['PORT'] ?? 3000);
@@ -18,6 +20,9 @@ const HOST_ANSWER_TIMEOUT_MS = 5_000;
 const HOST_GRACE_MS = 15 * 60_000;
 const PLAYER_GRACE_MS = 10 * 60_000;
 const MAX_MESSAGE_BYTES = 16 * 1024;
+const THROTTLE_WINDOW_MS = 60_000;
+const JOIN_ATTEMPTS_PER_WINDOW = 10;
+const ROOM_ATTEMPTS_PER_WINDOW = 5;
 
 interface SocketData {
   hostedCode?: string;
@@ -39,8 +44,8 @@ const io = new Server<ClientToServerEvents, ServerToClientEvents, never, SocketD
 });
 
 io.on('connection', (socket: RoomSocket) => {
-  socket.data.joinThrottle = new Throttle(10, 60_000);
-  socket.data.roomThrottle = new Throttle(5, 60_000);
+  socket.data.joinThrottle = new Throttle(JOIN_ATTEMPTS_PER_WINDOW, THROTTLE_WINDOW_MS);
+  socket.data.roomThrottle = new Throttle(ROOM_ATTEMPTS_PER_WINDOW, THROTTLE_WINDOW_MS);
 
   socket.on('room:create', (answer) => {
     if (typeof answer !== 'function') {
@@ -105,11 +110,11 @@ io.on('connection', (socket: RoomSocket) => {
       return;
     }
 
-    const result = await join(socket, request);
+    const reply = await join(socket, request);
     console.log(
-      `Join of room ${socket.data.joinedCode ?? '-'}: ${result.ok ? 'seated' : result.reason}`,
+      `Join of room ${socket.data.joinedCode ?? '-'}: ${reply.ok ? 'seated' : reply.reason}`,
     );
-    answer(result);
+    answer(reply);
   });
 
   socket.on('room:leave', () => {
@@ -157,18 +162,12 @@ async function join(socket: RoomSocket, request: unknown): Promise<JoinResult> {
     return { ok: false, reason: 'too_many_attempts' };
   }
 
-  const { code, playerId, name } = (request ?? {}) as Record<string, unknown>;
-  const cleanName = cleanedName(name);
-  if (
-    typeof code !== 'string' ||
-    !ROOM_CODE_PATTERN.test(code) ||
-    typeof playerId !== 'string' ||
-    !KEY_PATTERN.test(playerId) ||
-    !cleanName
-  ) {
+  const joinRequest = parseJoinRequest(request);
+  if (!joinRequest) {
     return { ok: false, reason: 'invalid_request' };
   }
 
+  const { code, playerId, name } = joinRequest;
   const room = rooms.get(code);
   if (!room) {
     return { ok: false, reason: 'room_not_found' };
@@ -179,21 +178,9 @@ async function join(socket: RoomSocket, request: unknown): Promise<JoinResult> {
     return { ok: false, reason: 'room_full' };
   }
 
-  if (socket.data.joinedCode !== code || socket.data.playerId !== playerId) {
-    forgetMembership(socket);
-  }
-  socket.join(code);
-  socket.data.joinedCode = code;
-  socket.data.playerId = playerId;
-
+  enterRoom(socket, code, playerId);
   if (known) {
-    const previousSocket = socketById(known.socketId);
-    if (previousSocket && previousSocket !== socket) {
-      previousSocket.emit('player:moved');
-      forgetMembership(previousSocket);
-    }
-    clearTimeout(known.leaveTimer);
-    known.socketId = socket.id;
+    moveToSocket(known, socket);
   }
 
   const host = hostOf(room);
@@ -202,21 +189,54 @@ async function join(socket: RoomSocket, request: unknown): Promise<JoinResult> {
   }
 
   room.players.set(playerId, known ?? { socketId: socket.id });
-
-  let result: JoinResult;
-  try {
-    result = await host
-      .timeout(HOST_ANSWER_TIMEOUT_MS)
-      .emitWithAck('player:joined', { id: playerId, name: cleanName });
-  } catch {
-    result = { ok: false, reason: 'host_away' };
-  }
-
-  if (!result.ok && result.reason !== 'host_away') {
+  const reply = await askHost(host, { id: playerId, name });
+  if (!reply.ok && reply.reason !== 'host_away') {
     room.players.delete(playerId);
     forgetMembership(socket);
   }
-  return result;
+  return reply;
+}
+
+function parseJoinRequest(request: unknown): JoinRequest | null {
+  const { code, playerId, name } = (request ?? {}) as Record<string, unknown>;
+  const cleanName = cleanedName(name);
+  if (
+    typeof code !== 'string' ||
+    !ROOM_CODE_PATTERN.test(code) ||
+    typeof playerId !== 'string' ||
+    !KEY_PATTERN.test(playerId) ||
+    !cleanName
+  ) {
+    return null;
+  }
+  return { code, playerId, name: cleanName };
+}
+
+function enterRoom(socket: RoomSocket, code: string, playerId: string) {
+  if (socket.data.joinedCode !== code || socket.data.playerId !== playerId) {
+    forgetMembership(socket);
+  }
+  socket.join(code);
+  socket.data.joinedCode = code;
+  socket.data.playerId = playerId;
+}
+
+function moveToSocket(member: RoomMember, socket: RoomSocket) {
+  const previousSocket = socketById(member.socketId);
+  if (previousSocket && previousSocket !== socket) {
+    previousSocket.emit('player:moved');
+    forgetMembership(previousSocket);
+  }
+  clearTimeout(member.leaveTimer);
+  member.socketId = socket.id;
+}
+
+async function askHost(host: RoomSocket, player: RoomPlayer): Promise<JoinResult> {
+  try {
+    return await host.timeout(HOST_ANSWER_TIMEOUT_MS).emitWithAck('player:joined', player);
+  } catch {
+    return { ok: false, reason: 'host_away' };
+  }
 }
 
 function closeRoom(room: Room | undefined) {

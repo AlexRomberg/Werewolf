@@ -1,5 +1,5 @@
 import { randomBytes, randomInt, timingSafeEqual } from 'node:crypto';
-import { ROOM_CODE_LENGTH, type HostSession } from './protocol.ts';
+import { ROOM_CODE_LENGTH, SECRET_KEY_BYTES, type HostSession } from './protocol.ts';
 
 const SMALLEST_CODE = 10 ** (ROOM_CODE_LENGTH - 1);
 const LARGEST_CODE = 10 ** ROOM_CODE_LENGTH - 1;
@@ -33,7 +33,7 @@ export class Rooms {
 
     const room: Room = {
       code,
-      hostKey: randomBytes(24).toString('base64url'),
+      hostKey: randomBytes(SECRET_KEY_BYTES).toString('base64url'),
       hostSocketId,
       players: new Map(),
     };
